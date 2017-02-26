@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_notification_dendiachi"
+        android:title="@string/txt_denvitri"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_notification_dongy"
+        android:title="@string/txt_dongy"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_notification_khongdongy"
+        android:title="@string/txt_khongdongy"
+        app:showAsAction="never" />
+
+</menu>

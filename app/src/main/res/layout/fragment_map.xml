@@ -1,0 +1,212 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/mapwhere"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:focusableInTouchMode="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp">
+
+        <fragment
+            android:id="@+id/place_autocomplete_fragment"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/frg_map_cardV_mylocation"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="20dp"
+            android:alpha="0.9"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            app:cardCornerRadius="@dimen/cardv_cornerRadius"
+            app:cardElevation="@dimen/cardv_elevation">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="6dp"
+                android:src="@drawable/ic_my_location_grey_800_18dp" />
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_marginBottom="30dp"
+        android:layout_marginStart="15dp"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/frg_map_fablocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|start"
+                android:src="@drawable/ic_location_black_18dp"
+                app:fab_colorNormal="@android:color/white"
+                app:fab_colorPressed="@android:color/white"
+                app:fab_colorRipple="#618e8c8c"
+                app:fab_shadowColor="#80000000"
+                app:fab_shadowRadius="2dp"
+                app:fab_shadowXOffset="1dp"
+                app:fab_shadowYOffset="1dp"
+                app:fab_showShadow="true"
+                app:fab_size="mini"
+                app:layout_anchor="@+id/mapwhere"
+                app:layout_anchorGravity="bottom|left" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/frg_map_cardV_chonDistrict"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_marginStart="5dp"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:translationX="-350dp"
+                    android:translationY="80dp"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="@dimen/cardv_elevation">
+
+                    <TextView
+                        android:id="@+id/frg_map_txtDistrict"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/tagformapfrg"
+                        android:gravity="center"
+                        android:text="Huyện"
+                        android:textColor="@android:color/white" />
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/frg_map_cardV_chonProvince"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_marginStart="5dp"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:translationX="-350dp"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="@dimen/cardv_elevation">
+
+                    <TextView
+                        android:id="@+id/frg_map_txtProvince"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/tagformapfrg"
+                        android:gravity="center"
+                        android:text="Tỉnh"
+                        android:textColor="@android:color/white" />
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/frg_map_fabfilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_rate_black_18dp"
+                app:fab_colorNormal="@android:color/white"
+                app:fab_colorPressed="@android:color/white"
+                app:fab_colorRipple="#618e8c8c"
+                app:fab_hideAnimation="@anim/fab_slide_in_from_right"
+                app:fab_shadowColor="#80000000"
+                app:fab_shadowRadius="2dp"
+                app:fab_shadowXOffset="1dp"
+                app:fab_shadowYOffset="1dp"
+                app:fab_showAnimation="@anim/fab_slide_in_from_left"
+                app:fab_showShadow="true"
+                app:fab_size="mini"
+                app:layout_anchor="@+id/mapwhere"
+                app:layout_anchorGravity="bottom|left" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/frg_map_cardV_filterLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_marginStart="5dp"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:translationX="-350dp"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="@dimen/cardv_elevation">
+
+                    <TextView
+                        android:id="@+id/frg_map_txtfilterLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/tagformapfrg"
+                        android:gravity="center"
+                        android:text=""
+                        android:textColor="@android:color/white" />
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/frg_map_fabrefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_refresh_black_18dp"
+            app:fab_colorNormal="@android:color/white"
+            app:fab_colorPressed="@android:color/white"
+            app:fab_colorRipple="#618e8c8c"
+            app:fab_shadowColor="#80000000"
+            app:fab_shadowRadius="2dp"
+            app:fab_shadowXOffset="1dp"
+            app:fab_shadowYOffset="1dp"
+            app:fab_showShadow="true"
+            app:fab_size="mini"
+            app:layout_anchor="@+id/mapwhere"
+            app:layout_anchorGravity="bottom|left" />
+
+    </LinearLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

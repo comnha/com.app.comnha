@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_locadetail_ycxoa"
+        android:title="Yêu cầu xóa quán ăn"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_locadetail_dongy"
+        android:title="Xác nhận quán ăn"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_locadetail_phandoi"
+        android:title="Từ chối quán ăn"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_locadetail_xoa"
+        android:title="Xóa quán ăn"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_locadetail_sua"
+        android:title="Sửa quán ăn"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_locadetail_report"
+        android:title="Report quán ăn"
+        android:visible="false"
+        app:showAsAction="never" />
+
+
+</menu>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_homepage"
+            android:icon="@drawable/ic_homepage_black_24dp"
+            android:title="@string/nav_homepage" />
+        <item
+            android:id="@+id/nav_map"
+            android:icon="@drawable/ic_map_black_24dp"
+            android:title="@string/nav_map" />
+    </group>
+    <item android:title="Trang cá nhân">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_profile"
+                    android:icon="@drawable/ic_account_black_24dp"
+                    android:title="@string/nav_profile" />
+                <item
+                    android:id="@+id/nav_notification"
+                    android:icon="?android:attr/alertDialogIcon"
+                    android:title="@string/nav_notification" />
+            </group>
+
+        </menu>
+    </item>
+    <group>
+        <item android:title="Communicate">
+            <menu>
+                <item
+                    android:id="@+id/nav_about"
+                    android:icon="@drawable/ic_info_black_24dp"
+                    android:title="About" />
+            </menu>
+        </item>
+    </group>
+    <item android:title="Administrator">
+        <menu>
+            <item
+                android:id="@+id/nav_admin"
+                android:title="Admin" />
+        </menu>
+    </item>
+    <group>
+        <item android:title="Authentication">
+            <menu>
+                <item
+                    android:id="@+id/nav_signin"
+                    android:icon="@drawable/ic_login_64"
+                    android:title="Login" />
+                <item
+                    android:id="@+id/nav_signout"
+                    android:icon="@drawable/ic_logout_64"
+                    android:title="Logout" />
+            </menu>
+        </item>
+    </group>
+
+</menu>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/popup_viewquan_none"
+        android:orderInCategory="0"
+        android:title="None" />
+    <item
+        android:id="@+id/popup_viewquan_gia"
+        android:orderInCategory="1"
+        android:title="@string/text_rategia" />
+    <item
+        android:id="@+id/popup_viewquan_vs"
+        android:orderInCategory="2"
+        android:title="@string/text_ratevs" />
+    <item
+        android:id="@+id/popup_viewquan_pv"
+        android:orderInCategory="3"
+        android:title="@string/text_ratepv" />
+
+</menu>

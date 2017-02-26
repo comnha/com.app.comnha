@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        icon="@drawable/ic_review_black_24dp"
+        inActiveColor="#e6e6e6"
+        activeColor="fff"
+        id="@+id/tab_reviews"
+        title="Bài viết" />
+    <tab
+        icon="@drawable/ic_store_black_24dp"
+        id="@+id/tab_stores"
+        title="Quán ăn" />
+    <tab
+        icon="@drawable/ic_location_black_24dp"
+        id="@+id/tab_locations"
+        title="Vị trí" />
+</tabs>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_fooddetail_ycxoa"
+        android:title="Yêu cầu xóa"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_fooddetail_sua"
+        android:title="Sửa món ăn"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_fooddetail_report"
+        android:title="Report"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_fooddetail_xoa"
+        android:title="Xóa"
+        android:visible="false"
+        app:showAsAction="never" />
+</menu>

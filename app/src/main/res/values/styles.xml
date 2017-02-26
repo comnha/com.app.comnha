@@ -1,0 +1,73 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:popupMenuStyle">@style/AppTheme.PopupMenu</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="editTextColor">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <!--<item name="android:alertDialogTheme">@style/AppThem.LoadingDialog</item>-->
+        <!--<item name="android:alertDialogStyle">@style/AppThem.LoadingDialog</item>-->
+    </style>
+    <!--<style name="AppTheme.ProgressBar" parent="Widget.AppCompat.Spinner">-->
+    <!--<item name="android:colorAccent">@color/black</item>-->
+    <!--</style>-->
+    <style name="AppThem.LoadingDialog" parent="Base.Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:height">40dp</item>
+        <item name="android:width">400dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <style name="TwoWayView">
+        <item name="android:orientation">horizontal</item>
+    </style>
+    <style name="AppTheme.LocationDetial" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:statusBarColor">@android:color/black</item>
+    </style>
+
+    <style name="AppTheme.SplashActivity" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--<item name="android:statusBarColor">@color/colorPrimary</item>-->
+        <!--<item name="android:background">@color/colorPrimary</item>-->
+        <!--<item name="android:alertDialogTheme">@style/AlertDialog.AppCompat</item>-->
+    </style>
+
+    <style name="AppTheme.PopupMenu" parent="Widget.AppCompat.PopupMenu">
+        <!--<item name="android:gravity">end|bottom</item>-->
+        <item name="android:popupElevation">3dp</item>
+        <item name="android:popupBackground">@android:color/white</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.ButtonGM" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:colorButtonNormal">@android:color/holo_red_dark</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.ButtonFB" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:colorButtonNormal">@android:color/holo_blue_dark</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.ButtonPickTime" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
+        <item name="android:textColor">#57d43d</item>
+    </style>
+
+    <style name="AppTheme.ButtonExit" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
+    </style>
+
+    <style name="AppTheme.ButtonSave" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:colorButtonNormal">@color/colorPrimary</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+</resources>

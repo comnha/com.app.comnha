@@ -1,0 +1,14 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.app.ptt.comnha.Fragment.LocatlistFragment">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView_localist"
+        android:layout_width="match_parent"
+        android:layout_height="600dp"
+        android:paddingTop="@dimen/rcyler_paddingTop"
+        android:scrollbarStyle="insideOverlay"
+        android:scrollbars="vertical" />
+</FrameLayout>

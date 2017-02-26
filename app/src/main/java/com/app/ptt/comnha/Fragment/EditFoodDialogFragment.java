@@ -1,0 +1,162 @@
+package com.app.ptt.comnha.Fragment;
+
+
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.graphics.Point;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RatingBar;
+import android.widget.Toast;
+
+import com.app.ptt.comnha.Modules.Times;
+import com.app.ptt.comnha.FireBase.Food;
+import com.app.ptt.comnha.FireBase.Notification;
+import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.Service.MyService;
+import com.app.ptt.comnha.SingletonClasses.ChooseFood;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
+
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class EditFoodDialogFragment extends DialogFragment {
+    ProgressDialog mProgressDialog;
+    EditText edtTenMon,edtGia;
+    RatingBar rbDanhGia;
+    Map<String, Object> childUpdates;
+    Map<String, Object> foodValue;
+    Button btnOK,btnCancel;
+    DatabaseReference dbRef;
+    Food editFood;
+    public EditFoodDialogFragment() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_edit_food_dialog, container, false);
+        editFood=ChooseFood.getInstance().getFood();
+        childUpdates=new HashMap<>();
+        dbRef=FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
+        edtTenMon=(EditText) view.findViewById(R.id.edt_tenmon);
+        edtTenMon.setText(ChooseFood.getInstance().getFood().getTenmon());
+        edtGia=(EditText) view.findViewById(R.id.edt_gia);
+        edtGia.setText(ChooseFood.getInstance().getFood().getGia()+"");
+        rbDanhGia=(RatingBar) view.findViewById(R.id.rb_danhGiaMon);
+        rbDanhGia.setRating(ChooseFood.getInstance().getFood().getDanhGia());
+        btnOK=(Button) view.findViewById(R.id.btn_OK);
+        mProgressDialog = ProgressDialog.show(getActivity(),
+                getResources().getString(R.string.txt_plzwait),
+                "Đang xử lý",
+                true, false);
+        btnOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder alert=new AlertDialog.Builder(getContext());
+                alert.setTitle("Thông báo");
+                alert.setMessage("Bạn có muốn sửa món ăn này không?");
+                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        editFood.setTenmon(edtTenMon.getText().toString());
+                        editFood.setGia(Long.parseLong(edtGia.getText().toString()));
+                        foodValue=editFood.toMap();
+                       // dialog.dismiss();
+                        mProgressDialog.show();
+                        Notification notification = new Notification();
+                        String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + "admin").push().getKey();
+                        notification.setAccount(MyService.getUserAccount());
+                        notification.setDate(new Times().getDate());
+                        notification.setTime(new Times().getTime());
+                        notification.setType(11);
+                        notification.setFood(editFood);
+                        notification.setLocation(ChooseFood.getInstance().getLocation());
+                        notification.setReaded(false);
+                        notification.setTo("admin");
+                        Map<String, Object> notificationValue = notification.toMap();
+                        childUpdates = new HashMap<>();
+                        childUpdates.put(getResources().getString(R.string.notification_CODE) + "admin/" + key1, notificationValue);
+                        Map<String,Object> newFood=editFood.toMap();
+                        childUpdates.put(getResources().getString(R.string.thucdon_CODE)+editFood.getMonID(),newFood);
+                        dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                mProgressDialog.dismiss();
+                                Toast.makeText(getContext(), "Đã sửa thành công", Toast.LENGTH_SHORT).show();
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                mProgressDialog.dismiss();
+                                Toast.makeText(getContext(), "Lỗi khi sửa", Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+                    }
+                });
+                alert.setNegativeButton("Trờ về", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                alert.show();
+            }
+        });
+        btnCancel=(Button) view.findViewById(R.id.btn_cancel);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Window window = getDialog().getWindow();
+        Point size = new Point();
+        // Store dimensions of the screen in `size`
+        Display display = window.getWindowManager().getDefaultDisplay();
+        display.getSize(size);
+        // Set the width of the dialog proportional to 75% of the screen width
+        window.setLayout((int) (size.x * 0.95), WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setGravity(Gravity.CENTER);
+    }
+}

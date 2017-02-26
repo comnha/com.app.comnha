@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_postdetail_ycxoa"
+        android:title="Yêu cầu xóa bài đăng"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_postdetail_dongy"
+        android:title="Xác nhận bài đăng"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_postdetail_phandoi"
+        android:title="Từ chối bài đăng"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_postdetail_xoa"
+        android:title="Xóa bài đăng"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_postdetail_sua"
+        android:title="Sửa bài đăng"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_postdetail_report"
+        android:title="Report bài đăng"
+        android:visible="false"
+        app:showAsAction="never" />
+
+
+</menu>

@@ -1,0 +1,45 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="action_bar_height">40dp</dimen>
+    <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
+         https://developer.android.com/design/patterns/navigation-drawer.html -->
+    <dimen name="navigation_drawer_width">240dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="linear_diem">70dp</dimen>
+    <dimen name="img_size">50dp</dimen>
+    <dimen name="img_tiny_size">25dp</dimen>
+    <dimen name="linear_chucnang_cao">60dp</dimen>
+    <dimen name="linear_chucnang_rong">100dp</dimen>
+    <dimen name="text_size">15sp</dimen>
+    <dimen name="drawable_padding">2.5dp</dimen>
+    <dimen name="edt_login_width">250dp</dimen>
+    <dimen name="edt_login_height">50dp</dimen>
+    <dimen name="edt_hoten_width">80dp</dimen>
+    <dimen name="edt_hoten_height">50dp</dimen>
+    <dimen name="edt_ngsinh_width">80dp</dimen>
+    <dimen name="edt_ngsinh_height">50dp</dimen>
+    <dimen name="cardv_sign_width">330dp</dimen>
+    <dimen name="layout_popup_width">350dp</dimen>
+    <dimen name="popup_width">300dp</dimen>
+    <dimen name="popup_height">315dp</dimen>
+    <dimen name="text_rate_mark">20sp</dimen>
+    <dimen name="text_rate_txt">10sp</dimen>
+    <dimen name="cardv_elevation">2dp</dimen>
+    <dimen name="cardv_cornerRadius">2dp</dimen>
+    <dimen name="cardv_loca_item_margin">7dp</dimen>
+    <dimen name="cardv_loca_item_marginTop">3dp</dimen>
+    <dimen name="cardv_loca_item_marginBot">3dp</dimen>
+    <dimen name="cardv_elevation_infowindow">1dp</dimen>
+    <dimen name="cardv_cornerRadius_infowindow">2dp</dimen>
+    <dimen name="cardv_info_width">40dp</dimen>
+    <dimen name="cardv_info_height">40dp</dimen>
+    <dimen name="marginStart_line_profile">60dp</dimen>
+    <dimen name="rcyler_paddingTop">3dp</dimen>
+    <dimen name="fabShadowRadius">1dp</dimen>
+    <dimen name="marginEnd20dp">20dp</dimen>
+</resources>

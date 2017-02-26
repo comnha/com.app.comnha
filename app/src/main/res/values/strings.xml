@@ -1,0 +1,566 @@
+<resources>
+    <string name="app_name">Cơm nhà</string>
+    <string name="facebook_app_id">160568224411760</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="text_tenquan">Tên quán</string>
+    <string name="text_btnsendreport">Gửi</string>
+    <string name="text_tenMon">Tên món ăn</string>
+    <string name="text_themMon">Thêm món ăn</string>
+    <string name="text_tinhTP">Tỉnh/Thành phố</string>
+    <string name="text_thucdon">Thực đơn</string>
+    <string name="text_quanhuyen">Quận/Huyện</string>
+    <string name="text_sdt">Số điện thoại</string>
+    <string name="text_openningTime">Giờ mở cửa</string>
+    <string name="text_start">Từ</string>
+    <string name="text_end">Đến</string>
+    <string name="text_gia">Giá</string>
+    <string name="text_more">Mở rộng</string>
+    <string name="text_foodcateg">Loại món ăn</string>
+    <string name="text_choosefoodcateg">Chọn loại món ăn</string>
+    <string name="text_rategia">Giá</string>
+    <string name="text_ratevs">Vệ sinh</string>
+    <string name="text_ratepv">Phục vụ</string>
+    <string name="text_save">Save</string>
+    <string name="text_add">Thêm mới</string>
+    <string name="text_foodcateName">Tên loại món</string>
+    <string name="text_cancel">Hủy</string>
+    <string name="text_address">Địa chỉ</string>
+    <string name="text_email">Email</string>
+    <string name="text_username">Username</string>
+    <string name="text_password">Mật khẩu</string>
+    <string name="text_confirmPass">Xác nhận mật khẩu</string>
+    <string name="text_hoten">Họ Tên</string>
+    <string name="text_ho">Họ</string>
+    <string name="text_tenLot">Tên lót</string>
+    <string name="text_ten">Tên</string>
+    <string name="text_birth">Ngày sinh</string>
+    <string name="text_signup">Đăng kí</string>
+    <string name="text_signin">Đăng nhập</string>
+    <string name="text_exit">Thoát</string>
+    <string name="text_forgotPass"><u>Quên mật khẩu?</u></string>
+    <string name="text_loginFB">Facebook</string>
+    <string name="text_loginGmail">Goodle +</string>
+    <string name="text_chooseLocation">Chọn địa điểm</string>
+    <string name="text_pickProvince">Chọn Tỉnh/Thành Phố</string>
+    <string name="text_pickFood">Chọn món ăn</string>
+    <string name="text_pickDistrict">Chọn Quận/Huyện</string>
+    <string name="text_addfoodCate">Thêm loại món</string>
+    <string name="text_title">Tiêu đề</string>
+    <string name="text_content">Nội dung</string>
+    <string name="text_upImage">Chọn ảnh</string>
+    <string name="text_vote">Đánh giá</string>
+    <string name="text_hashtag">Tag</string>
+    <string name="text_select">Chọn</string>
+    <string name="text_taomoi">Tạo mới</string>
+    <string name="text_signup_successful">Đăng kí thành công!!!</string>
+    <string name="text_addnewFoodCate_successful">Thêm loại món mới thành công!!!</string>
+    <string name="text_noti_addloca_succes">Thêm địa điểm thành công</string>
+    <string name="title_activity_nav_draw">NavDrawActivity</string>
+    <string name="text_themdiadiem">Thêm địa điểm mới</string>
+    <string name="text_dangreview">Thêm review</string>
+    <string name="text_themanh">Thêm ảnh</string>
+    <string name="text_comment">Bình luận</string>
+    <string name="text_like">Thích</string>
+    <string name="text_hello">Xin chào</string>
+    <string name="text_user">User</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="txt_writecomment">Viết bình luận......</string>
+    <!--ERROR-->
+    <string name="txt_needlogin">Bạn cần đăng nhập</string>
+    <string name="txt_noemail">Warning: Chưa nhập email</string>
+    <string name="txt_notemail">Error: Email không hợp lệ</string>
+    <string name="txt_nopass">Warning: Chưa nhập password</string>
+    <string name="txt_noho">Warning: Chưa nhập họ</string>
+    <string name="txt_notenlot">Warning: Chưa nhập tên lót</string>
+    <string name="txt_noten">Warning: Chưa nhập tên</string>
+    <string name="txt_nongsinh">Warning: Chưa nhập ngày-tháng-năm sinh</string>
+    <string name="txt_noun">Warning: Chưa nhập tên tài khoản</string>
+    <string name="txt_noconfirmpass">Warning: Chưa nhập mật khẩu xác nhận</string>
+    <string name="txt_notenquan">Warning: Chưa nhập tên quán</string>
+    <string name="txt_nodiachi">Warning: Chưa nhập địa chỉ</string>
+    <string name="txt_nogia">Warning: Chưa nhập giá</string>
+    <string name="txt_nosdt">Warning: Chưa nhập số điện thoại</string>
+    <string name="txt_noopentime">Warning: Chưa nhập giờ mở cửa</string>
+    <string name="txt_noprivince">Warning: Chưa nhập Tỉnh/Thành phố</string>
+    <string name="txt_nodistrict">Warning: Chưa nhập Quận/Huyện</string>
+    <string name="txt_notitle">Warning: Chưa nhập tiêu đề</string>
+    <string name="txt_nocontent">Warning: Chưa nhập nội dung</string>
+    <string name="txt_nochoseloca">Warning: Chưa chọn địa điểm</string>
+    <string name="txt_norate">Warning: Chưa đánh giá</string>
+    <string name="txt_giawarn">Warning: Giá cuối cùng phải lớn hơn giá bắt đầu</string>
+    <string name="txt_addinlocaerr">Error: Không thể thêm địa điểm mới</string>
+    <string name="txt_nochosephoto">Warning: Chưa chọn ảnh nào</string>
+    <string name="txt_noTenMon">Warning: Chưa nhập tên món ăn</string>
+    <string name="txt_nogiaMon">Warning: Chưa nhập giá món ăn</string>
+    <string name="txt_noChoseProvince">Warning: Chưa chọn Tỉnh/Thành phố</string>
+    <string name="txt_noChoseDistrict">Warning: Chưa chọn Quận/Huyện</string>
+    <string name="txt_noChoseFood">Warning: Chưa chọn món ăn</string>
+    <string name="txt_noChoseFoodCate">Warning: Chưa chọn loại món ăn</string>
+    <string name="txt_noFoodCateName">Warning: Chưa nhập tên loại món ăn</string>
+    <string name="txt_noaddress">Warning: Chưa nhập địa điểm</string>
+    <string name="txt_choseLoca">Bạn đã chọn địa điểm</string>
+    <string name="txt_failaddfoodcate">Error: Không thể thêm loại món mới</string>
+    <!--ERROR-->
+
+    <string name="txt_plzwait">Please wait &#8230;</string>
+    <string name="txt_logging">Đang đăng nhập &#8230;</string>
+    <string name="txt_addinloca">Đang thêm địa điểm mới &#8230;</string>
+    <string name="txt_addinmon">Đang thêm món mới &#8230;</string>
+    <string name="txt_addinpost">Đang đăng review mới &#8230;</string>
+    <string name="txt_logginout">Đang đăng xuất &#8230;</string>
+    <string name="txt_addinfoodcate">Đang thêm loại món ăn mới &#8230;</string>
+    <string name="txt_choose">Chọn</string>
+    <string name="txt_chosefromloca">Bộ nhớ</string>
+    <string name="txt_chosefromuploaded">Ảnh đã đăng</string>
+    <string name="txt_lastnews">Tin cuối</string>
+    <string name="txt_mostcomment">Quan tâm</string>
+    <string name="txt_mostlike">Yêu thích</string>
+    <string name="txt_myloca">Vị trí của tôi</string>
+    <string name="txt_choseloca">Chọn địa điểm</string>
+    <string name="txt_review">Review</string>
+    <string name="txt_quanan">Quán ăn</string>
+    <string name="txt_album">Album</string>
+    <string name="txt_dsMon">Danh sách món ăn</string>
+    <string name="txt_addedMon">Đã thêm món mới</string>
+    <string name="txt_entrySearch">Nhập địa điểm &#8230;</string>
+    <string name="txt_filter">Phân loại:</string>
+    <string name="txt_searchFilter">Lọc</string>
+    <string name="txt_local">Vị trí:</string>
+    <string name="txt_localview">Xem theo Quán ăn\t</string>
+    <string name="txt_reviewview">Xem theo Review\t</string>
+    <string name="txt_reportStore">Reports</string>
+    <string name="txt_xoataca">Xóa tất cả</string>
+    <string name="txt_setdadoc">Đọc tất cả</string>
+    <string name="txt_xemnoidungreport">Xem report</string>
+    <string name="txt_denvitri">Xem bài đăng</string>
+    <string name="txt_dongy">Đồng ý</string>
+    <string name="txt_khongdongy">Không đồng ý</string>
+    <!--PATH-->
+    <string name="firebase_path">https://comnha-c03b5.firebaseio.com</string>
+    <string name="firebaseStorage_path">gs://comnha-c03b5.appspot.com</string>
+
+    <!--PATH-->
+
+    <!--NAV-->
+    <string name="nav_homepage">Trang chủ</string>
+    <string name="nav_map">Bản đồ</string>
+    <string name="nav_uploadedimg">Ảnh đã đăng</string>
+    <string name="nav_activities">Hoạt động</string>
+    <string name="nav_profile">Thông tin cá nhân</string>
+    <string name="nav_notification">Thông báo</string>
+    <string name="nav_activity">Activities</string>
+    <!--NAV-->
+    <string name="check1">Axt6OfAdQ9gd2pmxUqEK4wvHyal2</string>
+    <string name="check2">5NX62wZ6JBQNu8zPNydI6qeJC5I3</string>
+    <!--CODE-->
+    <string name="DATA_FROM_FRAG">datafromfrag</string>
+    <string name="frag_localist_CODE">localist</string>
+    <string name="frag_about_CODE">about</string>
+    <string name="frag_chooseimg_CODE">chooseimg</string>
+    <string name="frag_chooseloca_CODE">chooseloca</string>
+    <string name="frag_addloca_CODE">addloca</string>
+    <string name="frag_map_CODE">map</string>
+    <string name="frag_addpost_CODE">addpost</string>
+    <string name="frg_viewpost_CODE">viewpost</string>
+    <string name="frg_viewfood_CODE">viewfood</string>
+    <string name="frg_signup_CODE">signup</string>
+    <string name="frg_signin_CODE">signin</string>
+    <string name="frg_viewalbum_CODE">viewalbum</string>
+    <string name="frg_prodetail_CODE">profiledetail</string>
+    <string name="frg_notification_CODE">notification</string>
+    <string name="frg_themmon_CODE">themmon</string>
+    <string name="frag_locadetail_CODE">locadetail</string>
+    <string name="frag_vote_CODE">vote</string>
+    <string name="fragment_CODE">FRAGMENTCODE</string>
+    <string name="key_CODE">KEYCODE</string>
+    <string name="keyPost_CODE">KEYPOSTCODE</string>
+    <string name="keyloca_CODE">KEYLOCACODE</string>
+    <!--CODE-->
+    <string name="fromFrag">from fragment</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!--Firebase-->
+    <string name="users_CODE">Users/</string>
+    <string name="reports_CODE">Reports/</string>
+    <string name="thucdon_CODE">Food/</string>
+    <string name="notification_CODE">Notification/</string>
+    <string name="notification_CODE1">Notification</string>
+    <string name="locathucdon_CODE">StoreFood/</string>
+    <string name="locations_CODE">Stores/</string>
+    <string name="deleted_CODE">Deleted/</string>
+    <string name="posts_CODE">Posts/</string>
+    <string name="images_CODE">Images/</string>
+    <string name="images_CODE1">Images</string>
+    <string name="locationpost_CODE">StorePost/</string>
+    <string name="userpost_CODE">UserPost/</string>
+    <string name="comments_CODE">Comments/</string>
+    <string name="postcomment_CODE">PostComment/</string>
+    <string name="locauserpost_CODE">StoreUserPost/</string>
+    <string name="menulocation_CODE">FoodLocation/</string>
+    <string name="usertrackloca_CODE">UserTrackLoca/</string>
+    <string name="common_CODE">Common/</string>
+    <string name="district_CODE">District/</string>
+    <string name="foodcategory_CODE">FoodCategory/</string>
+    <!--Firebase-->
+
+    <string name="action_example">Example action</string>
+
+    <string name="action_more">More</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string-array name="planets_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
+
+    <string name="action_addpost">Đăng review</string>
+    <string name="action_addloca">Thêm địa điểm</string>
+    <string name="action_changeloca">Vị trí</string>
+    <string name="menu_locadetail_themmon">Thêm món ăn</string>
+    <string name="menu_notification_moinhat">Xem theo ngày</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string-array name="tinhtp">
+        <item>Hà Nội</item>//0
+        <item>Hồ Chí Minh</item>//1
+        <item>Hải Phòng</item>//2
+        <item>Đà Nẵng</item>//3
+        <item>Hà Giang</item>//4
+        <item>Cao Bằng</item>//5
+        <item>Lai Châu</item>//6
+        <item>Lào Cai</item>//7
+        <item>Tuyên Quang</item>//8
+        <item>Lạng Sơn</item>//9
+        <item>Bắc Kạn</item>//10
+        <item>Thái Nguyên</item>//11
+        <item>Yên Bái</item>//12
+        <item>Sơn La</item>//13
+        <item>Phú Thọ</item>//14
+        <item>Vĩnh Phúc</item>//15
+        <item>Quảng Ninh</item>//16
+        <item>Bắc Giang</item>//17
+        <item>Bắc Ninh</item>//18
+        <item>Hải Dương</item>//19
+        <item>Hưng Yên</item>//20
+        <item>Hòa Bình</item>//21
+        <item>Hà Nam</item>//22
+        <item>Nam Định</item>//23
+        <item>Thái Bình</item>//24
+        <item>Ninh Bình</item>//25
+        <item>Thanh Hóa</item>//26
+        <item>Nghệ An</item>//27
+        <item>Hà Tĩnh</item>//28
+        <item>Quảng Bình</item>//29
+        <item>Quảng Trị</item>//30
+        <item>Thừa Thiên Huế</item>//31
+        <item>Quảng Nam</item>//32
+        <item>Quảng Ngãi</item>//33
+        <item>Kon Tum</item>//34
+        <item>Bình Định</item>//35
+        <item>Gia Lai</item>//36
+        <item>Phú Yên</item>//37
+        <item>Đăk Lăk</item>//38
+        <item>Khánh Hòa</item>//39
+        <item>Lâm Đồng</item>//40
+        <item>Bình Phước</item>//41
+        <item>Bình Dương</item>//42
+        <item>Ninh Thuận</item>//43
+        <item>Tây Ninh</item>//44
+        <item>Bình Thuận</item>//45
+        <item>Đồng Nai</item>//46
+        <item>Long An</item>//47
+        <item>Đồng Tháp</item>//48
+        <item>An Giang</item>//49
+        <item>Bà Rịa Vũng Tàu</item>//50
+        <item>Tiền Giang</item>//51
+        <item>Kiên Giang</item>//52
+        <item>Trà Vinh</item>//53
+        <item>Bến Tre</item>//54
+        <item>Vĩnh Long</item>//55
+        <item>Trà Vinh</item>//56
+        <item>Sóc Trăng</item>//57
+        <item>Bạc Liêu</item>//58
+        <item>Cà Mau</item>//59
+        <item>Điện Biên</item>//60
+        <item>Đắk Nông</item>//61
+        <item>Hậu Giang</item>//62
+    </string-array>
+    <string-array name="hanoi">
+        <item>Ba Đình</item>
+        <item>Hoàn Kiếm</item>
+        <item>Hai Bà Trưng</item>
+        <item>Đống Đa</item>
+        <item>Tây Hồ</item>
+        <item>Cầu Giấy</item>
+        <item>Thanh Xuân</item>
+        <item>Hoàng Mai</item>
+        <item>Long Biên</item>
+        <item>Từ Liêm</item>
+        <item>Thanh Trì</item>
+        <item>Gia Lâm</item>
+        <item>Đông Anh</item>
+        <item>Sóc Sơn</item>
+        <item>Hà Đông</item>
+        <item>Sơn Tây</item>
+        <item>Ba Vì</item>
+        <item>Phúc Thọ</item>
+        <item>Thạch Thất</item>
+        <item>Quốc Oai</item>
+        <item>Chương Mỹ</item>
+        <item>Đan Phượng</item>
+        <item>Hoài Đức</item>
+        <item>Thanh Oai</item>
+        <item>Mỹ Đức</item>
+        <item>Ứng Hoà</item>
+        <item>Thường Tín</item>
+        <item>Phú Xuyên</item>
+        <item>Mê Linh</item>
+    </string-array>
+    <string-array name="hochiminh">
+        <item>Quận 1</item>
+        <item>Quận 2</item>
+        <item>Quận 3</item>
+        <item>Quận 4</item>
+        <item>Quận 5</item>
+        <item>Quận 6</item>
+        <item>Quận 7</item>
+        <item>Quận 8</item>
+        <item>Quận 9</item>
+        <item>Quận 10</item>
+        <item>Quận 11</item>
+        <item>Quận 12</item>
+        <item>Gò Vấp</item>
+        <item>Tân Bình</item>
+        <item>Tân Phú</item>
+        <item>Bình Thạnh</item>
+        <item>Phú Nhuận</item>
+        <item>Thủ Đức</item>
+        <item>Bình Tân</item>
+        <item>Bình Chánh</item>
+        <item>Củ Chi</item>
+        <item>Hóc Môn</item>
+        <item>Nhà Bè</item>
+        <item>Cần Giờ</item>
+    </string-array>
+    <string-array name="haiphong">
+        <item>Sở Giáo dục và Đào tạo</item>
+        <item>Hồng Bàng</item>
+        <item>Lê Chân</item>
+        <item>Ngô Quyền</item>
+        <item>Kiến An</item>
+        <item>Hải An</item>
+        <item>Đồ Sơn</item>
+        <item>An Lão</item>
+        <item>Kiến Thụy</item>
+        <item>Thủy Nguyên</item>
+        <item>An Dương</item>
+        <item>Tiên Lãng</item>
+        <item>Vĩnh Bảo</item>
+        <item>Cát Hải</item>
+        <item>Bạch Long Vĩ</item>
+        <item>Dương Kinh</item>
+    </string-array>
+    <string-array name="danang">
+        <item>Sở Giáo dục và Đào tạo</item>
+        <item>Hải Châu</item>
+        <item>Thanh Khê</item>
+        <item>Sơn Trà</item>
+        <item>Ngũ Hành Sơn</item>
+        <item>Liên Chiểu</item>
+        <item>Hoà Vang</item>
+        <item>Cẩm Lệ</item>
+    </string-array>
+    <string-array name="hagiang">
+        <item>Sở Giáo dục và Đào tạo</item>
+        <item>Hà Giang</item>
+        <item>Đồng Văn</item>
+        <item>Mèo Vạc</item>
+        <item>Yên Minh</item>
+        <item>Quản Bạ</item>
+        <item>Vị Xuyên</item>
+        <item>Bắc Mê</item>
+        <item>Hoàng Su Phì</item>
+        <item>Xín Mần</item>
+        <item>Bắc Quang</item>
+        <item>Quang Bình</item>
+    </string-array>
+    <string-array name="caobang">
+        <item>Sở Giáo dục và Đào tạo</item>
+        <item>Cao Bằng</item>
+        <item>Bảo Lạc</item>
+        <item>Thông Nông</item>
+        <item>Hà Quảng</item>
+        <item>Trà Lĩnh</item>
+        <item>Trùng Khánh</item>
+        <item>Nguyên Bình</item>
+        <item>Hoà An</item>
+        <item>Quảng Uyên</item>
+        <item>Thạch An</item>
+        <item>Hạ Lang</item>
+        <item>Bảo Lâm</item>
+        <item>Phục Hoà</item>
+    </string-array>
+    <string-array name="laichau">
+        <item>Sở Giáo dục và Đào tạo</item>
+        <item>Lai Châu</item>
+        <item>Tam Đường</item>
+        <item>Phong Thổ</item>
+        <item>Sìn Hồ</item>
+        <item>Mường Tè</item>
+        <item>Than Uyên</item>
+        <item>Tân Uyên</item>
+        <item>Nậm Nhùm</item>
+    </string-array>
+    <string-array name="laocai">
+        <item>0800 Sở Giáo dục và Đào tạo</item>
+        <item>Lào Cai</item>
+        <item>Xi Ma Cai</item>
+        <item>Bát Xát</item>
+        <item>Bảo Thắng</item>
+        <item>Sa Pa</item>
+        <item>Văn Bàn</item>
+        <item>Bảo Yên</item>
+        <item>Bắc Hà</item>
+        <item>Mường Khương</item>
+    </string-array>
+    <string-array name="thanhhoa">
+        <item>Sở Giáo dục và Đào tạo</item>
+        <item>Thanh Hoá</item>
+        <item>Bỉm Sơn</item>
+        <item>Sầm Sơn</item>
+        <item>Quan Hoá</item>
+        <item>Quan Sơn</item>
+        <item>Mường Lát</item>
+        <item>Bá Thước</item>
+        <item>Thường Xuân</item>
+        <item>Như Xuân</item>
+        <item>Như Thanh</item>
+        <item>Lang Chánh</item>
+        <item>Ngọc Lặc</item>
+        <item>Thạch Thành</item>
+        <item>Cẩm Thủy</item>
+        <item>Thọ Xuân</item>
+        <item>Vĩnh Lộc</item>
+        <item>Thiệu Hoá</item>
+        <item>Triệu Sơn</item>
+        <item>Nông Cống</item>
+        <item>Đông Sơn</item>
+        <item>Hà Trung</item>
+        <item>Hoằng Hoá</item>
+        <item>Nga Sơn</item>
+        <item>Hậu Lộc</item>
+        <item>Quảng Xương</item>
+        <item>Tĩnh Gia</item>
+        <item>Yên Định</item>
+    </string-array>
+    <string-array name="binhdinh">
+        <item>Sở Giáo dục và Đào tạo</item>
+        <item>Quy Nhơn</item>
+        <item>An Lão</item>
+        <item>Hoài Ân</item>
+        <item>Hoài Nhơn</item>
+        <item>Phù Mỹ</item>
+        <item>Phù Cát</item>
+        <item>Vĩnh Thạnh</item>
+        <item>Tây Sơn</item>
+        <item>Vân Canh</item>
+        <item>An Nhơn</item>
+        <item>Tuy Phước</item>
+    </string-array>
+    <string-array name="khanhhoa">
+        <item>Sở Giáo dục và Đào tạo</item>
+        <item>Nha Trang</item>
+        <item>Vạn Ninh</item>
+        <item>Ninh Hoà</item>
+        <item>Diên Khánh</item>
+        <item>Khánh Vĩnh</item>
+        <item>Cam Ranh</item>
+        <item>Khánh Sơn</item>
+        <item>Trường Sa</item>
+        <item>Cam Lâm</item>
+    </string-array>
+    <string-array name="daklak">
+        <item>Buôn Ma Thuột</item>
+        <item>Ea H Leo</item>
+        <item>Krông Buk</item>
+        <item>Krông Năng</item>
+        <item>Ea Súp</item>
+        <item>Cư Mgar</item>
+        <item>Krông Pắc</item>
+        <item>Ea Kar</item>
+        <item>M\'Đrăk</item>
+        <item>Krông Ana</item>
+        <item>Krông Bông</item>
+        <item>Lăk</item>
+        <item>Buôn Đôn</item>
+        <item>Cư Kuin</item>
+        <item>Buôn Hồ</item>
+    </string-array>
+    <string-array name="lamdong">
+        <item>Sở Giáo dục và Đào tạo</item>
+        <item>Đà Lạt</item>
+        <item>Bảo Lộc</item>
+        <item>Đức Trọng</item>
+        <item>Di Linh</item>
+        <item>Đơn Dương</item>
+        <item>Lạc Dương</item>
+        <item>Đạ Huoai</item>
+        <item>Đạ Tẻh</item>
+        <item>Cát Tiên</item>
+        <item>Lâm Hà</item>
+        <item>Bảo Lâm</item>
+        <item>Đam Rông</item>
+    </string-array>
+    <string-array name="daknong">
+        <item>Sở Giáo dục và Đào tạo</item>
+        <item>Gia Nghĩa</item>
+        <item>Đăk RLấp</item>
+        <item>Đăk Mil</item>
+        <item>Cư Jút</item>
+        <item>Đăk Song</item>
+        <item>Krông Nô</item>
+        <item>Đăk GLong</item>
+        <item>Tuy Đức</item>
+    </string-array>
+    <string-array name="gialai">
+        <item>Sở Giáo dục và Đào tạo</item>
+        <item>Pleiku</item>
+        <item>Chư Păh</item>
+        <item>Mang Yang</item>
+        <item>Kbang</item>
+        <item>An Khê</item>
+        <item>Kông Chro</item>
+        <item>Đức Cơ</item>
+        <item>Chư Prông</item>
+        <item>Chư Sê</item>
+        <item>Ayun Pa</item>
+        <item>Krông Pa</item>
+        <item>Ia Grai</item>
+        <item>Đak Đoa</item>
+        <item>Ia Pa</item>
+        <item>Đak Pơ</item>
+        <item>Phú Thiện</item>
+        <item>Chư Pưh</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

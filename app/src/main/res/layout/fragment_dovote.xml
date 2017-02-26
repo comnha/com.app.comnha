@@ -1,0 +1,102 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    tools:context="com.app.ptt.comnha.Fragment.DoVoteFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="10dp"
+        android:paddingStart="10dp"
+        android:paddingBottom="5dp"
+        android:paddingEnd="5dp">
+
+        <LinearLayout
+            android:id="@+id/linear1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start|top"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/frg_vote_txt_gia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_rategia"
+                android:textColor="@color/colorgia"
+                android:textSize="20sp" />
+
+            <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                android:id="@+id/frg_vote_slide_gia"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:dsb_indicatorColor="@color/colorgia"
+                app:dsb_max="10"
+                app:dsb_min="1"
+                app:dsb_progressColor="@color/colorgia" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start|top"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/frg_vote_txt_vs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_ratevs"
+                android:textColor="@color/colorvesinh"
+                android:textSize="20sp" />
+
+            <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                android:id="@+id/frg_vote_slide_vesinh"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:dsb_indicatorColor="@color/colorvesinh"
+                app:dsb_max="10"
+                app:dsb_min="1"
+                app:dsb_progressColor="@color/colorvesinh" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start|top"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/frg_vote_txt_pv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_ratepv"
+                android:textColor="@color/colorphucvu"
+                android:textSize="20sp" />
+
+            <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                android:id="@+id/frg_vote_slide_phucvu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:dsb_indicatorColor="@color/colorphucvu"
+                app:dsb_max="10"
+                app:dsb_min="1"
+                app:dsb_progressColor="@color/colorphucvu" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/frg_vote_btn_vote"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:text="@string/text_vote" />
+    </LinearLayout>
+
+</FrameLayout>
