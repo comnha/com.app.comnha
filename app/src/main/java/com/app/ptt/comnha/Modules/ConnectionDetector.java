@@ -53,15 +53,36 @@ public class ConnectionDetector {
 
     }
 
-    public static boolean showSettingAlert(final Context mContext) {
+    public static boolean showSettingGPSAlert(final Context mContext) {
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
         alertDialog.setTitle("GPS settings");
-        alertDialog.setMessage("GPS is not enabled.Do you want to setting menu?");
+        alertDialog.setMessage("GPS is not enabled.Do you want to go to setting menu?");
         alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                mContext.startActivity(intent);
+            }
+        });
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        alertDialog.show();
+        return true;
+    }
+    public static boolean showSettingNetworkAlert(final Context mContext) {
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+        alertDialog.setTitle("Internet settings");
+        alertDialog.setMessage("Internet is not enabled. Do you want to go to setting menu?");
+        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Settings.ACTION_SETTINGS);
                 mContext.startActivity(intent);
             }
         });

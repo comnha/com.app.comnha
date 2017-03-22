@@ -10,22 +10,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -49,10 +45,10 @@ import com.app.ptt.comnha.Fragment.ChangeLocationBottomSheetDialogFragment;
 import com.app.ptt.comnha.Fragment.FilterFragment;
 import com.app.ptt.comnha.Fragment.ReviewFragment;
 import com.app.ptt.comnha.Fragment.StoreFragment;
+import com.app.ptt.comnha.Modules.MyTool;
 import com.app.ptt.comnha.Modules.Storage;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
-import com.app.ptt.comnha.Modules.MyTool;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.firebase.client.Firebase;
 import com.github.clans.fab.FloatingActionButton;
@@ -74,7 +70,6 @@ import com.roughike.bottombar.OnTabSelectListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Scanner;
 
 
@@ -103,7 +98,7 @@ public class MainActivity extends AppCompatActivity
     int a = 0;
     boolean role;
     FirebaseUser user;
-    MenuItem menuItem,menuItem1,menuItem2,menuItem3, menuItem4;
+    MenuItem menuItem, menuItem1, menuItem2, menuItem3, menuItem4;
     private FloatingActionButton fab_review, fab_addloca, fab_changloca;
     public static final String mBroadcastSendAddress = "mBroadcastSendAddress";
     public static final String mBroadcastSendAddress1 = "mBroadcastSendAddress1";
@@ -112,19 +107,17 @@ public class MainActivity extends AppCompatActivity
     private BottomBar bottomBar;
     private PopupMenu popupMenu;
     private MyTool myTool;
+
+    private Dialog dialogLocationSetting;
+
     private ChangeLocationBottomSheetDialogFragment changeLccaBtmSheet;
     NetworkChangeReceiver mBroadcastReceiver;
-    private Dialog dialogLocationSetting;
+
     private boolean binded = false;
     private MyService myService;
     //public static boolean temp = false;
-    public static final int MULTIPLE_PERMISSIONS = 10; // code you want.
-    String[] permissions= new String[]{
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.INTERNET,
-            Manifest.permission.ACCESS_FINE_LOCATION};
+
+
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -139,7 +132,8 @@ public class MainActivity extends AppCompatActivity
             binded = false;
         }
     };
-    public MyLocation returnLocationByLatLng(Double latitude, Double longitude,Geocoder geocoder) {
+
+    public MyLocation returnLocationByLatLng(Double latitude, Double longitude, Geocoder geocoder) {
         MyLocation myLocation = new MyLocation();
         List<Address> addresses;
         Double lat = latitude;
@@ -147,7 +141,7 @@ public class MainActivity extends AppCompatActivity
         try {
             if (lat != null && lon != null) {
                 addresses = geocoder.getFromLocation(lat, lon, 1);
-                if (addresses!=null && !addresses.isEmpty()) {
+                if (addresses != null && !addresses.isEmpty()) {
                     Address address = addresses.get(0);
                     String a = address.getAddressLine(0);
                     String b = address.getSubLocality();
@@ -203,6 +197,7 @@ public class MainActivity extends AppCompatActivity
         }
         return null;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -211,21 +206,18 @@ public class MainActivity extends AppCompatActivity
         MyService.setUserAccount(null);
         Log.i(LOG, "onCreate");
         myTool = new MyTool(MainActivity.this, MainActivity.class.getSimpleName());
-        checkPermissions();
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle(getString(R.string.txt_plzwait));
         progressDialog.setCancelable(false);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Loading");
+        showDialogOpenLocationService();
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(mBroadcastSendAddress);
         mIntentFilter.addAction(mBroadcastSendAddress1);
         mBroadcastReceiver = new NetworkChangeReceiver();
         setContentView(R.layout.activity_main2);
         Intent intent = new Intent(this, MyService.class);
-        //Intent myIntent = getIntent();
-        //temp = myIntent.getBooleanExtra("isConnected", false);
-        //Log.i(LOG + ".onCreate", "temp=" + temp);
         this.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         Firebase.setAndroidContext(this);
         ref = new Firebase(getResources().getString(R.string.firebase_path));
@@ -248,8 +240,8 @@ public class MainActivity extends AppCompatActivity
         menuItem = menu.findItem(R.id.nav_profile);
         menuItem1 = menu.findItem(R.id.nav_signin);
         menuItem2 = menu.findItem(R.id.nav_signout);
-        menuItem3=menu.findItem(R.id.nav_admin);
-        menuItem4=menu.findItem(R.id.nav_notification);
+        menuItem3 = menu.findItem(R.id.nav_admin);
+        menuItem4 = menu.findItem(R.id.nav_notification);
         menuItem4.setVisible(false);
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -305,22 +297,23 @@ public class MainActivity extends AppCompatActivity
             }
         };
     }
-    public void getRole(){
-        role=false;
+
+    public void getRole() {
+        role = false;
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
         profileValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Account account = dataSnapshot.getValue(Account.class);
-                role=account.getRole();
+                role = account.getRole();
                 account.setId(dataSnapshot.getKey());
                 account.setUsername(user.getDisplayName());
                 LoginSession.getInstance().setRole(role);
                 MyService.setUserAccount(account);
-                if(role){
+                if (role) {
                     menuItem3.setVisible(true);
-                }else menuItem3.setVisible(false);
-                Log.i("Role",""+role);
+                } else menuItem3.setVisible(false);
+                Log.i("Role", "" + role);
             }
 
             @Override
@@ -331,10 +324,8 @@ public class MainActivity extends AppCompatActivity
         dbRef.child(getResources().getString(R.string.users_CODE) +//liệt kê tất cả
                 LoginSession.getInstance().getUserID()).addListenerForSingleValueEvent(profileValueEventListener);
         dbRef.removeEventListener(profileValueEventListener);
-        Log.i("Role1",""+role);
+        Log.i("Role1", "" + role);
     }
-
-
 
 
     void anhXa() {
@@ -651,7 +642,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case R.id.nav_notification:
-                Intent intent_notification= new Intent(MainActivity.this, Adapter2Activity.class);
+                Intent intent_notification = new Intent(MainActivity.this, Adapter2Activity.class);
                 intent_notification.putExtra(getString(R.string.fragment_CODE),
                         getString(R.string.frg_notification_CODE));
                 startActivity(intent_notification);
@@ -696,7 +687,6 @@ public class MainActivity extends AppCompatActivity
                             // signed in user can be handled in the listener.
                             if (!task.isSuccessful()) {
                                 Log.w("signInAnonymouslyError", "signInAnonymously", task.getException());
-                                Log.i("CUONGDOLLA","fail");
                             } else {
                                 MyService.setUserAccount(null);
                                 LoginSession.getInstance().setTen(null);
@@ -849,37 +839,39 @@ public class MainActivity extends AppCompatActivity
     class NetworkChangeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(final Context context, final Intent intent) {
-           // Log.i(LOG + ".NetworkChangeReceiver", "isConnected splash " + temp);
+            // Log.i(LOG + ".NetworkChangeReceiver", "isConnected splash " + temp);
             if (intent.getAction().equals(mBroadcastSendAddress)) {
                 if (intent.getBooleanExtra("isConnected", false)) {
                     isConnected = true;
                 } else {
                     isConnected = false;
-                    showDialogOpenLocationService();
+                    //showDialogOpenLocationService();
                 }
-                ArrayList<MyLocation> locations;
-                String a = Storage.readFile(getApplicationContext(), "myLocation");
-                if (a != null) {
-                    locations = Storage.readJSONMyLocation(a);
-                    if (locations.size() > 0)
-                        myLocation = locations.get(0);
-                    else {
-                        myLocation = null;
+                if(myLocation==null) {
+                    ArrayList<MyLocation> locations;
+                    String a = Storage.readFile(getApplicationContext(), "myLocation");
+                    if (a != null) {
+                        locations = Storage.readJSONMyLocation(a);
+                        if (locations.size() > 0)
+                            myLocation = locations.get(0);
+                        else {
+                            myLocation = null;
+                        }
+                        if (LoginSession.getInstance().getHuyen() == "" && LoginSession.getInstance().getTinh() == "") {
+                            tinh = myLocation.getTinhtp();
+                            huyen = myLocation.getQuanhuyen();
+                            LoginSession.getInstance().setTinh(myLocation.getTinhtp());
+                            LoginSession.getInstance().setHuyen(myLocation.getQuanhuyen());
+                            fab_changloca.setLabelText(
+                                    LoginSession.getInstance().getHuyen() + ", "
+                                            + LoginSession.getInstance().getTinh()
+                            );
+                            Log.i(LOG + ".NetworkChangeReceiver", "myLocation != null");
+                        }
+                        bottomBarEvent();
+                    } else {
+                        //myTool.startGoogleApi();
                     }
-                    if (LoginSession.getInstance().getHuyen() == "" && LoginSession.getInstance().getTinh() == "") {
-                        tinh = myLocation.getTinhtp();
-                        huyen = myLocation.getQuanhuyen();
-                        LoginSession.getInstance().setTinh(myLocation.getTinhtp());
-                        LoginSession.getInstance().setHuyen(myLocation.getQuanhuyen());
-                        fab_changloca.setLabelText(
-                                LoginSession.getInstance().getHuyen() + ", "
-                                + LoginSession.getInstance().getTinh()
-                        );
-                        Log.i(LOG + ".NetworkChangeReceiver", "myLocation != null");
-                    }
-                    bottomBarEvent();
-                }else{
-                    //myTool.startGoogleApi();
                 }
                 if (intent.getIntExtra("STT", 0) == 2) {
                     Log.i(LOG + ".NetworkChangeReceiver", "Nhan vi tri cua ban:");
@@ -896,7 +888,7 @@ public class MainActivity extends AppCompatActivity
                         }
                         if (myTool.isGoogleApiConnected())
                             myTool.stopLocationUpdate();
-                    }else{
+                    } else {
                         Toast.makeText(context, "Không lấy được vị trí của bạn. Vui lòng kiểm tra lại mạng, gps và khởi đô", Toast.LENGTH_SHORT).show();
                     }
 
@@ -919,47 +911,9 @@ public class MainActivity extends AppCompatActivity
 
         }
     }
-    private boolean canGetLocation(Context mContext) {
-        int a = 0;
-        try {
-            a = Settings.Secure.getInt(mContext.getContentResolver(), Settings.Secure.LOCATION_MODE);
-            //Log.i(LOG_TAG + ".canGetLocation", a + "");
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (a >= 2) return true;
-        return false;
-    }
 
-    private boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivity = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivity != null) {
-
-            NetworkInfo[] info = connectivity.getAllNetworkInfo();
-
-            if (info != null) {
-                for (int i = 0; i < info.length; i++) {
-                    Log.i(LOG+".isNetworkAvailable",info[i].getState().toString());
-                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
-                        if (!isConnected) {
-                            Log.v(LOG, "Now you are connected to Internet!");
-                            isConnected = true;
-                        }
-                        return true;
-                    }
-                }
-            }
-        }
-        Log.v(LOG, "You are not connected to Internet!");
-
-        ;
-        //networkStatus.setText("You are not connected to Internet!");
-        isConnected = false;
-        return false;
-    }
     public void showDialogOpenLocationService() {
-        if(dialogLocationSetting != null && dialogLocationSetting.isShowing()) {
+        if (dialogLocationSetting != null && dialogLocationSetting.isShowing()) {
             return;
         }
 
@@ -970,54 +924,44 @@ public class MainActivity extends AppCompatActivity
             gpsEnabled = lm.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER);
             networkEnabled =
                     lm.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER);
+            if (gpsEnabled==false) {
+                // notify user
+                android.app.AlertDialog.Builder alertBuilder = new android.app.AlertDialog.Builder(this);
+                alertBuilder.setCancelable(false);
+                alertBuilder.setTitle("GPS");
+                alertBuilder.setMessage("Bật GPS để sử dụng ứng dụng");
+                alertBuilder.setPositiveButton("Đến GPS Setting", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(myIntent);
+                    }
+                });
+
+                dialogLocationSetting = alertBuilder.create();
+                dialogLocationSetting.show();
+            }
+            if (networkEnabled==false) {
+                // notify user
+                android.app.AlertDialog.Builder alertBuilder = new android.app.AlertDialog.Builder(this);
+                alertBuilder.setCancelable(false);
+                alertBuilder.setTitle("Internet");
+                alertBuilder.setMessage("Bật Internet để sử dụng ứng dụng");
+                alertBuilder.setPositiveButton("Đến Internet Setting", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        Intent myIntent = new Intent(Settings.ACTION_SETTINGS);
+                        startActivity(myIntent);
+                    }
+                });
+
+                dialogLocationSetting = alertBuilder.create();
+                dialogLocationSetting.show();
+            }
         } catch (Exception ex) {
         }
 
-        if (!gpsEnabled && !networkEnabled) {
-            // notify user
-            android.app.AlertDialog.Builder alertBuilder = new android.app.AlertDialog.Builder(this);
-            alertBuilder.setCancelable(false);
-            alertBuilder.setTitle("GPS");
-            alertBuilder.setMessage("Bật GPS để sử dụng ứng dụng");
-            alertBuilder.setPositiveButton("Đến GPS Setting", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(myIntent);
-                }
-            });
 
-            dialogLocationSetting = alertBuilder.create();
-            dialogLocationSetting.show();
-        }
-    }
-    private boolean checkPermissions(){
-        int result;
-        List<String> listPermission=new ArrayList<>();
-        for (String p: permissions){
-            result= ContextCompat.checkSelfPermission(getApplicationContext(),p);
-            if(result!= PackageManager.PERMISSION_GRANTED){
-                listPermission.add(p);
-            }
-        }
-        if(!listPermission.isEmpty()){
-            ActivityCompat.requestPermissions(this,listPermission.toArray(new String[listPermission.size()]),MULTIPLE_PERMISSIONS);
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
-            case MULTIPLE_PERMISSIONS:{
-                if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                } else{
-
-                }
-                return;
-            }
-        }
     }
 
 }
