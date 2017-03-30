@@ -32,6 +32,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import static android.content.ContentValues.TAG;
+import static com.app.ptt.comnha.R.id.btn_siFrg_signin;
 
 
 /**
@@ -96,7 +97,7 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
         edt_email = (EditText) view.findViewById(R.id.edt_siFrg_username);
         edt_pass = (EditText) view.findViewById(R.id.edt_siFrg_password);
         txtV_signup = (TextView) view.findViewById(R.id.txtV_signup);
-//        btn_signin = (Button) view.findViewById(btn_siFrg_signin);
+        btn_signin = (Button) view.findViewById(btn_siFrg_signin);
 //        btn_exit = (Button) view.findViewById(R.id.btn_siFrg_exit);
 //        butt_loginFB = (Button) view.findViewById(R.id.butt_siFrg_loginFB);
 //        butt_loginGmail = (Button) view.findViewById(R.id.butt_siFrg_loginGmail);
@@ -155,7 +156,7 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
                     Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.id.btn_siFrg_signin:
+            case btn_siFrg_signin:
                 if (isConnected) {
                     doSignin(view);
                 } else
