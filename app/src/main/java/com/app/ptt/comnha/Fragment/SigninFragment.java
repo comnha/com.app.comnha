@@ -32,30 +32,29 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import static android.content.ContentValues.TAG;
-import static com.app.ptt.comnha.R.id.btn_siFrg_signin;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SigninFragment extends Fragment implements View.OnClickListener {
-    private static final String LOG=SigninFragment.class.getSimpleName();
+    private static final String LOG = SigninFragment.class.getSimpleName();
     private EditText edt_email, edt_pass;
     private Button butt_loginFB, butt_loginGmail, btn_signin, btn_exit;
-    private TextView txt_forgotPass;
+    private TextView txt_forgotPass, txtV_signup;
     private FirebaseAuth mAuth;
     private FloatingActionButton fab_signup;
     FirebaseAuth.AuthStateListener mAuthStateListener;
     android.support.design.widget.Snackbar snackbar;
     ProgressDialog mprogressDialog;
-    boolean isConnected=true;
+    boolean isConnected = true;
     IntentFilter mIntentFilter;
     public static final String mBroadcastSendAddress = "mBroadcastSendAddress";
-    BroadcastReceiver broadcastReceiver=new BroadcastReceiver() {
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(mBroadcastSendAddress)) {
-                Log.i(LOG+".onReceive form Service","isConnected= "+ intent.getBooleanExtra("isConnected", false));
+            if (intent.getAction().equals(mBroadcastSendAddress)) {
+                Log.i(LOG + ".onReceive form Service", "isConnected= " + intent.getBooleanExtra("isConnected", false));
                 if (intent.getBooleanExtra("isConnected", false)) {
                     isConnected = true;
                 } else
@@ -67,6 +66,7 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
     public SigninFragment() {
         // Required empty public constructor
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -95,18 +95,20 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
         mAuth = FirebaseAuth.getInstance();
         edt_email = (EditText) view.findViewById(R.id.edt_siFrg_username);
         edt_pass = (EditText) view.findViewById(R.id.edt_siFrg_password);
-        btn_signin = (Button) view.findViewById(btn_siFrg_signin);
-        btn_exit = (Button) view.findViewById(R.id.btn_siFrg_exit);
-        butt_loginFB = (Button) view.findViewById(R.id.butt_siFrg_loginFB);
-        butt_loginGmail = (Button) view.findViewById(R.id.butt_siFrg_loginGmail);
-        txt_forgotPass = (TextView) view.findViewById(R.id.txt_siFrg_forgotPass);
-        fab_signup = (FloatingActionButton) view.findViewById(R.id.fab_signup);
-        fab_signup.setOnClickListener(this);
+        txtV_signup = (TextView) view.findViewById(R.id.txtV_signup);
+//        btn_signin = (Button) view.findViewById(btn_siFrg_signin);
+//        btn_exit = (Button) view.findViewById(R.id.btn_siFrg_exit);
+//        butt_loginFB = (Button) view.findViewById(R.id.butt_siFrg_loginFB);
+//        butt_loginGmail = (Button) view.findViewById(R.id.butt_siFrg_loginGmail);
+//        txt_forgotPass = (TextView) view.findViewById(R.id.txt_siFrg_forgotPass);
+//        fab_signup = (FloatingActionButton) view.findViewById(R.id.fab_signup);
+//        fab_signup.setOnClickListener(this);
+        txtV_signup.setOnClickListener(this);
         btn_signin.setOnClickListener(this);
-        btn_exit.setOnClickListener(this);
-        butt_loginGmail.setOnClickListener(this);
-        butt_loginFB.setOnClickListener(this);
-        txt_forgotPass.setOnClickListener(this);
+//        btn_exit.setOnClickListener(this);
+//        butt_loginGmail.setOnClickListener(this);
+//        butt_loginFB.setOnClickListener(this);
+//        txt_forgotPass.setOnClickListener(this);
     }
 
     private boolean isValidEmailAddress(String email) {
@@ -119,14 +121,14 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
-        isConnected= MyService.returnIsConnected();
-        if(!isConnected){
-            Toast.makeText(getContext(),"Offline mode",Toast.LENGTH_SHORT).show();
+        isConnected = MyService.returnIsConnected();
+        if (!isConnected) {
+            Toast.makeText(getContext(), "Offline mode", Toast.LENGTH_SHORT).show();
         }
         mAuth.addAuthStateListener(mAuthStateListener);
-        mIntentFilter=new IntentFilter();
+        mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(mBroadcastSendAddress);
-        getContext().registerReceiver(broadcastReceiver,mIntentFilter);
+        getContext().registerReceiver(broadcastReceiver, mIntentFilter);
     }
 
     @Override
@@ -141,15 +143,15 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.fab_signup:
-                if(isConnected) {
+            case R.id.txtV_signup:
+                if (isConnected) {
                     Intent intent = new Intent(getActivity().getApplicationContext(), Adapter2Activity.class);
                     intent.putExtra(getActivity().getResources().getString(R.string.fragment_CODE),
                             getActivity().getResources().getString(R.string.frg_signup_CODE));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra("isConnected",isConnected);
+                    intent.putExtra("isConnected", isConnected);
                     startActivity(intent);
-                } else{
+                } else {
                     Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -160,26 +162,27 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
                     Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
 
                 break;
-            case R.id.btn_siFrg_exit:
-                getActivity().finish();
-                break;
-            case R.id.butt_siFrg_loginFB:
-                if (isConnected) {
-                } else
-                    Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.butt_siFrg_loginGmail:
-                if (isConnected) {
-                } else
-                    Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.txt_siFrg_forgotPass:
-                if (isConnected) {
-                } else
-                    Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
-                break;
+//            case R.id.btn_siFrg_exit:
+//                getActivity().finish();
+//                break;
+//            case R.id.butt_siFrg_loginFB:
+//                if (isConnected) {
+//                } else
+//                    Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
+//                break;
+//            case R.id.butt_siFrg_loginGmail:
+//                if (isConnected) {
+//                } else
+//                    Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
+//                break;
+//            case R.id.txt_siFrg_forgotPass:
+//                if (isConnected) {
+//                } else
+//                    Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
+//                break;
         }
     }
+
     void doSignin(View view) {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
