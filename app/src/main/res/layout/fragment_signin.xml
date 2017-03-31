@@ -4,98 +4,109 @@
     android:id="@+id/frg_signin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
     android:background="@drawable/bg"
     tools:context="com.app.ptt.comnha.Fragment.SigninFragment">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="2">
 
         <ImageView
             android:id="@+id/logo_login"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
+            android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="56dp"
+            android:layout_weight="1"
             android:src="@drawable/logo_login" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="vertical"
             android:paddingEnd="57dp"
-            android:paddingStart="57dp">
-
+            android:paddingStart="57dp"
+            android:weightSum="8">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="đăng nhập"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:gravity="center_horizontal|top"
+                android:text="@string/text_signin"
                 android:textAllCaps="true"
                 android:textColor="@android:color/white"
-                android:textSize="34sp"
                 android:textStyle="bold" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp">
+                android:layout_height="0dp"
+                android:layout_weight="1.5"
+                android:gravity="center_vertical">
 
                 <EditText
+                    android:inputType="textEmailAddress"
                     android:id="@+id/edt_siFrg_username"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:backgroundTint="@android:color/white"
-                    android:gravity="start"
-                    android:hint="Username:"
+                    android:gravity="start|center_vertical"
+                    android:hint="@string/text_email"
+                    android:textColor="@android:color/white"
                     android:textColorHint="@android:color/white" />
             </android.support.design.widget.TextInputLayout>
 
+
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="0dp"
+                android:layout_weight="1.5">
 
                 <EditText
                     android:id="@+id/edt_siFrg_password"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:backgroundTint="@android:color/white"
-                    android:gravity="start"
-                    android:hint="Password:"
-                    android:inputType="textPassword" />
+                    android:gravity="start|center_vertical"
+                    android:hint="@string/text_password"
+                    android:inputType="textPassword"
+                    android:textColor="@android:color/white" />
 
 
             </android.support.design.widget.TextInputLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5" />
             <Button
                 android:id="@+id/btn_siFrg_signin"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_gravity="end"
-                android:layout_marginTop="24dp"
+                android:layout_weight="1"
                 android:background="#0c9482"
-                android:text="đăng nhập"
+                android:text="@string/text_signin"
                 android:textAllCaps="true"
                 android:textColor="@android:color/white" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5" />
 
             <TextView
                 android:id="@+id/txtV_signup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="24dp"
-                android:layout_marginTop="68dp"
-                android:text="Bạn chưa có tài khoản?"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/text_havenoacc"
                 android:textColor="@android:color/white" />
         </LinearLayout>
-    </RelativeLayout>
+    </LinearLayout>
 
     <!--<android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"-->
     <!--android:layout_width="@dimen/cardv_sign_width"-->

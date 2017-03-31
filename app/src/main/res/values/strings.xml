@@ -26,7 +26,7 @@
     <string name="text_cancel">Hủy</string>
     <string name="text_address">Địa chỉ</string>
     <string name="text_email">Email</string>
-    <string name="text_username">Username</string>
+    <string name="text_username">Tên tài khoản</string>
     <string name="text_password">Mật khẩu</string>
     <string name="text_confirmPass">Xác nhận mật khẩu</string>
     <string name="text_hoten">Họ Tên</string>
@@ -35,6 +35,7 @@
     <string name="text_ten">Tên</string>
     <string name="text_birth">Ngày sinh</string>
     <string name="text_signup">Đăng kí</string>
+    <string name="text_havenoacc"><u>Bạn chưa có tài khoản?</u></string>
     <string name="text_signin">Đăng nhập</string>
     <string name="text_exit">Thoát</string>
     <string name="text_forgotPass"><u>Quên mật khẩu?</u></string>

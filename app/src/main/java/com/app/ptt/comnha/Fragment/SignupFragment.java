@@ -101,11 +101,11 @@ public class SignupFragment extends Fragment implements DialogInterface.OnCancel
         editText_confirmPass = (EditText) view.findViewById(R.id.editText_confirmPass);
         editText_birth = (EditText) view.findViewById(R.id.editText_birth);
         butt_signup = (Button) view.findViewById(R.id.butt_signup);
-        butt_exit = (Button) view.findViewById(R.id.butt_signup_exit);
+//        butt_exit = (Button) view.findViewById(R.id.butt_signup_exit);
         dpd = DatePickerDialog.newInstance(this, now.get(Calendar.YEAR),
                 now.get(Calendar.MONTH), now.get(Calendar.DATE));
         butt_signup.setOnClickListener(this);
-        butt_exit.setOnClickListener(this);
+//        butt_exit.setOnClickListener(this);
         editText_birth.setOnClickListener(this);
         dpd.setOnDismissListener(this);
         dpd.setOnCancelListener(this);
@@ -203,9 +203,9 @@ public class SignupFragment extends Fragment implements DialogInterface.OnCancel
                     }
                 }
                 break;
-            case R.id.butt_signup_exit:
-                getActivity().onBackPressed();
-                break;
+//            case R.id.butt_signup_exit:
+//                getActivity().onBackPressed();
+//                break;
             case R.id.editText_birth:
                 dpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
                 break;
