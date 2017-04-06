@@ -90,7 +90,7 @@ public class Users implements Transactions {
     @Override
     public void setupFirebase() {
         Firebase.setAndroidContext(suContext);
-        suRef = new Firebase("https://comnha-c03b5.firebaseio.com/");
+        suRef = new Firebase(suContext.getString(R.string.firebase_path));
     }
 
     @Override

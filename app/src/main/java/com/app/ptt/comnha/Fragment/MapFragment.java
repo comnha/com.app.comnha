@@ -124,7 +124,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
         Log.i(LOG, "onCreate");
         list = new ArrayList<>();
 
-        myTool = new MyTool(getContext(), MapFragment.class.getSimpleName());
+        myTool = new MyTool(getContext());
         // myTool.startGoogleApi();
     }
 

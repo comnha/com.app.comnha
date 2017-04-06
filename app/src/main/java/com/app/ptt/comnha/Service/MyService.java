@@ -14,6 +14,7 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.FireBase.Account;
 import com.app.ptt.comnha.FireBase.MyLocation;
 import com.app.ptt.comnha.FireBase.Notification;
@@ -204,8 +205,9 @@ public class MyService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         mIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        mIntentFilter.addAction("android.location.PROVIDERS_CHANGED");
-        mIntentFilter.addAction(mBroadcastSendAddress1);
+        mIntentFilter.addAction(Const.BROADCAST_PROVIDER_CHANGED);
+        mIntentFilter.addAction(Const.BROADCAST_CONNECTIVITY_CHANGE);
+        mIntentFilter.addAction(Const.BROADCAST_SEND_INFO);
         mBroadcastReceiver = new NetworkChangeReceiver();
         broadcastIntent = new Intent();
         registerReceiver(mBroadcastReceiver, mIntentFilter);
@@ -240,45 +242,47 @@ public class MyService extends Service {
     class NetworkChangeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(mBroadcastSendAddress1) && intent.getIntExtra("STT", 0) == 2) {
-                Log.i(LOG_TAG + ".onReceive form MyTool", "Save location");
-                Log.i(LOG_TAG, "save location=" + isSaved + "-" + a);
+            if (intent.getAction().equals(Const.BROADCAST_SEND_INFO) && intent.getIntExtra("STT", 0) == 2) {
                 if (myTool.getYourLocation() != null) {
-                    Storage.deleteFile(getApplicationContext(), "myLocation");
-                    ArrayList<MyLocation> list = new ArrayList<>();
-                    list.add(myTool.getYourLocation());
-                    Storage.writeFile(getApplicationContext(), Storage.parseMyLocationToJson(list).toString(), "myLocation");
-                    isSaved = true;
-                    myTool.stopLocationUpdate();
-                    broadcastIntent.setAction(mBroadcastSendAddress);
+                    try {
+                        Storage.deleteFile(getApplicationContext(), "myLocation");
+                        ArrayList<MyLocation> list = new ArrayList<>();
+                        list.add(myTool.getYourLocation());
+                        Storage.writeFile(getApplicationContext(), Storage.parseMyLocationToJson(list).toString(), "myLocation");
+                        myTool.stopLocationUpdate();
+                    } catch (Exception e) {
+
+                    }
+                    broadcastIntent.setAction(Const.BROADCAST_SEND_STATUS_GET_LOCATION);
                     broadcastIntent.putExtra("isConnected", true);
+                    broadcastIntent.putExtra("myLocation", myTool.getYourLocation());
                     context.sendBroadcast(broadcastIntent);
                 }
             }
-
-            Log.i(LOG_TAG, "isSaved=" + isSaved + "-" + a);
-            if (isNetworkAvailable(context) && canGetLocation(context)) {
-                if (!isSaved && a == 0) {
-                    myTool = new MyTool(context, MyService.class.getSimpleName());
+            if(intent.getAction().equals(Const.BROADCAST_CONNECTIVITY_CHANGE)){
+                if (isNetworkAvailable(context) && canGetLocation(context)) {
+                    myTool = new MyTool(context);
                     myTool.startGoogleApi();
-                    a++;
+                    isConnected = true;
+                    isConnected1 = true;
                 } else {
-                    broadcastIntent.setAction(mBroadcastSendAddress);
-                    broadcastIntent.putExtra("isConnected", true);
+                    broadcastIntent.setAction(Const.BROADCAST_SEND_INFO);
+                    broadcastIntent.putExtra("isConnected", false);
+                    if (!isNetworkAvailable(context)&&canGetLocation(context)) {
+                        broadcastIntent.putExtra("checkCodition", 1);
+                    } else if (!canGetLocation(context)&&isNetworkAvailable(context)) {
+                        broadcastIntent.putExtra("checkCodition", 2);
+                    }else{
+                        broadcastIntent.putExtra("checkCodition", 3);
+                    }
                     context.sendBroadcast(broadcastIntent);
-                }
-                isConnected = true;
-                isConnected1 = true;
-                Log.i(LOG_TAG + ".sendStatus", "isConnected=" + isConnected);
+                    isConnected = false;
+                    isConnected1 = false;
 
-            } else {
-                broadcastIntent.setAction(mBroadcastSendAddress);
-                broadcastIntent.putExtra("isConnected", false);
-                context.sendBroadcast(broadcastIntent);
-                isConnected = false;
-                isConnected1 = false;
-                Log.i(LOG_TAG + ".sendStatus", "isConnected=" + isConnected);
+
+                }
             }
+
         }
 
         private boolean canGetLocation(Context mContext) {
@@ -286,7 +290,6 @@ public class MyService extends Service {
             int a = 0;
             try {
                 a = Settings.Secure.getInt(mContext.getContentResolver(), Settings.Secure.LOCATION_MODE);
-                //Log.i(LOG_TAG + ".canGetLocation", a + "");
             } catch (Settings.SettingNotFoundException e) {
                 e.printStackTrace();
             }
@@ -295,6 +298,7 @@ public class MyService extends Service {
         }
 
         private boolean isNetworkAvailable(Context context) {
+            boolean flag=false;
             ConnectivityManager connectivity = (ConnectivityManager)
                     context.getSystemService(Context.CONNECTIVITY_SERVICE);
             if (connectivity != null) {
@@ -302,16 +306,15 @@ public class MyService extends Service {
 
                 if (info != null) {
                     for (int i = 0; i < info.length; i++) {
-                        //Toast.makeText(getApplicationContext(),"Ten:"+info[i].getTypeName()+"--TrangThai:"+info[i].getState().toString(),Toast.LENGTH_LONG).show();
                         if (info[i].getState() == NetworkInfo.State.CONNECTED) {
-                            Log.v(LOG_TAG, "Now you are connected to Internet!");
-                            return true;
+                            flag=true;
+                            break;
                         }
                     }
                 }
             }
-            Log.v(LOG_TAG, "You are not connected to Internet!");
-            return false;
+
+            return flag;
         }
     }
 

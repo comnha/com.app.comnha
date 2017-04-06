@@ -373,7 +373,7 @@ public class EditStoreDialogFragment extends DialogFragment implements View.OnCl
 
         public PlaceAutoCompleteAdapter(Context context, int resource) {
             super(context, resource);
-            myTool = new MyTool(getContext(), EditStoreDialogFragment.class.getSimpleName());
+            myTool = new MyTool(getContext());
         }
 
         @Override

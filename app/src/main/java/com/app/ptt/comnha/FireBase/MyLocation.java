@@ -2,6 +2,7 @@ package com.app.ptt.comnha.FireBase;
 
 import org.json.simple.JSONAware;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +10,7 @@ import java.util.Map;
  * Created by PTT on 9/26/2016.
  */
 
-public class MyLocation implements JSONAware {
+public class MyLocation implements JSONAware,Serializable {
     String name, diachi, sdt, timestart, timeend, tinhtp, quanhuyen;
     String khoangcach;
 

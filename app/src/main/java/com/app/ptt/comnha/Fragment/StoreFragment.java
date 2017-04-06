@@ -117,7 +117,7 @@ public class StoreFragment extends Fragment implements View.OnClickListener {
         if(!isConnected){
             Toast.makeText(getContext(),"Offline mode",Toast.LENGTH_SHORT).show();
         }
-        myTool = new MyTool(getActivity(),StoreFragment.class.getSimpleName());
+        myTool = new MyTool(getActivity());
         mIntentFilter=new IntentFilter();
         mIntentFilter.addAction(mBroadcastSendAddress);
         getContext().registerReceiver(broadcastReceiver,mIntentFilter);
