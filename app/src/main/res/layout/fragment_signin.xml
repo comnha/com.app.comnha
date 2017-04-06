@@ -48,13 +48,13 @@
                 android:gravity="center_vertical">
 
                 <EditText
-                    android:inputType="textEmailAddress"
                     android:id="@+id/edt_siFrg_username"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@android:color/white"
                     android:gravity="start|center_vertical"
                     android:hint="@string/text_email"
+                    android:inputType="textEmailAddress"
                     android:textColor="@android:color/white"
                     android:textColorHint="@android:color/white" />
             </android.support.design.widget.TextInputLayout>
@@ -82,16 +82,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="0.5" />
-            <Button
-                android:id="@+id/btn_siFrg_signin"
-                android:layout_width="wrap_content"
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_gravity="end"
                 android:layout_weight="1"
-                android:background="#0c9482"
-                android:text="@string/text_signin"
-                android:textAllCaps="true"
-                android:textColor="@android:color/white" />
+                android:orientation="horizontal"
+                android:weightSum="3">
+                <View
+                    android:layout_weight="2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+                <Button
+                    android:id="@+id/btn_siFrg_signin"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_weight="1"
+                    android:background="#0c9482"
+                    android:text="@string/text_signin"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
+
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

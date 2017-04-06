@@ -184,15 +184,28 @@
                 android:layout_height="0dp"
                 android:layout_weight="0.5" />
 
-            <Button
-                android:id="@+id/butt_signup"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_gravity="end"
                 android:layout_weight="1"
-                android:background="@color/colorPrimary"
-                android:text="@string/text_signup"
-                android:textColor="@android:color/white" />
+                android:weightSum="3">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2" />
+
+                <Button
+                    android:id="@+id/butt_signup"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:text="@string/text_signup"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
+
 
             <View
                 android:layout_width="match_parent"
