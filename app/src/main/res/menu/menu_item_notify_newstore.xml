@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_del_notify_newpost"
+        android:title="@string/text_del" />
+    <item
+        android:id="@+id/action_block_addstore_notify_newstore"
+        android:title="@string/text_admin_block_addstore_notify_newstore" />
+</menu>

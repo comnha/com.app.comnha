@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#0c9482</color>
-    <color name="colorPrimaryDark">#087466</color>
+    <color name="colorPrimary">#549281</color>
+    <color name="colorPrimaryDark">#427366</color>
     <color name="colorAccent">#40c4b2</color>
     <color name="colorFloat1">#BA5A31</color>
     <color name="colorFloat2">#19b8a3</color>
@@ -14,4 +14,8 @@
     <color name="colorFabRipple">#99FFFFFF</color>
     <color name="colorGrayText">#808080</color>
     <color name="color1">#15ca2d</color>
+    <color name="admin_color_selection_news">#edbb4c</color>
+    <color name="admin_color_selection_reports">#da414a</color>
+    <color name="admin_color_notify_newstore">#edbb4c</color>
+    <color name="admin_color_notify_newpost">#90b03d</color>
 </resources>

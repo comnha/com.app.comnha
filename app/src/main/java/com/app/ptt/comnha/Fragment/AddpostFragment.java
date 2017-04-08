@@ -174,8 +174,6 @@ public class AddpostFragment extends Fragment
         anhXa(view);
         Firebase.setAndroidContext(getActivity());
 
-
-
         return view;
     }
 

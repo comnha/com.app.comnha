@@ -1,15 +1,11 @@
 package com.app.ptt.comnha.Activity;
 
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -58,10 +54,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabReselectListener;
 import com.roughike.bottombar.OnTabSelectListener;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Scanner;
 
 
 public class MainActivity extends BaseActivity
@@ -138,7 +130,7 @@ public class MainActivity extends BaseActivity
 
     }
 
-    public void initFirebase(){
+    public void initFirebase() {
 
         mAuth.addAuthStateListener(mAuthListener);
         try {
@@ -177,7 +169,8 @@ public class MainActivity extends BaseActivity
         } catch (NullPointerException mess) {
         }
     }
-    public void initMenu(){
+
+    public void initMenu() {
         final Menu menu = mnavigationView.getMenu();
         menuItem = menu.findItem(R.id.nav_profile);
         menuItem1 = menu.findItem(R.id.nav_signin);
@@ -210,7 +203,7 @@ public class MainActivity extends BaseActivity
                             menuItem.setEnabled(false);
                             menuItem2.setEnabled(false);
                             menuItem1.setEnabled(true);
-                            menuItem3.setVisible(false);
+//                            menuItem3.setVisible(false);
                             menuItem4.setVisible(false);
                             txt_email.setText(getResources().getString(R.string.text_hello));
                             txt_un.setText(getResources().getString(R.string.text_user));
@@ -231,7 +224,7 @@ public class MainActivity extends BaseActivity
                     menuItem.setEnabled(false);
                     menuItem2.setEnabled(false);
                     menuItem1.setEnabled(true);
-                    menuItem3.setVisible(false);
+//                    menuItem3.setVisible(false);
                     menuItem4.setEnabled(false);
                     txt_email.setText(getResources().getString(R.string.text_hello));
                     txt_un.setText(getResources().getString(R.string.text_user));
@@ -243,6 +236,7 @@ public class MainActivity extends BaseActivity
             }
         };
     }
+
     public void getRole() {
         role = false;
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
@@ -256,7 +250,9 @@ public class MainActivity extends BaseActivity
                 LoginSession.getInstance().setRole(role);
                 if (role) {
                     menuItem3.setVisible(true);
-                } else menuItem3.setVisible(false);
+                } else {
+//                    menuItem3.setVisible(false);
+                }
             }
 
             @Override
@@ -509,7 +505,7 @@ public class MainActivity extends BaseActivity
         Log.i(LOG, "Pause");
     }
 
-    public  class NetworkChangeReceiver extends BroadcastReceiver {
+    public class NetworkChangeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(final Context context, final Intent intent) {
             // Log.i(LOG + ".NetworkChangeReceiver", "isConnected splash " + temp);
@@ -591,16 +587,8 @@ public class MainActivity extends BaseActivity
                         getString(R.string.frag_about_CODE));
                 break;
             case R.id.nav_admin:
-                try {
-                    if (LoginSession.getInstance().getRole()) {
-                        Intent intent3 = new Intent(this, AdminActivity.class);
-                        startActivity(intent3);
-                    } else {
-                        Toast.makeText(this, "Bạn không thể thực hiện chức năng này", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (NullPointerException mess) {
-                    Toast.makeText(this, "Bạn không thể thực hiện chức năng này", Toast.LENGTH_SHORT).show();
-                }
+                Intent intent_admin = new Intent(this, AdminActivity.class);
+                startActivity(intent_admin);
                 break;
             case R.id.nav_signin:
                 Intent intent1 = new Intent(MainActivity.this, Adapter2Activity.class);
@@ -611,7 +599,7 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.nav_signout:
                 if (isConnected) {
-                    showLoading(getString(R.string.txt_plzwait),getString(R.string.txt_logginout));
+                    showLoading(getString(R.string.txt_plzwait), getString(R.string.txt_logginout));
                     mAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {

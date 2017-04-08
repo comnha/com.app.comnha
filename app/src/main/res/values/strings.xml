@@ -2,6 +2,13 @@
     <string name="app_name">Cơm nhà</string>
     <string name="facebook_app_id">160568224411760</string>
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="text_admin_selection_news">Thông báo thêm mới: từ bài đánh giá, quán ăn</string>
+    <string name="text_admin_selection_reports">Thông báo report: từ những bài đánh giá, hình ảnh, quán ăn, món ăn</string>
+    <string name="text_del">Xóa</string>
+    <string name="text_post">Bài viết</string>
+    <string name="text_toolbar_title_writepost">Viết bài đánh giá</string>
+    <string name="text_admin_block_addstore_notify_newstore">Chặn \"Thêm quán ăn\"</string>
+    <string name="text_admin_block_post_notify_newpost">Chặn \"Đăng Review\"</string>
     <string name="text_tenquan">Tên quán</string>
     <string name="text_btnsendreport">Gửi</string>
     <string name="text_tenMon">Tên món ăn</string>
@@ -188,6 +195,8 @@
     <string name="reports_CODE">Reports/</string>
     <string name="thucdon_CODE">Food/</string>
     <string name="notification_CODE">Notification/</string>
+    <string name="notify_newstore_CODE">NotifyNewStore</string>
+    <string name="notify_newpost_CODE">NotifyNewPost</string>
     <string name="notification_CODE1">Notification</string>
     <string name="locathucdon_CODE">StoreFood/</string>
     <string name="locations_CODE">Stores/</string>

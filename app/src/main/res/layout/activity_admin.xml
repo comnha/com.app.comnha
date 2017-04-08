@@ -1,67 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_admin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:weightSum="2"
     tools:context="com.app.ptt.comnha.Activity.AdminActivity">
 
     <LinearLayout
+        android:id="@+id/linear_selection_news_adminact"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="10dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="10dp">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/admin_color_selection_news"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:orientation="vertical"
+        android:weightSum="5">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:src="@drawable/ic_admin_selection_news" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Vị trí"
-            android:textAllCaps="false"
-            android:textColor="@color/colorPrimaryDark" />
-
-        <TextView
-            android:id="@+id/act_admin_txttinh"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:background="@drawable/location_tag"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:gravity="center"
-            android:text="tỉnh/tp"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white" />
-
-        <TextView
-            android:id="@+id/act_admin_txtquan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:background="@drawable/location_tag"
-            android:gravity="center"
-            android:text="q/huyện"
-            android:textAllCaps="false"
+            android:text="@string/text_admin_selection_news"
             android:textColor="@android:color/white" />
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/linear_selection_reports_adminact"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="top">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/admin_color_selection_reports"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:orientation="vertical"
+        android:weightSum="5">
 
-        <ListView
-            android:id="@+id/act_admin_listvstore"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@null"
-            android:dividerHeight="0dp" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-        <ListView
-            android:id="@+id/act_admin_listvreports"
+        <ImageView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:translationX="400dp" />
-    </RelativeLayout>
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:src="@drawable/ic_admin_selection_reports" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/text_admin_selection_reports"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
 </LinearLayout>
