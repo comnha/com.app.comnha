@@ -29,12 +29,10 @@ import com.app.ptt.comnha.Adapters.Reviewlist_rcyler_adapter;
 import com.app.ptt.comnha.Classes.RecyclerItemClickListener1;
 import com.app.ptt.comnha.FireBase.Food;
 import com.app.ptt.comnha.FireBase.Image;
-import com.app.ptt.comnha.FireBase.MyLocation;
 import com.app.ptt.comnha.FireBase.Post;
+import com.app.ptt.comnha.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
-import com.app.ptt.comnha.SingletonClasses.ChooseFood;
-import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.SingletonClasses.EditLocal;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -66,7 +64,7 @@ public class FooddetailFragment extends Fragment {
     ActionBar actionBar;
     Toolbar toolbar;
     StorageReference storeRef;
-    MyLocation location;
+    Store location;
     ArrayList<Food> foodList;
     ArrayList<Image> files;
     TextView txtalbum;
@@ -115,27 +113,27 @@ public class FooddetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fooddetail, container, false);
         isConnected = MyService.returnIsConnected();
-        locaID = ChooseFood.getInstance().getLocation().getLocaID();
+//        locaID = ChooseFood.getInstance().getLocation().getLocaID();
         storeRef = FirebaseStorage.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebaseStorage_path));
         if (locaID != null) {
             andxa(view);
             {
                 getData();
-                txt_name.setText(ChooseFood.getInstance().getLocation().getName());
-                txt_diachi.setText(ChooseFood.getInstance().getLocation().getDiachi());
-                txt_tenmon.setText(ChooseFood.getInstance().getFood().getTenmon());
-                ratingBar.setNumStars(3);
-                ratingBar.setRating(ChooseFood.getInstance().getFood().getDanhGia());
-                float temp=ChooseFood.getInstance().getFood().getDanhGia();
-                if (temp < 1.5) {
-                    txt_ratingText.setText("Dở tệ");
-                }
-                if (temp > 1.5 &&temp < 2.5) {
-                    txt_ratingText.setText("Bình thường");
-                }
-                if (temp >= 2.5) {
-                    txt_ratingText.setText("Ngon tuyệt");
-                }
+//                txt_name.setText(ChooseFood.getInstance().getLocation().getName());
+//                txt_diachi.setText(ChooseFood.getInstance().getLocation().getDiachi());
+//                txt_tenmon.setText(ChooseFood.getInstance().getFood().getTenmon());
+//                ratingBar.setNumStars(3);
+//                ratingBar.setRating(ChooseFood.getInstance().getFood().getDanhGia());
+////                float temp=ChooseFood.getInstance().getFood().getDanhGia();
+//                if (temp < 1.5) {
+//                    txt_ratingText.setText("Dở tệ");
+//                }
+//                if (temp > 1.5 &&temp < 2.5) {
+//                    txt_ratingText.setText("Bình thường");
+//                }
+//                if (temp >= 2.5) {
+//                    txt_ratingText.setText("Ngon tuyệt");
+//                }
                 return view;
             }
         }
@@ -151,14 +149,14 @@ public class FooddetailFragment extends Fragment {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Post post = dataSnapshot.getValue(Post.class);
-                post.setPostID(dataSnapshot.getKey());
-                if(post.getVisible()) {
-                    if (post.getType() == 1 && post.getFood().getMonID().equals(ChooseFood.getInstance().getFood().getMonID())) {
-                        Log.i("Mon id:" + post.getFood().getMonID(), "Mon:" + ChooseFood.getInstance().getFood().getMonID());
-                        postlist.add(post);
-                        mAdapter.notifyDataSetChanged();
-                    }
-                }
+//                post.setPostID(dataSnapshot.getKey());
+//                if(post.getVisible()) {
+//                    if (post.getType() == 1 && post.getFood().getMonID().equals(ChooseFood.getInstance().getFood().getMonID())) {
+//                        Log.i("Mon id:" + post.getFood().getMonID(), "Mon:" + ChooseFood.getInstance().getFood().getMonID());
+//                        postlist.add(post);
+//                        mAdapter.notifyDataSetChanged();
+//                    }
+//                }
             }
 
             @Override
@@ -232,7 +230,7 @@ public class FooddetailFragment extends Fragment {
 //                    } else {
                     Intent intent = new Intent(getActivity(), Adapter2Activity.class);
                     intent.putExtra(getString(R.string.fragment_CODE), getString(R.string.frg_viewpost_CODE));
-                    ChoosePost.getInstance().setPostID(postlist.get(position).getPostID());
+//                    ChoosePost.getInstance().setPostID(postlist.get(position).getPostID());
                     // ChoosePost.getInstance().setTinh(tinh);
                     // ChoosePost.getInstance().setHuyen(huyen);
                     startActivity(intent);
@@ -254,12 +252,12 @@ public class FooddetailFragment extends Fragment {
             sua.setVisible(true);
             xoa.setVisible(true);
         }
-        else if(MyService.getUserAccount().getId().equals(ChooseFood.getInstance().getFood().getUserID())){
-            sua.setVisible(true);
-            ycx.setVisible(true);
-        }else{
-            report.setVisible(true);
-        }
+//        else if(MyService.getUserAccount().getId().equals(ChooseFood.getInstance().getFood().getUserID())){
+//            sua.setVisible(true);
+//            ycx.setVisible(true);
+//        }else{
+//            report.setVisible(true);
+//        }
     }
 
     @Override
@@ -274,7 +272,7 @@ public class FooddetailFragment extends Fragment {
                 return true;
             case R.id.menu_fooddetail_report:
                 if (isConnected) {
-                    EditLocal.getInstance().setMyLocation(location);
+                    EditLocal.getInstance().setStore(location);
                     EditStoreDialogFragment reportStoreDialog = new EditStoreDialogFragment();
                     reportStoreDialog.show(getActivity().getSupportFragmentManager(), "fragment_reportStore");
                     return true;

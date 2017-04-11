@@ -1,12 +1,7 @@
 package com.app.ptt.comnha.Adapters;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +10,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.app.ptt.comnha.Classes.AnimationUtils;
-import com.app.ptt.comnha.FireBase.Image;
 import com.app.ptt.comnha.FireBase.Post;
 import com.app.ptt.comnha.R;
-import com.app.ptt.comnha.Service.MyService;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -91,51 +83,51 @@ public class Reviewlist_rcyler_adapter extends RecyclerView.Adapter<Reviewlist_r
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         if(type==2){
-            if (list.get(position).getType() == 1) {
-                holder.ratingBar.setNumStars(3);
-                holder.ratingBar.setIsIndicator(true);
-                holder.ratingBar.setStepSize(1);
-                float a =  list.get(position).getFood().getDanhGia();
-                holder.ratingBar.setRating(a);
-                if (a < 1.5) {
-                    holder.txt_ratingtext.setText("Dở tệ");
-                }
-                if (a > 1.5 &&a < 2.5) {
-                    holder.txt_ratingtext.setText("Bình thường");
-                }
-                if (a >= 2.5) {
-                    holder.txt_ratingtext.setText("Ngon tuyệt");
-                }
-            }
-            holder.txt_tiltereview.setText(list.get(position).getTitle());
+//            if (list.get(position).getType() == 1) {
+//                holder.ratingBar.setNumStars(3);
+//                holder.ratingBar.setIsIndicator(true);
+//                holder.ratingBar.setStepSize(1);
+//                float a =  list.get(position).getFood().getDanhGia();
+//                holder.ratingBar.setRating(a);
+//                if (a < 1.5) {
+//                    holder.txt_ratingtext.setText("Dở tệ");
+//                }
+//                if (a > 1.5 &&a < 2.5) {
+//                    holder.txt_ratingtext.setText("Bình thường");
+//                }
+//                if (a >= 2.5) {
+//                    holder.txt_ratingtext.setText("Ngon tuyệt");
+//                }
+//            }
+//            holder.txt_tiltereview.setText(list.get(position).getTitle());
 
         }else {
-            if (list.get(position).getType() == 1) {
-                holder.txt_tenmon.setText(list.get(position).getFood().getTenmon());
-                holder.txt_gia.setText(list.get(position).getFood().getGia() + " đ");
-            } else {
-                holder.txt_tenmon.setText("");
-                holder.txt_gia.setText("");
-            }
-            if (list.get(position).getHinh() != null)
-                Picasso.with(activity)
-                        .load(list.get(position).getHinh())
-                        .into(holder.img_user);
-
-            if(type==3) {
-                holder.txt_tenquan.setText(list.get(position).getUserName());
-                holder.txt_diachi.setText(list.get(position).getTitle());
-            }else{
-                holder.txt_tenquan.setText(list.get(position).getLocaName());
-                holder.txt_diachi.setText(list.get(position).getDiachi());
-            }
+//            if (list.get(position).getType() == 1) {
+//                holder.txt_tenmon.setText(list.get(position).getFood().getTenmon());
+//                holder.txt_gia.setText(list.get(position).getFood().getGia() + " đ");
+//            } else {
+//                holder.txt_tenmon.setText("");
+//                holder.txt_gia.setText("");
+//            }
+//            if (list.get(position).getHinh() != null)
+//                Picasso.with(activity)
+//                        .load(list.get(position).getHinh())
+//                        .into(holder.img_user);
+//
+//            if(type==3) {
+//                holder.txt_tenquan.setText(list.get(position).getUserName());
+//                holder.txt_diachi.setText(list.get(position).getTitle());
+//            }else{
+//                holder.txt_tenquan.setText(list.get(position).getLocaName());
+//                holder.txt_diachi.setText(list.get(position).getDiachi());
+//            }
 
         }
-        holder.txt_postdate.setText(list.get(position).getDate());
-        holder.txt_time.setText(list.get(position).getTime());
-        holder.txt_un.setText(list.get(position).getUserName());
-        holder.txt_likenumb.setText(String.valueOf(list.get(position).getLikeCount()) + " Likes");
-        holder.txt_commentnumb.setText(String.valueOf(list.get(position).getCommentCount()) + " Comments");
+//        holder.txt_postdate.setText(list.get(position).getDate());
+//        holder.txt_time.setText(list.get(position).getTime());
+//        holder.txt_un.setText(list.get(position).getUserName());
+//        holder.txt_likenumb.setText(String.valueOf(list.get(position).getLikeCount()) + " Likes");
+//        holder.txt_commentnumb.setText(String.valueOf(list.get(position).getCommentCount()) + " Comments");
 
         //MyService.setFinish(true);
         if (position > previuosPosition) {

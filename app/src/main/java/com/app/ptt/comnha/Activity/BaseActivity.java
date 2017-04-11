@@ -17,7 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
-import com.app.ptt.comnha.FireBase.MyLocation;
+import com.app.ptt.comnha.FireBase.Store;
 import com.app.ptt.comnha.Modules.MyTool;
 import com.app.ptt.comnha.Service.MyService;
 
@@ -43,7 +43,7 @@ public class BaseActivity extends AppCompatActivity {
     boolean binded = false;
     MyService myService;
     boolean isConnected = false;
-    MyLocation myLocation;
+    Store store;
     MyTool myTool;
 
 

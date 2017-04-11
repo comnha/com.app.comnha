@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.app.ptt.comnha.Adapters.item_notify_newstore_adapter;
-import com.app.ptt.comnha.FireBase.ItemNotifyNewstore;
+import com.app.ptt.comnha.FireBase.NewstoreNotify;
 import com.app.ptt.comnha.R;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -27,7 +27,7 @@ public class AdminNewStoreFragment extends Fragment {
 
     ListView listView;
     item_notify_newstore_adapter itemadapter;
-    ArrayList<ItemNotifyNewstore> items;
+    ArrayList<NewstoreNotify> items;
     DatabaseReference dbRef;
     ChildEventListener childEventListener;
     String dist_pro = "";
@@ -50,7 +50,7 @@ public class AdminNewStoreFragment extends Fragment {
         childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                ItemNotifyNewstore item = dataSnapshot.getValue(ItemNotifyNewstore.class);
+                NewstoreNotify item = dataSnapshot.getValue(NewstoreNotify.class);
                 items.add(item);
                 itemadapter.notifyDataSetChanged();
             }

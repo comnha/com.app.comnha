@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.ptt.comnha.Classes.AnimationUtils;
-import com.app.ptt.comnha.FireBase.MyLocation;
+import com.app.ptt.comnha.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -23,7 +23,7 @@ public class LocatlistFilter_rcyler_adapter extends RecyclerView.Adapter<Locatli
     Activity activity;
     int type;
 
-    ArrayList<MyLocation> list;
+    ArrayList<Store> list;
     int previuosPosition = 0;
     LatLng yourLocation;
 
@@ -42,7 +42,7 @@ public class LocatlistFilter_rcyler_adapter extends RecyclerView.Adapter<Locatli
         }
     }
 
-    public LocatlistFilter_rcyler_adapter(ArrayList<MyLocation> list, int type) {
+    public LocatlistFilter_rcyler_adapter(ArrayList<Store> list, int type) {
         this.list = list;
     }
 
@@ -57,17 +57,17 @@ public class LocatlistFilter_rcyler_adapter extends RecyclerView.Adapter<Locatli
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        holder.txt_tenquan.setText(list.get(position).getName());
-        holder.txt_diachi.setText(list.get(position).getDiachi());
-        holder.txt_diem.setText(String.valueOf(list.get(position).getTongAVG()));
+//        holder.txt_tenquan.setText(list.get(position).getName());
+//        holder.txt_diachi.setText(list.get(position).getDiachi());
+//        holder.txt_diem.setText(String.valueOf(list.get(position).getTongAVG()));
         if (position > previuosPosition) {
             AnimationUtils.animateItemRcylerV(holder, false);
         } else {
             AnimationUtils.animateItemRcylerV(holder, true);
         }
         previuosPosition = position;
-        holder.txt_km.setText(
-                list.get(position).getKhoangcach());
+//        holder.txt_km.setText(
+//                list.get(position).getKhoangcach());
 //        holder.imgV.setBackground();
     }
 

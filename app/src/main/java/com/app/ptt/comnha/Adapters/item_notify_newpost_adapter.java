@@ -11,7 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.app.ptt.comnha.FireBase.ItemNotifyNewpost;
+import com.app.ptt.comnha.FireBase.NewpostNotify;
 import com.app.ptt.comnha.R;
 
 import java.util.ArrayList;
@@ -22,9 +22,9 @@ import java.util.ArrayList;
 
 public class item_notify_newpost_adapter extends BaseAdapter {
     Context context;
-    ArrayList<ItemNotifyNewpost> items;
+    ArrayList<NewpostNotify> items;
 
-    public item_notify_newpost_adapter(Context context, ArrayList<ItemNotifyNewpost> items) {
+    public item_notify_newpost_adapter(Context context, ArrayList<NewpostNotify> items) {
         this.context = context;
         this.items = items;
     }

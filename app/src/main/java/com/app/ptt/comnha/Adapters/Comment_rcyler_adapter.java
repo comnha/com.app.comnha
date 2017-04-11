@@ -42,9 +42,9 @@ public class Comment_rcyler_adapter extends RecyclerView.Adapter<Comment_rcyler_
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.txt_content.setText(comment_list.get(position).getContent());
-        holder.txt_time.setText(comment_list.get(position).getTime());
-        holder.txt_un.setText(comment_list.get(position).getUsername());
+//        holder.txt_content.setText(comment_list.get(position).getContent());
+//        holder.txt_time.setText(comment_list.get(position).getTime());
+//        holder.txt_un.setText(comment_list.get(position).getUsername());
 
     }
 

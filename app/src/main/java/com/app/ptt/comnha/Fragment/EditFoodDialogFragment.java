@@ -72,11 +72,11 @@ public class EditFoodDialogFragment extends DialogFragment {
         childUpdates=new HashMap<>();
         dbRef=FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
         edtTenMon=(EditText) view.findViewById(R.id.edt_tenmon);
-        edtTenMon.setText(ChooseFood.getInstance().getFood().getTenmon());
-        edtGia=(EditText) view.findViewById(R.id.edt_gia);
-        edtGia.setText(ChooseFood.getInstance().getFood().getGia()+"");
-        rbDanhGia=(RatingBar) view.findViewById(R.id.rb_danhGiaMon);
-        rbDanhGia.setRating(ChooseFood.getInstance().getFood().getDanhGia());
+//        edtTenMon.setText(ChooseFood.getInstance().getFood().getTenmon());
+//        edtGia=(EditText) view.findViewById(R.id.edt_gia);
+//        edtGia.setText(ChooseFood.getInstance().getFood().getGia()+"");
+//        rbDanhGia=(RatingBar) view.findViewById(R.id.rb_danhGiaMon);
+//        rbDanhGia.setRating(ChooseFood.getInstance().getFood().getDanhGia());
         btnOK=(Button) view.findViewById(R.id.btn_OK);
         mProgressDialog = ProgressDialog.show(getActivity(),
                 getResources().getString(R.string.txt_plzwait),
@@ -91,8 +91,8 @@ public class EditFoodDialogFragment extends DialogFragment {
                 alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        editFood.setTenmon(edtTenMon.getText().toString());
-                        editFood.setGia(Long.parseLong(edtGia.getText().toString()));
+//                        editFood.setTenmon(edtTenMon.getText().toString());
+//                        editFood.setGia(Long.parseLong(edtGia.getText().toString()));
                         foodValue=editFood.toMap();
                        // dialog.dismiss();
                         mProgressDialog.show();
@@ -110,7 +110,7 @@ public class EditFoodDialogFragment extends DialogFragment {
                         childUpdates = new HashMap<>();
                         childUpdates.put(getResources().getString(R.string.notification_CODE) + "admin/" + key1, notificationValue);
                         Map<String,Object> newFood=editFood.toMap();
-                        childUpdates.put(getResources().getString(R.string.thucdon_CODE)+editFood.getMonID(),newFood);
+//                        childUpdates.put(getResources().getString(R.string.thucdon_CODE)+editFood.getMonID(),newFood);
                         dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {

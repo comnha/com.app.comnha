@@ -9,11 +9,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -34,29 +31,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.ptt.comnha.Activity.Adapter2Activity;
-import com.app.ptt.comnha.Activity.MainActivity;
-import com.app.ptt.comnha.Activity.SplashActivity;
 import com.app.ptt.comnha.Adapters.Comment_rcyler_adapter;
 import com.app.ptt.comnha.Adapters.Photos_rcyler_adapter;
 import com.app.ptt.comnha.Classes.AnimationUtils;
-import com.app.ptt.comnha.Modules.Times;
 import com.app.ptt.comnha.FireBase.Comment;
 import com.app.ptt.comnha.FireBase.Food;
 import com.app.ptt.comnha.FireBase.Image;
-import com.app.ptt.comnha.FireBase.MyLocation;
 import com.app.ptt.comnha.FireBase.Notification;
 import com.app.ptt.comnha.FireBase.Post;
-
+import com.app.ptt.comnha.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
-import com.app.ptt.comnha.SingletonClasses.EditPost;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.SingletonClasses.OpenAlbum;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -65,8 +53,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,7 +88,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
     ValueEventListener postValueEventListener, locaValueEventListener;
     LinearLayout linearAlbum;
     ProgressDialog mProgressDialog;
-    MyLocation myLocation;
+    Store store;
     private TextView txt_albums;
     Bitmap mBitmap;
     boolean isConnected = true;
@@ -159,8 +145,8 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
         locaValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                myLocation = dataSnapshot.getValue(MyLocation.class);
-                myLocation.setLocaID(dataSnapshot.getKey());
+                store = dataSnapshot.getValue(Store.class);
+//                store.setLocaID(dataSnapshot.getKey());
                 Log.d("myLocation", "have changed");
 //                dbRef.child( getString(R.string.usertrackloca_CODE)
 //                        + post.getUserId() + "/" + myLocation.getLocaID())
@@ -179,22 +165,22 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                    Toast.makeText(getActivity(), dataSnapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
                     Log.d("checkListenerFromImages", "have changed");
                     final Image image = dataSnapshot.getValue(Image.class);
-                    image.setImageID(dataSnapshot.getKey());
-                    storeRef.child(getResources().getString(R.string.images_CODE)
-                            + image.getName())
-                            .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            image.setPath(uri);
-                            albumList.add(image);
-                            mAdapterAlbum.notifyDataSetChanged();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-//                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+//                    image.setImageID(dataSnapshot.getKey());
+//                    storeRef.child(getResources().getString(R.string.images_CODE)
+//                            + image.getName())
+//                            .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                        @Override
+//                        public void onSuccess(Uri uri) {
+//                            image.setPath(uri);
+//                            albumList.add(image);
+//                            mAdapterAlbum.notifyDataSetChanged();
+//                        }
+//                    }).addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+////                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
                 } catch (NullPointerException | IllegalStateException mess) {
 
                 }
@@ -224,34 +210,34 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
         postValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
-                Log.d("post", "have changed");
-                post = dataSnapshot.getValue(Post.class);
-                post.setPostID(dataSnapshot.getKey());
-                txt_title.setText(post.getTitle());
-                txt_date.setText(post.getDate());
-                txt_content.setText(post.getContent());
-                txt_un.setText(post.getUserName());
-                Picasso.with(getContext()).load(post.getHinh()).into(img_post);
-                txt_likenumb.setText(post.getLikeCount() + " Likes   " + post.getCommentCount() + " Comments");
-                txt_gia.setText(post.getGia() + "");
-                txt_pv.setText(post.getPhucvu() + "");
-                txt_vs.setText(post.getVesinh() + "");
-                if(post.getType()==2) {
-                    txt_giamonan.setVisibility(View.INVISIBLE);
-                    txt_monan.setVisibility(View.INVISIBLE);
-                    ratingBar.setVisibility(View.INVISIBLE);
-                }else{
-                    txt_giamonan.setVisibility(View.VISIBLE);
-                    txt_monan.setVisibility(View.VISIBLE);
-                    ratingBar.setVisibility(View.VISIBLE);
-                    postFood=post.getFood();
-                    txt_giamonan.setText(postFood.getGia()+" đ");
-                    txt_monan.setText("Tên món: "+postFood.getTenmon());
-                    ratingBar.setIsIndicator(true);
-                    ratingBar.setNumStars(3);
-                    ratingBar.setStepSize(1);
-                    ratingBar.setRating(postFood.getDanhGia());
-                }
+//                Log.d("post", "have changed");
+//                post = dataSnapshot.getValue(Post.class);
+//                post.setPostID(dataSnapshot.getKey());
+//                txt_title.setText(post.getTitle());
+//                txt_date.setText(post.getDate());
+//                txt_content.setText(post.getContent());
+//                txt_un.setText(post.getUserName());
+//                Picasso.with(getContext()).load(post.getHinh()).into(img_post);
+//                txt_likenumb.setText(post.getLikeCount() + " Likes   " + post.getCommentCount() + " Comments");
+//                txt_gia.setText(post.getGia() + "");
+//                txt_pv.setText(post.getPhucvu() + "");
+//                txt_vs.setText(post.getVesinh() + "");
+//                if(post.getType()==2) {
+//                    txt_giamonan.setVisibility(View.INVISIBLE);
+//                    txt_monan.setVisibility(View.INVISIBLE);
+//                    ratingBar.setVisibility(View.INVISIBLE);
+//                }else{
+//                    txt_giamonan.setVisibility(View.VISIBLE);
+//                    txt_monan.setVisibility(View.VISIBLE);
+//                    ratingBar.setVisibility(View.VISIBLE);
+//                    postFood=post.getFood();
+//                    txt_giamonan.setText(postFood.getGia()+" đ");
+//                    txt_monan.setText("Tên món: "+postFood.getTenmon());
+//                    ratingBar.setIsIndicator(true);
+//                    ratingBar.setNumStars(3);
+//                    ratingBar.setStepSize(1);
+//                    ratingBar.setRating(postFood.getDanhGia());
+//                }
 
                 mProgressDialog.dismiss();
             }
@@ -265,9 +251,9 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onChildAdded(com.google.firebase.database.DataSnapshot dataSnapshot, String s) {
                 Log.d("comment", "have changed");
-                Comment comment = dataSnapshot.getValue(Comment.class);
-                comment.setCommentID(dataSnapshot.getKey());
-                comment_List.add(comment);
+//                Comment comment = dataSnapshot.getValue(Comment.class);
+//                comment.setCommentID(dataSnapshot.getKey());
+//                comment_List.add(comment);
                 mAdapter.notifyDataSetChanged();
             }
 
@@ -308,7 +294,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
                                 if(dataSnapshot.getKey().equals(ChoosePost.getInstance().getFoodID())) {
                                     Food food = dataSnapshot.getValue(Food.class);
                                     mainFood = food;
-                                    mainFood.setMonID(dataSnapshot.getKey());
+//                                    mainFood.setMonID(dataSnapshot.getKey());
 
                                 }
 
@@ -343,7 +329,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
                                                   Notification notification = dataSnapshot.getValue(Notification.class);
                                                   notification.setNotiID(dataSnapshot.getKey());
                                                   if (notification.getPost() != null)
-                                                      if (notification.getPost().getPostID().equals(postID))
+//                                                      if (notification.getPost().getPostID().equals(postID))
                                                           notifications.add(notification);
 
                                               }
@@ -386,8 +372,8 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
         mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                dbRef.child(getString(R.string.locations_CODE) + post.getLocaID())
-                        .addListenerForSingleValueEvent(locaValueEventListener);
+//                dbRef.child(getString(R.string.locations_CODE) + post.getLocaID())
+//                        .addListenerForSingleValueEvent(locaValueEventListener);
 
             }
         });
@@ -488,23 +474,23 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
             case R.id.frg_viewrev_btn_sendcomment:
                 if (isConnected) {
                     if (!edt_comment.getText().toString().equals("")) {
-                        Comment newComment = new Comment();
-                        newComment.setContent(edt_comment.getText().toString());
-                        newComment.setUsername(LoginSession.getInstance().getUsername());
-                        newComment.setUserID(LoginSession.getInstance().getUserID());
-                        newComment.setDate(new Times().getDate());
-                        newComment.setTime(new Times().getTime());
-                        newComment.setPostID(postID);
-                        edt_comment.setText(null);
-                        String key = dbRef.child(getResources().getString(R.string.postcomment_CODE) + postID).push().getKey();
-                        Map<String, Object> commentValues = newComment.toMap();
-                        Map<String, Object> childUpdates = new HashMap<String, Object>();
-                        childUpdates.put(
-                                getResources().getString(R.string.postcomment_CODE) + postID + "/"
-                                        + key, commentValues);
-                        childUpdates.put(
-                                getResources().getString(R.string.posts_CODE)
-                                        + postID + "/commentCount", comment_List.size() + 1);
+//                        Comment newComment = new Comment();
+//                        newComment.setContent(edt_comment.getText().toString());
+//                        newComment.setUsername(LoginSession.getInstance().getUsername());
+//                        newComment.setUserID(LoginSession.getInstance().getUserID());
+//                        newComment.setDate(new Times().getDate());
+//                        newComment.setTime(new Times().getTime());
+//                        newComment.setPostID(postID);
+//                        edt_comment.setText(null);
+//                        String key = dbRef.child(getResources().getString(R.string.postcomment_CODE) + postID).push().getKey();
+//                        Map<String, Object> commentValues = newComment.toMap();
+//                        Map<String, Object> childUpdates = new HashMap<String, Object>();
+//                        childUpdates.put(
+//                                getResources().getString(R.string.postcomment_CODE) + postID + "/"
+//                                        + key, commentValues);
+//                        childUpdates.put(
+//                                getResources().getString(R.string.posts_CODE)
+//                                        + postID + "/commentCount", comment_List.size() + 1);
 //                    childUpdates.put(tinh + "/" + huyen + "/" +
 //                            getResources().getString(R.string.locationpost_CODE) + post.getLocaID() + "/"
 //                            + postID + "/commentCount", comment_List.size() + 1);
@@ -516,16 +502,16 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                getResources().getString(R.string.userpost_CODE)
 //                                + post.getUserId() + "/"
 //                                + postID + "/commentCount", comment_List.size() + 1);
-                        dbRef.updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                if (databaseError != null) {
-                                    Log.e("updateChildrenComment", databaseError.getMessage());
-                                     } else {
-                                    MyService.setChangeContent("justCommend");
-                                }
-                            }
-                        });
+//                        dbRef.updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
+//                            @Override
+//                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+//                                if (databaseError != null) {
+//                                    Log.e("updateChildrenComment", databaseError.getMessage());
+//                                     } else {
+//                                    MyService.setChangeContent("justCommend");
+//                                }
+//                            }
+//                        });
                     }
                 } else Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
                 break;
@@ -550,16 +536,16 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
                             menu.findItem(R.id.menu_postdetail_xoa).setVisible(true);
                             menu.findItem(R.id.menu_postdetail_sua).setVisible(true);
                         }
-                        if(MyService.getUserAccount().getId().equals(post.getUserId()))
-                        {
-                            menu.findItem(R.id.menu_postdetail_sua).setVisible(true);
-                            if(!MyService.getUserAccount().getRole())
-                                menu.findItem(R.id.menu_postdetail_ycxoa).setVisible(true);
-                        }
-                        else if(MyService.getUserAccount()!=null)
-                        {
-                            menu.findItem(R.id.menu_postdetail_report).setVisible(true);
-                        }
+//                        if(MyService.getUserAccount().getId().equals(post.getUserId()))
+//                        {
+//                            menu.findItem(R.id.menu_postdetail_sua).setVisible(true);
+//                            if(!MyService.getUserAccount().getRole())
+//                                menu.findItem(R.id.menu_postdetail_ycxoa).setVisible(true);
+//                        }
+//                        else if(MyService.getUserAccount()!=null)
+//                        {
+//                            menu.findItem(R.id.menu_postdetail_report).setVisible(true);
+//                        }
                     }
                     popupMenu.show();
                     popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
@@ -580,10 +566,10 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.cancel();
-                                            EditPost.getInstance().setPost(post);
-                                            ReasonPostDialogFragment temp = new ReasonPostDialogFragment();
-                                            temp.setType(3);
-                                            temp.show(getActivity().getSupportFragmentManager(), "fragment_reportPost");
+//                                            EditPost.getInstance().setPost(post);
+//                                            ReasonPostDialogFragment temp = new ReasonPostDialogFragment();
+//                                            temp.setType(3);
+//                                            temp.show(getActivity().getSupportFragmentManager(), "fragment_reportPost");
                                         }
                                     });
                                     builder1.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
@@ -768,245 +754,245 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
                                                     "Đang xóa",
                                                     true, false);
                                             childUpdates = new HashMap<>();
-                                    if(post.getVisible()) {
-                                        long giaTong = myLocation.getGiaTong() - post.getGia(),
-                                                vsTong = myLocation.getVsTong() - post.getVesinh(),
-                                                pvTong = myLocation.getPvTong() - post.getPhucvu(),
-                                                size = myLocation.getSize() - 1;
-                                        myLocation.setGiaTong(giaTong);
-                                        myLocation.setVsTong(vsTong);
-                                        myLocation.setPvTong(pvTong);
-                                        myLocation.setSize(size);
-                                        myLocation.setGiaAVG(giaTong / size);
-                                        myLocation.setVsAVG(vsTong / size);
-                                        myLocation.setPvAVG(pvTong / size);
-                                        Map<String, Object> updateLocal = myLocation.toMap();
-                                        if (ChoosePost.getInstance().getType() == 1) {
-                                            float a = mainFood.getDanhGia();
-                                            float b = (2 * a - EditPost.getInstance().getPost().getFood().getDanhGia());
-                                            mainFood.setDanhGia(b);
-                                            Map<String, Object> updateFood = mainFood.toMap();
-                                            childUpdates.put(getResources().getString(R.string.thucdon_CODE) + mainFood.getMonID(), updateFood);
-                                        }
+//                                    if(post.getVisible()) {
+//                                        long giaTong = store.getGiaTong() - post.getGia(),
+//                                                vsTong = store.getVsTong() - post.getVesinh(),
+//                                                pvTong = store.getPvTong() - post.getPhucvu(),
+//                                                size = store.getSize() - 1;
+//                                        store.setGiaTong(giaTong);
+//                                        store.setVsTong(vsTong);
+//                                        store.setPvTong(pvTong);
+//                                        store.setSize(size);
+//                                        store.setGiaAVG(giaTong / size);
+//                                        store.setVsAVG(vsTong / size);
+//                                        store.setPvAVG(pvTong / size);
+//                                        Map<String, Object> updateLocal = store.toMap();
+//                                        if (ChoosePost.getInstance().getType() == 1) {
+//                                            float a = mainFood.getDanhGia();
+//                                            float b = (2 * a - EditPost.getInstance().getPost().getFood().getDanhGia());
+//                                            mainFood.setDanhGia(b);
+//                                            Map<String, Object> updateFood = mainFood.toMap();
+//                                            childUpdates.put(getResources().getString(R.string.thucdon_CODE) + mainFood.getMonID(), updateFood);
+//                                        }
 
-                                        childUpdates.put(getResources().getString(R.string.locations_CODE) + myLocation.getLocaID(), updateLocal);
-                                    }
-                                            deletesuccess = true;
-                                            for(Comment comment:comment_List){
-                                                if (deletesuccess) {
-                                                    dbRef.child(getResources().getString(R.string.postcomment_CODE) + comment.getCommentID()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            deletesuccess = true;
-                                                        }
-                                                    }).addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            deletesuccess = false;
-                                                        }
-                                                    });
-                                                } else {
-                                                    Toast.makeText(getContext(), "Xóa comment không thành công", Toast.LENGTH_SHORT).show();
-                                                    mProgressDialog.dismiss();
-                                                    getActivity().finish();
-                                                    return;
-                                                }
-                                            }
-                                            for (Image img : albumList) {
-                                                if (deletesuccess) {
-                                                    dbRef.child(getResources().getString(R.string.images_CODE) + img.getImageID()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            deletesuccess = true;
-                                                        }
-                                                    }).addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            deletesuccess = false;
-                                                        }
-                                                    });
-                                                } else {
-                                                    Toast.makeText(getContext(), "Xóa hình không thành công", Toast.LENGTH_SHORT).show();
-                                                    mProgressDialog.dismiss();
-                                                    getActivity().finish();
-                                                    return;
-                                                }
-                                            }
-                                            for (Notification not : notifications)
-                                                if (deletesuccess) {
-                                                    dbRef.child(getResources().getString(R.string.notification_CODE) + ChoosePost.getInstance().getUserID() + "/" + not.getNotiID()).
-                                                            removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            deletesuccess = true;
-                                                        }
-                                                    }).addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            deletesuccess = false;
-                                                        }
-                                                    });
-                                                } else {
-                                                    Toast.makeText(getContext(), "Xóa thông báo không thành công", Toast.LENGTH_SHORT).show();
-                                                    mProgressDialog.dismiss();
-                                                    getActivity().finish();
-                                                    return;
-                                                }
-                                            for (Image img : albumList) {
-                                                Log.i("OK", "img:" + img.getName());
-                                                if (deletesuccess) {
-                                                    StorageReference myChildRef = storeRef.child(
-                                                            getResources().getString(R.string.images_CODE)
-                                                                    + img.getName());
-                                                    Log.i("OK", "url:" + getResources().getString(R.string.images_CODE)
-                                                            + img.getName());
-                                                    myChildRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            Log.i("OK", "deletesuccess:" + deletesuccess);
-                                                            deletesuccess = true;
-                                                        }
-                                                    }).addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            Log.i("FAIL", "deletesuccess:" + deletesuccess);
-                                                            deletesuccess = false;
-                                                        }
-                                                    });
-                                                } else {
-                                                    Toast.makeText(getContext(), "Xóa hình không thành công", Toast.LENGTH_SHORT).show();
-                                                    mProgressDialog.dismiss();
-                                                    getActivity().finish();
-                                                    return;
-                                                }
-                                            }
-                                            if (deletesuccess) {
-                                                dbRef.child(getResources().getString(R.string.posts_CODE) + post.getPostID()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        deletesuccess = true;
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        deletesuccess = false;
-                                                    }
-                                                });
-                                            } else {
-                                                Toast.makeText(getContext(), "Xóa bài đăng không thành công", Toast.LENGTH_SHORT).show();
-                                                mProgressDialog.dismiss();
-                                                getActivity().finish();
-                                            }
-                                            if (deletesuccess) {
-                                                if (post.getIsReported()) {
-                                                    Notification notification = new Notification();
-                                                    String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + ChoosePost.getInstance().getUserID()).push().getKey();
-                                                    notification.setAccount(MyService.getUserAccount());
-                                                    notification.setDate(new Times().getDate());
-                                                    notification.setTime(new Times().getTime());
-                                                    notification.setPost(EditPost.getInstance().getPost());
-                                                    notification.setLocation(myLocation);
-                                                    notification.setType(8);
-                                                    notification.setReaded(false);
-                                                    childUpdates = new HashMap<String, Object>();
-                                                    Map<String, Object> notificationValue = notification.toMap();
-                                                    childUpdates.put(getResources().getString(R.string.notification_CODE) + ChoosePost.getInstance().getUserID() + "/" + key1, notificationValue);
-                                                    dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            if (task.isComplete()) {
-                                                                Notification notification = new Notification();
-                                                                String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + post.getReporter()).push().getKey();
-                                                                notification.setAccount(MyService.getUserAccount());
-                                                                notification.setDate(new Times().getDate());
-                                                                notification.setTime(new Times().getTime());
-                                                                notification.setPost(EditPost.getInstance().getPost());
-                                                                notification.setLocation(myLocation);
-                                                                notification.setType(9);
-                                                                notification.setReaded(false);
-                                                                childUpdates = new HashMap<String, Object>();
-                                                                Map<String, Object> notificationValue = notification.toMap();
-                                                                childUpdates.put(getResources().getString(R.string.notification_CODE) + post.getReporter() + "/" + key1, notificationValue);
-                                                                dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                                        if (task.isComplete()) {
-                                                                            Toast.makeText(getContext(), "Xóa thành công. Đã thông báo tới người sử dụng", Toast.LENGTH_SHORT).show();
-                                                                            mProgressDialog.dismiss();
-                                                                            getActivity().finish();
-                                                                        } else {
-                                                                            mProgressDialog.dismiss();
-                                                                            getActivity().finish();
-                                                                            Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                                                        }
-                                                                    }
-                                                                });
-
-                                                            } else {
-                                                                mProgressDialog.dismiss();
-                                                                Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                                                getActivity().finish();
-                                                            }
-                                                        }
-                                                    });
-                                                } else {
-                                                    Notification notification = new Notification();
-                                                    String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + ChoosePost.getInstance().getUserID()).push().getKey();
-                                                    notification.setAccount(MyService.getUserAccount());
-                                                    notification.setDate(new Times().getDate());
-                                                    notification.setTime(new Times().getTime());
-                                                    notification.setLocation(myLocation);
-                                                    notification.setPost(EditPost.getInstance().getPost());
-                                                    notification.setType(10);
-                                                    notification.setReaded(false);
-                                                    childUpdates = new HashMap<String, Object>();
-                                                    Map<String, Object> notificationValue = notification.toMap();
-                                                    childUpdates.put(getResources().getString(R.string.notification_CODE) + ChoosePost.getInstance().getUserID() + "/" + key1, notificationValue);
-                                                    dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
-                                                            mProgressDialog.dismiss();
-                                                            getActivity().finish();
-
-                                                        }
-                                                    });
-                                                }
-
-                                            }
-                                        }
-                                    });
-                                    builder3.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.cancel();
+//                                        childUpdates.put(getResources().getString(R.string.locations_CODE) + store.getLocaID(), updateLocal);
+//                                    }
+//                                            deletesuccess = true;
+//                                            for(Comment comment:comment_List){
+//                                                if (deletesuccess) {
+//                                                    dbRef.child(getResources().getString(R.string.postcomment_CODE) + comment.getCommentID()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                        @Override
+//                                                        public void onComplete(@NonNull Task<Void> task) {
+//                                                            deletesuccess = true;
+//                                                        }
+//                                                    }).addOnFailureListener(new OnFailureListener() {
+//                                                        @Override
+//                                                        public void onFailure(@NonNull Exception e) {
+//                                                            deletesuccess = false;
+//                                                        }
+//                                                    });
+//                                                } else {
+//                                                    Toast.makeText(getContext(), "Xóa comment không thành công", Toast.LENGTH_SHORT).show();
+//                                                    mProgressDialog.dismiss();
+//                                                    getActivity().finish();
+//                                                    return;
+//                                                }
+//                                            }
+//                                            for (Image img : albumList) {
+//                                                if (deletesuccess) {
+//                                                    dbRef.child(getResources().getString(R.string.images_CODE) + img.getImageID()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                        @Override
+//                                                        public void onComplete(@NonNull Task<Void> task) {
+//                                                            deletesuccess = true;
+//                                                        }
+//                                                    }).addOnFailureListener(new OnFailureListener() {
+//                                                        @Override
+//                                                        public void onFailure(@NonNull Exception e) {
+//                                                            deletesuccess = false;
+//                                                        }
+//                                                    });
+//                                                } else {
+//                                                    Toast.makeText(getContext(), "Xóa hình không thành công", Toast.LENGTH_SHORT).show();
+//                                                    mProgressDialog.dismiss();
+//                                                    getActivity().finish();
+//                                                    return;
+//                                                }
+//                                            }
+//                                            for (Notification not : notifications)
+//                                                if (deletesuccess) {
+//                                                    dbRef.child(getResources().getString(R.string.notification_CODE) + ChoosePost.getInstance().getUserID() + "/" + not.getNotiID()).
+//                                                            removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                        @Override
+//                                                        public void onComplete(@NonNull Task<Void> task) {
+//                                                            deletesuccess = true;
+//                                                        }
+//                                                    }).addOnFailureListener(new OnFailureListener() {
+//                                                        @Override
+//                                                        public void onFailure(@NonNull Exception e) {
+//                                                            deletesuccess = false;
+//                                                        }
+//                                                    });
+//                                                } else {
+//                                                    Toast.makeText(getContext(), "Xóa thông báo không thành công", Toast.LENGTH_SHORT).show();
+//                                                    mProgressDialog.dismiss();
+//                                                    getActivity().finish();
+//                                                    return;
+//                                                }
+//                                            for (Image img : albumList) {
+//                                                Log.i("OK", "img:" + img.getName());
+//                                                if (deletesuccess) {
+//                                                    StorageReference myChildRef = storeRef.child(
+//                                                            getResources().getString(R.string.images_CODE)
+//                                                                    + img.getName());
+//                                                    Log.i("OK", "url:" + getResources().getString(R.string.images_CODE)
+//                                                            + img.getName());
+//                                                    myChildRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                        @Override
+//                                                        public void onComplete(@NonNull Task<Void> task) {
+//                                                            Log.i("OK", "deletesuccess:" + deletesuccess);
+//                                                            deletesuccess = true;
+//                                                        }
+//                                                    }).addOnFailureListener(new OnFailureListener() {
+//                                                        @Override
+//                                                        public void onFailure(@NonNull Exception e) {
+//                                                            Log.i("FAIL", "deletesuccess:" + deletesuccess);
+//                                                            deletesuccess = false;
+//                                                        }
+//                                                    });
+//                                                } else {
+//                                                    Toast.makeText(getContext(), "Xóa hình không thành công", Toast.LENGTH_SHORT).show();
+//                                                    mProgressDialog.dismiss();
+//                                                    getActivity().finish();
+//                                                    return;
+//                                                }
+//                                            }
+//                                            if (deletesuccess) {
+//                                                dbRef.child(getResources().getString(R.string.posts_CODE) + post.getPostID()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                    @Override
+//                                                    public void onComplete(@NonNull Task<Void> task) {
+//                                                        deletesuccess = true;
+//                                                    }
+//                                                }).addOnFailureListener(new OnFailureListener() {
+//                                                    @Override
+//                                                    public void onFailure(@NonNull Exception e) {
+//                                                        deletesuccess = false;
+//                                                    }
+//                                                });
+//                                            } else {
+//                                                Toast.makeText(getContext(), "Xóa bài đăng không thành công", Toast.LENGTH_SHORT).show();
+//                                                mProgressDialog.dismiss();
+//                                                getActivity().finish();
+//                                            }
+//                                            if (deletesuccess) {
+//                                                if (post.getIsReported()) {
+//                                                    Notification notification = new Notification();
+//                                                    String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + ChoosePost.getInstance().getUserID()).push().getKey();
+//                                                    notification.setAccount(MyService.getUserAccount());
+//                                                    notification.setDate(new Times().getDate());
+//                                                    notification.setTime(new Times().getTime());
+//                                                    notification.setPost(EditPost.getInstance().getPost());
+//                                                    notification.setLocation(store);
+//                                                    notification.setType(8);
+//                                                    notification.setReaded(false);
+//                                                    childUpdates = new HashMap<String, Object>();
+//                                                    Map<String, Object> notificationValue = notification.toMap();
+//                                                    childUpdates.put(getResources().getString(R.string.notification_CODE) + ChoosePost.getInstance().getUserID() + "/" + key1, notificationValue);
+//                                                    dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                        @Override
+//                                                        public void onComplete(@NonNull Task<Void> task) {
+//                                                            if (task.isComplete()) {
+//                                                                Notification notification = new Notification();
+//                                                                String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + post.getReporter()).push().getKey();
+//                                                                notification.setAccount(MyService.getUserAccount());
+//                                                                notification.setDate(new Times().getDate());
+//                                                                notification.setTime(new Times().getTime());
+//                                                                notification.setPost(EditPost.getInstance().getPost());
+//                                                                notification.setLocation(store);
+//                                                                notification.setType(9);
+//                                                                notification.setReaded(false);
+//                                                                childUpdates = new HashMap<String, Object>();
+//                                                                Map<String, Object> notificationValue = notification.toMap();
+//                                                                childUpdates.put(getResources().getString(R.string.notification_CODE) + post.getReporter() + "/" + key1, notificationValue);
+//                                                                dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                                    @Override
+//                                                                    public void onComplete(@NonNull Task<Void> task) {
+//                                                                        if (task.isComplete()) {
+//                                                                            Toast.makeText(getContext(), "Xóa thành công. Đã thông báo tới người sử dụng", Toast.LENGTH_SHORT).show();
+//                                                                            mProgressDialog.dismiss();
+//                                                                            getActivity().finish();
+//                                                                        } else {
+//                                                                            mProgressDialog.dismiss();
+//                                                                            getActivity().finish();
+//                                                                            Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+//                                                                        }
+//                                                                    }
+//                                                                });
+//
+//                                                            } else {
+//                                                                mProgressDialog.dismiss();
+//                                                                Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+//                                                                getActivity().finish();
+//                                                            }
+//                                                        }
+//                                                    });
+//                                                } else {
+//                                                    Notification notification = new Notification();
+//                                                    String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + ChoosePost.getInstance().getUserID()).push().getKey();
+//                                                    notification.setAccount(MyService.getUserAccount());
+//                                                    notification.setDate(new Times().getDate());
+//                                                    notification.setTime(new Times().getTime());
+//                                                    notification.setLocation(store);
+//                                                    notification.setPost(EditPost.getInstance().getPost());
+//                                                    notification.setType(10);
+//                                                    notification.setReaded(false);
+//                                                    childUpdates = new HashMap<String, Object>();
+//                                                    Map<String, Object> notificationValue = notification.toMap();
+//                                                    childUpdates.put(getResources().getString(R.string.notification_CODE) + ChoosePost.getInstance().getUserID() + "/" + key1, notificationValue);
+//                                                    dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                        @Override
+//                                                        public void onComplete(@NonNull Task<Void> task) {
+//                                                            Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
+//                                                            mProgressDialog.dismiss();
+//                                                            getActivity().finish();
+//
+//                                                        }
+//                                                    });
+//                                                }
+//
+//                                            }
                                         }
                                     });
-                                    builder3.show();
+//                                    builder3.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialog, int which) {
+//                                            dialog.cancel();
+//                                        }
+//                                    });
+//                                    builder3.show();
                                     return true;
 
                                 case R.id.menu_postdetail_sua:
-                                    if (isConnected) {
-                                        EditPost.getInstance().setPost(post);
-                                        EditPost.getInstance().setAlbumList(albumList);
-                                        if(ChoosePost.getInstance().getType() == 1 && mainFood!=null){
-                                            EditPost.getInstance().setDanhgia(mainFood.getDanhGia());
-                                               }
-
-                                        EditPostDialogFragment editPostDialog = new EditPostDialogFragment();
-                                        editPostDialog.show(getActivity().getSupportFragmentManager(), "fragment_editPost");
-
-                                        return true;
-                                    } else Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
+//                                    if (isConnected) {
+//                                        EditPost.getInstance().setPost(post);
+//                                        EditPost.getInstance().setAlbumList(albumList);
+//                                        if(ChoosePost.getInstance().getType() == 1 && mainFood!=null){
+//                                            EditPost.getInstance().setDanhgia(mainFood.getDanhGia());
+//                                               }
+//
+//                                        EditPostDialogFragment editPostDialog = new EditPostDialogFragment();
+//                                        editPostDialog.show(getActivity().getSupportFragmentManager(), "fragment_editPost");
+//
+//                                        return true;
+//                                    } else Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
                                     return true;
                                 case R.id.menu_fooddetail_report:
-                                    if (isConnected) {
-                                       EditPost.getInstance().setPost(post);
-                                        ReasonStoreDialogFragment temp = new ReasonStoreDialogFragment();
-                                        temp.setType(2);
-                                        temp.show(getActivity().getSupportFragmentManager(), "fragment_reportStore");
-                                        return true;
-                                    } else Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
+//                                    if (isConnected) {
+//                                       EditPost.getInstance().setPost(post);
+//                                        ReasonStoreDialogFragment temp = new ReasonStoreDialogFragment();
+//                                        temp.setType(2);
+//                                        temp.show(getActivity().getSupportFragmentManager(), "fragment_reportStore");
+//                                        return true;
+//                                    } else Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
                                     return true;
                                 default:
                                     return false;
@@ -1056,80 +1042,80 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //    }
 
     private void delete() {
-        long size = myLocation.getSize() - 1;
-        myLocation.setSize(size);
-        if (size != 0) {
-            myLocation.setGiaTong(myLocation.getGiaTong() - post.getGia());
-            myLocation.setVsTong(myLocation.getVsTong() - post.getVesinh());
-            myLocation.setPvTong(myLocation.getPvTong() - post.getPhucvu());
-            myLocation.setGiaAVG(myLocation.getGiaTong() / size);
-            myLocation.setVsAVG(myLocation.getVsTong() / size);
-            myLocation.setPvAVG(myLocation.getPvTong() / size);
-        } else {
-            myLocation.setGiaTong(0);
-            myLocation.setVsTong(0);
-            myLocation.setPvTong(0);
-            myLocation.setGiaAVG(0);
-            myLocation.setVsAVG(0);
-            myLocation.setPvAVG(0);
-        }
+//        long size = store.getSize() - 1;
+//        store.setSize(size);
+//        if (size != 0) {
+//            store.setGiaTong(store.getGiaTong() - post.getGia());
+//            store.setVsTong(store.getVsTong() - post.getVesinh());
+//            store.setPvTong(store.getPvTong() - post.getPhucvu());
+//            store.setGiaAVG(store.getGiaTong() / size);
+//            store.setVsAVG(store.getVsTong() / size);
+//            store.setPvAVG(store.getPvTong() / size);
+//        } else {
+//            store.setGiaTong(0);
+//            store.setVsTong(0);
+//            store.setPvTong(0);
+//            store.setGiaAVG(0);
+//            store.setVsAVG(0);
+//            store.setPvAVG(0);
+//        }
 
-        myLocation.setTongAVG((myLocation.getGiaAVG() + myLocation.getVsAVG() +
-                myLocation.getPvAVG()) / 3);
-        Map<String, Object> updateChild = new HashMap<>();
-        updateChild.put(
-                getString(R.string.locations_CODE) + myLocation.getLocaID(), myLocation);
-        dbRef.updateChildren(updateChild).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                dbRef.child(
-                         getString(R.string.posts_CODE) + postID).removeValue()
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (!task.isComplete()) {
-                                    mProgressDialog.dismiss();
-                                    Toast.makeText(getContext(),
-                                            task.getException().getMessage(),
-                                            Toast.LENGTH_SHORT).show();
-                                } else {
-                                    dbRef.child(
-                                            getString(R.string.postcomment_CODE) +
-                                                    postID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (!task.isComplete()) {
-                                                Toast.makeText(getContext(),
-                                                        task.getException().getMessage(),
-                                                        Toast.LENGTH_SHORT).show();
-                                            } else {
-                                                mProgressDialog.dismiss();
-                                                Toast.makeText(getContext(), "Xóa thành công",
-                                                        Toast.LENGTH_SHORT).show();
-                                                MyService.setChangeContent("justDelete");
-                                                getActivity().finish();
-                                            }
-                                        }
-                                    });
+//        store.setTongAVG((store.getGiaAVG() + store.getVsAVG() +
+//                store.getPvAVG()) / 3);
+//        Map<String, Object> updateChild = new HashMap<>();
+//        updateChild.put(
+//                getString(R.string.locations_CODE) + store.getLocaID(), store);
+//        dbRef.updateChildren(updateChild).addOnCompleteListener(new OnCompleteListener<Void>() {
+//            @Override
+//            public void onComplete(@NonNull Task<Void> task) {
+//                dbRef.child(
+//                         getString(R.string.posts_CODE) + postID).removeValue()
+//                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<Void> task) {
+//                                if (!task.isComplete()) {
+//                                    mProgressDialog.dismiss();
+//                                    Toast.makeText(getContext(),
+//                                            task.getException().getMessage(),
+//                                            Toast.LENGTH_SHORT).show();
+//                                } else {
 //                                    dbRef.child(
-//                                            getString(R.string.userpost_CODE)
-//                                            + post.getUserId() + "/" + postID).removeValue()
-//                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                                @Override
-//                                                public void onComplete(@NonNull Task<Void> task) {
-//                                                    if (!task.isComplete()) {
-//                                                        Toast.makeText(getContext(),
-//                                                                task.getException().getMessage(),
-//                                                                Toast.LENGTH_SHORT).show();
-//                                                    } else {
-//
-//                                                    }
-//                                                }
-//                                            });
-                                }
-                            }
-                        });
-            }
-        });
+//                                            getString(R.string.postcomment_CODE) +
+//                                                    postID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                        @Override
+//                                        public void onComplete(@NonNull Task<Void> task) {
+//                                            if (!task.isComplete()) {
+//                                                Toast.makeText(getContext(),
+//                                                        task.getException().getMessage(),
+//                                                        Toast.LENGTH_SHORT).show();
+//                                            } else {
+//                                                mProgressDialog.dismiss();
+//                                                Toast.makeText(getContext(), "Xóa thành công",
+//                                                        Toast.LENGTH_SHORT).show();
+//                                                MyService.setChangeContent("justDelete");
+//                                                getActivity().finish();
+//                                            }
+//                                        }
+//                                    });
+////                                    dbRef.child(
+////                                            getString(R.string.userpost_CODE)
+////                                            + post.getUserId() + "/" + postID).removeValue()
+////                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+////                                                @Override
+////                                                public void onComplete(@NonNull Task<Void> task) {
+////                                                    if (!task.isComplete()) {
+////                                                        Toast.makeText(getContext(),
+////                                                                task.getException().getMessage(),
+////                                                                Toast.LENGTH_SHORT).show();
+////                                                    } else {
+////
+////                                                    }
+////                                                }
+////                                            });
+//                                }
+//                            }
+//                        });
+//            }
+//        });
     }
 }

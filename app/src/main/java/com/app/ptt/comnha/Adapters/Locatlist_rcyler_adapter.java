@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.ptt.comnha.Classes.AnimationUtils;
-import com.app.ptt.comnha.FireBase.MyLocation;
+import com.app.ptt.comnha.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -23,7 +23,7 @@ public class Locatlist_rcyler_adapter extends RecyclerView.Adapter<Locatlist_rcy
     Activity activity;
 
 
-    ArrayList<MyLocation> list;
+    ArrayList<Store> list;
     int previuosPosition = 0;
     LatLng yourLocation;
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -39,7 +39,7 @@ public class Locatlist_rcyler_adapter extends RecyclerView.Adapter<Locatlist_rcy
             txt_diem = (TextView) itemView.findViewById(R.id.item_rcyler_txtscore);
         }
     }
-    public Locatlist_rcyler_adapter(ArrayList<MyLocation> list) {
+    public Locatlist_rcyler_adapter(ArrayList<Store> list) {
         this.list = list;
     }
 
@@ -54,17 +54,17 @@ public class Locatlist_rcyler_adapter extends RecyclerView.Adapter<Locatlist_rcy
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        holder.txt_tenquan.setText(list.get(position).getName());
-        holder.txt_diachi.setText(list.get(position).getDiachi());
-        holder.txt_diem.setText(String.valueOf(list.get(position).getTongAVG()));
+//        holder.txt_tenquan.setText(list.get(position).getName());
+//        holder.txt_diachi.setText(list.get(position).getDiachi());
+//        holder.txt_diem.setText(String.valueOf(list.get(position).getTongAVG()));
         if (position > previuosPosition) {
             AnimationUtils.animateItemRcylerV(holder, true);
         } else {
             AnimationUtils.animateItemRcylerV(holder, false);
         }
         previuosPosition = position;
-        holder.txt_km.setText(
-                list.get(position).getKhoangcach());
+//        holder.txt_km.setText(
+//                list.get(position).getKhoangcach());
 //        holder.imgV.setBackground();
     }
 

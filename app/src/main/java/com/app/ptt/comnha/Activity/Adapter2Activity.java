@@ -9,16 +9,12 @@ import android.util.Log;
 
 import com.app.ptt.comnha.Fragment.AddFoodFragment;
 import com.app.ptt.comnha.Fragment.AddlocaFragment;
-import com.app.ptt.comnha.Fragment.AddpostFragment;
-import com.app.ptt.comnha.Fragment.ChoosePhotoFragment;
-import com.app.ptt.comnha.Fragment.ChooselocaFragment;
+import com.app.ptt.comnha.Fragment.WritepostFragment;
 import com.app.ptt.comnha.Fragment.FooddetailFragment;
-import com.app.ptt.comnha.Fragment.LocadetailFragment;
 import com.app.ptt.comnha.Fragment.NotificationFragment;
 import com.app.ptt.comnha.Fragment.ProfiledetailFragment;
 import com.app.ptt.comnha.Fragment.SigninFragment;
 import com.app.ptt.comnha.Fragment.SignupFragment;
-import com.app.ptt.comnha.Fragment.ViewAlbumFragment;
 import com.app.ptt.comnha.Fragment.ViewpostFragment;
 import com.app.ptt.comnha.R;
 
@@ -38,10 +34,10 @@ public class Adapter2Activity extends AppCompatActivity {
         if (FRAGMENT_CODE.equals(getString(R.string.frag_addpost_CODE))) {
             if (findViewById(R.id.frame_adapter2) != null) {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter2) == null) {
-                    AddpostFragment addpostFragment = new AddpostFragment();
-                    addpostFragment.setArguments(getIntent().getExtras());
+                    WritepostFragment writepostFragment = new WritepostFragment();
+                    writepostFragment.setArguments(getIntent().getExtras());
 
-                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, addpostFragment)
+                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, writepostFragment)
                             .commit();
                 }
             }
@@ -62,26 +58,26 @@ public class Adapter2Activity extends AppCompatActivity {
         } else if (FRAGMENT_CODE.equals(getString(R.string.frag_locadetail_CODE))) {
             if (findViewById(R.id.frame_adapter2) != null) {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter2) == null) {
-                    LocadetailFragment locadetailFragment = new LocadetailFragment();
-                    locadetailFragment.setArguments(getIntent().getExtras());
-                    Log.i("LocadetailFragment", "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCc");
-                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, locadetailFragment).commit();
+//                    LocadetailFragment locadetailFragment = new LocadetailFragment();
+//                    locadetailFragment.setArguments(getIntent().getExtras());
+//                    Log.i("LocadetailFragment", "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCc");
+//                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, locadetailFragment).commit();
                 }
             }
         } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frag_chooseloca_CODE))) {
             if (findViewById(R.id.frame_adapter2) != null) {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter2) == null) {
-                    ChooselocaFragment chooselocaFragment = new ChooselocaFragment();
-                    chooselocaFragment.setArguments(getIntent().getExtras());
-                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, chooselocaFragment).commit();
+//                    ChooselocaFragment chooselocaFragment = new ChooselocaFragment();
+//                    chooselocaFragment.setArguments(getIntent().getExtras());
+//                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, chooselocaFragment).commit();
                 }
             }
         } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frag_chooseimg_CODE))) {
             if (findViewById(R.id.frame_adapter2) != null) {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter2) == null) {
-                    ChoosePhotoFragment choosePhotoFragment = new ChoosePhotoFragment();
-                    choosePhotoFragment.setArguments(getIntent().getExtras());
-                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, choosePhotoFragment).commit();
+//                    ChoosePhotoFragment choosePhotoFragment = new ChoosePhotoFragment();
+//                    choosePhotoFragment.setArguments(getIntent().getExtras());
+//                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, choosePhotoFragment).commit();
                 }
             }
 
@@ -142,11 +138,11 @@ public class Adapter2Activity extends AppCompatActivity {
         } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frg_viewalbum_CODE))) {
             if (findViewById(R.id.frame_adapter2) != null) {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter2) == null) {
-                    ViewAlbumFragment viewAlbumFragment = new ViewAlbumFragment();
-                    viewAlbumFragment.setFromFrag(fromFrag);
-                    viewAlbumFragment.setArguments(getIntent().getExtras());
-                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, viewAlbumFragment)
-                            .commit();
+//                    ViewAlbumFragment viewAlbumFragment = new ViewAlbumFragment();
+//                    viewAlbumFragment.setFromFrag(fromFrag);
+//                    viewAlbumFragment.setArguments(getIntent().getExtras());
+//                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, viewAlbumFragment)
+//                            .commit();
                 }
             }
         }else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frg_notification_CODE))) {

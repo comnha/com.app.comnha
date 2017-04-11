@@ -1,7 +1,5 @@
 package com.app.ptt.comnha.SingletonClasses;
 
-import com.app.ptt.comnha.FireBase.Food;
-import com.app.ptt.comnha.FireBase.MyLocation;
 import com.app.ptt.comnha.FireBase.Notification;
 
 /**

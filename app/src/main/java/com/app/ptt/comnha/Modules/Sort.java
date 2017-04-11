@@ -1,7 +1,5 @@
 package com.app.ptt.comnha.Modules;
 
-import android.os.AsyncTask;
-
 import com.app.ptt.comnha.FireBase.Post;
 
 import java.util.ArrayList;
@@ -17,7 +15,7 @@ public class Sort {
         this.length = inputArr.size();
         this.tempMergArr =new ArrayList<>(length);
         Post post=new Post();
-        post.setLocaName("NULL  ");
+//        post.setLocaName("NULL  ");
         for (Post post1: array){
             tempMergArr.add(post1);
         }
@@ -47,14 +45,14 @@ public class Sort {
         int j = middle + 1;
         int k = lowerIndex;
         while (i <= middle && j <= higherIndex) {
-            if (tempMergArr.get(i).getCommentCount() <= tempMergArr.get(j).getCommentCount()) {
-                array.set(k,tempMergArr.get(i));
-                i++;
-            } else {
-                array.set(k,tempMergArr.get(j));
-                j++;
-            }
-            k++;
+//            if (tempMergArr.get(i).getCommentCount() <= tempMergArr.get(j).getCommentCount()) {
+//                array.set(k,tempMergArr.get(i));
+//                i++;
+//            } else {
+//                array.set(k,tempMergArr.get(j));
+//                j++;
+//            }
+//            k++;
         }
         while (i <= middle) {
             array.set(k,tempMergArr.get(i));

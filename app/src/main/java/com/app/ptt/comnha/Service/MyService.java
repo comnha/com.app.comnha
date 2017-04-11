@@ -16,14 +16,12 @@ import android.util.Log;
 
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.FireBase.Account;
-import com.app.ptt.comnha.FireBase.MyLocation;
+import com.app.ptt.comnha.FireBase.Store;
 import com.app.ptt.comnha.FireBase.Notification;
 import com.app.ptt.comnha.Modules.MyTool;
 import com.app.ptt.comnha.Modules.Storage;
 
 import java.util.ArrayList;
-
-import static com.app.ptt.comnha.Modules.ConnectionDetector.showSettingNetworkAlert;
 
 public class MyService extends Service {
     private static String LOG_TAG = MyService.class.getSimpleName();
@@ -246,7 +244,7 @@ public class MyService extends Service {
                 if (myTool.getYourLocation() != null) {
                     try {
                         Storage.deleteFile(getApplicationContext(), "myLocation");
-                        ArrayList<MyLocation> list = new ArrayList<>();
+                        ArrayList<Store> list = new ArrayList<>();
                         list.add(myTool.getYourLocation());
                         Storage.writeFile(getApplicationContext(), Storage.parseMyLocationToJson(list).toString(), "myLocation");
                         myTool.stopLocationUpdate();
@@ -255,7 +253,7 @@ public class MyService extends Service {
                     }
                     broadcastIntent.setAction(Const.BROADCAST_SEND_STATUS_GET_LOCATION);
                     broadcastIntent.putExtra("isConnected", true);
-                    broadcastIntent.putExtra("myLocation", myTool.getYourLocation());
+//                    broadcastIntent.putExtra("myLocation", myTool.getYourLocation());
                     context.sendBroadcast(broadcastIntent);
                 }
             }

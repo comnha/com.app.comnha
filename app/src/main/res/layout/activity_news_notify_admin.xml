@@ -23,7 +23,7 @@
                 android:id="@+id/img_bg_store_admin_notify_news_act"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/admin_color_notify_newstore" />
+                android:background="@color/admin_color_selection_news" />
 
             <ImageView
                 android:id="@+id/img_bg_post_admin_notify_news_act"

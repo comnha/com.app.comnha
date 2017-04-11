@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.app.ptt.comnha.FireBase.MyLocation;
+import com.app.ptt.comnha.FireBase.Store;
 import com.app.ptt.comnha.R;
 
 import java.util.ArrayList;
@@ -17,29 +17,29 @@ import java.util.ArrayList;
  */
 
 public class Store_listview_adapter extends BaseAdapter {
-    ArrayList<MyLocation> myLocations;
+    ArrayList<Store> stores;
     OnItemClickLiestner onItemClickLiestner;
 
     public interface OnItemClickLiestner {
-        void onItemClick(MyLocation myLocation);
+        void onItemClick(Store store);
     }
 
     public void setOnItemClickLiestner(OnItemClickLiestner liestner) {
         onItemClickLiestner = liestner;
     }
 
-    public Store_listview_adapter(ArrayList<MyLocation> myLocations) {
-        this.myLocations = myLocations;
+    public Store_listview_adapter(ArrayList<Store> stores) {
+        this.stores = stores;
     }
 
     @Override
     public int getCount() {
-        return myLocations.size();
+        return stores.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return myLocations.get(position);
+        return stores.get(position);
     }
 
     @Override
@@ -67,11 +67,11 @@ public class Store_listview_adapter extends BaseAdapter {
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClickLiestner.onItemClick(myLocations.get(position));
+                onItemClickLiestner.onItemClick(stores.get(position));
             }
         });
-        holder.txt_tenquan.setText(myLocations.get(position).getName());
-        holder.txt_diachi.setText(myLocations.get(position).getDiachi());
+//        holder.txt_tenquan.setText(stores.get(position).getName());
+//        holder.txt_diachi.setText(stores.get(position).getDiachi());
         return convertView;
     }
 

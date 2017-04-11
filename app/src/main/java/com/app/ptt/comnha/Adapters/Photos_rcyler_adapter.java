@@ -10,7 +10,6 @@ import android.widget.ImageView;
 
 import com.app.ptt.comnha.FireBase.Image;
 import com.app.ptt.comnha.R;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -29,9 +28,9 @@ public class Photos_rcyler_adapter extends RecyclerView.Adapter<Photos_rcyler_ad
     @Override
     public void onBindViewHolder(Viewholder holder, int position) {
         Log.i("Add photo","Add");
-        Picasso.with(activity)
-                .load(photoList.get(position).getPath())
-                .into(holder.imageView);
+//        Picasso.with(activity)
+//                .load(photoList.get(position).getPath())
+//                .into(holder.imageView);
     }
 
     private Activity activity;

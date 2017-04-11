@@ -18,7 +18,7 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.app.ptt.comnha.Const.Const;
-import com.app.ptt.comnha.FireBase.MyLocation;
+import com.app.ptt.comnha.FireBase.Store;
 import com.firebase.client.Firebase;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -50,10 +50,10 @@ public class MyTool implements GoogleApiClient.ConnectionCallbacks,
     ProgressDialog progressDialog;
     Firebase ref;
     int count = 0;
-    ArrayList<MyLocation> listLocation;
+    ArrayList<Store> listLocation;
     PlaceAPI placeAPI;
     Intent broadcastIntent;
-    MyLocation yourLocation = new MyLocation();
+    Store yourLocation = new Store();
     int temp = 1;
 
     int flag;
@@ -161,10 +161,10 @@ public class MyTool implements GoogleApiClient.ConnectionCallbacks,
     }
 
     @Override
-    public void DoInBackGroundLocation(MyLocation location) {
+    public void DoInBackGroundLocation(Store location) {
         if (location != null) {
             flag = 2;
-            placeAPI = new PlaceAPI(location.getDiachi(), this);
+//            placeAPI = new PlaceAPI(location.getDiachi(), this);
         } else {
             Log.i(LOG + ".onConnected", "LOI BI NULL");
             flag = -4;
@@ -176,7 +176,7 @@ public class MyTool implements GoogleApiClient.ConnectionCallbacks,
 
     class ParseToLocation extends AsyncTask<Void, Void, Void> {
         Location location;
-        MyLocation myLocation;
+        Store store;
 
         public ParseToLocation(Location l, DoInBackGroundOK doInBackGroundOK) {
             location = l;
@@ -188,15 +188,15 @@ public class MyTool implements GoogleApiClient.ConnectionCallbacks,
 
         @Override
         protected Void doInBackground(Void... params) {
-            myLocation = returnLocationByLatLng(location.getLatitude(), location.getLongitude());
+            store = returnLocationByLatLng(location.getLatitude(), location.getLongitude());
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (myLocation != null) {
-                doInBackGroundOK.DoInBackGroundLocation(myLocation);
+            if (store != null) {
+                doInBackGroundOK.DoInBackGroundLocation(store);
             }
         }
     }
@@ -221,20 +221,21 @@ public class MyTool implements GoogleApiClient.ConnectionCallbacks,
         if (latitude == null && longtitude == null) {
             this.latitude = location.getLatitude();
             this.longtitude = location.getLongitude();
-            MyLocation myLocation;
-            myLocation = returnLocationByLatLng(location.getLatitude(), location.getLongitude());
+            Store store;
+            store = returnLocationByLatLng(location.getLatitude(), location.getLongitude());
             flag = 2;
-            placeAPI = new PlaceAPI(myLocation.getDiachi(), this);
-        }
-        if (location != null) {
-            if (location.getLatitude() != this.latitude && location.getLongitude() != this.longtitude &&
-                    getDistance(new LatLng(location.getLatitude(), location.getLongitude()), new LatLng(this.latitude, this.longtitude)) > 2000) {
-                Log.i(LOG + ".onLocationChanged", "Vi tri cua ban bi thay doi: " + getDistance(new LatLng(location.getLatitude(), location.getLongitude()), new LatLng(this.latitude, this.longtitude)) + "m");
-                this.latitude = location.getLatitude();
-                this.longtitude = location.getLongitude();
-                flag = 2;
-                ParseToLocation parseToLocation = new ParseToLocation(location, this);
-                parseToLocation.execute();
+//            placeAPI = new PlaceAPI(store.getDiachi(), this);
+//        }
+            if (location != null) {
+                if (location.getLatitude() != this.latitude && location.getLongitude() != this.longtitude &&
+                        getDistance(new LatLng(location.getLatitude(), location.getLongitude()), new LatLng(this.latitude, this.longtitude)) > 2000) {
+                    Log.i(LOG + ".onLocationChanged", "Vi tri cua ban bi thay doi: " + getDistance(new LatLng(location.getLatitude(), location.getLongitude()), new LatLng(this.latitude, this.longtitude)) + "m");
+                    this.latitude = location.getLatitude();
+                    this.longtitude = location.getLongitude();
+                    flag = 2;
+                    ParseToLocation parseToLocation = new ParseToLocation(location, this);
+                    parseToLocation.execute();
+                }
             }
         }
     }
@@ -305,7 +306,7 @@ public class MyTool implements GoogleApiClient.ConnectionCallbacks,
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     }
 
-    public MyLocation getYourLocation() {
+    public Store getYourLocation() {
         Log.i(LOG + ".returnLocation", "Lay vi tri cua ban");
         if (yourLocation != null)
             return yourLocation;
@@ -313,8 +314,8 @@ public class MyTool implements GoogleApiClient.ConnectionCallbacks,
             return null;
     }
 
-    public MyLocation returnLocationByLatLng(Double latitude, Double longitude) {
-        MyLocation myLocation = new MyLocation();
+    public Store returnLocationByLatLng(Double latitude, Double longitude) {
+        Store store = new Store();
 
         List<Address> addresses;
         Double lat = latitude;
@@ -357,20 +358,20 @@ public class MyTool implements GoogleApiClient.ConnectionCallbacks,
                         else
                             e += ", " + c;
 
-                        myLocation.setQuanhuyen(c);
+//                        store.setQuanhuyen(c);
                     }
                     if (d != null) {
                         if (a == null && b == null && c == null)
                             e += d;
                         else
                             e += ", " + d;
-                        myLocation.setTinhtp(d);
+//                        store.setTinhtp(d);
                     }
-                    myLocation.setDiachi(e);
-                    myLocation.setLat(lat);
-                    myLocation.setLng(lon);
-                    Log.i(LOG + ".returnLocationByLatLng", "Location can tim" + myLocation.getDiachi());
-                    return myLocation;
+//                    store.setDiachi(e);
+//                    store.setLat(lat);
+//                    store.setLng(lon);
+//                    Log.i(LOG + ".returnLocationByLatLng", "Location can tim" + store.getDiachi());
+                    return store;
                 }
                 return null;
             }
@@ -467,14 +468,14 @@ public class MyTool implements GoogleApiClient.ConnectionCallbacks,
     @Override
     public void onLocationFinderSuccess(PlaceAttribute placeAttribute) {
         if (placeAttribute != null) {
-            yourLocation = new MyLocation();
-            yourLocation.setDiachi(placeAttribute.getFullname());
-            yourLocation.setQuanhuyen(placeAttribute.getDistrict());
-            yourLocation.setTinhtp(placeAttribute.getState());
+//            yourLocation = new Store();
+//            yourLocation.setDiachi(placeAttribute.getFullname());
+//            yourLocation.setQuanhuyen(placeAttribute.getDistrict());
+//            yourLocation.setTinhtp(placeAttribute.getState());
             try {
                 LatLng a = (returnLatLngByName(placeAttribute.getFullname()));
-                yourLocation.setLat(a.latitude);
-                yourLocation.setLng(a.longitude);
+//                yourLocation.setLat(a.latitude);
+//                yourLocation.setLng(a.longitude);
                 if (flag == 2) {
                     sendBroadcast("Location");
                     getLocationFail = false;
@@ -484,7 +485,7 @@ public class MyTool implements GoogleApiClient.ConnectionCallbacks,
             }
 
             if (flag == 3) {
-                ArrayList<MyLocation> mList = new ArrayList<>();
+                ArrayList<Store> mList = new ArrayList<>();
                 mList.add(yourLocation);
                 Storage.writeFile(mContext, Storage.parseMyLocationToJson(mList).toString(), "myLocation");
             }

@@ -11,7 +11,7 @@ public class Notification {
     String date,time,notiID;
     Food food;
     Post post;
-    MyLocation location;
+    Store location;
 
     public String getReason() {
         return reason;
@@ -104,11 +104,11 @@ public class Notification {
         this.post = post;
     }
 
-    public MyLocation getLocation() {
+    public Store getLocation() {
         return location;
     }
 
-    public void setLocation(MyLocation location) {
+    public void setLocation(Store location) {
         this.location = location;
     }
     public Map<String, Object> toMap() {

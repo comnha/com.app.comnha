@@ -1,14 +1,13 @@
 package com.app.ptt.comnha.SingletonClasses;
 
-import com.app.ptt.comnha.FireBase.MyLocation;
-import com.app.ptt.comnha.FireBase.Post;
+import com.app.ptt.comnha.FireBase.Store;
 
 /**
  * Created by PTT on 10/5/2016.
  */
 public class EditLocal {
     private static EditLocal ourInstance;
-    private MyLocation myLocation;
+    private Store store;
 
     public static EditLocal getInstance() {
         if (ourInstance == null) {
@@ -20,12 +19,12 @@ public class EditLocal {
     private EditLocal() {
     }
 
-    public void setMyLocation(MyLocation myLocation) {
-        this.myLocation = myLocation;
+    public void setStore(Store store) {
+        this.store = store;
     }
 
-    public MyLocation getMyLocation() {
+    public Store getStore() {
 
-        return myLocation;
+        return store;
     }
 }

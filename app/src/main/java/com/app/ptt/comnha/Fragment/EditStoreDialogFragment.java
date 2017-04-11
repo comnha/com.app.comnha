@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -28,19 +27,14 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.Toast;
 
-import com.app.ptt.comnha.Modules.Times;
-import com.app.ptt.comnha.FireBase.MyLocation;
-import com.app.ptt.comnha.FireBase.Notification;
+import com.app.ptt.comnha.FireBase.Store;
 import com.app.ptt.comnha.Modules.LocationFinderListener;
+import com.app.ptt.comnha.Modules.MyTool;
 import com.app.ptt.comnha.Modules.PlaceAPI;
 import com.app.ptt.comnha.Modules.PlaceAttribute;
 import com.app.ptt.comnha.R;
-import com.app.ptt.comnha.Service.MyService;
-import com.app.ptt.comnha.Modules.MyTool;
 import com.app.ptt.comnha.SingletonClasses.EditLocal;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
@@ -69,13 +63,13 @@ public class EditStoreDialogFragment extends DialogFragment implements View.OnCl
     ArrayList<String> resultList;
     private DatabaseReference dbRef;
     String prov, dist;
-    MyLocation location;
+    Store location;
     ProgressDialog mProgressDialog;
 
     MyTool myTool;
     int pos = -1;
     PlaceAPI placeAPI;
-    MyLocation newLocation;
+    Store newLocation;
     ArrayList<PlaceAttribute> placeAttributes;
 
     public EditStoreDialogFragment() {
@@ -87,7 +81,7 @@ public class EditStoreDialogFragment extends DialogFragment implements View.OnCl
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_edit_store_dialog, container, false);
-        location = EditLocal.getInstance().getMyLocation();
+        location = EditLocal.getInstance().getStore();
         now = Calendar.getInstance();
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
         childUpdates=new HashMap<>();
@@ -134,95 +128,95 @@ public class EditStoreDialogFragment extends DialogFragment implements View.OnCl
     @Override
     public void onStart() {
         super.onStart();
-        edt_tenquan.setText(EditLocal.getInstance().getMyLocation().getName());
-        edt_diachi.setText(EditLocal.getInstance().getMyLocation().getDiachi());
-        edt_sdt.setText(EditLocal.getInstance().getMyLocation().getSdt());
-        edt_giamax.setText(EditLocal.getInstance().getMyLocation().getGiamax()+"");
-        edt_giamin.setText(EditLocal.getInstance().getMyLocation().getGiamin()+"");
-        btn_timestart.setText(EditLocal.getInstance().getMyLocation().getTimestart());
-        btn_timeend.setText(EditLocal.getInstance().getMyLocation().getTimeend());
+//        edt_tenquan.setText(EditLocal.getInstance().getStore().getName());
+//        edt_diachi.setText(EditLocal.getInstance().getStore().getDiachi());
+//        edt_sdt.setText(EditLocal.getInstance().getStore().getSdt());
+//        edt_giamax.setText(EditLocal.getInstance().getStore().getGiamax()+"");
+//        edt_giamin.setText(EditLocal.getInstance().getStore().getGiamin()+"");
+//        btn_timestart.setText(EditLocal.getInstance().getStore().getTimestart());
+//        btn_timeend.setText(EditLocal.getInstance().getStore().getTimeend());
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.frg_reportstore_btnok:
-                if (edt_tenquan.getText().toString().equals(EditLocal.getInstance().getMyLocation().getName())
-                        && edt_diachi.getText().toString().equals(EditLocal.getInstance().getMyLocation().getDiachi())
-                        && edt_sdt.getText().toString().equals(EditLocal.getInstance().getMyLocation().getSdt())
-                        && edt_giamax.getText().toString().equals(EditLocal.getInstance().getMyLocation().getGiamax()+"")
-                        && edt_giamin.getText().toString().equals(EditLocal.getInstance().getMyLocation().getGiamin()+"")
-                        && btn_timeend.getText().toString().equals(EditLocal.getInstance().getMyLocation().getTimeend())
-                        && btn_timestart.getText().toString().equals(EditLocal.getInstance().getMyLocation().getTimestart())) {
-                    new AlertDialog.Builder(getContext())
-                            .setMessage("Bạn không có thay đổi nào cả!!!")
-                            .setPositiveButton("Trở lại", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .show();
-                } else {
-                    location.setName(edt_tenquan.getText().toString());
-                    location.setSdt(edt_sdt.getText().toString());
-                    location.setGiamax(Long.parseLong(edt_giamax.getText().toString()));
-                    location.setGiamin(Long.parseLong(edt_giamin.getText().toString()));
-                    location.setTimestart(btn_timestart.getText().toString());
-                    location.setTimeend(btn_timeend.getText().toString());
-                    if(!edt_diachi.getText().toString().equals(EditLocal.getInstance().getMyLocation().getDiachi())){
-                            placeAPI = new PlaceAPI(edt_diachi.getText().toString(), this);
-                    }else{
-                        Map<String, Object> updateLocal = location.toMap();
-                        childUpdates.put(
-                                getResources().getString(R.string.locations_CODE)
-                                        + location.getLocaID(), updateLocal);
-                        dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isComplete()) {
-                                    if(!location.getVisible()){
-                                        Notification notification = new Notification();
-                                        String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + "admin").push().getKey();
-                                        notification.setAccount(MyService.getUserAccount());
-                                        notification.setDate(new Times().getDate());
-                                        notification.setTime(new Times().getTime());
-                                        notification.setType(4);
-                                        notification.setLocation(location);
-                                        notification.setReaded(false);
-                                        notification.setTo("admin");
-                                        Map<String, Object> notificationValue = notification.toMap();
-                                        childUpdates.put(getResources().getString(R.string.notification_CODE) + "admin/" + key1, notificationValue);
-                                        dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isComplete()) {
-                                                    Toast.makeText(getContext(), "Đã sửa. Bạn vui lòng chờ admin phản hồi", Toast.LENGTH_SHORT).show();
-                                                    mProgressDialog.dismiss();
-                                                    getActivity().finish();
-                                                } else {
-                                                    mProgressDialog.dismiss();
-                                                    Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-                                    }else{
-                                        mProgressDialog.dismiss();
-                                        Toast.makeText(getActivity(), "Sửa thành công", Toast.LENGTH_SHORT).show();
-                                        getActivity().finish();
-                                    }
-
-
-
-
-                                } else {
-                                    mProgressDialog.dismiss();
-                                    Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                    }
-                }
+//                if (edt_tenquan.getText().toString().equals(EditLocal.getInstance().getStore().getName())
+//                        && edt_diachi.getText().toString().equals(EditLocal.getInstance().getStore().getDiachi())
+//                        && edt_sdt.getText().toString().equals(EditLocal.getInstance().getStore().getSdt())
+//                        && edt_giamax.getText().toString().equals(EditLocal.getInstance().getStore().getGiamax()+"")
+//                        && edt_giamin.getText().toString().equals(EditLocal.getInstance().getStore().getGiamin()+"")
+//                        && btn_timeend.getText().toString().equals(EditLocal.getInstance().getStore().getTimeend())
+//                        && btn_timestart.getText().toString().equals(EditLocal.getInstance().getStore().getTimestart())) {
+//                    new AlertDialog.Builder(getContext())
+//                            .setMessage("Bạn không có thay đổi nào cả!!!")
+//                            .setPositiveButton("Trở lại", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                }
+//                            })
+//                            .show();
+//                } else {
+//                    location.setName(edt_tenquan.getText().toString());
+//                    location.setSdt(edt_sdt.getText().toString());
+//                    location.setGiamax(Long.parseLong(edt_giamax.getText().toString()));
+//                    location.setGiamin(Long.parseLong(edt_giamin.getText().toString()));
+//                    location.setTimestart(btn_timestart.getText().toString());
+//                    location.setTimeend(btn_timeend.getText().toString());
+//                    if(!edt_diachi.getText().toString().equals(EditLocal.getInstance().getStore().getDiachi())){
+//                            placeAPI = new PlaceAPI(edt_diachi.getText().toString(), this);
+//                    }else{
+//                        Map<String, Object> updateLocal = location.toMap();
+//                        childUpdates.put(
+//                                getResources().getString(R.string.locations_CODE)
+//                                        + location.getLocaID(), updateLocal);
+//                        dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<Void> task) {
+//                                if (task.isComplete()) {
+//                                    if(!location.getVisible()){
+//                                        Notification notification = new Notification();
+//                                        String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + "admin").push().getKey();
+//                                        notification.setAccount(MyService.getUserAccount());
+//                                        notification.setDate(new Times().getDate());
+//                                        notification.setTime(new Times().getTime());
+//                                        notification.setType(4);
+//                                        notification.setLocation(location);
+//                                        notification.setReaded(false);
+//                                        notification.setTo("admin");
+//                                        Map<String, Object> notificationValue = notification.toMap();
+//                                        childUpdates.put(getResources().getString(R.string.notification_CODE) + "admin/" + key1, notificationValue);
+//                                        dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                            @Override
+//                                            public void onComplete(@NonNull Task<Void> task) {
+//                                                if (task.isComplete()) {
+//                                                    Toast.makeText(getContext(), "Đã sửa. Bạn vui lòng chờ admin phản hồi", Toast.LENGTH_SHORT).show();
+//                                                    mProgressDialog.dismiss();
+//                                                    getActivity().finish();
+//                                                } else {
+//                                                    mProgressDialog.dismiss();
+//                                                    Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+//                                                }
+//                                            }
+//                                        });
+//                                    }else{
+//                                        mProgressDialog.dismiss();
+//                                        Toast.makeText(getActivity(), "Sửa thành công", Toast.LENGTH_SHORT).show();
+//                                        getActivity().finish();
+//                                    }
+//
+//
+//
+//
+//                                } else {
+//                                    mProgressDialog.dismiss();
+//                                    Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        });
+//                    }
+//                }
 
                 break;
             case R.id.frg_reportstore_btncancel:
@@ -317,46 +311,46 @@ public class EditStoreDialogFragment extends DialogFragment implements View.OnCl
             mProgressDialog.dismiss();
             placeAttribute.setPlaceLatLng(myTool.returnLatLngByName(placeAttribute.getFullname()));
             final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setMessage("Địa chỉ: " + placeAttribute.getFullname()).setTitle("Xác nhận")
-                    .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            location.setLat(newLatLng.latitude);
-                            location.setLng(newLatLng.longitude);
-                            location.setTinhtp(myPlaceAttribute.getState());
-                            location.setQuanhuyen(myPlaceAttribute.getDistrict());
-                            location.setTime(new Times().getTime());
-                            location.setDate(new Times().getDate());
-                            location.setIndex(myPlaceAttribute.getState()+"_"+myPlaceAttribute.getDistrict());
-                            Map<String, Object> updateLocal = location.toMap();
-                            childUpdates.put(
-                                    getResources().getString(R.string.locations_CODE)
-                                            + location.getLocaID(), updateLocal);
-                            dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isComplete()) {
-                                        mProgressDialog.dismiss();
-                                        Toast.makeText(getActivity(), "Sửa thành công", Toast.LENGTH_SHORT).show();
-                                        getActivity().finish();
-                                    } else {
-                                        mProgressDialog.dismiss();
-                                        Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-
-                            dialog.dismiss();
-                        }
-                    })
-                    .setNegativeButton("Thử lại", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            AlertDialog dialog = builder.create();
-            dialog.show();
+//            builder.setMessage("Địa chỉ: " + placeAttribute.getFullname()).setTitle("Xác nhận")
+//                    .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            location.setLat(newLatLng.latitude);
+//                            location.setLng(newLatLng.longitude);
+//                            location.setTinhtp(myPlaceAttribute.getState());
+//                            location.setQuanhuyen(myPlaceAttribute.getDistrict());
+//                            location.setTime(new Times().getTime());
+//                            location.setDate(new Times().getDate());
+//                            location.setIndex(myPlaceAttribute.getState()+"_"+myPlaceAttribute.getDistrict());
+//                            Map<String, Object> updateLocal = location.toMap();
+////                            childUpdates.put(
+////                                    getResources().getString(R.string.locations_CODE)
+////                                            + location.getLocaID(), updateLocal);
+//                            dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<Void> task) {
+//                                    if (task.isComplete()) {
+//                                        mProgressDialog.dismiss();
+//                                        Toast.makeText(getActivity(), "Sửa thành công", Toast.LENGTH_SHORT).show();
+//                                        getActivity().finish();
+//                                    } else {
+//                                        mProgressDialog.dismiss();
+//                                        Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+//                                    }
+//                                }
+//                            });
+//
+//                            dialog.dismiss();
+//                        }
+//                    })
+//                    .setNegativeButton("Thử lại", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    });
+//            AlertDialog dialog = builder.create();
+//            dialog.show();
         } else {
             Toast.makeText(getActivity(), "Lỗi! Kiểm tra dữ liệu nhập vàp ", Toast.LENGTH_LONG).show();
         }

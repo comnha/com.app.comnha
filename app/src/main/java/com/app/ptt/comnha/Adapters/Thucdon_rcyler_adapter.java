@@ -2,7 +2,6 @@ package com.app.ptt.comnha.Adapters;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,13 +34,13 @@ public class Thucdon_rcyler_adapter extends RecyclerView.Adapter<Thucdon_rcyler_
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Log.i("Visible",foodList.get(position).getVisible()+"");
-        if(foodList.get(position).getVisible()) {
-            holder.txt_gia.setText(foodList.get(position).getGia() + "đ");
-            holder.txt_tenMon.setText(foodList.get(position).getTenmon());
-            holder.ratingBar.setRating(foodList.get(position).getDanhGia());
-            holder.ratingBar.setIsIndicator(true);
-        }
+//        Log.i("Visible",foodList.get(position).getVisible()+"");
+//        if(foodList.get(position).getVisible()) {
+//            holder.txt_gia.setText(foodList.get(position).getGia() + "đ");
+//            holder.txt_tenMon.setText(foodList.get(position).getTenmon());
+//            holder.ratingBar.setRating(foodList.get(position).getDanhGia());
+//            holder.ratingBar.setIsIndicator(true);
+//        }
     }
 
     @Override

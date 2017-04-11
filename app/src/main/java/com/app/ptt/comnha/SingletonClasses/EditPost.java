@@ -1,7 +1,7 @@
 package com.app.ptt.comnha.SingletonClasses;
 
 import com.app.ptt.comnha.FireBase.Image;
-import com.app.ptt.comnha.FireBase.MyLocation;
+import com.app.ptt.comnha.FireBase.Store;
 import com.app.ptt.comnha.FireBase.Post;
 
 import java.util.ArrayList;
@@ -12,15 +12,15 @@ import java.util.ArrayList;
 public class EditPost {
     private static EditPost ourInstance;
 
-    public MyLocation getLocation() {
+    public Store getLocation() {
         return location;
     }
 
-    public void setLocation(MyLocation location) {
+    public void setLocation(Store location) {
         this.location = location;
     }
 
-    MyLocation location;
+    Store location;
     public ArrayList<Image> getAlbumList() {
         return albumList;
     }

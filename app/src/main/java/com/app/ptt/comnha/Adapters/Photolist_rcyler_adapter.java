@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -47,6 +48,9 @@ public class Photolist_rcyler_adapter extends RecyclerView.Adapter<Photolist_rcy
         mMediaStoreCursor.moveToPosition(position);
         Log.i("onbindView", position + "");
         final File path = new File(mMediaStoreCursor.getString(mMediaStoreCursor.getColumnIndex(MediaStore.Images.Media.DATA)));
+        Uri uri = Uri.parse(path.toString());
+        Log.d("path",uri+"");
+        holder.getImageView().setImageURI(uri);
         if (bitmap != null) {
             holder.getImageView().setImageBitmap(bitmap);
             try {

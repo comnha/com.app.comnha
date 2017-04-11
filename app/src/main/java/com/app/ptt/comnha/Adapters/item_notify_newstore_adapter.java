@@ -11,7 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.app.ptt.comnha.FireBase.ItemNotifyNewstore;
+import com.app.ptt.comnha.FireBase.NewstoreNotify;
 import com.app.ptt.comnha.R;
 
 import java.util.ArrayList;
@@ -22,9 +22,9 @@ import java.util.ArrayList;
 
 public class item_notify_newstore_adapter extends BaseAdapter {
     Context context;
-    ArrayList<ItemNotifyNewstore> items;
+    ArrayList<NewstoreNotify> items;
 
-    public item_notify_newstore_adapter(Context context, ArrayList<ItemNotifyNewstore> items) {
+    public item_notify_newstore_adapter(Context context, ArrayList<NewstoreNotify> items) {
         this.context = context;
         this.items = items;
     }
@@ -67,7 +67,7 @@ public class item_notify_newstore_adapter extends BaseAdapter {
         holder.createby.setText("Thêm bởi: " + items.get(i).getUn());
         if (items.get(i).isReadstate()) {
             holder.readestate.setText("Chưa đọc");
-            holder.readestate.setTextColor(context.getResources().getColor(R.color.admin_color_notify_newstore));
+            holder.readestate.setTextColor(context.getResources().getColor(R.color.admin_color_selection_news));
         } else {
             holder.readestate.setText("Đã đọc");
         }

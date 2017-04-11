@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.ptt.comnha.Classes.AnimationUtils;
-import com.app.ptt.comnha.FireBase.MyLocation;
+import com.app.ptt.comnha.FireBase.Store;
 import com.app.ptt.comnha.R;
 
 import java.util.ArrayList;
@@ -34,10 +34,10 @@ public class Chooseloca_rcyler_adapter extends RecyclerView.Adapter<Chooseloca_r
     }
 
     Activity activity;
-    ArrayList<MyLocation> list;
+    ArrayList<Store> list;
     int previuosPosition = 0;
 
-    public Chooseloca_rcyler_adapter(ArrayList<MyLocation> list) {
+    public Chooseloca_rcyler_adapter(ArrayList<Store> list) {
         this.list = list;
     }
 
@@ -49,8 +49,8 @@ public class Chooseloca_rcyler_adapter extends RecyclerView.Adapter<Chooseloca_r
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.txt_tenquan.setText(list.get(position).getName());
-        holder.txt_diachi.setText(list.get(position).getDiachi());
+//        holder.txt_tenquan.setText(list.get(position).getName());
+//        holder.txt_diachi.setText(list.get(position).getDiachi());
         if (position > previuosPosition) {
             AnimationUtils.animateItemRcylerV(holder, false);
 

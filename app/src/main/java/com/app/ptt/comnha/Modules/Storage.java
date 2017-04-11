@@ -1,21 +1,14 @@
 package com.app.ptt.comnha.Modules;
 
 import android.content.Context;
-import android.support.design.widget.Snackbar;
-import android.util.JsonWriter;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.app.ptt.comnha.FireBase.MyLocation;
+import com.app.ptt.comnha.FireBase.Store;
 import com.app.ptt.comnha.FireBase.Post;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.simple.JSONAware;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.BufferedReader;
@@ -25,9 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Writer;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by cuong on 11/7/2016.
@@ -107,10 +98,10 @@ public class Storage {
         return null;
 
     }
-    public static ArrayList<MyLocation> readJSONMyLocation(String json){
+    public static ArrayList<Store> readJSONMyLocation(String json){
         Gson gson=new Gson();
-        ArrayList<MyLocation> locations =
-                gson.fromJson(json,new TypeToken<ArrayList<MyLocation>>(){}.getType());
+        ArrayList<Store> locations =
+                gson.fromJson(json,new TypeToken<ArrayList<Store>>(){}.getType());
         if(locations.size()>0) {
             Log.i("readJSONPost", "locations.size() =" + locations.size());
             return locations;
@@ -150,7 +141,7 @@ public class Storage {
     }
 
 
-    public static String  parseMyLocationToJson(ArrayList< MyLocation >locations) {
+    public static String  parseMyLocationToJson(ArrayList<Store>locations) {
         Gson gson=new Gson();
         String json1=gson.toJson(locations);
         //Log.i("json string:",json1);

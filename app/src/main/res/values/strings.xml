@@ -5,6 +5,8 @@
     <string name="text_admin_selection_news">Thông báo thêm mới: từ bài đánh giá, quán ăn</string>
     <string name="text_admin_selection_reports">Thông báo report: từ những bài đánh giá, hình ảnh, quán ăn, món ăn</string>
     <string name="text_del">Xóa</string>
+    <string name="text_rate">Đánh giá quán ăn</string>
+    <string name="text_addimg">Đánh giá quán ăn</string>
     <string name="text_post">Bài viết</string>
     <string name="text_toolbar_title_writepost">Viết bài đánh giá</string>
     <string name="text_admin_block_addstore_notify_newstore">Chặn \"Thêm quán ăn\"</string>
@@ -111,7 +113,7 @@
     <string name="txt_choseLoca">Bạn đã chọn địa điểm</string>
     <string name="txt_failaddfoodcate">Error: Không thể thêm loại món mới</string>
     <!--ERROR-->
-
+    <string name="txt_posting_plzwait">Đang đăng bài&#8230;\n Vui lòng đợi chút!</string>
     <string name="txt_plzwait">Please wait &#8230;</string>
     <string name="txt_logging">Đang đăng nhập &#8230;</string>
     <string name="txt_addinloca">Đang thêm địa điểm mới &#8230;</string>
@@ -134,7 +136,7 @@
     <string name="txt_addedMon">Đã thêm món mới</string>
     <string name="txt_entrySearch">Nhập địa điểm &#8230;</string>
     <string name="txt_filter">Phân loại:</string>
-    <string name="txt_searchFilter">Lọc</string>
+    <string name="txt_search">Tìm kiếm</string>
     <string name="txt_local">Vị trí:</string>
     <string name="txt_localview">Xem theo Quán ăn\t</string>
     <string name="txt_reviewview">Xem theo Review\t</string>

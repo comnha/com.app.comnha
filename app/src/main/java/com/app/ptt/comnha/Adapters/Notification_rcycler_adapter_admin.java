@@ -13,14 +13,13 @@ import android.widget.TextView;
 
 import com.app.ptt.comnha.Activity.Adapter2Activity;
 import com.app.ptt.comnha.Classes.AnimationUtils;
-import com.app.ptt.comnha.FireBase.MyLocation;
 import com.app.ptt.comnha.FireBase.Notification;
+import com.app.ptt.comnha.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;
 import com.app.ptt.comnha.SingletonClasses.ChooseLoca;
 import com.app.ptt.comnha.SingletonClasses.ChooseNoti;
-import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.SingletonClasses.EditPost;
 
 import java.util.ArrayList;
@@ -83,53 +82,53 @@ public class Notification_rcycler_adapter_admin extends RecyclerView.Adapter<Not
 
 
             ////LOCATION
-                if (list.get(position).getType() == 1) {
-                    String text = list.get(position).getAccount().getUsername() + " đã thêm món " + list.get(position).getFood().getTenmon() + " vào quán " + list.get(position).getLocation().getName();
-                    holder.txt_noidung.setText(text);
-                }
-                if (list.get(position).getType() == 2) {
-                    String text = list.get(position).getAccount().getUsername() + " đã thêm quán ăn:  " + list.get(position).getLocation().getName();
-                    holder.txt_noidung.setText(text);
-                }
-                if (list.get(position).getType() == 3) {
-                    String text = list.get(position).getAccount().getUsername() + " đã thêm review vào quán " + list.get(position).getLocation().getName();
-                    holder.txt_noidung.setText(text);
-                }
-                if (list.get(position).getType() == 4) {
-                    String text = list.get(position).getAccount().getUsername() +" đã sửa thông tin quán ăn"+ list.get(position).getLocation().getName()+" và đang chờ phê duyệt";
-                    holder.txt_noidung.setText(text);
-                }
-                if (list.get(position).getType() == 5) {
-                    String text = list.get(position).getAccount().getUsername() +" đã report quán "+ list.get(position).getLocation().getName()+" với lý do là "+list.get(position).getReason()+" và đang chờ phê duyệt";
-                    holder.txt_noidung.setText(text);
-                }
-            if (list.get(position).getType() == 6) {
-                String text = list.get(position).getAccount().getUsername() +" đã yêu cầu xóa quán "+ list.get(position).getLocation().getName()+" của mình với lý do là "+list.get(position).getReason()+" và đang chờ phê duyệt";
-                holder.txt_noidung.setText(text);
-            }
+//                if (list.get(position).getType() == 1) {
+//                    String text = list.get(position).getAccount().getUsername() + " đã thêm món " + list.get(position).getFood().getTenmon() + " vào quán " + list.get(position).getLocation().getName();
+//                    holder.txt_noidung.setText(text);
+//                }
+//                if (list.get(position).getType() == 2) {
+//                    String text = list.get(position).getAccount().getUsername() + " đã thêm quán ăn:  " + list.get(position).getLocation().getName();
+//                    holder.txt_noidung.setText(text);
+//                }
+//                if (list.get(position).getType() == 3) {
+//                    String text = list.get(position).getAccount().getUsername() + " đã thêm review vào quán " + list.get(position).getLocation().getName();
+//                    holder.txt_noidung.setText(text);
+//                }
+//                if (list.get(position).getType() == 4) {
+//                    String text = list.get(position).getAccount().getUsername() +" đã sửa thông tin quán ăn"+ list.get(position).getLocation().getName()+" và đang chờ phê duyệt";
+//                    holder.txt_noidung.setText(text);
+//                }
+//                if (list.get(position).getType() == 5) {
+//                    String text = list.get(position).getAccount().getUsername() +" đã report quán "+ list.get(position).getLocation().getName()+" với lý do là "+list.get(position).getReason()+" và đang chờ phê duyệt";
+//                    holder.txt_noidung.setText(text);
+//                }
+//            if (list.get(position).getType() == 6) {
+//                String text = list.get(position).getAccount().getUsername() +" đã yêu cầu xóa quán "+ list.get(position).getLocation().getName()+" của mình với lý do là "+list.get(position).getReason()+" và đang chờ phê duyệt";
+//                holder.txt_noidung.setText(text);
+//            }
             /// POST
             }
-            if (list.get(position).getType() == 7) {
-                String text = list.get(position).getAccount().getUsername() +" đã sửa thông tin bài đăng "+ list.get(position).getPost().getTitle();
-                holder.txt_noidung.setText(text);
-            }
-            if (list.get(position).getType() == 8) {
-                String text = list.get(position).getAccount().getUsername() +" đã report bài đăng "+ list.get(position).getPost().getTitle()+" với lý do là "+list.get(position).getReason()+" và đang chờ phê duyệt";
-                holder.txt_noidung.setText(text);
-            }
-            if (list.get(position).getType() == 9) {
-                String text = list.get(position).getAccount().getUsername() +" đã yêu cầu xóa bài đăng "+ list.get(position).getPost().getTitle()+" của mình với lý do là "+list.get(position).getReason()+" và đang chờ phê duyệt";
-                holder.txt_noidung.setText(text);
-            }
-            if (list.get(position).getType() ==10 ){
-                String text = list.get(position).getAccount().getUsername() +" đã report bài đăng "+ list.get(position).getPost().getTitle()+" với lý do là "+list.get(position).getReason()+" và đang chờ phê duyệt";
-                holder.txt_noidung.setText(text);
-            }
+//            if (list.get(position).getType() == 7) {
+//                String text = list.get(position).getAccount().getUsername() +" đã sửa thông tin bài đăng "+ list.get(position).getPost().getTitle();
+//                holder.txt_noidung.setText(text);
+//            }
+//            if (list.get(position).getType() == 8) {
+//                String text = list.get(position).getAccount().getUsername() +" đã report bài đăng "+ list.get(position).getPost().getTitle()+" với lý do là "+list.get(position).getReason()+" và đang chờ phê duyệt";
+//                holder.txt_noidung.setText(text);
+//            }
+//            if (list.get(position).getType() == 9) {
+//                String text = list.get(position).getAccount().getUsername() +" đã yêu cầu xóa bài đăng "+ list.get(position).getPost().getTitle()+" của mình với lý do là "+list.get(position).getReason()+" và đang chờ phê duyệt";
+//                holder.txt_noidung.setText(text);
+//            }
+//            if (list.get(position).getType() ==10 ){
+//                String text = list.get(position).getAccount().getUsername() +" đã report bài đăng "+ list.get(position).getPost().getTitle()+" với lý do là "+list.get(position).getReason()+" và đang chờ phê duyệt";
+//                holder.txt_noidung.setText(text);
+//            }
         //Food
-        if (list.get(position).getType() ==11 ){
-            String text = list.get(position).getAccount().getUsername() +" đã sửa thông tin món ăn "+ list.get(position).getFood().getTenmon();
-            holder.txt_noidung.setText(text);
-        }
+//        if (list.get(position).getType() ==11 ){
+//            String text = list.get(position).getAccount().getUsername() +" đã sửa thông tin món ăn "+ list.get(position).getFood().getTenmon();
+//            holder.txt_noidung.setText(text);
+//        }
 
 
         //MyService.setFinish(true);
@@ -148,7 +147,7 @@ public class Notification_rcycler_adapter_admin extends RecyclerView.Adapter<Not
                     Intent intent = new Intent(activity.getApplicationContext(), Adapter2Activity.class);
                     intent.putExtra(activity.getString(R.string.fragment_CODE),
                             activity.getString(R.string.frag_locadetail_CODE));
-                    MyLocation location = list.get(position).getLocation();
+                    Store location = list.get(position).getLocation();
                     ChooseLoca.getInstance().setLocation(location);
                     ChooseNoti.getInstance().setNotification(list.get(position));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -161,11 +160,11 @@ public class Notification_rcycler_adapter_admin extends RecyclerView.Adapter<Not
                     intent.putExtra(activity.getResources().getString(R.string.fragment_CODE),
                             activity.getResources().getString(R.string.frg_viewpost_CODE));
                     EditPost.getInstance().setPost(list.get(position).getPost());
-                    ChoosePost.getInstance().setPostID(list.get(position).getPost().getPostID());
-                    ChoosePost.getInstance().setType(list.get(position).getPost().getType());
-                    ChoosePost.getInstance().setUserID(list.get(position).getPost().getUserId());
-                    if(list.get(position).getType()==1)
-                        ChoosePost.getInstance().setFoodID(list.get(position).getFood().getMonID());
+//                    ChoosePost.getInstance().setPostID(list.get(position).getPost().getPostID());
+//                    ChoosePost.getInstance().setType(list.get(position).getPost().getType());
+//                    ChoosePost.getInstance().setUserID(list.get(position).getPost().getUserId());
+//                    if(list.get(position).getType()==1)
+//                        ChoosePost.getInstance().setFoodID(list.get(position).getFood().getMonID());
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     activity.startActivity(intent);
                 }

@@ -17,36 +17,25 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.ptt.comnha.Activity.Adapter2Activity;
 import com.app.ptt.comnha.Classes.AnimationUtils;
-import com.app.ptt.comnha.FireBase.MyLocation;
+import com.app.ptt.comnha.FireBase.Store;
 import com.app.ptt.comnha.Modules.LocationFinderListener;
+import com.app.ptt.comnha.Modules.MyTool;
 import com.app.ptt.comnha.Modules.PlaceAPI;
 import com.app.ptt.comnha.Modules.PlaceAttribute;
 import com.app.ptt.comnha.Modules.Storage;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
-import com.app.ptt.comnha.Modules.MyTool;
-import com.app.ptt.comnha.SingletonClasses.ChooseLoca;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -79,7 +68,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
     private IntentFilter mIntentFilter;
     private static final String LOG = MapFragment.class.getSimpleName();
     private SupportMapFragment supportMapFragment;
-    private ArrayList<MyLocation> list;
+    private ArrayList<Store> list;
     ChildEventListener locaListChildEventListener;
     DatabaseReference dbRef;
     int distance=5000,seeMore=20;
@@ -89,8 +78,8 @@ public class MapFragment extends Fragment implements View.OnClickListener,
     PlaceAttribute myLocationSearch = null;
     TextView txt_TenQuan, txt_DiaChi, txt_GioMo, txt_DiemGia, txt_DiemPhucVu, txt_DiemVeSinh, txt_KhoangCach;
     GoogleMap myGoogleMap;
-    MyLocation yourLocation;
-    MyLocation customLocation;
+    Store yourLocation;
+    Store customLocation;
     MyTool myTool;
     int pos = -1, option = 1;
     boolean isNearest = false;
@@ -134,7 +123,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
         super.onResume();
         Log.i(LOG, "onResume");
     }
-    public void setLocation(MyLocation location){
+    public void setLocation(Store location){
         customLocation=location;
        if(customLocation!=null){
            custom=1;
@@ -205,14 +194,14 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                     if (myLocationSearch != null && isNearest) {
                         Drawable circleDrawable = getResources().getDrawable(R.drawable.ic_location_black_24dp);
                         BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
-                        yourMarker = new MarkerOptions()
-                                .position(new LatLng(yourLocation.getLat(), yourLocation.getLng()))
-                                .title(yourLocation.getDiachi())
-                                .icon(markerIcon);
+//                        yourMarker = new MarkerOptions()
+//                                .position(new LatLng(yourLocation.getLat(), yourLocation.getLng()))
+//                                .title(yourLocation.getDiachi())
+//                                .icon(markerIcon);
                         myGoogleMap.addMarker(yourMarker);
                     }
-                    if (yourLocation != null)
-                        myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(yourLocation.getLat(), yourLocation.getLng()), 13));
+//                    if (yourLocation != null)
+//                        myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(yourLocation.getLat(), yourLocation.getLng()), 13));
                 } else {
                     Toast.makeText(getContext(), "You are offline", Toast.LENGTH_LONG).show();
                 }
@@ -376,7 +365,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                 public void onMapReady(GoogleMap googleMap) {
                     myGoogleMap = googleMap;
                     isConnected= MyService.returnIsConnected();
-                    ArrayList<MyLocation> locations;
+                    ArrayList<Store> locations;
                     String a = Storage.readFile(getContext(), "myLocation");
                     if (a != null) {
                         locations = Storage.readJSONMyLocation(a);
@@ -393,14 +382,14 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                                 googleMap.clear();
                                 addMarkerYourLocation();
                                 if(custom==1){
-                                    float kc = (float) myTool.getDistance(new LatLng(yourLocation.getLat(), yourLocation.getLng()), new LatLng(customLocation.getLat(),customLocation.getLng()));
-                                    int c = Math.round(kc);
-                                    int d = c / 1000;
-                                    int e = c % 1000;
-                                    int f = e / 100;
-                                    customLocation.setKhoangcach(d + "," + f +"km");
+//                                    float kc = (float) myTool.getDistance(new LatLng(yourLocation.getLat(), yourLocation.getLng()), new LatLng(customLocation.getLat(),customLocation.getLng()));
+//                                    int c = Math.round(kc);
+//                                    int d = c / 1000;
+//                                    int e = c % 1000;
+//                                    int f = e / 100;
+//                                    customLocation.setKhoangcach(d + "," + f +"km");
                                 }
-                                list=new ArrayList<MyLocation>();
+                                list=new ArrayList<Store>();
                                 list.add(customLocation);
                                 addMarker(customLocation);
                                 custom=0;
@@ -446,32 +435,32 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                             myGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                                 @Override
                                 public void onInfoWindowClick(Marker marker) {
-                                    if ((marker.getPosition().latitude != yourLocation.getLat())
-                                            && (marker.getPosition().longitude != yourLocation.getLng())) {
-                                        if (myLocationSearch == null || (myLocationSearch != null
-                                                && (marker.getPosition().latitude != myLocationSearch.getPlaceLatLng().latitude
-                                                && (marker.getPosition().longitude != myLocationSearch.getPlaceLatLng().longitude)))) {
-                                            MyLocation a = returnLocation(marker);
-
-                                                if (a != null && a.getQuanhuyen() != null && a.getLocaID() != null && a.getTinhtp() != null) {
-                                                    Intent intent = new Intent(getActivity().getApplicationContext(), Adapter2Activity.class);
-                                                    intent.putExtra(getResources().getString(R.string.fragment_CODE),
-                                                            getResources().getString(R.string.frag_locadetail_CODE));
-
-
-                                                    ChooseLoca.getInstance().setLocation(a);
-
-                                                    if(!isConnected) {
-                                                        ChooseLoca.getInstance().setInfo("listLocation" + 1 + "_" + tinh + "_" + huyen);
-                                                        Log.i(LOG + ".anhxa", "listLocation" + 1 + "_" + tinh + "_" + huyen);
-                                                    }
-                                                    else
-                                                        ChooseLoca.getInstance().setInfo("");
-                                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                    startActivity(intent);
-                                                }
-                                        }
-                                    }
+//                                    if ((marker.getPosition().latitude != yourLocation.getLat())
+//                                            && (marker.getPosition().longitude != yourLocation.getLng())) {
+//                                        if (myLocationSearch == null || (myLocationSearch != null
+//                                                && (marker.getPosition().latitude != myLocationSearch.getPlaceLatLng().latitude
+//                                                && (marker.getPosition().longitude != myLocationSearch.getPlaceLatLng().longitude)))) {
+//                                            Store a = returnLocation(marker);
+//
+//                                                if (a != null && a.getQuanhuyen() != null && a.getLocaID() != null && a.getTinhtp() != null) {
+//                                                    Intent intent = new Intent(getActivity().getApplicationContext(), Adapter2Activity.class);
+//                                                    intent.putExtra(getResources().getString(R.string.fragment_CODE),
+//                                                            getResources().getString(R.string.frag_locadetail_CODE));
+//
+//
+//                                                    ChooseLoca.getInstance().setLocation(a);
+//
+//                                                    if(!isConnected) {
+//                                                        ChooseLoca.getInstance().setInfo("listLocation" + 1 + "_" + tinh + "_" + huyen);
+//                                                        Log.i(LOG + ".anhxa", "listLocation" + 1 + "_" + tinh + "_" + huyen);
+//                                                    }
+//                                                    else
+//                                                        ChooseLoca.getInstance().setInfo("");
+//                                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                                    startActivity(intent);
+//                                                }
+//                                        }
+//                                    }
                                 }
                             });
                             myGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -482,61 +471,62 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                             myGoogleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                                 @Override
                                 public View getInfoWindow(Marker marker) {
-                                    Log.i(LOG + ".listSize", list.size() + "");
-                                    if ((marker.getPosition().latitude == yourLocation.getLat())
-                                            && (marker.getPosition().longitude == yourLocation.getLng())) {
-                                        View view1 = getLayoutInflater(savedInstanceState).inflate(R.layout.infowindow_your_location, null);
-                                        txt_DiaChi = (TextView) view1.findViewById(R.id.txt_DiaChi);
-                                        txt_DiaChi.setText(yourLocation.getDiachi());
-                                        Log.i(LOG + ".infoWindow", "your location");
-                                        return view1;
-                                    } else if (myLocationSearch != null) {
-                                        Log.i(LOG + ".infoWindow", "location choose:" + myLocationSearch.getFullname());
-                                        if (
-                                                marker.getPosition().latitude == myLocationSearch.getPlaceLatLng().latitude
-                                                        && marker.getPosition().longitude == myLocationSearch.getPlaceLatLng().longitude) {
-                                            View view1 = getLayoutInflater(savedInstanceState).inflate(R.layout.infowindow_your_location, null);
-                                            txt_DiaChi = (TextView) view1.findViewById(R.id.txt_DiaChi);
-                                            txt_DiaChi.setText(" Vị trí bạn chọn");
-                                            return view1;
-                                        } else {
-                                            View view1 = getLayoutInflater(savedInstanceState).inflate(R.layout.infowindowlayout, null);
-                                            txt_TenQuan = (TextView) view1.findViewById(R.id.txt_TenQuan);
-                                            txt_DiaChi = (TextView) view1.findViewById(R.id.txt_DiaChi);
-                                            txt_GioMo = (TextView) view1.findViewById(R.id.txt_GioMo);
-                                            txt_DiemGia = (TextView) view1.findViewById(R.id.txt_DiemGia);
-                                            txt_DiemPhucVu = (TextView) view1.findViewById(R.id.txt_DiemPhucVu);
-                                            txt_DiemVeSinh = (TextView) view1.findViewById(R.id.txt_DiemVeSinh);
-                                            txt_KhoangCach = (TextView) view1.findViewById(R.id.txt_KhoangCach);
-
-                                            MyLocation a = returnLocation(marker);
-                                            if (a != null) {
-                                                txt_TenQuan.setText(a.getName());
-                                                txt_DiaChi.setText(a.getDiachi());
-                                                txt_GioMo.setText(a.getTimestart() + "-" + a.getTimeend());
-                                                float kc = (float) myTool.getDistance(new LatLng(myLocationSearch.getPlaceLatLng().latitude, myLocationSearch.getPlaceLatLng().longitude), new LatLng(a.getLat(), a.getLng()));
-                                                int c = Math.round(kc);
-                                                int d = c / 1000;
-                                                int e = c % 1000;
-                                                int f = e / 100;
-                                                txt_KhoangCach.setText(d + "," + f);
-                                                if (a.getSize() == 0) {
-                                                    txt_DiemVeSinh.setText("0");
-                                                    txt_DiemGia.setText("0");
-                                                    txt_DiemPhucVu.setText("0");
-                                                } else {
-                                                    txt_DiemVeSinh.setText(a.getVsTong() / a.getSize() + "");
-                                                    txt_DiemGia.setText(a.getGiaTong() / a.getSize() + "");
-                                                    txt_DiemPhucVu.setText(a.getPvTong() / a.getSize() + "");
-                                                }
-                                            } else
-
-                                                Log.i(LOG + ".infoWindow", "a=null");
-                                            return view1;
-                                        }
-                                    } else {
-                                        return getInfoWindowOfMarker(marker, savedInstanceState);
-                                    }
+//                                    Log.i(LOG + ".listSize", list.size() + "");
+//                                    if ((marker.getPosition().latitude == yourLocation.getLat())
+//                                            && (marker.getPosition().longitude == yourLocation.getLng())) {
+//                                        View view1 = getLayoutInflater(savedInstanceState).inflate(R.layout.infowindow_your_location, null);
+//                                        txt_DiaChi = (TextView) view1.findViewById(R.id.txt_DiaChi);
+//                                        txt_DiaChi.setText(yourLocation.getDiachi());
+//                                        Log.i(LOG + ".infoWindow", "your location");
+//                                        return view1;
+//                                    } else if (myLocationSearch != null) {
+//                                        Log.i(LOG + ".infoWindow", "location choose:" + myLocationSearch.getFullname());
+//                                        if (
+//                                                marker.getPosition().latitude == myLocationSearch.getPlaceLatLng().latitude
+//                                                        && marker.getPosition().longitude == myLocationSearch.getPlaceLatLng().longitude) {
+//                                            View view1 = getLayoutInflater(savedInstanceState).inflate(R.layout.infowindow_your_location, null);
+//                                            txt_DiaChi = (TextView) view1.findViewById(R.id.txt_DiaChi);
+//                                            txt_DiaChi.setText(" Vị trí bạn chọn");
+//                                            return view1;
+//                                        } else {
+//                                            View view1 = getLayoutInflater(savedInstanceState).inflate(R.layout.infowindowlayout, null);
+//                                            txt_TenQuan = (TextView) view1.findViewById(R.id.txt_TenQuan);
+//                                            txt_DiaChi = (TextView) view1.findViewById(R.id.txt_DiaChi);
+//                                            txt_GioMo = (TextView) view1.findViewById(R.id.txt_GioMo);
+//                                            txt_DiemGia = (TextView) view1.findViewById(R.id.txt_DiemGia);
+//                                            txt_DiemPhucVu = (TextView) view1.findViewById(R.id.txt_DiemPhucVu);
+//                                            txt_DiemVeSinh = (TextView) view1.findViewById(R.id.txt_DiemVeSinh);
+//                                            txt_KhoangCach = (TextView) view1.findViewById(R.id.txt_KhoangCach);
+//
+//                                            Store a = returnLocation(marker);
+//                                            if (a != null) {
+//                                                txt_TenQuan.setText(a.getName());
+//                                                txt_DiaChi.setText(a.getDiachi());
+//                                                txt_GioMo.setText(a.getTimestart() + "-" + a.getTimeend());
+//                                                float kc = (float) myTool.getDistance(new LatLng(myLocationSearch.getPlaceLatLng().latitude, myLocationSearch.getPlaceLatLng().longitude), new LatLng(a.getLat(), a.getLng()));
+//                                                int c = Math.round(kc);
+//                                                int d = c / 1000;
+//                                                int e = c % 1000;
+//                                                int f = e / 100;
+//                                                txt_KhoangCach.setText(d + "," + f);
+//                                                if (a.getSize() == 0) {
+//                                                    txt_DiemVeSinh.setText("0");
+//                                                    txt_DiemGia.setText("0");
+//                                                    txt_DiemPhucVu.setText("0");
+//                                                } else {
+//                                                    txt_DiemVeSinh.setText(a.getVsTong() / a.getSize() + "");
+//                                                    txt_DiemGia.setText(a.getGiaTong() / a.getSize() + "");
+//                                                    txt_DiemPhucVu.setText(a.getPvTong() / a.getSize() + "");
+//                                                }
+//                                            } else
+//
+//                                                Log.i(LOG + ".infoWindow", "a=null");
+//                                            return view1;
+//                                        }
+//                                    } else {
+//                                        return getInfoWindowOfMarker(marker, savedInstanceState);
+//                                    }
+                                    return getInfoWindowOfMarker(marker, savedInstanceState) ;
                                 }
 
                                 @Override
@@ -564,22 +554,22 @@ public class MapFragment extends Fragment implements View.OnClickListener,
         txt_DiemPhucVu = (TextView) view1.findViewById(R.id.txt_DiemPhucVu);
         txt_DiemVeSinh = (TextView) view1.findViewById(R.id.txt_DiemVeSinh);
         txt_KhoangCach = (TextView) view1.findViewById(R.id.txt_KhoangCach);
-        MyLocation a = returnLocation(marker);
+        Store a = returnLocation(marker);
         if (a != null) {
-            Log.i(LOG + ".infoWindow", a.getDiachi() + " : " + a.getKhoangcach());
-            txt_TenQuan.setText(a.getName());
-            txt_DiaChi.setText(a.getDiachi());
-            txt_GioMo.setText(a.getTimestart() + "-" + a.getTimeend());
-            txt_KhoangCach.setText(a.getKhoangcach());
-            if (a.getSize() == 0) {
-                txt_DiemVeSinh.setText("0");
-                txt_DiemGia.setText("0");
-                txt_DiemPhucVu.setText("0");
-            } else {
-                txt_DiemVeSinh.setText(a.getVsTong() / a.getSize() + "");
-                txt_DiemGia.setText(a.getGiaTong() / a.getSize() + "");
-                txt_DiemPhucVu.setText(a.getPvTong() / a.getSize() + "");
-            }
+//            Log.i(LOG + ".infoWindow", a.getDiachi() + " : " + a.getKhoangcach());
+//            txt_TenQuan.setText(a.getName());
+//            txt_DiaChi.setText(a.getDiachi());
+//            txt_GioMo.setText(a.getTimestart() + "-" + a.getTimeend());
+//            txt_KhoangCach.setText(a.getKhoangcach());
+//            if (a.getSize() == 0) {
+//                txt_DiemVeSinh.setText("0");
+//                txt_DiemGia.setText("0");
+//                txt_DiemPhucVu.setText("0");
+//            } else {
+//                txt_DiemVeSinh.setText(a.getVsTong() / a.getSize() + "");
+//                txt_DiemGia.setText(a.getGiaTong() / a.getSize() + "");
+//                txt_DiemPhucVu.setText(a.getPvTong() / a.getSize() + "");
+//            }
         } else
             Log.i(LOG + ".infoWindow", "Không thể tìm được địa chỉ này");
         return view1;
@@ -613,32 +603,32 @@ public class MapFragment extends Fragment implements View.OnClickListener,
 
     }
 
-    public void addMarker(MyLocation myLocation) {
-        Log.i(LOG + ".addMarker", "Them dia diem nhan duoc: " + myLocation.getDiachi());
-        LatLng locatioLatLng = new LatLng(myLocation.getLat(), myLocation.getLng());
-        myGoogleMap.addMarker(new MarkerOptions()
-                .position(locatioLatLng));
+    public void addMarker(Store store) {
+//        Log.i(LOG + ".addMarker", "Them dia diem nhan duoc: " + store.getDiachi());
+//        LatLng locatioLatLng = new LatLng(store.getLat(), store.getLng());
+//        myGoogleMap.addMarker(new MarkerOptions()
+//                .position(locatioLatLng));
     }
 
     public void addMarkerYourLocation() {
         Drawable circleDrawable = getResources().getDrawable(R.drawable.icon);
-        BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
-        yourMarker = new MarkerOptions()
-                .position(new LatLng(yourLocation.getLat(), yourLocation.getLng()))
-                .title(yourLocation.getDiachi())
-                .icon(markerIcon);
+//        BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
+//        yourMarker = new MarkerOptions()
+//                .position(new LatLng(yourLocation.getLat(), yourLocation.getLng()))
+//                .title(yourLocation.getDiachi())
+//                .icon(markerIcon);
         myGoogleMap.addMarker(yourMarker);
-        myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(yourLocation.getLat(), yourLocation.getLng()), 13));
+//        myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(yourLocation.getLat(), yourLocation.getLng()), 13));
     }
-    public MyLocation returnLocation(Marker marker) {
+    public Store returnLocation(Marker marker) {
         Log.i(LOG + ".returnRoute", "Tra ve route ung voi marker");
-        if (list.size() > 0)
-            for (MyLocation location : list) {
-                if (marker.getPosition().latitude == location.getLat()
-                        && marker.getPosition().longitude == location.getLng()) {
-                    return location;
-                }
-            }
+//        if (list.size() > 0)
+//            for (Store location : list) {
+//                if (marker.getPosition().latitude == location.getLat()
+//                        && marker.getPosition().longitude == location.getLng()) {
+//                    return location;
+//                }
+//            }
         return null;
     }
 
@@ -702,22 +692,22 @@ public class MapFragment extends Fragment implements View.OnClickListener,
         }
         //Gia
         if(type==3){
-            for(MyLocation location: list){
-                if(location.getGiaAVG()>6)
+            for(Store location: list){
+//                if(location.getGiaAVG()>6)
                     addMarker(location);
             }
         }
         //Phuc vu
         if(type==4){
-            for(MyLocation location: list){
-                if(location.getPvAVG()>6)
+            for(Store location: list){
+//                if(location.getPvAVG()>6)
                     addMarker(location);
             }
         }
         //Ve sinh
         if(type==5){
-            for(MyLocation location: list){
-                if(location.getVsAVG()>6)
+            for(Store location: list){
+//                if(location.getVsAVG()>6)
                     addMarker(location);
             }
         }
@@ -730,67 +720,67 @@ public class MapFragment extends Fragment implements View.OnClickListener,
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                MyLocation newLocation = dataSnapshot.getValue(MyLocation.class);
-                newLocation.setLocaID(dataSnapshot.getKey());
-                Log.i(LOG + ".getData", "newLocation.getVisible:"+newLocation.getVisible());
-                if(newLocation.getVisible()!=null){
-                    if(newLocation.getVisible()){
-                        if (isNearest&&myLocationSearch!=null) {
-                            //addMarkerCustomSearch();
-                            Log.i(LOG + ".onClick ", "isNearest && myLocationSearch != null");
-                            float kc = (float) myTool.getDistance(new LatLng(myLocationSearch.getPlaceLatLng().latitude, myLocationSearch.getPlaceLatLng().longitude), new LatLng(newLocation.getLat(), newLocation.getLng()));
-                            if(tinh!=null && huyen!=null){
-                                int c = Math.round(kc);
-                                int d = c / 1000;
-                                int e = c % 1000;
-                                int f = e / 100;
-                                newLocation.setKhoangcach(d + "," + f);
-                                list.add(newLocation);
-                                addMarker(newLocation);
-                                myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(newLocation.getLat(),newLocation.getLng()), 13));
-
-                            }else{
-                                if (kc < distance) {
-                                    int c = Math.round(kc);
-                                    int d = c / 1000;
-                                    int e = c % 1000;
-                                    int f = e / 100;
-                                    newLocation.setKhoangcach(d + "," + f);
-                                    list.add(newLocation);
-                                    addMarker(newLocation);
-                                    myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(newLocation.getLat(),newLocation.getLng()), 13));
-                                }
-                            }
-
-                        }
-                        else {
-                            Log.i(LOG + ".onClick ", "isNearest && myLocationSearch == null");
-                            float kc = (float) myTool.getDistance(new LatLng(yourLocation.getLat(), yourLocation.getLng()), new LatLng(newLocation.getLat(), newLocation.getLng()));
-                            if(tinh!=null && huyen!=null){
-                                int c = Math.round(kc);
-                                int d = c / 1000;
-                                int e = c % 1000;
-                                int f = e / 100;
-                                newLocation.setKhoangcach(d + "," + f+" km");
-                                list.add(newLocation);
-                                addMarker(newLocation);
-                                myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(newLocation.getLat(),newLocation.getLng()), 13));
-
-                            }else {
-                                if (kc < distance) {
-                                    int c = Math.round(kc);
-                                    int d = c / 1000;
-                                    int e = c % 1000;
-                                    int f = e / 100;
-                                    newLocation.setKhoangcach(d + "," + f+" km");
-                                    list.add(newLocation);
-                                    addMarker(newLocation);
-                                    myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(newLocation.getLat(), newLocation.getLng()), 13));
-                                }
-                            }
-                        }
-                    }
-                }
+                Store newLocation = dataSnapshot.getValue(Store.class);
+//                newLocation.setLocaID(dataSnapshot.getKey());
+//                Log.i(LOG + ".getData", "newLocation.getVisible:"+newLocation.getVisible());
+//                if(newLocation.getVisible()!=null){
+//                    if(newLocation.getVisible()){
+//                        if (isNearest&&myLocationSearch!=null) {
+//                            //addMarkerCustomSearch();
+//                            Log.i(LOG + ".onClick ", "isNearest && myLocationSearch != null");
+//                            float kc = (float) myTool.getDistance(new LatLng(myLocationSearch.getPlaceLatLng().latitude, myLocationSearch.getPlaceLatLng().longitude), new LatLng(newLocation.getLat(), newLocation.getLng()));
+//                            if(tinh!=null && huyen!=null){
+//                                int c = Math.round(kc);
+//                                int d = c / 1000;
+//                                int e = c % 1000;
+//                                int f = e / 100;
+//                                newLocation.setKhoangcach(d + "," + f);
+//                                list.add(newLocation);
+//                                addMarker(newLocation);
+//                                myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(newLocation.getLat(),newLocation.getLng()), 13));
+//
+//                            }else{
+//                                if (kc < distance) {
+//                                    int c = Math.round(kc);
+//                                    int d = c / 1000;
+//                                    int e = c % 1000;
+//                                    int f = e / 100;
+//                                    newLocation.setKhoangcach(d + "," + f);
+//                                    list.add(newLocation);
+//                                    addMarker(newLocation);
+//                                    myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(newLocation.getLat(),newLocation.getLng()), 13));
+//                                }
+//                            }
+//
+//                        }
+//                        else {
+//                            Log.i(LOG + ".onClick ", "isNearest && myLocationSearch == null");
+//                            float kc = (float) myTool.getDistance(new LatLng(yourLocation.getLat(), yourLocation.getLng()), new LatLng(newLocation.getLat(), newLocation.getLng()));
+//                            if(tinh!=null && huyen!=null){
+//                                int c = Math.round(kc);
+//                                int d = c / 1000;
+//                                int e = c % 1000;
+//                                int f = e / 100;
+//                                newLocation.setKhoangcach(d + "," + f+" km");
+//                                list.add(newLocation);
+//                                addMarker(newLocation);
+//                                myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(newLocation.getLat(),newLocation.getLng()), 13));
+//
+//                            }else {
+//                                if (kc < distance) {
+//                                    int c = Math.round(kc);
+//                                    int d = c / 1000;
+//                                    int e = c % 1000;
+//                                    int f = e / 100;
+//                                    newLocation.setKhoangcach(d + "," + f+" km");
+//                                    list.add(newLocation);
+//                                    addMarker(newLocation);
+//                                    myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(newLocation.getLat(), newLocation.getLng()), 13));
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
 
 
 
@@ -830,31 +820,31 @@ public class MapFragment extends Fragment implements View.OnClickListener,
 
     public void getDataOffline(String mTinh,String mHuyen){
         Log.i(LOG + ".getDataOffline", "OK");
-        ArrayList<MyLocation> locations;
+        ArrayList<Store> locations;
         String a = Storage.readFile(getContext(), "listLocation" + 1+"_"+mTinh+"_"+mHuyen);
         if(a!=null) {
             locations = Storage.readJSONMyLocation(a);
             if(locations.size()>0) {
-                for (MyLocation location : locations) {
+                for (Store location : locations) {
                     if (isNearest && myLocationSearch != null) {
                         Log.i(LOG + ".onClick ", "isNearest && myLocationSearch != null");
-                        float kc = (float) myTool.getDistance(new LatLng(myLocationSearch.getPlaceLatLng().latitude, myLocationSearch.getPlaceLatLng().longitude), new LatLng(location.getLat(), location.getLng()));
-                        if (kc < 5000) {
+//                        float kc = (float) myTool.getDistance(new LatLng(myLocationSearch.getPlaceLatLng().latitude, myLocationSearch.getPlaceLatLng().longitude), new LatLng(location.getLat(), location.getLng()));
+//                        if (kc < 5000) {
                             addMarker(location);
-                        }
+//                        }
                     } else {
-                        Log.i(LOG + ".onClick ", "isNearest && myLocationSearch == null:" + myTool.getDistance(new LatLng(yourLocation.getLat(), yourLocation.getLng()), new LatLng(location.getLat(), location.getLng())));
-                        float kc = (float) myTool.getDistance(new LatLng(yourLocation.getLat(), yourLocation.getLng()), new LatLng(location.getLat(), location.getLng()));
-                        int c = Math.round(kc);
-                        int d = c / 1000;
-                        int e = c % 1000;
-                        int f = e / 100;
-                        if(location.getKhoangcach()==null)
-                            location.setKhoangcach(d + "," + f);
+//                        Log.i(LOG + ".onClick ", "isNearest && myLocationSearch == null:" + myTool.getDistance(new LatLng(yourLocation.getLat(), yourLocation.getLng()), new LatLng(location.getLat(), location.getLng())));
+//                        float kc = (float) myTool.getDistance(new LatLng(yourLocation.getLat(), yourLocation.getLng()), new LatLng(location.getLat(), location.getLng()));
+//                        int c = Math.round(kc);
+//                        int d = c / 1000;
+//                        int e = c % 1000;
+//                        int f = e / 100;
+//                        if(location.getKhoangcach()==null)
+//                            location.setKhoangcach(d + "," + f);
                         addMarker(location);
                     }
                     list.add(location);
-                    myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLat(),location.getLng()), 13));
+//                    myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLat(),location.getLng()), 13));
                 }
             }else
                 Toast.makeText(getContext(),"Không tìm thấy dữ liệu",Toast.LENGTH_LONG).show();
@@ -873,7 +863,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
 
                 } else
                     isConnected = false;
-                ArrayList<MyLocation> locations;
+                ArrayList<Store> locations;
                 String a = Storage.readFile(getContext(), "myLocation");
                 if (a != null) {
                     locations = Storage.readJSONMyLocation(a);

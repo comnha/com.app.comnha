@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.app.ptt.comnha.Adapters.item_notify_newpost_adapter;
-import com.app.ptt.comnha.FireBase.ItemNotifyNewpost;
+import com.app.ptt.comnha.FireBase.NewpostNotify;
 import com.app.ptt.comnha.R;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +26,7 @@ public class AdminNewPostFragment extends Fragment {
 
     ListView listView;
     item_notify_newpost_adapter itemadapter;
-    ArrayList<ItemNotifyNewpost> items;
+    ArrayList<NewpostNotify> items;
     DatabaseReference dbRef;
     ChildEventListener childEventListener;
     String dist_pro = "";
@@ -48,7 +48,7 @@ public class AdminNewPostFragment extends Fragment {
         childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                ItemNotifyNewpost item = dataSnapshot.getValue(ItemNotifyNewpost.class);
+                NewpostNotify item = dataSnapshot.getValue(NewpostNotify.class);
                 items.add(item);
                 itemadapter.notifyDataSetChanged();
             }

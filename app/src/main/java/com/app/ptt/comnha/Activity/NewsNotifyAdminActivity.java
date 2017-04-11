@@ -31,7 +31,7 @@ public class NewsNotifyAdminActivity extends AppCompatActivity implements View.O
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(getResources().getColor(R.color.admin_color_notify_newstore));
+            getWindow().setStatusBarColor(getResources().getColor(R.color.admin_color_selection_news));
         }
         imgv_bg_store = (ImageView) findViewById(R.id.img_bg_store_admin_notify_news_act);
         imgv_bg_post = (ImageView) findViewById(R.id.img_bg_post_admin_notify_news_act);
@@ -101,7 +101,7 @@ public class NewsNotifyAdminActivity extends AppCompatActivity implements View.O
                         if (!isShowStore) {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                                getWindow().setStatusBarColor(getResources().getColor(R.color.admin_color_notify_newstore));
+                                getWindow().setStatusBarColor(getResources().getColor(R.color.admin_color_selection_news));
                             }
                             alpha_hide_bg_post.start();
                             alpha_hide_icon_post.start();

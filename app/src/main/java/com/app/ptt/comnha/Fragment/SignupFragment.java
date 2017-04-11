@@ -19,7 +19,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.ptt.comnha.FireBase.Users;
+import com.app.ptt.comnha.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.firebase.client.Firebase;
@@ -40,7 +40,7 @@ public class SignupFragment extends Fragment implements DialogInterface.OnCancel
             editText_password, editText_confirmPass, editText_birth;
     Button butt_signup, butt_exit;
     TextView txt_forgotPass;
-    Users createNewAccount;
+    User createNewAccount;
     FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     DatePickerDialog dpd;
@@ -189,16 +189,16 @@ public class SignupFragment extends Fragment implements DialogInterface.OnCancel
                         Snackbar.make(view, getActivity().getResources().getString(R.string.txt_notemail), Snackbar.LENGTH_SHORT).show();
                     } else {
                         if(isConnected) {
-                            createNewAccount = new Users(getActivity().getApplicationContext());
-                            createNewAccount.setHo(editText_ho.getText().toString());
-                            createNewAccount.setTen(editText_ten.getText().toString());
-                            createNewAccount.setTenlot(editText_tenlot.getText().toString());
-                            createNewAccount.setUsername(editText_username.getText().toString());
-                            createNewAccount.setEmail(editText_email.getText().toString());
-                            createNewAccount.setPassword(editText_password.getText().toString());
-                            createNewAccount.setConfirmPass(editText_confirmPass.getText().toString());
-                            createNewAccount.setBirth(editText_birth.getText().toString());
-                            createNewAccount.createNew();
+//                            createNewAccount = new Users(getActivity().getApplicationContext());
+//                            createNewAccount.setHo(editText_ho.getText().toString());
+//                            createNewAccount.setTen(editText_ten.getText().toString());
+//                            createNewAccount.setTenlot(editText_tenlot.getText().toString());
+//                            createNewAccount.setUsername(editText_username.getText().toString());
+//                            createNewAccount.setEmail(editText_email.getText().toString());
+//                            createNewAccount.setPassword(editText_password.getText().toString());
+//                            createNewAccount.setConfirmPass(editText_confirmPass.getText().toString());
+//                            createNewAccount.setBirth(editText_birth.getText().toString());
+//                            createNewAccount.createNew();
                         }else Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
                     }
                 }

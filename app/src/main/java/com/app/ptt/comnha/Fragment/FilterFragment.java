@@ -1,14 +1,12 @@
 package com.app.ptt.comnha.Fragment;
 
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,16 +17,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -38,11 +29,10 @@ import com.app.ptt.comnha.Activity.Adapter2Activity;
 import com.app.ptt.comnha.Adapters.LocatlistFilter_rcyler_adapter;
 import com.app.ptt.comnha.Classes.RecyclerItemClickListener1;
 import com.app.ptt.comnha.FireBase.Food;
-import com.app.ptt.comnha.FireBase.MyLocation;
+import com.app.ptt.comnha.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseLoca;
-import com.app.ptt.comnha.SingletonClasses.EditPost;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -51,7 +41,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import static android.R.attr.key;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,7 +52,7 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
     TextView txt_tinh, txt_quan, txt_mon, txt_loaimon;
     Button btn_tim;
     RecyclerView.LayoutManager layoutManager;
-    ArrayList<MyLocation> locaList;
+    ArrayList<Store> locaList;
     int whatProvince;
    EditText edt_content;
     ImageButton btn_search,btn_reset;
@@ -77,7 +68,7 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
     ProgressDialog mProgressDialog;
     ArrayList<String> searchList;
     ArrayList<Food> packageFoods;
-    ArrayList<MyLocation> packageLocations;
+    ArrayList<Store> packageLocations;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     //FoodAdapter foodAdapter;
@@ -197,12 +188,12 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener1(getActivity(), new RecyclerItemClickListener1.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                String key = locaList.get(position).getLocaID();
+//                String key = locaList.get(position).getLocaID();
                 Intent intent = new Intent(getActivity().getApplicationContext(), Adapter2Activity.class);
                 intent.putExtra(getResources().getString(R.string.fragment_CODE),
                         getResources().getString(R.string.frag_locadetail_CODE));
-                MyLocation location=new MyLocation();
-                location.setLocaID(key);
+                Store location=new Store();
+//                location.setLocaID(key);
                 ChooseLoca.getInstance().setLocation(location);
 
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -276,7 +267,7 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Food food=dataSnapshot.getValue(Food.class);
-                food.setMonID(dataSnapshot.getKey());
+//                food.setMonID(dataSnapshot.getKey());
                 packageFoods.add(food);
             }
 
@@ -303,9 +294,9 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
         locaMenuChildEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                MyLocation myLocation = dataSnapshot.getValue(MyLocation.class);
-                myLocation.setLocaID(dataSnapshot.getKey());
-                packageLocations.add(myLocation);
+                Store store = dataSnapshot.getValue(Store.class);
+//                store.setLocaID(dataSnapshot.getKey());
+                packageLocations.add(store);
             }
 
             @Override

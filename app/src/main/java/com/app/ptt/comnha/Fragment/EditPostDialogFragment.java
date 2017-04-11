@@ -41,13 +41,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.ptt.comnha.Activity.Adapter2Activity;
-import com.app.ptt.comnha.Modules.Times;
 import com.app.ptt.comnha.FireBase.Food;
 import com.app.ptt.comnha.FireBase.Image;
-import com.app.ptt.comnha.FireBase.MyLocation;
 import com.app.ptt.comnha.FireBase.Notification;
 import com.app.ptt.comnha.FireBase.Post;
+import com.app.ptt.comnha.FireBase.Store;
 import com.app.ptt.comnha.Modules.DoInBackGroundOK;
+import com.app.ptt.comnha.Modules.Times;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.DoPost;
@@ -66,8 +66,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
-
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
@@ -86,7 +84,7 @@ import java.util.Map;
 public class EditPostDialogFragment extends DialogFragment
         implements View.OnClickListener, DiscreteSeekBar.OnProgressChangeListener,AdapterView.OnItemSelectedListener, DoInBackGroundOK
 {
-    private static final String LOG=AddpostFragment.class.getSimpleName();
+    private static final String LOG=WritepostFragment.class.getSimpleName();
     Button btn_save,btn_mainImg,btnAddImg,btnDelImg;
     ChildEventListener commentChildEventListener, albumChildEventListener;
     ValueEventListener postValueEventListener, locaValueEventListener;
@@ -105,7 +103,7 @@ public class EditPostDialogFragment extends DialogFragment
     String locaID;
     DoInBackGroundOK doInBackGroundOK;
     String fileKey;
-    MyLocation updateLoca, rootLocation;
+    Store updateLoca, rootLocation;
     File anh_dai_dien;
     UploadTask uploadTask = null;
     ArrayList<File> myFile;
@@ -154,14 +152,14 @@ public class EditPostDialogFragment extends DialogFragment
                 url.add(intent.getStringExtra("uriImg"));
                 int pos=intent.getIntExtra("pos",0);
                 Log.i("POSSTTTTTTTTTTTTT",pos+"-----");
-                images.get(pos).setImage(intent.getStringExtra("uriImg"));
+//                images.get(pos).setImage(intent.getStringExtra("uriImg"));
                 Map<String, Object> image= images.get(pos).toMap();
                 childUpdates.put(getResources().getString(R.string.images_CODE)
                         +ListID.get(pos), image);
                 if (pos== (myFile.size()-1)) {
                     pc_Success++;
                     if(mainImg &&anh_dai_dien!=null) {
-                        newPost.setHinh(intent.getStringExtra("uriImg"));
+//                        newPost.setHinh(intent.getStringExtra("uriImg"));
                     }
                     postValue = newPost.toMap();
                     childUpdates.put(
@@ -215,18 +213,18 @@ public class EditPostDialogFragment extends DialogFragment
         frg_filter_txtmon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PickFoodDialogFragment pickFoodFrg = new PickFoodDialogFragment();
-                pickFoodFrg.show(fm, "fragment_pickFood");
-                pickFoodFrg.setLocaID(oldPost.getLocaID());
-                pickFoodFrg.setOnPickFoodListener(new PickFoodDialogFragment.OnPickFoodListener() {
-                    @Override
-                    public void onPickFood(Food food) {
-                        frg_filter_txtmon.setText(food.getTenmon());
-                        mFood = food;
-                        newFood=true;
-                        rb_danhGiaMon.setRating(food.getDanhGia());
-                    }
-                });
+//                PickFoodDialogFragment pickFoodFrg = new PickFoodDialogFragment();
+//                pickFoodFrg.show(fm, "fragment_pickFood");
+//                pickFoodFrg.setLocaID(oldPost.getLocaID());
+//                pickFoodFrg.setOnPickFoodListener(new PickFoodDialogFragment.OnPickFoodListener() {
+//                    @Override
+//                    public void onPickFood(Food food) {
+//                        frg_filter_txtmon.setText(food.getTenmon());
+//                        mFood = food;
+//                        newFood=true;
+//                        rb_danhGiaMon.setRating(food.getDanhGia());
+//                    }
+//                });
             }
         });
         rb_danhGiaMon=(RatingBar) view.findViewById(R.id.rb_danhGiaMon);
@@ -275,9 +273,9 @@ public class EditPostDialogFragment extends DialogFragment
                 gia = (long) 1;
                 vs = (long) 1;
                 pv = (long) 1;
-                mSeekBarGia.setProgress((int) oldPost.getGia());
-                mSeekBarPV.setProgress((int) oldPost.getPhucvu());
-                mSeekBarVS.setProgress((int) oldPost.getVesinh());
+//                mSeekBarGia.setProgress((int) oldPost.getGia());
+//                mSeekBarPV.setProgress((int) oldPost.getPhucvu());
+//                mSeekBarVS.setProgress((int) oldPost.getVesinh());
             }
         });
         frg_filter_txtmon.setVisibility(View.INVISIBLE);
@@ -293,8 +291,8 @@ public class EditPostDialogFragment extends DialogFragment
                     rb_danhGiaMon.setVisibility(View.INVISIBLE);
                 }
                 frg_filter_txtmon.setText("Chọn món");
-                if(oldPost.getType()==1)
-                    rb_danhGiaMon.setRating(oldPost.getFood().getDanhGia());
+//                if(oldPost.getType()==1)
+//                    rb_danhGiaMon.setRating(oldPost.getFood().getDanhGia());
             }
         });
         btnAddImg.setOnClickListener(this);
@@ -339,48 +337,48 @@ public class EditPostDialogFragment extends DialogFragment
     public void setData() {
         oldPost = EditPost.getInstance().getPost();
         albumList = EditPost.getInstance().getAlbumList();
-        txt_address.setText(oldPost.getDiachi());
-        txt_name.setText(oldPost.getLocaName());
-        Picasso.with(getContext()).load(oldPost.getHinh()).into(img_Daidien);
-        if (oldPost.getType() == 1) {
-            cb_monAn.setChecked(true);
-            rb_danhGiaMon.setRating(oldPost.getFood().getDanhGia());
-            frg_filter_txtmon.setVisibility(View.VISIBLE);
-            frg_filter_txtmon.setText(oldPost.getFood().getTenmon());
-            rb_danhGiaMon.setVisibility(View.VISIBLE);
-            mRating = oldPost.getFood().getDanhGia();
-            mFood = oldPost.getFood();
-        } else {
-            cb_monAn.setChecked(false);
-            frg_filter_txtmon.setVisibility(View.INVISIBLE);
-            rb_danhGiaMon.setVisibility(View.INVISIBLE);
-        }
-        if(oldPost.getVesinh()!=0&&oldPost.getGia()!=0&&oldPost.getPhucvu()!=0) {
-            ll_danhGiaQuan.setVisibility(View.VISIBLE);
-            cb_quanAn.setChecked(true);
-            txt_vs.setText("Vệ sinh:" +oldPost.getVesinh());
-            txt_gia.setText("Giá:"+ oldPost.getGia());
-            txt_pv.setText("Phục vụ:"+ oldPost.getPhucvu());
-            gia = oldPost.getGia();
-            vs = oldPost.getVesinh();
-            pv = oldPost.getPhucvu();
-            mSeekBarGia.setProgress((int) oldPost.getGia());
-            mSeekBarPV.setProgress((int) oldPost.getPhucvu());
-            mSeekBarVS.setProgress((int) oldPost.getVesinh());
-        }
-        edt_title.setText(oldPost.getTitle());
-        edt_content.setText(oldPost.getContent());
+//        txt_address.setText(oldPost.getDiachi());
+//        txt_name.setText(oldPost.getLocaName());
+//        Picasso.with(getContext()).load(oldPost.getHinh()).into(img_Daidien);
+//        if (oldPost.getType() == 1) {
+//            cb_monAn.setChecked(true);
+//            rb_danhGiaMon.setRating(oldPost.getFood().getDanhGia());
+//            frg_filter_txtmon.setVisibility(View.VISIBLE);
+//            frg_filter_txtmon.setText(oldPost.getFood().getTenmon());
+//            rb_danhGiaMon.setVisibility(View.VISIBLE);
+//            mRating = oldPost.getFood().getDanhGia();
+//            mFood = oldPost.getFood();
+//        } else {
+//            cb_monAn.setChecked(false);
+//            frg_filter_txtmon.setVisibility(View.INVISIBLE);
+//            rb_danhGiaMon.setVisibility(View.INVISIBLE);
+//        }
+//        if(oldPost.getVesinh()!=0&&oldPost.getGia()!=0&&oldPost.getPhucvu()!=0) {
+//            ll_danhGiaQuan.setVisibility(View.VISIBLE);
+//            cb_quanAn.setChecked(true);
+//            txt_vs.setText("Vệ sinh:" +oldPost.getVesinh());
+//            txt_gia.setText("Giá:"+ oldPost.getGia());
+//            txt_pv.setText("Phục vụ:"+ oldPost.getPhucvu());
+//            gia = oldPost.getGia();
+//            vs = oldPost.getVesinh();
+//            pv = oldPost.getPhucvu();
+//            mSeekBarGia.setProgress((int) oldPost.getGia());
+//            mSeekBarPV.setProgress((int) oldPost.getPhucvu());
+//            mSeekBarVS.setProgress((int) oldPost.getVesinh());
+//        }
+//        edt_title.setText(oldPost.getTitle());
+//        edt_content.setText(oldPost.getContent());
 
 
         dbRef.child(getResources().getString(R.string.locations_CODE)).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if(dataSnapshot.getKey().equals(oldPost.getLocaID())) {
-                    updateLoca = dataSnapshot.getValue(MyLocation.class);
-                    updateLoca.setLocaID(dataSnapshot.getKey());
-
-                    rootLocation = updateLoca;
-                }
+//                if(dataSnapshot.getKey().equals(oldPost.getLocaID())) {
+//                    updateLoca = dataSnapshot.getValue(Store.class);
+//                    updateLoca.setLocaID(dataSnapshot.getKey());
+//
+//                    rootLocation = updateLoca;
+//                }
             }
 
             @Override
@@ -558,16 +556,17 @@ public class EditPostDialogFragment extends DialogFragment
         } else if (edt_content.getText().toString().trim().equals("")) {
             Snackbar.make(view, getResources().getString(R.string.txt_nocontent), Snackbar.LENGTH_SHORT).show();
 
-        } else if (cb_monAn.isChecked()&&(mFood.getLocaID()==null)) {
-            Snackbar.make(view, "Chưa chọn món hoặc chưa đánh giá món", Snackbar.LENGTH_SHORT).show();
-
         }
+// else if (cb_monAn.isChecked()&&(mFood.getLocaID()==null)) {
+//            Snackbar.make(view, "Chưa chọn món hoặc chưa đánh giá món", Snackbar.LENGTH_SHORT).show();
+//
+//        }
 
         else {
             dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
-            key = oldPost.getPostID();
-            locaID = oldPost.getLocaID();
-            updateLoca.setLocaID(null);
+//            key = oldPost.getPostID();
+//            locaID = oldPost.getLocaID();
+//            updateLoca.setLocaID(null);
             mProgressDialog = ProgressDialog.show(getActivity(),
                     getResources().getString(R.string.txt_plzwait),
                     getResources().getString(R.string.txt_addinpost),
@@ -586,102 +585,102 @@ public class EditPostDialogFragment extends DialogFragment
         byte[] byteArray = stream.toByteArray();
         return byteArray;
     }
-    private void addpost(String key, String locaID, MyLocation updateLoca) {
+    private void addpost(String key, String locaID, Store updateLoca) {
         url=new ArrayList<>();
         images=new ArrayList<>();
         uris=new ArrayList<>();
         childUpdates = new HashMap<String, Object>();
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
         newPost = oldPost;
-        Toast.makeText(getContext(),"POS TYPE="+oldPost.getType()+"---"+cb_monAn.isChecked(), Toast.LENGTH_SHORT).show();
-        if(cb_monAn.isChecked()&&oldPost.getType()==2){
-            Log.d("Chưa có món","");
-            Food food=mFood;
-            food.setDanhGia(mRating);
-            float d = (int) ((mFood.getDanhGia() + mRating) / 2);
-            newPost.setType(1);
-            newPost.setFood(food);
-            Log.d("Đã thêm .có món"+ food.getTenmon()+"-d:"+d,"");
-            food.setDanhGia(d);
-            Map<String, Object> updateFood = food.toMap();
-            childUpdates.put(
-                    getResources().getString(R.string.thucdon_CODE)
-                            + food.getMonID(), updateFood);
-            pc_Success++;
-            Toast.makeText(getContext(),"Đã thêm .có món"+ food.getTenmon()+"-d:"+d, Toast.LENGTH_SHORT).show();
-        }else{
-            if(cb_monAn.isChecked()&&oldPost.getType()==1){
+//        Toast.makeText(getContext(),"POS TYPE="+oldPost.getType()+"---"+cb_monAn.isChecked(), Toast.LENGTH_SHORT).show();
+//        if(cb_monAn.isChecked()&&oldPost.getType()==2){
+//            Log.d("Chưa có món","");
+//            Food food=mFood;
+//            food.setDanhGia(mRating);
+//            float d = (int) ((mFood.getDanhGia() + mRating) / 2);
+//            newPost.setType(1);
+//            newPost.setFood(food);
+//            Log.d("Đã thêm .có món"+ food.getTenmon()+"-d:"+d,"");
+//            food.setDanhGia(d);
+//            Map<String, Object> updateFood = food.toMap();
+//            childUpdates.put(
+//                    getResources().getString(R.string.thucdon_CODE)
+//                            + food.getMonID(), updateFood);
+//            pc_Success++;
+//            Toast.makeText(getContext(),"Đã thêm .có món"+ food.getTenmon()+"-d:"+d, Toast.LENGTH_SHORT).show();
+//        }else{
+//            if(cb_monAn.isChecked()&&oldPost.getType()==1){
                 //Toast.makeText(getContext(),mFood.getMonID()+"-"+oldPost.getFood().getMonID(), Toast.LENGTH_SHORT).show();
-                Log.i("Đã có món","");
-                if(newFood){
-                    if(mFood.getMonID().equals(oldPost.getFood().getMonID())){
-                        Log.i("Món cũ","");
-                        if(mRating==oldPost.getFood().getDanhGia()){
-                            Log.i("Đánh giá cũ","");
-                        }else{
-                            float a=oldPost.getFood().getDanhGia();
-                            float b= (2 *mFood.getDanhGia()-a);
-                            float d =((b + mRating) / 2);
-                            mFood.setDanhGia(d);
-                            Map<String, Object> updateFood = mFood.toMap();
-                            childUpdates.put(
-                                    getResources().getString(R.string.thucdon_CODE)
-                                            + mFood.getMonID(), updateFood);
-                            Log.i("Đánh giá mới","a="+a+"-b="+b+"-d="+d);
-                        }
-                    }else{
-                        float a=oldPost.getFood().getDanhGia();
-                        float b= (2 *EditPost.getInstance().getDanhgia()-a);
-                        Log.i("Hủy đánh giá cũ a="+a+"-"+EditPost.getInstance().getDanhgia(),"Đánh giá mới b="+b);
-                        Food oldFood=oldPost.getFood();
-                        oldFood.setDanhGia(b);
-                        Map<String, Object> updateFood = oldFood.toMap();
-                        childUpdates.put(
-                                getResources().getString(R.string.thucdon_CODE)
-                                        + oldFood.getMonID(), updateFood);
-                        Toast.makeText(getContext(),"Update mon cu:"+oldFood.getTenmon()+"-"+oldFood.getDanhGia(), Toast.LENGTH_SHORT).show();
-                        Food newFood =mFood;
+//                Log.i("Đã có món","");
+//                if(newFood){
+//                    if(mFood.getMonID().equals(oldPost.getFood().getMonID())){
+//                        Log.i("Món cũ","");
+//                        if(mRating==oldPost.getFood().getDanhGia()){
+//                            Log.i("Đánh giá cũ","");
+//                        }else{
+//                            float a=oldPost.getFood().getDanhGia();
+//                            float b= (2 *mFood.getDanhGia()-a);
+//                            float d =((b + mRating) / 2);
+//                            mFood.setDanhGia(d);
+//                            Map<String, Object> updateFood = mFood.toMap();
+//                            childUpdates.put(
+//                                    getResources().getString(R.string.thucdon_CODE)
+//                                            + mFood.getMonID(), updateFood);
+//                            Log.i("Đánh giá mới","a="+a+"-b="+b+"-d="+d);
+//                        }
+//                    }else{
+//                        float a=oldPost.getFood().getDanhGia();
+//                        float b= (2 *EditPost.getInstance().getDanhgia()-a);
+//                        Log.i("Hủy đánh giá cũ a="+a+"-"+EditPost.getInstance().getDanhgia(),"Đánh giá mới b="+b);
+//                        Food oldFood=oldPost.getFood();
+//                        oldFood.setDanhGia(b);
+//                        Map<String, Object> updateFood = oldFood.toMap();
+//                        childUpdates.put(
+//                                getResources().getString(R.string.thucdon_CODE)
+//                                        + oldFood.getMonID(), updateFood);
+//                        Toast.makeText(getContext(),"Update mon cu:"+oldFood.getTenmon()+"-"+oldFood.getDanhGia(), Toast.LENGTH_SHORT).show();
+//                        Food newFood =mFood;
+//
+//                        Log.i("Món mới:"+newFood.getTenmon(),"Đánh giá mới:"+mRating);
+//                        float d =((mFood.getDanhGia() + mRating) / 2);
+//                        newFood.setDanhGia(d);
+//                        Map<String, Object> updateFood1 = newFood.toMap();
+//                        childUpdates.put(
+//                                getResources().getString(R.string.thucdon_CODE)
+//                                        + newFood.getMonID(), updateFood1);
+//                        Toast.makeText(getContext(),"Update mon moi:"+newFood.getTenmon()+"-"+newFood.getDanhGia(), Toast.LENGTH_SHORT).show();
+//
+//                        Log.i("","Lưu món mới và đánh giá vào");
+//                        newFood.setDanhGia(mRating);
+//                        newPost.setFood(newFood);
+//                        Log.i("","Lưu món vào newPost");
+//                        Toast.makeText(getContext(),"Update bai post:"+newPost.getFood().getTenmon()+"-"+newPost.getFood().getDanhGia(), Toast.LENGTH_SHORT).show();
 
-                        Log.i("Món mới:"+newFood.getTenmon(),"Đánh giá mới:"+mRating);
-                        float d =((mFood.getDanhGia() + mRating) / 2);
-                        newFood.setDanhGia(d);
-                        Map<String, Object> updateFood1 = newFood.toMap();
-                        childUpdates.put(
-                                getResources().getString(R.string.thucdon_CODE)
-                                        + newFood.getMonID(), updateFood1);
-                        Toast.makeText(getContext(),"Update mon moi:"+newFood.getTenmon()+"-"+newFood.getDanhGia(), Toast.LENGTH_SHORT).show();
-
-                        Log.i("","Lưu món mới và đánh giá vào");
-                        newFood.setDanhGia(mRating);
-                        newPost.setFood(newFood);
-                        Log.i("","Lưu món vào newPost");
-                        Toast.makeText(getContext(),"Update bai post:"+newPost.getFood().getTenmon()+"-"+newPost.getFood().getDanhGia(), Toast.LENGTH_SHORT).show();
-
-                    }
-                }else{
-                        if(mRating==oldPost.getFood().getDanhGia()){
-                            Log.i("Đánh giá cũ","");
-                        }else{
-                            float a=oldPost.getFood().getDanhGia();
-                            Food temp=mFood;
-                            temp.setDanhGia(mRating);
-                            float b= (2 *mFood.getDanhGia()-a);
-                            float d =((b + mRating) / 2);
-                            newPost.setFood(temp);
-                            mFood.setDanhGia(d);
-                            Map<String, Object> updateFood = mFood.toMap();
-                            childUpdates.put(
-                                    getResources().getString(R.string.thucdon_CODE)
-                                            + mFood.getMonID(), updateFood);
-
-                            Log.i("Đánh giá mới1111","a="+a+"-b="+b+"-d="+d);
-                        }
-                }
-                pc_Success++;
-            }else{
-                newPost.setType(2);
-                pc_Success++;
-            }
+//                    }
+//                }else{
+//                        if(mRating==oldPost.getFood().getDanhGia()){
+//                            Log.i("Đánh giá cũ","");
+//                        }else{
+//                            float a=oldPost.getFood().getDanhGia();
+//                            Food temp=mFood;
+//                            temp.setDanhGia(mRating);
+//                            float b= (2 *mFood.getDanhGia()-a);
+//                            float d =((b + mRating) / 2);
+//                            newPost.setFood(temp);
+//                            mFood.setDanhGia(d);
+//                            Map<String, Object> updateFood = mFood.toMap();
+//                            childUpdates.put(
+//                                    getResources().getString(R.string.thucdon_CODE)
+//                                            + mFood.getMonID(), updateFood);
+//
+//                            Log.i("Đánh giá mới1111","a="+a+"-b="+b+"-d="+d);
+//                        }
+//                }
+//                pc_Success++;
+//            }else{
+//                newPost.setType(2);
+//                pc_Success++;
+//            }
         }
 
 
@@ -716,110 +715,110 @@ public class EditPostDialogFragment extends DialogFragment
 //            pc_Success++;
 //            Log.i("SSSSSSS","pc_Success1_Not choose="+pc_Success);
 //        }
-        if (!checkrate && cb_quanAn.isChecked()) {
-            newPost.setGia(gia);
-            newPost.setVesinh(vs);
-            newPost.setPhucvu(pv);
-            long giaTong = updateLoca.getGiaTong() + gia,
-                    vsTong = updateLoca.getVsTong() + vs,
-                    pvTong = updateLoca.getPvTong() +pv,
-                    size = updateLoca.getSize() + 1;
-            updateLoca.setGiaTong(giaTong);
-            updateLoca.setVsTong(vsTong);
-            updateLoca.setPvTong(pvTong);
-            updateLoca.setSize(size);
-            updateLoca.setGiaAVG(giaTong / size);
-            updateLoca.setVsAVG(vsTong / size);
-            updateLoca.setPvAVG(pvTong / size);
-            updateLoca.setTongAVG((giaTong + vsTong + pvTong) / (size * 3));
+//        if (!checkrate && cb_quanAn.isChecked()) {
+//            newPost.setGia(gia);
+//            newPost.setVesinh(vs);
+//            newPost.setPhucvu(pv);
+//            long giaTong = updateLoca.getGiaTong() + gia,
+//                    vsTong = updateLoca.getVsTong() + vs,
+//                    pvTong = updateLoca.getPvTong() +pv,
+//                    size = updateLoca.getSize() + 1;
+//            updateLoca.setGiaTong(giaTong);
+//            updateLoca.setVsTong(vsTong);
+//            updateLoca.setPvTong(pvTong);
+//            updateLoca.setSize(size);
+//            updateLoca.setGiaAVG(giaTong / size);
+//            updateLoca.setVsAVG(vsTong / size);
+//            updateLoca.setPvAVG(pvTong / size);
+//            updateLoca.setTongAVG((giaTong + vsTong + pvTong) / (size * 3));
 
                 Map<String, Object> updateLocal = updateLoca.toMap();
-                childUpdates.put(
-                        getResources().getString(R.string.locations_CODE)
-                                + locaID, updateLocal);
-            pc_Success++;
-            Log.i("SSSSSSS","pc_Success_2="+pc_Success);
-        } else {
-            pc_Success++;
-            Log.i("SSSSSSS", "pc_Success_2Not choose=" + pc_Success);
-        }
-        Log.i("ZOOOOOOO AddPost", "");
-        if(!edt_title.getText().toString().equals(oldPost.getTitle()))
-        {
-            newPost.setTitle(edt_title.getText().toString());
-        }
-        if(!edt_content.getText().toString().equals(oldPost.getContent())){
-            newPost.setContent(edt_content.getText().toString());
-        }
-        newPost.setDate(new Times().getTime());
-        newPost.setTime(new Times().getDate());
-        newPost.setVisible(true);
-        myFile=new ArrayList<>();
-        if(dellAll){
-            for (Image img : albumList) {
-                dbRef.child(getResources().getString(R.string.images_CODE) + img.getImageID()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+//                childUpdates.put(
+//                        getResources().getString(R.string.locations_CODE)
+//                                + locaID, updateLocal);
+//            pc_Success++;
+//            Log.i("SSSSSSS","pc_Success_2="+pc_Success);
+//        } else {
+//            pc_Success++;
+//            Log.i("SSSSSSS", "pc_Success_2Not choose=" + pc_Success);
+//        }
+//        Log.i("ZOOOOOOO AddPost", "");
+//        if(!edt_title.getText().toString().equals(oldPost.getTitle()))
+//        {
+//            newPost.setTitle(edt_title.getText().toString());
+//        }
+//        if(!edt_content.getText().toString().equals(oldPost.getContent())){
+//            newPost.setContent(edt_content.getText().toString());
+//        }
+//        newPost.setDate(new Times().getTime());
+//        newPost.setTime(new Times().getDate());
+//        newPost.setVisible(true);
+//        myFile=new ArrayList<>();
+//        if(dellAll){
+//            for (Image img : albumList) {
+//                dbRef.child(getResources().getString(R.string.images_CODE) + img.getImageID()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//
+//                    }
+//                });
+//            }
+//            for(Image img:albumList){
+//                Log.i("OK", "img:"+img.getName());
+//                    StorageReference myChildRef = storeRef.child(
+//                            getResources().getString(R.string.images_CODE)
+//                                    + img.getName());
+//                    Log.i("OK", "url:"+  getResources().getString(R.string.images_CODE)
+//                            + img.getName());
+//                    myChildRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Void> task) {
+//
+//                        }
+//                    }).addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//
+//                        }
+//                    });
+//            }
+//            newPost.setHinh(null);
+//        }
+//        if (MyService.getStatusChooseImg() && MyService.getActionAddPost() == 2) {
+//            Log.i("SSSSSSS","myFile="+myFile.size());
+//            myFile = DoPost.getInstance().getFiles();
+//            if (anh_dai_dien != null && mainImg) {
+//                myFile.add(anh_dai_dien);
+//                Log.i("SSSSSSS", "myFile + 1=" + myFile.size());
+//            }
+//            new uploadImg().execute();
+//        }else
+//        if( MyService.getActionAddPost() == 1 &&MyService.getStatusChooseImg()){
+//            Log.i("SSSSSSS","myFile="+myFile.size());
+//            myFile = DoPost.getInstance().getFiles();
+//            new uploadImg().execute();
+//        }
+//        else{
+//            pc_Success++;
+//            postValue = newPost.toMap();
+//            childUpdates.put(
+//                    getResources().getString(R.string.posts_CODE) + key, postValue);
+//            pc_Success++;
+//            Log.i("SSSSSSS","pc_Success_3_Not choose");
+//            Log.i("SSSSSSS","pc_Success_4="+pc_Success);
+//
+//            if(pc_Success==4)
+//                upload();
+//        }
+//
 
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
 
-                    }
-                });
-            }
-            for(Image img:albumList){
-                Log.i("OK", "img:"+img.getName());
-                    StorageReference myChildRef = storeRef.child(
-                            getResources().getString(R.string.images_CODE)
-                                    + img.getName());
-                    Log.i("OK", "url:"+  getResources().getString(R.string.images_CODE)
-                            + img.getName());
-                    myChildRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                        }
-                    });
-            }
-            newPost.setHinh(null);
-        }
-        if (MyService.getStatusChooseImg() && MyService.getActionAddPost() == 2) {
-            Log.i("SSSSSSS","myFile="+myFile.size());
-            myFile = DoPost.getInstance().getFiles();
-            if (anh_dai_dien != null && mainImg) {
-                myFile.add(anh_dai_dien);
-                Log.i("SSSSSSS", "myFile + 1=" + myFile.size());
-            }
-            new uploadImg().execute();
-        }else
-        if( MyService.getActionAddPost() == 1 &&MyService.getStatusChooseImg()){
-            Log.i("SSSSSSS","myFile="+myFile.size());
-            myFile = DoPost.getInstance().getFiles();
-            new uploadImg().execute();
-        }
-        else{
-            pc_Success++;
-            postValue = newPost.toMap();
-            childUpdates.put(
-                    getResources().getString(R.string.posts_CODE) + key, postValue);
-            pc_Success++;
-            Log.i("SSSSSSS","pc_Success_3_Not choose");
-            Log.i("SSSSSSS","pc_Success_4="+pc_Success);
-
-            if(pc_Success==4)
-                upload();
-        }
-
-
-
-    }
+//    }
     public void upload(){
         dbRef.updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
             @Override
@@ -835,7 +834,7 @@ public class EditPostDialogFragment extends DialogFragment
                         notification.setDate(new Times().getDate());
                         notification.setTime(new Times().getTime());
                         notification.setType(7);
-                        newPost.setPostID(key);
+//                        newPost.setPostID(key);
                         notification.setPost(newPost);
                         notification.setLocation(updateLoca);
                         notification.setReaded(false);
@@ -878,10 +877,10 @@ public class EditPostDialogFragment extends DialogFragment
                     fileKey = dbRef.child(getResources().getString(R.string.images_CODE1)).push().getKey();
                     ListID.add(fileKey);
                     newImage = new Image();
-                    newImage.setName(uri.getLastPathSegment());
-                    newImage.setPostID(key);
-                    newImage.setUserID(MyService.getUserAccount().getId());
-                    newImage.setLocaID(locaID);
+//                    newImage.setName(uri.getLastPathSegment());
+//                    newImage.setPostID(key);
+//                    newImage.setUserID(MyService.getUserAccount().getId());
+//                    newImage.setLocaID(locaID);
                     images.add(newImage);
                     Log.i("SSSSSSS", "images=" + images.size());
                     StorageReference myChildRef = storeRef.child(
@@ -891,11 +890,11 @@ public class EditPostDialogFragment extends DialogFragment
                     uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Uri uri = taskSnapshot.getDownloadUrl();
-                            uris.add(uri);
+//                            Uri uri = taskSnapshot.getDownloadUrl();
+//                            uris.add(uri);
                             if (uris.size() == images.size())
                                 MyService.setUriImg(uris);
-                            Log.i("ZOOOOOOO UploadImage", "isSuccess = true;" + uri.toString());
+//                            Log.i("ZOOOOOOO UploadImage", "isSuccess = true;" + uri.toString());
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
@@ -934,7 +933,7 @@ public class EditPostDialogFragment extends DialogFragment
     }
 
     @Override
-    public void DoInBackGroundLocation(MyLocation location) {
+    public void DoInBackGroundLocation(Store location) {
 
     }
 
