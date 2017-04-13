@@ -138,9 +138,9 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
             public void onDismiss(DialogInterface dialogInterface) {
                 Log.d("onDismiss", "onDismiss");
                 selectedImages.clear();
-                for (SelectedImage i : imagesImportRvAdapter.getSelectedImg()
+                for (SelectedImage i : imagesImportRvAdapter.getSelectedImgs()
                         ) {
-                    if (i.isState()) {
+                    if (i.isSelected()) {
                         selectedImages.add(i);
                     }
                 }

@@ -30,6 +30,7 @@
     <string name="text_ratevs">Vệ sinh</string>
     <string name="text_ratepv">Phục vụ</string>
     <string name="text_save">Save</string>
+    <string name="text_saveaddloca">Lưu địa điểm</string>
     <string name="text_add">Thêm mới</string>
     <string name="text_foodcateName">Tên loại món</string>
     <string name="text_cancel">Hủy</string>
@@ -66,7 +67,7 @@
     <string name="text_addnewFoodCate_successful">Thêm loại món mới thành công!!!</string>
     <string name="text_noti_addloca_succes">Thêm địa điểm thành công</string>
     <string name="title_activity_nav_draw">NavDrawActivity</string>
-    <string name="text_themdiadiem">Thêm địa điểm mới</string>
+    <string name="text_addloca">Thêm địa điểm mới</string>
     <string name="text_dangreview">Thêm review</string>
     <string name="text_themanh">Thêm ảnh</string>
     <string name="text_comment">Bình luận</string>

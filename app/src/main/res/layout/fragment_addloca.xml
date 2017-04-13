@@ -1,227 +1,379 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
+    android:background="@android:color/white"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:weightSum="5"
     tools:context="com.app.ptt.comnha.Fragment.AddlocaFragment">
 
-    <RelativeLayout
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="500dp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingTop="10dp">
+        android:layout_height="wrap_content"
+        android:elevation="2dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_addloca"
+            style="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="4.5"
+        android:orientation="vertical">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/frg_addloction_edt_storename"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
+                android:drawableStart="@drawable/ic_store_50black_24dp"
+                android:gravity="start|center_vertical"
+                android:hint="@string/text_tenquan"
+                android:inputType="text"
+                android:paddingEnd="4dp"
+                android:paddingStart="4dp"
+                android:textColor="@android:color/black" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/frg_addloction_edt_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
+                android:drawableStart="@drawable/ic_location_on_black_24dp"
+                android:gravity="start|center_vertical"
+                android:hint="@string/text_address"
+                android:inputType="textPostalAddress"
+                android:paddingEnd="4dp"
+                android:paddingStart="4dp"
+                android:textColor="@android:color/black" />
+        </android.support.design.widget.TextInputLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="7">
 
-            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_addloca"
-                android:layout_width="@dimen/cardv_sign_width"
-                android:layout_height="wrap_content"
-                android:focusableInTouchMode="true"
-                android:paddingBottom="100dp"
-                card_view:cardCornerRadius="@dimen/cardv_cornerRadius"
-                card_view:cardElevation="@dimen/cardv_elevation">
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:paddingStart="4dp"
+                android:src="@drawable/ic__time_50black_24dp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center_vertical"
+                android:padding="4dp"
+                android:text="@string/text_openningTime" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/colorAccent"
-                        android:gravity="center_horizontal"
-                        android:orientation="vertical">
+            <Button
+                android:id="@+id/frg_addloction_btn_opentime"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2.25"
+                android:background="@android:color/transparent"
+                android:textColor="@color/addlocal_color_opentime" />
 
-                        <ImageView
-                            android:id="@+id/frg_addloca_ic"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginTop="10dp"
-                            android:background="@drawable/ic_logo" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/action_addloca"
-                            android:textAllCaps="true"
-                            android:textColor="@android:color/white"
-                            android:textSize="35sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="5dp">
-
-                        <android.support.design.widget.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <EditText
-                                android:id="@+id/frg_addloction_edt_tenquan"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="start|top"
-                                android:hint="@string/text_tenquan"
-                                android:inputType="textEmailAddress" />
-                        </android.support.design.widget.TextInputLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:orientation="horizontal"
-                            android:weightSum="5">
-
-                            <android.support.design.widget.TextInputLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="4">
-
-                                <fragment
-                                    android:id="@+id/place_autocomplete_fragment"
-                                    android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"/>
-                            </android.support.design.widget.TextInputLayout>
-
-                        </LinearLayout>
-
-                        <android.support.design.widget.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <EditText
-                                android:id="@+id/frg_addloction_edt_sdt"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:hint="@string/text_sdt"
-                                android:inputType="number" />
-                        </android.support.design.widget.TextInputLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:paddingStart="5dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/text_gia"
-                                android:textColor="@android:color/black"
-                                android:textSize="18sp" />
-
-                            <EditText
-                                android:id="@+id/frg_addloction_edt_giamin"
-                                android:layout_width="100dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginStart="66dp"
-                                android:gravity="start|top"
-                                android:hint="@string/text_start"
-                                android:inputType="number"
-                                android:textSize="18sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="10dp"
-                                android:text="-"
-                                android:textColor="@android:color/black"
-                                android:textSize="18sp" />
-
-                            <EditText
-                                android:id="@+id/frg_addloction_edt_giamax"
-                                android:layout_width="100dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="10sp"
-                                android:gravity="start|top"
-                                android:hint="@string/text_end"
-                                android:inputType="number" />
-                        </LinearLayout>
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:paddingBottom="30dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingStart="5dp"
-                                android:text="@string/text_openningTime"
-                                android:textColor="@android:color/black"
-                                android:textSize="18sp" />
-
-                            <Button
-                                android:id="@+id/frg_addloction_btn_giomo"
-                                android:layout_width="100dp"
-                                android:layout_height="wrap_content"
-                                android:text="9h"
-                                android:textAllCaps="false"
-                                android:theme="@style/AppTheme.ButtonPickTime" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="10dp"
-                                android:text="-"
-                                android:textColor="@android:color/black"
-                                android:textSize="18dp" />
-
-                            <Button
-                                android:id="@+id/frg_addloction_btn_giodong"
-                                android:layout_width="100dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="10dp"
-                                android:inputType="textEmailAddress"
-                                android:text="9h"
-                                android:textAllCaps="false"
-                                android:theme="@style/AppTheme.ButtonPickTime" />
-                        </LinearLayout>
-                    </LinearLayout>
-                    <!--<LinearLayout-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:layout_gravity="end"-->
-                    <!--android:gravity="end"-->
-                    <!--android:orientation="horizontal">-->
-
-                    <!--&lt;!&ndash;<Button&ndash;&gt;-->
-                    <!--&lt;!&ndash;android:id="@+id/frg_addloction_btn_save"&ndash;&gt;-->
-                    <!--&lt;!&ndash;style="@style/Widget.AppCompat.Button.Borderless.Colored"&ndash;&gt;-->
-                    <!--&lt;!&ndash;android:layout_width="95dp"&ndash;&gt;-->
-                    <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
-                    <!--&lt;!&ndash;android:text="@string/text_add" />&ndash;&gt;-->
-                    <!--</LinearLayout>-->
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
+            <Button
+                android:id="@+id/frg_addloction_btn_closetime"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2.25"
+                android:background="@android:color/transparent"
+                android:textColor="@color/addlocal_color_opentime" />
         </LinearLayout>
 
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/frg_addloction_btn_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="90dp"
-            android:src="@drawable/ic_check_white_36dp"
-            app:fab_colorNormal="@color/colorPrimary"
-            app:fab_colorPressed="@color/colorPrimary" />
-    </RelativeLayout>
-</FrameLayout>
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/frg_addloction_edt_phonenumb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
+                android:drawableStart="@drawable/ic_call_50black_24dp"
+                android:gravity="start|center_vertical"
+                android:hint="@string/text_sdt"
+                android:inputType="phone"
+                android:paddingEnd="4dp"
+                android:paddingStart="4dp"
+                android:textColor="@android:color/black" />
+        </android.support.design.widget.TextInputLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/frg_addloction_txtv_avatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Ảnh đại diện" />
+
+            <ImageView
+                android:id="@+id/frg_addloction_imgv_avatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/frg_addloction_txtv_save"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom"
+        android:layout_weight="0.5"
+        android:background="@color/admin_color_selection_reports"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:gravity="center"
+        android:text="@string/text_saveaddloca"
+        android:textAllCaps="true"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="500dp"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:gravity="center"-->
+    <!--android:orientation="vertical"-->
+    <!--android:paddingTop="10dp">-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:gravity="center">-->
+
+    <!--<android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"-->
+    <!--android:id="@+id/card_addloca"-->
+    <!--android:layout_width="@dimen/cardv_sign_width"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:focusableInTouchMode="true"-->
+    <!--android:paddingBottom="100dp"-->
+    <!--card_view:cardCornerRadius="@dimen/cardv_cornerRadius"-->
+    <!--card_view:cardElevation="@dimen/cardv_elevation">-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@color/colorAccent"-->
+    <!--android:gravity="center_horizontal"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/frg_addloca_ic"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center_horizontal"-->
+    <!--android:layout_marginTop="10dp"-->
+    <!--android:background="@drawable/ic_logo" />-->
+
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="@string/action_addloca"-->
+    <!--android:textAllCaps="true"-->
+    <!--android:textColor="@android:color/white"-->
+    <!--android:textSize="35sp" />-->
+    <!--</LinearLayout>-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="vertical"-->
+    <!--android:padding="5dp">-->
+
+    <!--<android.support.design.widget.TextInputLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+
+    <!--<EditText-->
+    <!--android:id="@+id/frg_addloction_edt_tenquan"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:gravity="start|top"-->
+    <!--android:hint="@string/text_tenquan"-->
+    <!--android:inputType="textEmailAddress" />-->
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:gravity="center"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:weightSum="5">-->
+
+    <!--<android.support.design.widget.TextInputLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_weight="4">-->
+
+    <!--<fragment-->
+    <!--android:id="@+id/place_autocomplete_fragment"-->
+    <!--android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_weight="1" />-->
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+    <!--</LinearLayout>-->
+
+    <!--<android.support.design.widget.TextInputLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+
+    <!--<EditText-->
+    <!--android:id="@+id/frg_addloction_edt_sdt"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:hint="@string/text_sdt"-->
+    <!--android:inputType="number"-->
+    <!--android:textColorHint="#7f000000" />-->
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:paddingStart="5dp">-->
+
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="@string/text_gia"-->
+    <!--android:textColor="@android:color/black"-->
+    <!--android:textSize="18sp" />-->
+
+    <!--<EditText-->
+    <!--android:id="@+id/frg_addloction_edt_giamin"-->
+    <!--android:layout_width="100dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_marginStart="66dp"-->
+    <!--android:gravity="start|top"-->
+    <!--android:hint="@string/text_start"-->
+    <!--android:inputType="number"-->
+    <!--android:textSize="18sp" />-->
+
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginStart="10dp"-->
+    <!--android:text="-"-->
+    <!--android:textColor="@android:color/black"-->
+    <!--android:textSize="18sp" />-->
+
+    <!--<EditText-->
+    <!--android:id="@+id/frg_addloction_edt_giamax"-->
+    <!--android:layout_width="100dp"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginStart="10sp"-->
+    <!--android:gravity="start|top"-->
+    <!--android:hint="@string/text_end"-->
+    <!--android:inputType="number" />-->
+    <!--</LinearLayout>-->
+
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:paddingBottom="30dp">-->
+
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:paddingStart="5dp"-->
+    <!--android:text="@string/text_openningTime"-->
+    <!--android:textColor="@android:color/black"-->
+    <!--android:textSize="18sp" />-->
+
+    <!--<Button-->
+    <!--android:id="@+id/frg_addloction_btn_giomo"-->
+    <!--android:layout_width="100dp"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="9h"-->
+    <!--android:textAllCaps="false"-->
+    <!--android:theme="@style/AppTheme.ButtonPickTime" />-->
+
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginStart="10dp"-->
+    <!--android:text="-"-->
+    <!--android:textColor="@android:color/black"-->
+    <!--android:textSize="18dp" />-->
+
+    <!--<Button-->
+    <!--android:id="@+id/frg_addloction_btn_giodong"-->
+    <!--android:layout_width="100dp"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginStart="10dp"-->
+    <!--android:inputType="textEmailAddress"-->
+    <!--android:text="9h"-->
+    <!--android:textAllCaps="false"-->
+    <!--android:theme="@style/AppTheme.ButtonPickTime" />-->
+    <!--</LinearLayout>-->
+    <!--</LinearLayout>-->
+    <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_gravity="end"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:gravity="end"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:orientation="horizontal">&ndash;&gt;-->
+
+    <!--&lt;!&ndash;&lt;!&ndash;<Button&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:id="@+id/frg_addloction_btn_save"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;style="@style/Widget.AppCompat.Button.Borderless.Colored"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_width="95dp"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;android:text="@string/text_add" />&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
+    <!--</LinearLayout>-->
+    <!--</android.support.v7.widget.CardView>-->
+    <!--</LinearLayout>-->
+
+    <!--<com.github.clans.fab.FloatingActionButton-->
+    <!--android:id="@+id/frg_addloction_btn_save"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_alignParentStart="true"-->
+    <!--android:layout_marginStart="90dp"-->
+    <!--android:src="@drawable/ic_check_white_36dp"-->
+    <!--app:fab_colorNormal="@color/colorPrimary"-->
+    <!--app:fab_colorPressed="@color/colorPrimary" />-->
+    <!--</RelativeLayout>-->
+</LinearLayout>

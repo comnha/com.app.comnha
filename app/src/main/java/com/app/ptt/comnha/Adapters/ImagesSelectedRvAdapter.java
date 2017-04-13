@@ -34,9 +34,9 @@ public class ImagesSelectedRvAdapter extends RecyclerView.Adapter<ImagesSelected
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Log.d("onBindViewHolder", selectedImages.get(position).isState() + "");
+        Log.d("onBindViewHolder", selectedImages.get(position).isSelected() + "");
 //        holder.img.setBackgroundColor(context.getResources().getColor(android.R.color.black));
-        if (selectedImages.get(position).isState()) {
+        if (selectedImages.get(position).isSelected()) {
             holder.img.setImageURI(selectedImages.get(position).getUri());
         }
     }

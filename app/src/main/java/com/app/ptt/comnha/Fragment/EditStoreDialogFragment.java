@@ -237,12 +237,12 @@ public class EditStoreDialogFragment extends DialogFragment implements View.OnCl
                         .show();
                 break;
             case R.id.frg_reportstore_btn_giomo:
-                edtID = R.id.frg_addloction_btn_giomo;
-                tpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
+//                edtID = R.id.frg_addloction_btn_giomo;
+//                tpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
                 break;
             case R.id.frg_reportstore_btn_giodong:
-                edtID = R.id.frg_addloction_btn_giodong;
-                tpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
+//                edtID = R.id.frg_addloction_btn_giodong;
+//                tpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
                 break;
         }
     }
@@ -250,14 +250,14 @@ public class EditStoreDialogFragment extends DialogFragment implements View.OnCl
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
         switch (edtID) {
-            case R.id.frg_addloction_btn_giomo:
-                hour = hourOfDay;
-                min = minute;
-                break;
-            case R.id.frg_addloction_btn_giodong:
-                hour = hourOfDay;
-                min = minute;
-                break;
+//            case R.id.frg_addloction_btn_giomo:
+//                hour = hourOfDay;
+//                min = minute;
+//                break;
+//            case R.id.frg_addloction_btn_giodong:
+//                hour = hourOfDay;
+//                min = minute;
+//                break;
         }
     }
 
@@ -271,16 +271,16 @@ public class EditStoreDialogFragment extends DialogFragment implements View.OnCl
     public void onDismiss(DialogInterface dialogInterface) {
         Log.d("dismiss" + String.valueOf(edtID), String.valueOf(hour));
         switch (edtID) {
-            case R.id.frg_addloction_btn_giomo:
-                if (hour > -1) {
-                    btn_timestart.setText(hour + "h" + min);
-                }
-                break;
-            case R.id.frg_addloction_btn_giodong:
-                if (hour > -1) {
-                    btn_timeend.setText(hour + "h" + min);
-                }
-                break;
+//            case R.id.frg_addloction_btn_giomo:
+//                if (hour > -1) {
+//                    btn_timestart.setText(hour + "h" + min);
+//                }
+//                break;
+//            case R.id.frg_addloction_btn_giodong:
+//                if (hour > -1) {
+//                    btn_timeend.setText(hour + "h" + min);
+//                }
+//                break;
         }
     }
 

@@ -23,6 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar_main"
                     android:layout_width="match_parent"
@@ -70,5 +71,16 @@
         app:fab_shadowYOffset="0.5dp"
         app:fab_showShadow="true"
         app:fab_size="normal" />
+    <View
+        android:id="@+id/view_dimbtmsheet_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <FrameLayout
+        android:id="@+id/frame_btmsheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:behavior_peekHeight="0dp"
+        app:layout_behavior="@string/bottom_sheet_behavior">
 
+    </FrameLayout>
 </android.support.design.widget.CoordinatorLayout>

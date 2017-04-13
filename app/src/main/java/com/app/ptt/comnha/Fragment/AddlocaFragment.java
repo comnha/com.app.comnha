@@ -10,8 +10,12 @@ import android.content.IntentFilter;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,13 +24,16 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.TextView;
 
+import com.app.ptt.comnha.Adapters.SingleImageImportRvAdapter;
+import com.app.ptt.comnha.Classes.SelectedImage;
 import com.app.ptt.comnha.FireBase.Store;
 import com.app.ptt.comnha.Modules.LocationFinderListener;
 import com.app.ptt.comnha.Modules.MyTool;
 import com.app.ptt.comnha.Modules.PlaceAPI;
 import com.app.ptt.comnha.Modules.PlaceAttribute;
+import com.app.ptt.comnha.Modules.Times;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.github.clans.fab.FloatingActionButton;
@@ -52,18 +59,15 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
     FloatingActionButton fab_save;
     public static final String LOG = AddlocaFragment.class.getSimpleName();
     ArrayList<PlaceAttribute> mPlaceAttribute;
-    EditText edt_tenquan, edt_sdt,
-            edt_giamin, edt_giamax;
+    EditText edt_storeName, edt_phoneNumb, edt_address;
     PlaceAutocompleteFragment _autocompleteFragment;
     Button btn_timestart, btn_timeend;
-
     ProgressDialog mProgressDialog;
     DatabaseReference dbRef;
-    ImageView img_ic;
     Calendar now;
-    String tinh, huyen,diachi;
+    String tinh, huyen, diachi;
     TimePickerDialog tpd;
-    int edtID, pos=-1;
+    int edtID, pos = -1;
     Store newLocation;
     int hour, min;
     String key;
@@ -72,14 +76,20 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
     AutoCompleteTextView autoCompleteText;
     String a = "";
     MyTool myTool;
-    boolean isConnected=true;
+    boolean isConnected = true;
     IntentFilter mIntentFilter;
+    String mString;
+    Toolbar toolbar;
+    private TextView txtv_avatar, txtv_save;
+    ImageView imgv_avatar;
+    SingleImageImportRvAdapter singleImageImportRvAdapter;
+
     public static final String mBroadcastSendAddress = "mBroadcastSendAddress";
-    BroadcastReceiver broadcastReceiver=new BroadcastReceiver() {
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(mBroadcastSendAddress)) {
-                Log.i(LOG+".onReceive form Service","isConnected= "+ intent.getBooleanExtra("isConnected", false));
+            if (intent.getAction().equals(mBroadcastSendAddress)) {
+                Log.i(LOG + ".onReceive form Service", "isConnected= " + intent.getBooleanExtra("isConnected", false));
                 if (intent.getBooleanExtra("isConnected", false)) {
                     isConnected = true;
                 } else
@@ -87,17 +97,27 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
             }
         }
     };
+    private RecyclerView imagesrv;
+    private GridLayoutManager imageslm;
+    private SelectedImage selectedImage;
+    private BottomSheetDialog imgsDialog;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        setHasOptionsMenu(true);
+    }
 
     @Override
     public void onStart() {
         super.onStart();
-        isConnected= MyService.returnIsConnected();
-        if(!isConnected){
-            Toast.makeText(getContext(),"Offline mode",Toast.LENGTH_SHORT).show();
+        isConnected = MyService.returnIsConnected();
+        if (!isConnected) {
+//            Toast.makeText(getContext(), "Offline mode", Toast.LENGTH_SHORT).show();
         }
-        mIntentFilter=new IntentFilter();
+        mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(mBroadcastSendAddress);
-        getContext().registerReceiver(broadcastReceiver,mIntentFilter);
+        getContext().registerReceiver(broadcastReceiver, mIntentFilter);
     }
 
     @Override
@@ -110,13 +130,11 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_addloca, container, false);
-        isConnected= MyService.returnIsConnected();
+        isConnected = MyService.returnIsConnected();
         now = Calendar.getInstance();
         gc = new Geocoder(getContext(), Locale.getDefault());
         anhXa(view);
@@ -125,43 +143,171 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
     }
 
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
     void anhXa(View view) {
-        edt_tenquan = (EditText) view.findViewById(R.id.frg_addloction_edt_tenquan);
-
-        btn_timeend = (Button) view.findViewById(R.id.frg_addloction_btn_giodong);
-        btn_timestart = (Button) view.findViewById(R.id.frg_addloction_btn_giomo);
-        edt_sdt = (EditText) view.findViewById(R.id.frg_addloction_edt_sdt);
-        edt_giamin = (EditText) view.findViewById(R.id.frg_addloction_edt_giamin);
-        edt_giamax = (EditText) view.findViewById(R.id.frg_addloction_edt_giamax);
-        fab_save = (FloatingActionButton) view.findViewById(R.id.frg_addloction_btn_save);
-        img_ic = (ImageView) view.findViewById(R.id.frg_addloca_ic);
-        tpd = TimePickerDialog.newInstance(this, now.get(Calendar.HOUR), now.get(Calendar.MINUTE), now.get(Calendar.SECOND), true);
-        tpd.setOnDismissListener(this);
-        tpd.setOnCancelListener(this);
-        img_ic.setOnClickListener(new View.OnClickListener() {
+        toolbar = (Toolbar) view.findViewById(R.id.toolbar_addloca);
+        toolbar.setTitle(getString(R.string.text_addloca));
+        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+        toolbar.setNavigationIcon(R.drawable.ic_close_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().finish();
+                getActivity().onBackPressed();
             }
         });
-        fab_save.setOnClickListener(this);
+        toolbar.setBackgroundColor(getResources()
+                .getColor(R.color.admin_color_selection_reports));
+
+
+        edt_storeName = (EditText) view.findViewById(R.id.frg_addloction_edt_storename);
+        edt_address = (EditText) view.findViewById(R.id.frg_addloction_edt_address);
+        edt_phoneNumb = (EditText) view.findViewById(R.id.frg_addloction_edt_phonenumb);
+        tpd = TimePickerDialog.newInstance(this, now.get(Calendar.HOUR), now.get(Calendar.MINUTE), now.get(Calendar.SECOND), true);
+        tpd.setAccentColor(getResources()
+                .getColor(R.color.addlocal_color_opentime));
+        tpd.setOnDismissListener(this);
+        tpd.setOnCancelListener(this);
+
+        btn_timeend = (Button) view.findViewById(R.id.frg_addloction_btn_closetime);
+        btn_timestart = (Button) view.findViewById(R.id.frg_addloction_btn_opentime);
         btn_timeend.setOnClickListener(this);
         btn_timestart.setOnClickListener(this);
-        _autocompleteFragment = (PlaceAutocompleteFragment)
-                getActivity()
-                        .getFragmentManager()
-                        .findFragmentById(R.id.place_autocomplete_fragment);
-        _autocompleteFragment.setOnPlaceSelectedListener(this);
+        btn_timestart.setText(new Times().getTimeNoSecond());
+        btn_timeend.setText(new Times().getTimeNoSecond());
+//        _autocompleteFragment = (PlaceAutocompleteFragment)
+//                getActivity()
+//                        .getFragmentManager()
+//                        .findFragmentById(R.id.place_autocomplete_fragment);
+//        _autocompleteFragment.setOnPlaceSelectedListener(this);
+        txtv_avatar = (TextView) view.findViewById(R.id.frg_addloction_txtv_avatar);
+        txtv_avatar.setOnClickListener(this);
+
+        txtv_save = (TextView) view.findViewById(R.id.frg_addloction_txtv_save);
+        txtv_save.setOnClickListener(this);
+
+        imgv_avatar = (ImageView) view.findViewById(R.id.frg_addloction_imgv_avatar);
+        imgv_avatar.setOnClickListener(this);
+        imgv_avatar.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                imgv_avatar.setImageURI(null);
+                selectedImage = null;
+                return true;
+            }
+        });
+        imgsDialog = new BottomSheetDialog(getContext());
+        imgsDialog.setContentView(R.layout.layout_writepost_imgimporting);
+        imgsDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                selectedImage = singleImageImportRvAdapter.getSelectedImage();
+                imgv_avatar.setImageURI(selectedImage.getUri());
+            }
+        });
+
+        imagesrv = (RecyclerView) imgsDialog.findViewById(R.id.rv_images_imgimporting);
+        imageslm = new GridLayoutManager(getContext(), 3, LinearLayoutManager.VERTICAL, false);
+        imagesrv.setLayoutManager(imageslm);
+        singleImageImportRvAdapter = new SingleImageImportRvAdapter(getContext(), getContext().getContentResolver());
+        imagesrv.setAdapter(singleImageImportRvAdapter);
+        singleImageImportRvAdapter.setOnSingleClickListener(new SingleImageImportRvAdapter.OnSingleClickListener() {
+            @Override
+            public void onClick(boolean isDismiss) {
+                if (isDismiss) {
+                    imgsDialog.dismiss();
+                }
+            }
+        });
+    }
+
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+//                if (edt_tenquan.getText().toString().trim().equals("")) {
+//                    Snackbar.make(view, getResources().getText(R.string.txt_notenquan), Snackbar.LENGTH_SHORT).show();
+//                } else if (autoCompleteText.getText().toString().trim().equals("")) {
+//                    Snackbar.make(view, getResources().getText(R.string.txt_nodiachi), Snackbar.LENGTH_SHORT).show();
+//                } else if (edt_giamin.getText().toString().trim().equals("")) {
+//                    Snackbar.make(view, getResources().getText(R.string.txt_nogia), Snackbar.LENGTH_SHORT).show();
+//                } else if (edt_giamax.getText().toString().trim().equals("")) {
+//                    Snackbar.make(view, getResources().getText(R.string.txt_nogia), Snackbar.LENGTH_SHORT).show();
+////                } else if (edt_sdt.getText().toString().trim().equals("")) {
+////                    Snackbar.make(view, getResources().getText(R.string.txt_nosdt), Snackbar.LENGTH_SHORT).show();
+////                } else if (edt_timestart.getText().toString().trim().equals("")) {
+////                    Snackbar.make(view, getResources().getText(R.string.txt_noopentime), Snackbar.LENGTH_SHORT).show();
+////                } else if (edt_timeend.getText().toString().trim().equals("")) {
+////                    Snackbar.make(view, getResources().getText(R.string.txt_noopentime), Snackbar.LENGTH_SHORT).show();
+//                } else if (Long.valueOf(edt_giamax.getText().toString()) <= Long.valueOf(edt_giamin.getText().toString())) {
+//                    Snackbar.make(view, getResources().getText(R.string.txt_giawarn), Snackbar.LENGTH_SHORT).show();
+//                } else {
+//                    if (isConnected) {
+//                        if (MyService.getUserAccount() != null)
+//                            addNewLoca();
+//                        else
+//                            Toast.makeText(getContext(), "Chưa đăng nhập", Toast.LENGTH_SHORT).show();
+//                    } else
+//                        Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
+//
+//                }
+//                break;
+            case R.id.frg_addloction_txtv_avatar:
+
+                break;
+            case R.id.frg_addloction_btn_opentime:
+                edtID = R.id.frg_addloction_btn_opentime;
+                tpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
+                break;
+            case R.id.frg_addloction_btn_closetime:
+                edtID = R.id.frg_addloction_btn_closetime;
+                tpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
+                break;
+            case R.id.frg_addloction_imgv_avatar:
+                imagesrv.scrollToPosition(0);
+                imgsDialog.show();
+                break;
+        }
+    }
+
+    @Override
+    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+        switch (edtID) {
+            case R.id.frg_addloction_btn_opentime:
+                hour = hourOfDay;
+                min = minute;
+                break;
+            case R.id.frg_addloction_btn_closetime:
+                hour = hourOfDay;
+                min = minute;
+                break;
+        }
+    }
+
+
+    @Override
+    public void onCancel(DialogInterface dialogInterface) {
+        hour = -1;
+        Log.d("cancel" + String.valueOf(edtID), String.valueOf(hour));
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialogInterface) {
+        switch (edtID) {
+            case R.id.frg_addloction_btn_opentime:
+                if (hour > -1) {
+                    btn_timestart.setText(hour + ":" + min);
+                }
+                break;
+            case R.id.frg_addloction_btn_closetime:
+                if (hour > -1) {
+                    btn_timeend.setText(hour + ":" + min);
+                }
+                break;
+        }
     }
 
     @Override
     public void onPlaceSelected(Place place) {
-        diachi=place.getAddress().toString();
+        diachi = place.getAddress().toString();
         _autocompleteFragment.setText(place.getAddress());
     }
 
@@ -170,8 +316,11 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
 
     }
 
-
-//    class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+    //    class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
 //        ArrayList<String> resultList;
 //        Context mContext;
 //        int mResource;
@@ -273,12 +422,13 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
 //        newLocation.setTimeend(btn_timeend.getText().toString());
 //        newLocation.setGiamin(Long.valueOf(edt_giamin.getText().toString()));
 //        newLocation.setGiamax(Long.valueOf(edt_giamax.getText().toString()));
-        if(isConnected) {
+        if (isConnected) {
             if (diachi != null) {
 //                newLocation.setDiachi(diachi);
                 placeAPI = new PlaceAPI(diachi, this);
             }
-        }else   Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
+        }
+//        else Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -395,84 +545,4 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
 
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.frg_addloction_btn_save:
-                if (edt_tenquan.getText().toString().trim().equals("")) {
-                    Snackbar.make(view, getResources().getText(R.string.txt_notenquan), Snackbar.LENGTH_SHORT).show();
-                } else if (autoCompleteText.getText().toString().trim().equals("")) {
-                    Snackbar.make(view, getResources().getText(R.string.txt_nodiachi), Snackbar.LENGTH_SHORT).show();
-                } else if (edt_giamin.getText().toString().trim().equals("")) {
-                    Snackbar.make(view, getResources().getText(R.string.txt_nogia), Snackbar.LENGTH_SHORT).show();
-                } else if (edt_giamax.getText().toString().trim().equals("")) {
-                    Snackbar.make(view, getResources().getText(R.string.txt_nogia), Snackbar.LENGTH_SHORT).show();
-//                } else if (edt_sdt.getText().toString().trim().equals("")) {
-//                    Snackbar.make(view, getResources().getText(R.string.txt_nosdt), Snackbar.LENGTH_SHORT).show();
-//                } else if (edt_timestart.getText().toString().trim().equals("")) {
-//                    Snackbar.make(view, getResources().getText(R.string.txt_noopentime), Snackbar.LENGTH_SHORT).show();
-//                } else if (edt_timeend.getText().toString().trim().equals("")) {
-//                    Snackbar.make(view, getResources().getText(R.string.txt_noopentime), Snackbar.LENGTH_SHORT).show();
-                } else if (Long.valueOf(edt_giamax.getText().toString()) <= Long.valueOf(edt_giamin.getText().toString())) {
-                    Snackbar.make(view, getResources().getText(R.string.txt_giawarn), Snackbar.LENGTH_SHORT).show();
-                } else {
-                        if(isConnected ){
-                            if(MyService.getUserAccount()!=null )
-                                addNewLoca();
-                            else
-                                Toast.makeText(getContext(), "Chưa đăng nhập", Toast.LENGTH_SHORT).show();
-                        }
-
-                    else
-                            Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
-
-                }
-                break;
-            case R.id.frg_addloction_btn_giomo:
-                edtID = R.id.frg_addloction_btn_giomo;
-                tpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
-                break;
-            case R.id.frg_addloction_btn_giodong:
-                edtID = R.id.frg_addloction_btn_giodong;
-                tpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
-                break;
-        }
-    }
-
-    @Override
-    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
-        switch (edtID) {
-            case R.id.frg_addloction_btn_giomo:
-                hour = hourOfDay;
-                min = minute;
-                break;
-            case R.id.frg_addloction_btn_giodong:
-                hour = hourOfDay;
-                min = minute;
-                break;
-        }
-    }
-
-    @Override
-    public void onCancel(DialogInterface dialogInterface) {
-        hour = -1;
-        Log.d("cancel" + String.valueOf(edtID), String.valueOf(hour));
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialogInterface) {
-        Log.d("dismiss" + String.valueOf(edtID), String.valueOf(hour));
-        switch (edtID) {
-            case R.id.frg_addloction_btn_giomo:
-                if (hour > -1) {
-                    btn_timestart.setText(hour + "h" + min);
-                }
-                break;
-            case R.id.frg_addloction_btn_giodong:
-                if (hour > -1) {
-                    btn_timeend.setText(hour + "h" + min);
-                }
-                break;
-        }
-    }
 }

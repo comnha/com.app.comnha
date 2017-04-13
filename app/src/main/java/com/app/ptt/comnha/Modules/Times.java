@@ -24,6 +24,11 @@ public class Times {
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
         return df.format(c.getTime());
     }
+    public String getTimeNoSecond() {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+        return df.format(c.getTime());
+    }
     public Date getCustomDate(String datetime){
         SimpleDateFormat format=new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         try {

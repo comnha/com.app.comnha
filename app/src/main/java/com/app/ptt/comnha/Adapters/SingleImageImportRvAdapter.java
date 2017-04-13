@@ -22,13 +22,22 @@ import java.util.ArrayList;
  * Created by PTT on 4/10/2017.
  */
 
-public class ImagesImportRvAdapter extends RecyclerView.Adapter<ImagesImportRvAdapter.ViewHolder> {
+public class SingleImageImportRvAdapter extends RecyclerView.Adapter<SingleImageImportRvAdapter.ViewHolder> {
     Cursor imageCursor;
     Context context;
     ContentResolver cr;
     ArrayList<SelectedImage> selectedImages;
+    int firstPosition = -1;
+    OnSingleClickListener onSingleClickListener;
+    public interface OnSingleClickListener{
+        void onClick(boolean isDismiss);
+    }
 
-    public ImagesImportRvAdapter(Context context, ContentResolver cr) {
+    public void setOnSingleClickListener(OnSingleClickListener onSingleClickListener) {
+        this.onSingleClickListener = onSingleClickListener;
+    }
+
+    public SingleImageImportRvAdapter(Context context, ContentResolver cr) {
         this.cr = cr;
         this.notifyDataSetChanged();
         this.context = context;
@@ -57,20 +66,35 @@ public class ImagesImportRvAdapter extends RecyclerView.Adapter<ImagesImportRvAd
             @Override
             public void onClick(View view) {
                 if (selectedImages.get(position).isSelected()) {
-                    holder.selected_imgv.setBackground(context.getResources().getDrawable(R.drawable.checked_bound));
+//                    holder.selected_imgv.setBackground(context.getResources().getDrawable(R.drawable.checked_bound));
                     selectedImages.get(position).setSelected(false);
+                    firstPosition = position;
                 } else {
-                    holder.selected_imgv.setBackground(context.getResources().getDrawable(R.drawable.selected_img_bound));
-                    selectedImages.get(position).setSelected(true);
+//                    holder.selected_imgv.setBackground(context.getResources().getDrawable(R.drawable.selected_img_bound));
+                    if (firstPosition < 0) {//lần đầu show dialog, chưa chọn
+                        selectedImages.get(position).setSelected(true);
+                    } else {
+                        selectedImages.get(position).setSelected(true);
+                        selectedImages.get(firstPosition).setSelected(false);
+                    }
+                    firstPosition = position;
                 }
+                onSingleClickListener.onClick(true);
+
             }
         });
     }
 
-    public ArrayList<SelectedImage> getSelectedImgs() {
-        return selectedImages;
+    public SelectedImage getSelectedImage() {
+        SelectedImage selectedImage = new SelectedImage();
+        for (SelectedImage item : selectedImages) {
+            if (item.isSelected()) {
+                selectedImage = item;
+            }
+        }
+        Log.d("SelectedImage", selectedImages.indexOf(selectedImage) + "");
+        return selectedImage;
     }
-
 
 
     @Override

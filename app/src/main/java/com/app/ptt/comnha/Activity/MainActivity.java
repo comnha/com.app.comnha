@@ -3,10 +3,14 @@ package com.app.ptt.comnha.Activity;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -19,11 +23,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.app.ptt.comnha.Adapters.MainFragPagerAdapter;
 import com.app.ptt.comnha.Fragment.AboutBottomSheetDialogFragment;
+import com.app.ptt.comnha.Fragment.AddlocaFragment;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.github.clans.fab.FloatingActionButton;
@@ -54,6 +59,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private MainFragPagerAdapter pagerAdapter;
     private FloatingActionButton fab;
     NestedScrollView nestedScrollView;
+    BottomSheetBehavior bottomSheetBehavior;
+    FrameLayout frameLayout;
+    View dimbtmsheetView;
+    private View posttabview,
+            storetabview,
+            notifytabview;
+    boolean isPostRefresh = true,
+            isStoretRefresh = true,
+            isNotitRefresh = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void anhXa() {
+
         mtoolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(mtoolbar);
         mdrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -86,13 +101,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         viewPager.setAdapter(pagerAdapter);
         tabLayout = (TabLayout) findViewById(R.id.tablayout_main);
         tabLayout.setupWithViewPager(viewPager);
-        View tabview = LayoutInflater.from(this).inflate(R.layout.tabs_main, null);
-//        tabview.findViewById(R.id.imgV_tabs_main).setBackgroundResource(R.drawable.ic_admin_newpost);
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_main_posts);
-//        tabview.findViewById(R.id.imgV_tabs_main).setBackgroundResource(R.drawable.ic_admin_newstore);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_main_stores);
-//        tabview.findViewById(R.id.imgV_tabs_main).setBackgroundResource(R.drawable.ic_main_notify);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_main_notify);
+        posttabview = LayoutInflater.from(this).inflate(R.layout.tabs_main, null);
+        posttabview.findViewById(R.id.imgV_tabs_main).setBackgroundResource(R.drawable.ic_admin_newpost);
+//        tabLayout.getTabAt(0).setIcon(R.drawable.ic_main_posts);
+        tabLayout.getTabAt(0).setCustomView(posttabview);
+        storetabview = LayoutInflater.from(this).inflate(R.layout.tabs_main, null);
+        storetabview.findViewById(R.id.imgV_tabs_main).setBackgroundResource(R.drawable.ic_admin_newstore);
+//        tabLayout.getTabAt(1).setIcon(R.drawable.ic_main_stores);
+        tabLayout.getTabAt(1).setCustomView(storetabview);
+        notifytabview = LayoutInflater.from(this).inflate(R.layout.tabs_main, null);
+        notifytabview.findViewById(R.id.imgV_tabs_main).setBackgroundResource(R.drawable.ic_main_notify);
+//        tabLayout.getTabAt(2).setIcon(R.drawable.ic_main_notify);
+        tabLayout.getTabAt(2).setCustomView(notifytabview);
+
         nestedScrollView = (NestedScrollView) findViewById(R.id.nested_main);
         nestedScrollView.setFillViewport(true);
         long scaletime = 200;
@@ -113,6 +134,118 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         collapsefabY.setDuration(scaletime / 2);
         expandfabX.setDuration(scaletime / 2);
         expandfabY.setDuration(scaletime / 2);
+
+        posttabview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tabLayout.getTabAt(0).select();
+                if (!isPostRefresh) {
+                    View postview = posttabview.findViewById(R.id.imgV_news_tabs_main);
+                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(postview, "scaleX", 1, 0),
+                            scaleY = ObjectAnimator.ofFloat(postview, "scaleY", 1, 0);
+                    scaleX.setDuration(100);
+                    scaleY.setDuration(100);
+//                    tabLayout.getTabAt(0).setCustomView(posttabview);
+                    scaleX.start();
+                    scaleY.start();
+                    scaleX.addListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+                            posttabview.findViewById(R.id.imgV_news_tabs_main).setBackgroundResource(android.R.color.transparent);
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animator) {
+
+                        }
+                    });
+                }
+            }
+        });
+        storetabview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tabLayout.getTabAt(1).select();
+                if (!isStoretRefresh) {
+                    View storeview = storetabview.findViewById(R.id.imgV_news_tabs_main);
+                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(storeview, "scaleX", 1, 0),
+                            scaleY = ObjectAnimator.ofFloat(storeview, "scaleY", 1, 0);
+                    scaleX.setDuration(100);
+                    scaleY.setDuration(100);
+//                    tabLayout.getTabAt(1).setCustomView(storetabview);
+                    scaleX.start();
+                    scaleY.start();
+                    scaleX.addListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+                            storetabview.findViewById(R.id.imgV_news_tabs_main).setBackgroundResource(android.R.color.transparent);
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animator) {
+
+                        }
+                    });
+                }
+            }
+        });
+        notifytabview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tabLayout.getTabAt(2).select();
+                if (isNotitRefresh) {
+                    View notifyview = storetabview.findViewById(R.id.imgV_news_tabs_main);
+                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(notifyview, "scaleX", 1, 0),
+                            scaleY = ObjectAnimator.ofFloat(notifyview, "scaleY", 1, 0);
+                    scaleX.setDuration(100);
+                    scaleY.setDuration(100);
+//                    tabLayout.getTabAt(2).setCustomView(notifytabview);
+                    scaleX.start();
+                    scaleY.start();
+                    scaleX.addListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+                            notifytabview.findViewById(R.id.imgV_news_tabs_main).setBackgroundResource(android.R.color.transparent);
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animator) {
+
+                        }
+                    });
+                }
+            }
+        });
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -120,6 +253,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 switch (tab.getPosition()) {
                     case 0:
+
+
                         scalefabX.start();
                         scalefabY.start();
                         fab.setColorNormal(getResources()
@@ -135,6 +270,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                            fab.setScaleY(0);
                             expandfabX.start();
                             expandfabY.start();
+                            fab.setColorNormal(getResources()
+                                    .getColor(R.color.admin_color_selection_reports));
+                            fab.setColorPressed(getResources()
+                                    .getColor(R.color.admin_color_selection_reports));
+                            fab.setImageResource(R.drawable.ic_add_location_white_24dp);
                         } else {
                             scalefabX.start();
                             scalefabY.start();
@@ -193,6 +333,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         fab.setOnClickListener(this);
+
+        dimbtmsheetView = findViewById(R.id.view_dimbtmsheet_main);
+
+        frameLayout = (FrameLayout) findViewById(R.id.frame_btmsheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(frameLayout);
+
     }
 
     @Override
@@ -205,12 +351,159 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_search_main:
-                Toast.makeText(this, "search", Toast.LENGTH_SHORT).show();
+                posttabview.findViewById(R.id.imgV_news_tabs_main)
+                        .setBackgroundResource(R.drawable.ic_notify_new_yellow_18dp);
+                View postview = posttabview.findViewById(R.id.imgV_news_tabs_main);
+                ObjectAnimator scaleX = ObjectAnimator.ofFloat(postview, "scaleX", 0, 1),
+                        scaleY = ObjectAnimator.ofFloat(postview, "scaleY", 0, 1);
+                scaleX.setDuration(100);
+                scaleY.setDuration(100);
+                tabLayout.getTabAt(0).setCustomView(posttabview);
+                scaleX.start();
+                scaleY.start();
+                isPostRefresh = false;
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        switch (item.getItemId()) {
+            case R.id.nav_profile:
+                Intent intent = new Intent(MainActivity.this, Adapter2Activity.class);
+                intent.putExtra(getString(R.string.fragment_CODE),
+                        getString(R.string.frg_prodetail_CODE));
+                startActivity(intent);
+                break;
+            case R.id.nav_about:
+                AboutBottomSheetDialogFragment aboutBottomSheetDialogFragment
+                        = new AboutBottomSheetDialogFragment();
+                aboutBottomSheetDialogFragment.show(getSupportFragmentManager(),
+                        getString(R.string.frag_about_CODE));
+                break;
+            case R.id.nav_admin:
+                Intent intent_admin = new Intent(this, AdminActivity.class);
+                startActivity(intent_admin);
+                break;
+            case R.id.nav_signin:
+//                Intent intent1 = new Intent(MainActivity.this, Adapter2Activity.class);
+//                intent1.putExtra(getString(R.string.fragment_CODE),
+//                        getString(R.string.frg_signin_CODE));
+//                intent1.putExtra("isConnected", isConnected);
+//                startActivity(intent1);
+//                break;
+            case R.id.nav_signout:
+//                if (isConnected) {
+//                    showLoading(getString(R.string.txt_plzwait), getString(R.string.txt_logginout));
+//                    mAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<AuthResult> task) {
+//                            hideLoading();
+//                            Log.d("signInAnonymously", "signInAnonymously:onComplete:" + task.isSuccessful());
+//                            // If sign in fails, display a message to the user. If sign in succeeds
+//                            // the auth state listener will be notified and logic to handle the
+//                            // signed in user can be handled in the listener.
+//                            if (!task.isSuccessful()) {
+//                                Log.w("signInAnonymouslyError", "signInAnonymously", task.getException());
+//                            } else {
+//                                LoginSession.getInstance().setTen(null);
+//                                LoginSession.getInstance().setHo(null);
+//                                LoginSession.getInstance().setTenlot(null);
+//                                LoginSession.getInstance().setNgaysinh(null);
+//                                LoginSession.getInstance().setPassword(null);
+//                            }
+//                        }
+//                    });
+//                } else {
+//                    Toast.makeText(getApplicationContext(), "You are offline", Toast.LENGTH_SHORT).show();
+//                }
+                break;
+            case R.id.nav_map:
+                Intent intent2 = new Intent(MainActivity.this, AdapterActivity.class);
+                intent2.putExtra(getString(R.string.fragment_CODE),
+                        getString(R.string.frag_map_CODE));
+                startActivity(intent2);
+                break;
+        }
+        mdrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mdrawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fab_main:
+                switch (tabLayout.getSelectedTabPosition()) {
+                    case 0:
+                        Intent intent_openWritepost = new Intent(this, Adapter2Activity.class);
+                        intent_openWritepost.putExtra(getString(R.string.fragment_CODE),
+                                getString(R.string.frag_addpost_CODE));
+                        startActivity(intent_openWritepost);
+                        break;
+                    case 1:
+                        FragmentTransaction transaction = getSupportFragmentManager()
+                                .beginTransaction()
+                                .add(R.id.frame_btmsheet, new AddlocaFragment(), "addloca_frag");
+                        transaction.commit();
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                            @Override
+                            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                                switch (newState) {
+                                    case BottomSheetBehavior.STATE_EXPANDED:
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                            getWindow().setStatusBarColor(getResources()
+                                                    .getColor(R.color.admin_color_selection_reports));
+                                        }
+                                        break;
+                                    case BottomSheetBehavior.STATE_COLLAPSED:
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                            getWindow().setStatusBarColor(getResources()
+                                                    .getColor(R.color.colorPrimaryDark));
+                                        }
+                                    case BottomSheetBehavior.STATE_DRAGGING:
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                            getWindow().setStatusBarColor(getResources()
+                                                    .getColor(R.color.colorPrimaryDark));
+                                        }
+                                        break;
+                                }
+                            }
+
+                            @Override
+                            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                                Log.d("slideOffset", slideOffset + "");
+
+                                if (slideOffset == 0) {
+                                    dimbtmsheetView.setBackgroundColor(
+                                            getResources()
+                                                    .getColor(android.R.color.transparent));
+                                } else {
+                                    dimbtmsheetView.setBackgroundColor(
+                                            getResources().getColor(android.R.color.black));
+                                    dimbtmsheetView.setAlpha(slideOffset - 0.2f);
+                                }
+                            }
+                        });
+
+                        break;
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else {
+            super.onBackPressed();
+        }
+    }
     //
 //
 //    private ChangeLocationBottomSheetDialogFragment changeLccaBtmSheet;
@@ -651,90 +944,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        }
 //    }
 //
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        switch (item.getItemId()) {
-            case R.id.nav_profile:
-                Intent intent = new Intent(MainActivity.this, Adapter2Activity.class);
-                intent.putExtra(getString(R.string.fragment_CODE),
-                        getString(R.string.frg_prodetail_CODE));
-                startActivity(intent);
-                break;
-            case R.id.nav_about:
-                AboutBottomSheetDialogFragment aboutBottomSheetDialogFragment
-                        = new AboutBottomSheetDialogFragment();
-                aboutBottomSheetDialogFragment.show(getSupportFragmentManager(),
-                        getString(R.string.frag_about_CODE));
-                break;
-            case R.id.nav_admin:
-                Intent intent_admin = new Intent(this, AdminActivity.class);
-                startActivity(intent_admin);
-                break;
-            case R.id.nav_signin:
-//                Intent intent1 = new Intent(MainActivity.this, Adapter2Activity.class);
-//                intent1.putExtra(getString(R.string.fragment_CODE),
-//                        getString(R.string.frg_signin_CODE));
-//                intent1.putExtra("isConnected", isConnected);
-//                startActivity(intent1);
-//                break;
-            case R.id.nav_signout:
-//                if (isConnected) {
-//                    showLoading(getString(R.string.txt_plzwait), getString(R.string.txt_logginout));
-//                    mAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<AuthResult> task) {
-//                            hideLoading();
-//                            Log.d("signInAnonymously", "signInAnonymously:onComplete:" + task.isSuccessful());
-//                            // If sign in fails, display a message to the user. If sign in succeeds
-//                            // the auth state listener will be notified and logic to handle the
-//                            // signed in user can be handled in the listener.
-//                            if (!task.isSuccessful()) {
-//                                Log.w("signInAnonymouslyError", "signInAnonymously", task.getException());
-//                            } else {
-//                                LoginSession.getInstance().setTen(null);
-//                                LoginSession.getInstance().setHo(null);
-//                                LoginSession.getInstance().setTenlot(null);
-//                                LoginSession.getInstance().setNgaysinh(null);
-//                                LoginSession.getInstance().setPassword(null);
-//                            }
-//                        }
-//                    });
-//                } else {
-//                    Toast.makeText(getApplicationContext(), "You are offline", Toast.LENGTH_SHORT).show();
-//                }
-                break;
-            case R.id.nav_map:
-                Intent intent2 = new Intent(MainActivity.this, AdapterActivity.class);
-                intent2.putExtra(getString(R.string.fragment_CODE),
-                        getString(R.string.frag_map_CODE));
-                startActivity(intent2);
-                break;
-        }
-        mdrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mdrawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.fab_main:
-                switch (tabLayout.getSelectedTabPosition()) {
-                    case 0:
-                        Intent intent_openWritepost = new Intent(this, Adapter2Activity.class);
-                        intent_openWritepost.putExtra(getString(R.string.fragment_CODE),
-                                getString(R.string.frag_addpost_CODE));
-                        startActivity(intent_openWritepost);
-                        break;
-                    case 1:
-                        break;
-                }
-                break;
-        }
-    }
-//
+    //
 //    @Override
 //    public void onClick(View view) {
 //        switch (view.getId()) {

@@ -17,4 +17,5 @@
     <color name="admin_color_selection_news">#edbb4c</color>
     <color name="admin_color_selection_reports">#da414a</color>
     <color name="admin_color_notify_newpost">#90b03d</color>
+    <color name="addlocal_color_opentime">#9303a7</color>
 </resources>

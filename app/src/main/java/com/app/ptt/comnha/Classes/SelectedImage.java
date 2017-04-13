@@ -10,12 +10,15 @@ import java.io.File;
 
 public class SelectedImage {
     private Uri uri;
-    private boolean state;
+    private boolean isSelected;
     private File file;
 
-    public SelectedImage(Uri uri, boolean state, File file) {
+    public SelectedImage() {
+    }
+
+    public SelectedImage(Uri uri, boolean isSelected, File file) {
         this.uri = uri;
-        this.state = state;
+        this.isSelected = isSelected;
         this.file = file;
     }
 
@@ -35,11 +38,11 @@ public class SelectedImage {
         this.uri = uri;
     }
 
-    public boolean isState() {
-        return state;
+    public boolean isSelected() {
+        return isSelected;
     }
 
-    public void setState(boolean state) {
-        this.state = state;
+    public void setSelected(boolean selected) {
+        this.isSelected = selected;
     }
 }
