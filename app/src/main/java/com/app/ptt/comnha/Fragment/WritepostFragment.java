@@ -202,6 +202,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 moreDialog.dismiss();
                 break;
             case R.id.linear_addimg_more_writepost_dialog:
+                imagesImportRvAdapter.readthentranstoarray();
                 imagesrv.scrollToPosition(0);
                 imgsDialog.show();
                 moreDialog.dismiss();

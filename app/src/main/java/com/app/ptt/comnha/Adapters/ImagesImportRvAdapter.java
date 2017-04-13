@@ -33,7 +33,6 @@ public class ImagesImportRvAdapter extends RecyclerView.Adapter<ImagesImportRvAd
         this.notifyDataSetChanged();
         this.context = context;
         selectedImages = new ArrayList<>();
-        transtoarray();
     }
 
     @Override
@@ -90,7 +89,7 @@ public class ImagesImportRvAdapter extends RecyclerView.Adapter<ImagesImportRvAd
         }
     }
 
-    private void transtoarray() {
+    public void readthentranstoarray() {
         String[] projecttion = {
                 MediaStore.Images.Media._ID,
                 MediaStore.Images.Media.DATA,

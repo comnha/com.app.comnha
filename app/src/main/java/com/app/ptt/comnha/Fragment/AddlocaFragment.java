@@ -262,6 +262,7 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
                 tpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
                 break;
             case R.id.frg_addloction_imgv_avatar:
+                singleImageImportRvAdapter.readthentranstoarray();
                 imagesrv.scrollToPosition(0);
                 imgsDialog.show();
                 break;

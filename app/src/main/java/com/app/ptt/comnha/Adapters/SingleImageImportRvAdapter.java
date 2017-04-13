@@ -39,10 +39,9 @@ public class SingleImageImportRvAdapter extends RecyclerView.Adapter<SingleImage
 
     public SingleImageImportRvAdapter(Context context, ContentResolver cr) {
         this.cr = cr;
-        this.notifyDataSetChanged();
         this.context = context;
         selectedImages = new ArrayList<>();
-        transtoarray();
+        this.notifyDataSetChanged();
     }
 
     @Override
@@ -113,8 +112,7 @@ public class SingleImageImportRvAdapter extends RecyclerView.Adapter<SingleImage
             selected_imgv = (ImageView) itemView.findViewById(R.id.imgv_selected_imageimport);
         }
     }
-
-    private void transtoarray() {
+    public void readthentranstoarray() {
         String[] projecttion = {
                 MediaStore.Images.Media._ID,
                 MediaStore.Images.Media.DATA,
