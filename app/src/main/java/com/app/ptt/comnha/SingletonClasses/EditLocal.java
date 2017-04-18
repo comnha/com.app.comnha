@@ -1,6 +1,6 @@
 package com.app.ptt.comnha.SingletonClasses;
 
-import com.app.ptt.comnha.FireBase.Store;
+import com.app.ptt.comnha.Models.FireBase.Store;
 
 /**
  * Created by PTT on 10/5/2016.

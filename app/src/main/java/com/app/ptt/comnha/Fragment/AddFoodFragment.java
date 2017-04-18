@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,15 +19,11 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.ptt.comnha.FireBase.Food;
-import com.app.ptt.comnha.FireBase.Notification;
-import com.app.ptt.comnha.Modules.Times;
+import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseLoca;
 import com.github.clans.fab.FloatingActionButton;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -76,7 +71,7 @@ public class AddFoodFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        isConnected= MyService.returnIsConnected();
+        isConnected= MyService.returnIsNetworkConnected();
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(
                 getResources().getString(R.string.firebase_path));
 //        locaID = ChooseLoca.getInstance().getLocation().getLocaID();
@@ -154,43 +149,43 @@ public class AddFoodFragment extends Fragment implements View.OnClickListener{
         childUpdates.put(
                 getResources().getString(R.string.thucdon_CODE)
                 + key, thucdonValue);
-        if(!MyService.getUserAccount().getRole()) {
-            Notification notification = new Notification();
-            String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + "admin").push().getKey();
-            notification.setAccount(MyService.getUserAccount());
-            notification.setDate(new Times().getDate());
-            notification.setTime(new Times().getTime());
-//            newFood.setMonID(key);
-            notification.setFood(newFood);
-            notification.setType(1);
-            notification.setLocation(ChooseLoca.getInstance().getLocation());
-            notification.setReaded(false);
-            notification.setTo("admin");
-            Map<String, Object> notificationValue = notification.toMap();
-            childUpdates.put(getResources().getString(R.string.notification_CODE) + "admin/" + key1, notificationValue);
-
+//        if(!MyService.getUserAccount().getRole()) {
+//            Notification notification = new Notification();
+//            String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + "admin").push().getKey();
+//            notification.setAccount(MyService.getUserAccount());
+//            notification.setDate(new Times().getDate());
+//            notification.setTime(new Times().getTime());
+////            newFood.setMonID(key);
+//            notification.setFood(newFood);
+//            notification.setType(1);
+//            notification.setLocation(ChooseLoca.getInstance().getLocation());
+//            notification.setReaded(false);
+//            notification.setTo("admin");
+//            Map<String, Object> notificationValue = notification.toMap();
+//            childUpdates.put(getResources().getString(R.string.notification_CODE) + "admin/" + key1, notificationValue);
+//
 
         }
-        dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isComplete()) {
-                    mProgressDialog.dismiss();
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.txt_addedMon), Toast.LENGTH_SHORT).show();
-                    getActivity().finish();
-                } else {
-                    mProgressDialog.dismiss();
-                    Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
+//        dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+//            @Override
+//            public void onComplete(@NonNull Task<Void> task) {
+//                if (task.isComplete()) {
+//                    mProgressDialog.dismiss();
+//                    Toast.makeText(getActivity(),
+//                            getResources().getString(R.string.txt_addedMon), Toast.LENGTH_SHORT).show();
+//                    getActivity().finish();
+//                } else {
+//                    mProgressDialog.dismiss();
+//                    Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+
 
     @Override
     public void onStart() {
         super.onStart();
-        isConnected= MyService.returnIsConnected();
+        isConnected= MyService.returnIsNetworkConnected();
         if(!isConnected){
             Toast.makeText(getContext(),"Offline mode",Toast.LENGTH_SHORT).show();
         }

@@ -2,6 +2,7 @@ package com.app.ptt.comnha.Activity;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,22 +31,24 @@ import com.app.ptt.comnha.Adapters.MainFragPagerAdapter;
 import com.app.ptt.comnha.Fragment.AboutBottomSheetDialogFragment;
 import com.app.ptt.comnha.Fragment.AddlocaFragment;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
+import com.app.ptt.comnha.Utils.AppUtils;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private static final String LOG = MainActivity.class.getSimpleName();
     private Bundle savedInstanceState;
-    FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    DatabaseReference dbRef;
-    ValueEventListener profileValueEventListener;
     public String userID, username, email;
     private String tinh = "", huyen = "";
     private Toolbar mtoolbar;
@@ -76,8 +79,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         anhXa();
         LoginSession.getInstance().setTinh("");
         LoginSession.getInstance().setHuyen("");
-
+        startMyService();
+        auth=FirebaseAuth.getInstance();
+        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getString(R.string.firebase_path));
+        if(auth.getCurrentUser()!=null){
+            AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(),"Đã đăng nhâpj");
+         
+        }
     }
+
 
     private void anhXa() {
 
@@ -389,37 +399,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent_admin);
                 break;
             case R.id.nav_signin:
-//                Intent intent1 = new Intent(MainActivity.this, Adapter2Activity.class);
-//                intent1.putExtra(getString(R.string.fragment_CODE),
-//                        getString(R.string.frg_signin_CODE));
-//                intent1.putExtra("isConnected", isConnected);
-//                startActivity(intent1);
-//                break;
+                if(auth.getCurrentUser()==null) {
+                    Intent intentLogin = new Intent(MainActivity.this, Adapter2Activity.class);
+                    intentLogin.putExtra(getString(R.string.fragment_CODE),
+                            getString(R.string.frg_signin_CODE));
+                    startActivity(intentLogin);
+                }
+                break;
             case R.id.nav_signout:
-//                if (isConnected) {
-//                    showLoading(getString(R.string.txt_plzwait), getString(R.string.txt_logginout));
-//                    mAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                if (MyService.returnIsNetworkConnected()) {
+                    showProgressDialog(getString(R.string.txt_plzwait), getString(R.string.txt_logginout));
+                    handleProgressDialog();
+                    auth.signOut();
+                    LoginSession.getInstance().setTen(null);
+                    LoginSession.getInstance().setHo(null);
+                    LoginSession.getInstance().setTenlot(null);
+                    LoginSession.getInstance().setNgaysinh(null);
+                    LoginSession.getInstance().setPassword(null);
+                    closeDialog();
+//                    auth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
 //                        @Override
 //                        public void onComplete(@NonNull Task<AuthResult> task) {
-//                            hideLoading();
+//
 //                            Log.d("signInAnonymously", "signInAnonymously:onComplete:" + task.isSuccessful());
 //                            // If sign in fails, display a message to the user. If sign in succeeds
 //                            // the auth state listener will be notified and logic to handle the
 //                            // signed in user can be handled in the listener.
 //                            if (!task.isSuccessful()) {
 //                                Log.w("signInAnonymouslyError", "signInAnonymously", task.getException());
+//                                AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(),getString(R.string.txt_tryagain));
 //                            } else {
-//                                LoginSession.getInstance().setTen(null);
-//                                LoginSession.getInstance().setHo(null);
-//                                LoginSession.getInstance().setTenlot(null);
-//                                LoginSession.getInstance().setNgaysinh(null);
-//                                LoginSession.getInstance().setPassword(null);
+//
+//                                AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(),getString(R.string.txt_signout_success));
 //                            }
+//
+//
 //                        }
 //                    });
-//                } else {
-//                    Toast.makeText(getApplicationContext(), "You are offline", Toast.LENGTH_SHORT).show();
-//                }
+                } else {
+                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(),getString(R.string.txt_nointernet));
+                }
                 break;
             case R.id.nav_map:
                 Intent intent2 = new Intent(MainActivity.this, AdapterActivity.class);

@@ -10,7 +10,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.app.ptt.comnha.Fragment.MapFragment;
-import com.app.ptt.comnha.Modules.Route;
+import com.app.ptt.comnha.Models.Route;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseLoca;
 

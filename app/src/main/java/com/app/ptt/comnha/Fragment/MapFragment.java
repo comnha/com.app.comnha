@@ -28,12 +28,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.ptt.comnha.Classes.AnimationUtils;
-import com.app.ptt.comnha.FireBase.Store;
-import com.app.ptt.comnha.Modules.LocationFinderListener;
-import com.app.ptt.comnha.Modules.MyTool;
-import com.app.ptt.comnha.Modules.PlaceAPI;
-import com.app.ptt.comnha.Modules.PlaceAttribute;
-import com.app.ptt.comnha.Modules.Storage;
+import com.app.ptt.comnha.Interfaces.LocationFinderListener;
+import com.app.ptt.comnha.Models.FireBase.Store;
+import com.app.ptt.comnha.Utils.MyTool;
+import com.app.ptt.comnha.Utils.PlaceAPI;
+import com.app.ptt.comnha.Utils.PlaceAttribute;
+import com.app.ptt.comnha.Utils.Storage;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.github.clans.fab.FloatingActionButton;
@@ -175,7 +175,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
     public void onStart() {
         Log.i(LOG, "onStart");
         super.onStart();
-        isConnected= MyService.returnIsConnected();
+        isConnected= MyService.returnIsNetworkConnected();
         if(!isConnected){
             Toast.makeText(getContext(),"Offline mode",Toast.LENGTH_SHORT).show();
         }
@@ -341,16 +341,13 @@ public class MapFragment extends Fragment implements View.OnClickListener,
         Log.i(LOG, "onStop");
         super.onStop();
         getActivity().unregisterReceiver(mBroadcastReceiver);
-        if(myTool.isGoogleApiConnected())
-            myTool.stopLocationUpdate();
+
     }
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.i(LOG, "onViewCreated");
-
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Loading...");
+        
         //progressDialog.show();
         supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapwhere);
         if (supportMapFragment == null) {
@@ -364,7 +361,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
                     myGoogleMap = googleMap;
-                    isConnected= MyService.returnIsConnected();
+                    isConnected= MyService.returnIsNetworkConnected();
                     ArrayList<Store> locations;
                     String a = Storage.readFile(getContext(), "myLocation");
                     if (a != null) {

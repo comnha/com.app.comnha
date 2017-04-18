@@ -45,6 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1.5"
+                android:nextFocusDown="@+id/edt_siFrg_password"
                 android:gravity="center_vertical">
 
                 <EditText
@@ -56,6 +57,7 @@
                     android:hint="@string/text_email"
                     android:inputType="textEmailAddress"
                     android:textColor="@android:color/white"
+                    android:nextFocusDown="@+id/edt_siFrg_password"
                     android:textColorHint="@android:color/white" />
             </android.support.design.widget.TextInputLayout>
 
@@ -70,6 +72,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@android:color/white"
+                    android:nextFocusDown="@+id/btn_siFrg_signin"
                     android:gravity="start|center_vertical"
                     android:hint="@string/text_password"
                     android:inputType="textPassword"

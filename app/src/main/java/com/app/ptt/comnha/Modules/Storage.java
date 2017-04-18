@@ -3,8 +3,8 @@ package com.app.ptt.comnha.Modules;
 import android.content.Context;
 import android.util.Log;
 
-import com.app.ptt.comnha.FireBase.Store;
-import com.app.ptt.comnha.FireBase.Post;
+import com.app.ptt.comnha.Models.FireBase.Store;
+import com.app.ptt.comnha.Models.FireBase.Post;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

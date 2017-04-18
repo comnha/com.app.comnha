@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.ptt.comnha.Classes.AnimationUtils;
-import com.app.ptt.comnha.FireBase.Store;
+import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 
 import java.util.ArrayList;

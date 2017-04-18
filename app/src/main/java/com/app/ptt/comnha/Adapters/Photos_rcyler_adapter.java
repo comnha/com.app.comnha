@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.app.ptt.comnha.FireBase.Image;
+import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.R;
 
 import java.util.ArrayList;

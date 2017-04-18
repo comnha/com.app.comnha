@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.app.ptt.comnha.Activity.Adapter2Activity;
 import com.app.ptt.comnha.Classes.AnimationUtils;
-import com.app.ptt.comnha.FireBase.Store;
-import com.app.ptt.comnha.FireBase.Notification;
+import com.app.ptt.comnha.Models.FireBase.Notification;
+import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseLoca;

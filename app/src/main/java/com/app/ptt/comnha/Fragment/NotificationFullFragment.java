@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.app.ptt.comnha.Adapters.Notification_rcycler_adapter;
 import com.app.ptt.comnha.Adapters.Notification_rcycler_adapter_admin;
-import com.app.ptt.comnha.FireBase.Notification;
+import com.app.ptt.comnha.Models.FireBase.Notification;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -88,7 +88,7 @@ public class NotificationFullFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        isConnected= MyService.returnIsConnected();
+        isConnected= MyService.returnIsNetworkConnected();
         if(!isConnected){
             Toast.makeText(getActivity().getApplicationContext(),"Offline mode",Toast.LENGTH_SHORT).show();
         }
@@ -115,7 +115,7 @@ public class NotificationFullFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fullnotification, container, false);
         // Inflate the layout for this fragment
-        isConnected = MyService.returnIsConnected();
+        isConnected = MyService.returnIsNetworkConnected();
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
         anhxa(view);
         getData();

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.app.ptt.comnha.FireBase.Store;
+import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 
 import java.util.ArrayList;

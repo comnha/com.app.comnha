@@ -2,7 +2,7 @@ package com.app.ptt.comnha.Modules;
 
 import android.graphics.Bitmap;
 
-import com.app.ptt.comnha.FireBase.Store;
+import com.app.ptt.comnha.Models.FireBase.Store;
 
 /**
  * Created by cuong on 12/21/2016.

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.app.ptt.comnha.FireBase.Account;
+import com.app.ptt.comnha.Models.FireBase.Account;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.google.firebase.database.DataSnapshot;

@@ -34,12 +34,12 @@ import com.app.ptt.comnha.Activity.Adapter2Activity;
 import com.app.ptt.comnha.Adapters.Comment_rcyler_adapter;
 import com.app.ptt.comnha.Adapters.Photos_rcyler_adapter;
 import com.app.ptt.comnha.Classes.AnimationUtils;
-import com.app.ptt.comnha.FireBase.Comment;
-import com.app.ptt.comnha.FireBase.Food;
-import com.app.ptt.comnha.FireBase.Image;
-import com.app.ptt.comnha.FireBase.Notification;
-import com.app.ptt.comnha.FireBase.Post;
-import com.app.ptt.comnha.FireBase.Store;
+import com.app.ptt.comnha.Models.FireBase.Comment;
+import com.app.ptt.comnha.Models.FireBase.Food;
+import com.app.ptt.comnha.Models.FireBase.Image;
+import com.app.ptt.comnha.Models.FireBase.Notification;
+import com.app.ptt.comnha.Models.FireBase.Post;
+import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
@@ -118,7 +118,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        isConnected = MyService.returnIsConnected();
+        isConnected = MyService.returnIsNetworkConnected();
         View view = inflater.inflate(R.layout.fragment_viewpost, container, false);
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
         storeRef = FirebaseStorage.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebaseStorage_path));
@@ -360,7 +360,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onStart() {
-        isConnected = MyService.returnIsConnected();
+        isConnected = MyService.returnIsNetworkConnected();
         if (!isConnected) {
             Toast.makeText(getContext(), "Offline mode", Toast.LENGTH_SHORT).show();
         }

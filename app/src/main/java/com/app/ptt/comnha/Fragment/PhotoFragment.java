@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.app.ptt.comnha.FireBase.Image;
+import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.google.firebase.database.ChildEventListener;

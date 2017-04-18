@@ -18,7 +18,7 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.app.ptt.comnha.Const.Const;
-import com.app.ptt.comnha.FireBase.Store;
+import com.app.ptt.comnha.Models.FireBase.Store;
 import com.firebase.client.Firebase;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;

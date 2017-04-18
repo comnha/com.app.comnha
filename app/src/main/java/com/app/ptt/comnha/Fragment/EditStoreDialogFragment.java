@@ -27,11 +27,11 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.Toast;
 
-import com.app.ptt.comnha.FireBase.Store;
-import com.app.ptt.comnha.Modules.LocationFinderListener;
-import com.app.ptt.comnha.Modules.MyTool;
-import com.app.ptt.comnha.Modules.PlaceAPI;
-import com.app.ptt.comnha.Modules.PlaceAttribute;
+import com.app.ptt.comnha.Interfaces.LocationFinderListener;
+import com.app.ptt.comnha.Models.FireBase.Store;
+import com.app.ptt.comnha.Utils.MyTool;
+import com.app.ptt.comnha.Utils.PlaceAPI;
+import com.app.ptt.comnha.Utils.PlaceAttribute;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.EditLocal;
 import com.google.android.gms.maps.model.LatLng;

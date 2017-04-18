@@ -11,7 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.app.ptt.comnha.FireBase.NewstoreNotify;
+import com.app.ptt.comnha.Models.FireBase.NewstoreNotify;
 import com.app.ptt.comnha.R;
 
 import java.util.ArrayList;

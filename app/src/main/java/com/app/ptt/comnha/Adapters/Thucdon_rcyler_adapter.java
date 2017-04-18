@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.app.ptt.comnha.FireBase.Food;
+import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.R;
 
 import java.util.ArrayList;

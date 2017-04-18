@@ -27,10 +27,10 @@ import android.widget.Toast;
 import com.app.ptt.comnha.Activity.Adapter2Activity;
 import com.app.ptt.comnha.Adapters.Reviewlist_rcyler_adapter;
 import com.app.ptt.comnha.Classes.RecyclerItemClickListener1;
-import com.app.ptt.comnha.FireBase.Food;
-import com.app.ptt.comnha.FireBase.Image;
-import com.app.ptt.comnha.FireBase.Post;
-import com.app.ptt.comnha.FireBase.Store;
+import com.app.ptt.comnha.Models.FireBase.Food;
+import com.app.ptt.comnha.Models.FireBase.Image;
+import com.app.ptt.comnha.Models.FireBase.Post;
+import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.EditLocal;
@@ -42,7 +42,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
+import com.app.ptt.comnha.Models.FireBase.Store;
 import java.util.ArrayList;
 
 
@@ -64,7 +64,7 @@ public class FooddetailFragment extends Fragment {
     ActionBar actionBar;
     Toolbar toolbar;
     StorageReference storeRef;
-    Store location;
+    com.app.ptt.comnha.Models.FireBase.Store location;
     ArrayList<Food> foodList;
     ArrayList<Image> files;
     TextView txtalbum;
@@ -93,7 +93,7 @@ public class FooddetailFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        isConnected = MyService.returnIsConnected();
+        isConnected = MyService.returnIsNetworkConnected();
         if (!isConnected) {
             Toast.makeText(getContext(), "Offline mode", Toast.LENGTH_SHORT).show();
         }
@@ -112,7 +112,7 @@ public class FooddetailFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fooddetail, container, false);
-        isConnected = MyService.returnIsConnected();
+        isConnected = MyService.returnIsNetworkConnected();
 //        locaID = ChooseFood.getInstance().getLocation().getLocaID();
         storeRef = FirebaseStorage.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebaseStorage_path));
         if (locaID != null) {
@@ -294,5 +294,8 @@ public class FooddetailFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
 
+    }
+
+    private class Store {
     }
 }

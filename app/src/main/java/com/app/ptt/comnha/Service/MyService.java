@@ -15,11 +15,11 @@ import android.provider.Settings;
 import android.util.Log;
 
 import com.app.ptt.comnha.Const.Const;
-import com.app.ptt.comnha.FireBase.Account;
-import com.app.ptt.comnha.FireBase.Store;
-import com.app.ptt.comnha.FireBase.Notification;
-import com.app.ptt.comnha.Modules.MyTool;
-import com.app.ptt.comnha.Modules.Storage;
+import com.app.ptt.comnha.Models.FireBase.Account;
+import com.app.ptt.comnha.Models.FireBase.Notification;
+import com.app.ptt.comnha.Models.FireBase.Store;
+import com.app.ptt.comnha.Utils.MyTool;
+import com.app.ptt.comnha.Utils.Storage;
 
 import java.util.ArrayList;
 
@@ -87,8 +87,8 @@ public class MyService extends Service {
     }
 
     private static Account userAccount;
-    public boolean isConnected = false;
-    static boolean isConnected1 = false, isSuccess = false;
+    public boolean isNetworkConnected = false,isLocationConnected=false;
+    static boolean isNetworkConnectedStatic = false, isSuccess = false,isLocationConnectedStatic=false;
     public boolean isSaved = false;
     MyTool myTool;
     static String changeContent = "";
@@ -204,7 +204,9 @@ public class MyService extends Service {
     public IBinder onBind(Intent intent) {
         mIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         mIntentFilter.addAction(Const.BROADCAST_PROVIDER_CHANGED);
-        mIntentFilter.addAction(Const.BROADCAST_CONNECTIVITY_CHANGE);
+
+        //mIntentFilter.addAction(Const.BROADCAST_CONNECTIVITY_CHANGE);
+        mIntentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         mIntentFilter.addAction(Const.BROADCAST_SEND_INFO);
         mBroadcastReceiver = new NetworkChangeReceiver();
         broadcastIntent = new Intent();
@@ -233,8 +235,8 @@ public class MyService extends Service {
         Log.i(LOG_TAG, "onDestroy");
     }
 
-    public static boolean returnIsConnected() {
-        return isConnected1;
+    public static boolean returnIsNetworkConnected() {
+        return isNetworkConnectedStatic;
     }
 
     class NetworkChangeReceiver extends BroadcastReceiver {
@@ -247,37 +249,37 @@ public class MyService extends Service {
                         ArrayList<Store> list = new ArrayList<>();
                         list.add(myTool.getYourLocation());
                         Storage.writeFile(getApplicationContext(), Storage.parseMyLocationToJson(list).toString(), "myLocation");
-                        myTool.stopLocationUpdate();
                     } catch (Exception e) {
 
                     }
                     broadcastIntent.setAction(Const.BROADCAST_SEND_STATUS_GET_LOCATION);
-                    broadcastIntent.putExtra("isConnected", true);
-//                    broadcastIntent.putExtra("myLocation", myTool.getYourLocation());
+                    broadcastIntent.putExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION, Const.CONNECTED);
                     context.sendBroadcast(broadcastIntent);
                 }
             }
             if(intent.getAction().equals(Const.BROADCAST_CONNECTIVITY_CHANGE)){
-                if (isNetworkAvailable(context) && canGetLocation(context)) {
+                if(isNetworkAvailable(context)) {
+                    isNetworkConnected=true;
+                    isNetworkConnectedStatic=true;
+                    broadcastIntent.setAction(Const.BROADCAST_SEND_STATUS_INTERNET);
+                    broadcastIntent.putExtra(Const.BROADCAST_SEND_STATUS_INTERNET, Const.CONNECTED);
+                }else{
+                        isNetworkConnected=false;
+                        isNetworkConnectedStatic=false;
+                        broadcastIntent.setAction(Const.BROADCAST_SEND_STATUS_INTERNET);
+                        broadcastIntent.putExtra(Const.BROADCAST_SEND_STATUS_INTERNET, Const.NOTCONNECTED);
+
+                }
+            context.sendBroadcast(broadcastIntent);
+            }
+            if(intent.getAction().equals(Const.BROADCAST_PROVIDER_CHANGED)){
+                if (canGetLocation(context)) {
                     myTool = new MyTool(context);
-                    myTool.startGoogleApi();
-                    isConnected = true;
-                    isConnected1 = true;
-                } else {
-                    broadcastIntent.setAction(Const.BROADCAST_SEND_INFO);
-                    broadcastIntent.putExtra("isConnected", false);
-                    if (!isNetworkAvailable(context)&&canGetLocation(context)) {
-                        broadcastIntent.putExtra("checkCodition", 1);
-                    } else if (!canGetLocation(context)&&isNetworkAvailable(context)) {
-                        broadcastIntent.putExtra("checkCodition", 2);
-                    }else{
-                        broadcastIntent.putExtra("checkCodition", 3);
-                    }
-                    context.sendBroadcast(broadcastIntent);
-                    isConnected = false;
-                    isConnected1 = false;
-
-
+                }else {
+                    isLocationConnected=false;
+                    isLocationConnectedStatic=false;
+                    broadcastIntent.setAction(Const.BROADCAST_SEND_STATUS_GET_LOCATION);
+                    broadcastIntent.putExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION, Const.NOTCONNECTED);
                 }
             }
 

@@ -22,7 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.app.ptt.comnha.FireBase.Account;
+import com.app.ptt.comnha.Models.FireBase.Account;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.google.android.gms.tasks.OnCompleteListener;

@@ -1,6 +1,5 @@
 package com.app.ptt.comnha.Activity;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -10,19 +9,20 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
+import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
-import com.app.ptt.comnha.FireBase.Store;
-import com.app.ptt.comnha.Modules.MyTool;
+import com.app.ptt.comnha.Models.FireBase.Store;
+import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.app.ptt.comnha.Utils.MyTool;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Created by NGUYEN VAN CUONG on 4/3/2017.
@@ -31,14 +31,9 @@ import java.util.List;
 public class BaseActivity extends AppCompatActivity {
     Dialog dialogLocationSetting;
     ProgressDialog progressDialog;
-
+     FirebaseAuth auth;
     public static final int MULTIPLE_PERMISSIONS = 10; // cod
-    String[] permissions= new String[]{
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.INTERNET,
-            Manifest.permission.ACCESS_FINE_LOCATION};
+    DatabaseReference dbRef;
     IntentFilter mIntentFilter;
     boolean binded = false;
     MyService myService;
@@ -50,12 +45,6 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(!checkPermissions()){
-
-        }else{
-            Intent intent = new Intent(this, MyService.class);
-            this.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-        }
 
 
     }
@@ -124,53 +113,46 @@ public class BaseActivity extends AppCompatActivity {
 //
 //    }
 
-    private boolean checkPermissions() {
-        int result;
-        List<String> listPermission = new ArrayList<>();
-        for (String p : permissions) {
-            result = ContextCompat.checkSelfPermission(getApplicationContext(), p);
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                listPermission.add(p);
-            }
-        }
-        if (!listPermission.isEmpty()) {
-            ActivityCompat.requestPermissions(this, listPermission.toArray(new String[listPermission.size()]), MULTIPLE_PERMISSIONS);
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case MULTIPLE_PERMISSIONS: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Intent intent = new Intent(this, MyService.class);
-                    this.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-                } else {
-
-                }
-
-                return;
-            }
-        }
-    }
-
-    public void showLoading(String tilte, String message) {
-        progressDialog = ProgressDialog.show(this,
-                tilte,
-                message, true, false);
-    }
-
-    public void hideLoading() {
+    protected void closeDialog() {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }
 
+    protected void showProgressDialog(String tilte, String message) {
+        if (progressDialog == null) {
+            if (tilte.equals("")) {
+                tilte = getString(R.string.txt_plzwait);
+            }
+            progressDialog = ProgressDialog.show(this,
+                    tilte,
+                    message, true, false);
+        }
+    }
 
+    protected void handleProgressDialog() {
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isShowProgress()) {
+                    if (progressDialog != null && progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+                    Toast.makeText(getApplicationContext(), "try again", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, 15000);
+    }
 
-    ServiceConnection serviceConnection = new ServiceConnection() {
+    protected boolean isShowProgress() {
+        return progressDialog.isShowing();
+    }
+    public void startMyService(){
+        Intent intent = new Intent(this, MyService.class);
+        this.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+   public  ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             myService = new MyService();
@@ -184,4 +166,22 @@ public class BaseActivity extends AppCompatActivity {
             binded = false;
         }
     };
+
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MULTIPLE_PERMISSIONS: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+
+                }
+
+                return;
+            }
+        }
+    }
 }

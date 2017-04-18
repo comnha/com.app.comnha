@@ -1,8 +1,8 @@
 package com.app.ptt.comnha.SingletonClasses;
 
-import com.app.ptt.comnha.FireBase.Image;
-import com.app.ptt.comnha.FireBase.Store;
-import com.app.ptt.comnha.FireBase.Post;
+import com.app.ptt.comnha.Models.FireBase.Image;
+import com.app.ptt.comnha.Models.FireBase.Post;
+import com.app.ptt.comnha.Models.FireBase.Store;
 
 import java.util.ArrayList;
 

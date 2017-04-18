@@ -28,8 +28,8 @@ import android.widget.Toast;
 import com.app.ptt.comnha.Activity.Adapter2Activity;
 import com.app.ptt.comnha.Adapters.LocatlistFilter_rcyler_adapter;
 import com.app.ptt.comnha.Classes.RecyclerItemClickListener1;
-import com.app.ptt.comnha.FireBase.Food;
-import com.app.ptt.comnha.FireBase.Store;
+import com.app.ptt.comnha.Models.FireBase.Food;
+import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseLoca;
@@ -41,8 +41,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-
-import static android.R.attr.key;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -100,7 +98,7 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
         View view = inflater.inflate(R.layout.fragment_filter, container, false);
         dbRef = FirebaseDatabase.getInstance()
                 .getReferenceFromUrl(getResources().getString(R.string.firebase_path));
-        isConnected= MyService.returnIsConnected();
+        isConnected= MyService.returnIsNetworkConnected();
         anhxa(view);
         return view;
     }

@@ -21,9 +21,9 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
-import com.app.ptt.comnha.Modules.Times;
-import com.app.ptt.comnha.FireBase.Food;
-import com.app.ptt.comnha.FireBase.Notification;
+import com.app.ptt.comnha.Models.FireBase.Food;
+import com.app.ptt.comnha.Models.FireBase.Notification;
+import com.app.ptt.comnha.Utils.Times;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;

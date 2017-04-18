@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.app.ptt.comnha.FireBase.Comment;
+import com.app.ptt.comnha.Models.FireBase.Comment;
 import com.app.ptt.comnha.R;
 import com.firebase.client.Firebase;
 

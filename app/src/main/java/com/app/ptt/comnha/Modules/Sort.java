@@ -1,6 +1,6 @@
 package com.app.ptt.comnha.Modules;
 
-import com.app.ptt.comnha.FireBase.Post;
+import com.app.ptt.comnha.Models.FireBase.Post;
 
 import java.util.ArrayList;
 
