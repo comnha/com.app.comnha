@@ -2,19 +2,14 @@ package com.app.ptt.comnha.Fragment;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethod;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -22,19 +17,15 @@ import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Utils.AppUtils;
-import com.firebase.client.Firebase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.app.ptt.comnha.Utils.AppUtils.getText;
 import static com.app.ptt.comnha.Utils.AppUtils.isEqualsNull;
 
 /**
@@ -169,7 +160,7 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
             return;
         }
         if(!AppUtils.getText(editText_password).equals(AppUtils.getText(editText_confirmPass))){
-            AppUtils.showSnackbarWithoutButton(view, getString(R.string.txt_passconfirmnottrue));
+            AppUtils.showSnackbarWithoutButton(view, getString(R.string.txt_notmatchpassword));
             editText_confirmPass.requestFocus();
             return;
         }
@@ -223,7 +214,7 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
     }
 
     public void addUserInfo() {
-        showProgressDialog(getContext(), getString(R.string.txt_signup), getString(R.string.txt_signup_loading));
+        showProgressDialog(getContext(), getString(R.string.text_signup), getString(R.string.txt_signup_loading));
         handleProgressDialog(getString(R.string.txt_tryagain));
         User user = new User();
         user.setEmail(AppUtils.getText(editText_email));

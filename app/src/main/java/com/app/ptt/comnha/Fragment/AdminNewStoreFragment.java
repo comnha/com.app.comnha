@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.app.ptt.comnha.Adapters.item_notify_newstore_adapter;
-import com.app.ptt.comnha.FireBase.NewstoreNotify;
+import com.app.ptt.comnha.Adapters.notify_newstore_adapter;
+import com.app.ptt.comnha.Models.FireBase.NewstoreNotify;
 import com.app.ptt.comnha.R;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class AdminNewStoreFragment extends Fragment {
 
     ListView listView;
-    item_notify_newstore_adapter itemadapter;
+    notify_newstore_adapter itemadapter;
     ArrayList<NewstoreNotify> items;
     DatabaseReference dbRef;
     ChildEventListener childEventListener;
@@ -45,7 +45,7 @@ public class AdminNewStoreFragment extends Fragment {
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getString(R.string.firebase_path));
         listView = (ListView) view.findViewById(R.id.listview_newstore_frag);
         items = new ArrayList<>();
-        itemadapter = new item_notify_newstore_adapter(getContext(), items);
+        itemadapter = new notify_newstore_adapter(getContext(), items);
         listView.setAdapter(itemadapter);
         childEventListener = new ChildEventListener() {
             @Override

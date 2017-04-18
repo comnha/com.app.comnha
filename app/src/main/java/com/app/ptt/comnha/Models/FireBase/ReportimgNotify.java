@@ -1,4 +1,4 @@
-package com.app.ptt.comnha.FireBase;
+package com.app.ptt.comnha.Models.FireBase;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,24 +7,20 @@ import java.util.Map;
  * Created by PTT on 4/7/2017.
  */
 
-public class ReportfoodNotify {
-    String id, foodID, name, storeID, storeName, date, time, userID, un,
+public class ReportimgNotify {
+    String id, imgID, name, date, time, userID, un,
             contents, district_province;
     boolean readstate = false;
     //phép kết
     String readState_pro_dist;
 
-    public ReportfoodNotify() {
+    public ReportimgNotify() {
     }
 
-    public ReportfoodNotify(String foodID, String name, String storeID,
-                            String storeName, String date, String time, String userID, String un,
-                            String contents, String district_province, boolean readstate,
-                            String readState_pro_dist) {
-        this.foodID = foodID;
+    public ReportimgNotify(String imgID, String name, String date, String time, String userID, String un,
+                           String contents, String district_province, boolean readstate, String readState_pro_dist) {
+        this.imgID = imgID;
         this.name = name;
-        this.storeID = storeID;
-        this.storeName = storeName;
         this.date = date;
         this.time = time;
         this.userID = userID;
@@ -35,12 +31,12 @@ public class ReportfoodNotify {
         this.readState_pro_dist = readState_pro_dist;
     }
 
-    public String getFoodID() {
-        return foodID;
+    public String getImgID() {
+        return imgID;
     }
 
-    public void setFoodID(String foodID) {
-        this.foodID = foodID;
+    public void setImgID(String imgID) {
+        this.imgID = imgID;
     }
 
     public String getName() {
@@ -49,22 +45,6 @@ public class ReportfoodNotify {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getStoreID() {
-        return storeID;
-    }
-
-    public void setStoreID(String storeID) {
-        this.storeID = storeID;
-    }
-
-    public String getStoreName() {
-        return storeName;
-    }
-
-    public void setStoreName(String storeName) {
-        this.storeName = storeName;
     }
 
     public String getDate() {
@@ -133,7 +113,7 @@ public class ReportfoodNotify {
 
     public Map<String, Object> toMap() {
         Map<String, Object> result = new HashMap<>();
-        result.put("foodID", foodID);
+        result.put("imgID", imgID);
         result.put("name", name);
         result.put("date", date);
         result.put("time", time);

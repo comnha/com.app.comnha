@@ -1,4 +1,4 @@
-package com.app.ptt.comnha.FireBase;
+package com.app.ptt.comnha.Models.FireBase;
 
 import java.util.HashMap;
 import java.util.Map;

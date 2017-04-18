@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.app.ptt.comnha.Adapters.notify_reportstore_adapter;
-import com.app.ptt.comnha.FireBase.ReportstoreNotify;
+import com.app.ptt.comnha.Models.FireBase.ReportstoreNotify;
 import com.app.ptt.comnha.R;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;

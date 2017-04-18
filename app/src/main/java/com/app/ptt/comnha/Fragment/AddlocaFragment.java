@@ -28,7 +28,7 @@ import android.widget.TextView;
 
 import com.app.ptt.comnha.Adapters.SingleImageImportRvAdapter;
 import com.app.ptt.comnha.Classes.SelectedImage;
-import com.app.ptt.comnha.FireBase.Store;
+import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Modules.LocationFinderListener;
 import com.app.ptt.comnha.Modules.MyTool;
 import com.app.ptt.comnha.Modules.PlaceAPI;
@@ -111,7 +111,7 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
     @Override
     public void onStart() {
         super.onStart();
-        isConnected = MyService.returnIsConnected();
+        isConnected = MyService.returnIsNetworkConnected();
         if (!isConnected) {
 //            Toast.makeText(getContext(), "Offline mode", Toast.LENGTH_SHORT).show();
         }
@@ -134,7 +134,7 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_addloca, container, false);
-        isConnected = MyService.returnIsConnected();
+        isConnected = MyService.returnIsNetworkConnected();
         now = Calendar.getInstance();
         gc = new Geocoder(getContext(), Locale.getDefault());
         anhXa(view);
@@ -155,7 +155,7 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
             }
         });
         toolbar.setBackgroundColor(getResources()
-                .getColor(R.color.admin_color_selection_reports));
+                .getColor(R.color.color_selection_report));
 
 
         edt_storeName = (EditText) view.findViewById(R.id.frg_addloction_edt_storename);

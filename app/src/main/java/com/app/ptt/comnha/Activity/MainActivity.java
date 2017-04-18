@@ -102,15 +102,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tabLayout = (TabLayout) findViewById(R.id.tablayout_main);
         tabLayout.setupWithViewPager(viewPager);
         posttabview = LayoutInflater.from(this).inflate(R.layout.tabs_main, null);
-        posttabview.findViewById(R.id.imgV_tabs_main).setBackgroundResource(R.drawable.ic_admin_newpost);
+        posttabview.findViewById(R.id.imgV_tabs_main).setBackgroundResource(R.drawable.ic_tab_post);
 //        tabLayout.getTabAt(0).setIcon(R.drawable.ic_main_posts);
         tabLayout.getTabAt(0).setCustomView(posttabview);
         storetabview = LayoutInflater.from(this).inflate(R.layout.tabs_main, null);
-        storetabview.findViewById(R.id.imgV_tabs_main).setBackgroundResource(R.drawable.ic_admin_newstore);
+        storetabview.findViewById(R.id.imgV_tabs_main).setBackgroundResource(R.drawable.ic_tab_store);
 //        tabLayout.getTabAt(1).setIcon(R.drawable.ic_main_stores);
         tabLayout.getTabAt(1).setCustomView(storetabview);
         notifytabview = LayoutInflater.from(this).inflate(R.layout.tabs_main, null);
-        notifytabview.findViewById(R.id.imgV_tabs_main).setBackgroundResource(R.drawable.ic_main_notify);
+        notifytabview.findViewById(R.id.imgV_tabs_main).setBackgroundResource(R.drawable.ic_tab_notify);
 //        tabLayout.getTabAt(2).setIcon(R.drawable.ic_main_notify);
         tabLayout.getTabAt(2).setCustomView(notifytabview);
 
@@ -271,17 +271,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             expandfabX.start();
                             expandfabY.start();
                             fab.setColorNormal(getResources()
-                                    .getColor(R.color.admin_color_selection_reports));
+                                    .getColor(R.color.color_selection_report));
                             fab.setColorPressed(getResources()
-                                    .getColor(R.color.admin_color_selection_reports));
+                                    .getColor(R.color.color_selection_report));
                             fab.setImageResource(R.drawable.ic_add_location_white_24dp);
                         } else {
                             scalefabX.start();
                             scalefabY.start();
                             fab.setColorNormal(getResources()
-                                    .getColor(R.color.admin_color_selection_reports));
+                                    .getColor(R.color.color_selection_report));
                             fab.setColorPressed(getResources()
-                                    .getColor(R.color.admin_color_selection_reports));
+                                    .getColor(R.color.color_selection_report));
                             fab.setImageResource(R.drawable.ic_add_location_white_24dp);
                         }
                         break;
@@ -457,7 +457,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     case BottomSheetBehavior.STATE_EXPANDED:
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                             getWindow().setStatusBarColor(getResources()
-                                                    .getColor(R.color.admin_color_selection_reports));
+                                                    .getColor(R.color.color_selection_report));
                                         }
                                         break;
                                     case BottomSheetBehavior.STATE_COLLAPSED:

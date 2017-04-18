@@ -1,4 +1,4 @@
-package com.app.ptt.comnha.FireBase;
+package com.app.ptt.comnha.Models.FireBase;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,20 +7,21 @@ import java.util.Map;
  * Created by PTT on 4/7/2017.
  */
 
-public class ReportimgNotify {
-    String id, imgID, name, date, time, userID, un,
+public class ReportpostNotify {
+    String id, postID, title, date, time, userID, un,
             contents, district_province;
     boolean readstate = false;
     //phép kết
     String readState_pro_dist;
 
-    public ReportimgNotify() {
+    public ReportpostNotify() {
     }
 
-    public ReportimgNotify(String imgID, String name, String date, String time, String userID, String un,
-                           String contents, String district_province, boolean readstate, String readState_pro_dist) {
-        this.imgID = imgID;
-        this.name = name;
+    public ReportpostNotify(String postID, String title, String date, String time, String userID,
+                            String un, String contents, String district_province,
+                            boolean readstate, String readState_pro_dist) {
+        this.postID = postID;
+        this.title = title;
         this.date = date;
         this.time = time;
         this.userID = userID;
@@ -31,20 +32,20 @@ public class ReportimgNotify {
         this.readState_pro_dist = readState_pro_dist;
     }
 
-    public String getImgID() {
-        return imgID;
+    public String getPostID() {
+        return postID;
     }
 
-    public void setImgID(String imgID) {
-        this.imgID = imgID;
+    public void setPostID(String postID) {
+        this.postID = postID;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDate() {
@@ -113,13 +114,12 @@ public class ReportimgNotify {
 
     public Map<String, Object> toMap() {
         Map<String, Object> result = new HashMap<>();
-        result.put("imgID", imgID);
-        result.put("name", name);
+        result.put("postID", postID);
+        result.put("title", title);
         result.put("date", date);
         result.put("time", time);
         result.put("userID", userID);
         result.put("un", un);
-        result.put("contents", contents);
         result.put("readstate", readstate);
         result.put("district_province", district_province);
         result.put("readState_pro_dist", readState_pro_dist);

@@ -8,46 +8,31 @@ import java.util.Map;
  */
 
 public class NewstoreNotify {
-    String id, storeid, name, address, date, iduser, un, district_province;
-    boolean readstate;
-
+    String id, storeID, name, address, date, userID, un, district_province;
+    boolean readstate=false;
+    String readState_pro_dist;
     public NewstoreNotify() {
     }
 
-    public NewstoreNotify(String storeid, String name, String address, String date,
-                          String iduser, String un, String district_province, boolean readstate) {
-        this.storeid = storeid;
+    public NewstoreNotify(String storeID, String name, String address, String date, String userID, String un,
+                          String district_province, boolean readstate, String readState_pro_dist) {
+        this.storeID = storeID;
         this.name = name;
         this.address = address;
         this.date = date;
-        this.iduser = iduser;
+        this.userID = userID;
         this.un = un;
         this.district_province = district_province;
         this.readstate = readstate;
+        this.readState_pro_dist = readState_pro_dist;
     }
 
-    public String getDistrict_province() {
-        return district_province;
+    public String getStoreID() {
+        return storeID;
     }
 
-    public void setDistrict_province(String district_province) {
-        this.district_province = district_province;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getStoreid() {
-        return storeid;
-    }
-
-    public void setStoreid(String storeid) {
-        this.storeid = storeid;
+    public void setStoreID(String storeID) {
+        this.storeID = storeID;
     }
 
     public String getName() {
@@ -74,12 +59,12 @@ public class NewstoreNotify {
         this.date = date;
     }
 
-    public String getIduser() {
-        return iduser;
+    public String getUserID() {
+        return userID;
     }
 
-    public void setIduser(String iduser) {
-        this.iduser = iduser;
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public String getUn() {
@@ -90,6 +75,14 @@ public class NewstoreNotify {
         this.un = un;
     }
 
+    public String getDistrict_province() {
+        return district_province;
+    }
+
+    public void setDistrict_province(String district_province) {
+        this.district_province = district_province;
+    }
+
     public boolean isReadstate() {
         return readstate;
     }
@@ -98,16 +91,25 @@ public class NewstoreNotify {
         this.readstate = readstate;
     }
 
+    public String getReadState_pro_dist() {
+        return readState_pro_dist;
+    }
+
+    public void setReadState_pro_dist(String readState_pro_dist) {
+        this.readState_pro_dist = readState_pro_dist;
+    }
+
     public Map<String, Object> toMap() {
         Map<String, Object> result = new HashMap<>();
-        result.put("storeid", storeid);
+        result.put("storeID", storeID);
         result.put("name", name);
         result.put("address", address);
         result.put("date", date);
-        result.put("iduser", iduser);
+        result.put("userID", userID);
         result.put("un", un);
         result.put("readstate", readstate);
         result.put("district_province", district_province);
+        result.put("readState_pro_dist", readState_pro_dist);
         return result;
     }
 }

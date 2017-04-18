@@ -13,7 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.app.ptt.comnha.FireBase.ReportimgNotify;
+import com.app.ptt.comnha.Models.FireBase.ReportimgNotify;
 import com.app.ptt.comnha.R;
 
 import java.util.ArrayList;

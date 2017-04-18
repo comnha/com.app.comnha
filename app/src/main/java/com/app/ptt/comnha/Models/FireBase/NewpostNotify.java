@@ -8,21 +8,24 @@ import java.util.Map;
  */
 
 public class NewpostNotify {
-    String id, postid, title, date, iduser, un, district_province;
-    boolean readstate;
+    String id, postID, title, date, userID, un, district_province;
+    boolean readstate = false;
+    //phép kết
+    String readState_pro_dist;
 
     public NewpostNotify() {
     }
 
-    public NewpostNotify(String postid, String title, String date, String iduser,
-                         String un, String district_province, boolean readstate) {
-        this.postid = postid;
+    public NewpostNotify(String postID, String title, String date, String userID, String un,
+                         String district_province, boolean readstate, String readState_pro_dist) {
+        this.postID = postID;
         this.title = title;
         this.date = date;
-        this.iduser = iduser;
+        this.userID = userID;
         this.un = un;
         this.district_province = district_province;
         this.readstate = readstate;
+        this.readState_pro_dist = readState_pro_dist;
     }
 
     public String getId() {
@@ -33,12 +36,12 @@ public class NewpostNotify {
         this.id = id;
     }
 
-    public String getPostid() {
-        return postid;
+    public String getPostID() {
+        return postID;
     }
 
-    public void setPostid(String postid) {
-        this.postid = postid;
+    public void setPostID(String postID) {
+        this.postID = postID;
     }
 
     public String getTitle() {
@@ -57,12 +60,12 @@ public class NewpostNotify {
         this.date = date;
     }
 
-    public String getIduser() {
-        return iduser;
+    public String getUserID() {
+        return userID;
     }
 
-    public void setIduser(String iduser) {
-        this.iduser = iduser;
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public String getUn() {
@@ -89,15 +92,24 @@ public class NewpostNotify {
         this.readstate = readstate;
     }
 
+    public String getReadState_pro_dist() {
+        return readState_pro_dist;
+    }
+
+    public void setReadState_pro_dist(String readState_pro_dist) {
+        this.readState_pro_dist = readState_pro_dist;
+    }
+
     public Map<String, Object> toMap() {
         Map<String, Object> result = new HashMap<>();
-        result.put("postid", postid);
+        result.put("postID", postID);
         result.put("title", title);
         result.put("date", date);
-        result.put("iduser", iduser);
+        result.put("userID", userID);
         result.put("un", un);
         result.put("readstate", readstate);
         result.put("district_province", district_province);
+        result.put("readState_pro_dist", readState_pro_dist);
         return result;
     }
 }

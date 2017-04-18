@@ -2,9 +2,7 @@ package com.app.ptt.comnha.Fragment;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -23,14 +20,10 @@ import android.widget.Toast;
 import com.app.ptt.comnha.Activity.Adapter2Activity;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.R;
-import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.Utils.AppUtils;
-import com.google.android.gms.common.api.Result;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import static android.content.ContentValues.TAG;
 import static com.app.ptt.comnha.R.id.btn_siFrg_signin;
@@ -128,7 +121,7 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
             if (resultCode == Activity.RESULT_OK) {
                 if (!AppUtils.isTextEqualsNull(data.getStringExtra(Const.INTENT_KEY_EMAIL).toString())
                         && !AppUtils.isTextEqualsNull(data.getStringExtra(Const.INTENT_KEY_PASSWORD).toString())) {
-                    AppUtils.showSnackbarWithoutButton(getView(), getString(R.string.txt_signup_success));
+                    AppUtils.showSnackbarWithoutButton(getView(), getString(R.string.text_signup_successful));
                     edt_email.setText(data.getStringExtra(Const.INTENT_KEY_EMAIL).toString());
                     edt_pass.setText(data.getStringExtra(Const.INTENT_KEY_PASSWORD).toString());
                 }
