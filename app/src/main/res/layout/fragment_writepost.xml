@@ -3,6 +3,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frg_post"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -24,6 +25,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nested_writepost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -101,17 +103,27 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/txtV_banner_writepost"
+                <LinearLayout
+                    android:id="@+id/linear_banner_writepost"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:gravity="center_vertical|start" />
+                    android:orientation="vertical"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp">
 
-                <ImageView
-                    android:id="@+id/imgV_banner_writepost"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/txtV_banner_writepost"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center_vertical|start"
+                        android:text="@string/txt_banner" />
+
+                    <ImageView
+                        android:id="@+id/imgV_banner_writepost"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/linear_importimg_writepost"
@@ -139,26 +151,24 @@
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/relative_writepost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="bottom|end"
-        android:orientation="vertical"
-        android:weightSum="10">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="9" />
+        android:gravity="bottom">
 
         <LinearLayout
             android:id="@+id/linear_more_writepost"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground"
             android:orientation="horizontal"
+            android:paddingBottom="8dp"
+            android:paddingEnd="4dp"
+            android:paddingStart="8dp"
+            android:paddingTop="8dp"
             android:weightSum="10">
 
             <TextView
@@ -167,7 +177,6 @@
                 android:layout_height="match_parent"
                 android:layout_weight="6"
                 android:gravity="center_vertical"
-                android:paddingStart="8dp"
                 android:text="@string/text_more" />
 
             <ImageView
@@ -198,7 +207,7 @@
                 android:layout_weight="1"
                 android:src="@drawable/ic_post_addloca" />
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
     <!--<LinearLayout-->
     <!--android:id="@+id/frg_addpost_Rmain"-->
     <!--android:layout_width="match_parent"-->

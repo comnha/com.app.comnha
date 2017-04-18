@@ -5,18 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="4"
     android:paddingBottom="8dp"
-    android:paddingTop="8dp">
+    android:paddingTop="8dp"
+    android:weightSum="4">
 
     <LinearLayout
         android:id="@+id/linear_rate_more_writepost_dialog"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginBottom="8dp"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
         android:weightSum="10">
 
         <ImageView
@@ -39,10 +40,11 @@
         android:id="@+id/linear_foodrating_more_writepost_dialog"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
         android:layout_weight="1"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
         android:weightSum="10">
 
         <ImageView
@@ -64,10 +66,11 @@
         android:id="@+id/linear_addimg_more_writepost_dialog"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
         android:layout_weight="1"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
         android:weightSum="10">
 
         <ImageView
@@ -92,6 +95,8 @@
         android:layout_weight="1"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:weightSum="10">
 
         <ImageView

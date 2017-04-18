@@ -77,9 +77,21 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorPrimary">@color/colorPrimary</item>
     </style>
+
     <style name="AppTheme.NotifyNewsAdminActivity" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowContentOverlay">@null</item>
         <item name="windowActionBarOverlay">true</item>
         <item name="colorPrimary">@android:color/transparent</item>
+    </style>
+
+    <style name="AppTheme.NotifyReportsAdminActivity" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="colorPrimary">@android:color/transparent</item>
+    </style>
+
+    <style name="AddlocaUploadDialog" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="colorAccent">@color/addlocal_color_opentime</item>
+        <item name="android:textColorPrimary">@android:color/black</item>
     </style>
 </resources>

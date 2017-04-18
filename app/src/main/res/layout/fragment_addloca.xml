@@ -136,7 +136,8 @@
             <ImageView
                 android:id="@+id/frg_addloction_imgv_avatar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:scaleType="fitXY" />
 
         </RelativeLayout>
 
@@ -150,7 +151,7 @@
         android:layout_height="0dp"
         android:layout_gravity="bottom"
         android:layout_weight="0.5"
-        android:background="@color/admin_color_selection_reports"
+        android:background="@color/color_selection_report"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center"

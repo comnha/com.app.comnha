@@ -356,23 +356,23 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
                     getString(R.string.thucdon_CODE)).limitToLast(seemore)
                     .addChildEventListener(foodMenuChildEventListener);
             dbRef.child(
-                    getString(R.string.locations_CODE)).limitToLast(seemore)
+                    getString(R.string.store_CODE)).limitToLast(seemore)
                     .addChildEventListener(locaMenuChildEventListener);
         }
         if(type==2){
             dbRef.child(
-                    getString(R.string.locations_CODE)).limitToLast(seemore)
+                    getString(R.string.store_CODE)).limitToLast(seemore)
                     .addChildEventListener(locaMenuChildEventListener);
         }
 
         if(type==3) {
             dbRef.child(
-                    getString(R.string.locations_CODE)).orderByChild("index").equalTo(tinh + "_" + quan).limitToLast(seemore)
+                    getString(R.string.store_CODE)).orderByChild("index").equalTo(tinh + "_" + quan).limitToLast(seemore)
                     .addChildEventListener(locaMenuChildEventListener);
         }
         if(type==1){
             dbRef.child(
-                    getString(R.string.locations_CODE)).orderByChild("index").equalTo(tinh + "_" + quan).limitToLast(seemore)
+                    getString(R.string.store_CODE)).orderByChild("index").equalTo(tinh + "_" + quan).limitToLast(seemore)
                     .addChildEventListener(locaMenuChildEventListener);
             dbRef.child(
                     getString(R.string.thucdon_CODE)).orderByChild("index").equalTo(tinh + "_" + quan).limitToLast(seemore)

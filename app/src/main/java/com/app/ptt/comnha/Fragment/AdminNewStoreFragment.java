@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.app.ptt.comnha.Adapters.item_notify_newstore_adapter;
-import com.app.ptt.comnha.Models.FireBase.NewstoreNotify;
+import com.app.ptt.comnha.FireBase.NewstoreNotify;
 import com.app.ptt.comnha.R;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;

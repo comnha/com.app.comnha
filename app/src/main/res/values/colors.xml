@@ -15,7 +15,10 @@
     <color name="colorGrayText">#808080</color>
     <color name="color1">#15ca2d</color>
     <color name="admin_color_selection_news">#edbb4c</color>
-    <color name="admin_color_selection_reports">#da414a</color>
-    <color name="admin_color_notify_newpost">#90b03d</color>
+    <color name="color_selection_report">#da414a</color>
+    <color name="color_notify_newpost">#90b03d</color>
+    <color name="color_notify_reportimg">#6349d1</color>
+    <color name="color_notify_reportfood">#61ab6c</color>
+    <color name="color_read">#7f000000</color>
     <color name="addlocal_color_opentime">#9303a7</color>
 </resources>

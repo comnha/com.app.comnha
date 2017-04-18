@@ -1,0 +1,16 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="4dp"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
+    tools:context="com.app.ptt.comnha.Fragment.AdminReportFoodFragment">
+    <ListView
+        android:divider="@android:color/transparent"
+        android:id="@+id/listview_reportfood_frag"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scrollbars="none" />
+</LinearLayout>

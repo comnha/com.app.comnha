@@ -58,7 +58,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -370,37 +369,37 @@ public class EditPostDialogFragment extends DialogFragment
 //        edt_content.setText(oldPost.getContent());
 
 
-        dbRef.child(getResources().getString(R.string.locations_CODE)).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                if(dataSnapshot.getKey().equals(oldPost.getLocaID())) {
-//                    updateLoca = dataSnapshot.getValue(Store.class);
-//                    updateLoca.setLocaID(dataSnapshot.getKey());
+//        dbRef.child(getResources().getString(R.string.locations_CODE)).addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+////                if(dataSnapshot.getKey().equals(oldPost.getLocaID())) {
+////                    updateLoca = dataSnapshot.getValue(Store.class);
+////                    updateLoca.setLocaID(dataSnapshot.getKey());
+////
+////                    rootLocation = updateLoca;
+////                }
+//            }
 //
-//                    rootLocation = updateLoca;
-//                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+//            @Override
+//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
     class ParseImg extends AsyncTask<Void,Void,Bitmap>{

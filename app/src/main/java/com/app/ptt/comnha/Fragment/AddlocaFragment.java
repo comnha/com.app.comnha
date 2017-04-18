@@ -28,12 +28,14 @@ import android.widget.TextView;
 
 import com.app.ptt.comnha.Adapters.SingleImageImportRvAdapter;
 import com.app.ptt.comnha.Classes.SelectedImage;
-import com.app.ptt.comnha.Models.FireBase.Store;
+import com.app.ptt.comnha.FireBase.Store;
+import com.app.ptt.comnha.Modules.LocationFinderListener;
+import com.app.ptt.comnha.Modules.MyTool;
+import com.app.ptt.comnha.Modules.PlaceAPI;
+import com.app.ptt.comnha.Modules.PlaceAttribute;
+import com.app.ptt.comnha.Modules.Times;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
-import com.app.ptt.comnha.Utils.MyTool;
-import com.app.ptt.comnha.Utils.PlaceAPI;
-import com.app.ptt.comnha.Utils.Times;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -44,6 +46,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -52,10 +55,10 @@ import java.util.Locale;
  * A simple {@link Fragment} subclass.
  */
 public class AddlocaFragment extends Fragment implements View.OnClickListener, TimePickerDialog.OnTimeSetListener,
-        DialogInterface.OnDismissListener, DialogInterface.OnCancelListener, PlaceSelectionListener {
+        DialogInterface.OnDismissListener, DialogInterface.OnCancelListener, LocationFinderListener, PlaceSelectionListener {
     FloatingActionButton fab_save;
     public static final String LOG = AddlocaFragment.class.getSimpleName();
-
+    ArrayList<PlaceAttribute> mPlaceAttribute;
     EditText edt_storeName, edt_phoneNumb, edt_address;
     PlaceAutocompleteFragment _autocompleteFragment;
     Button btn_timestart, btn_timeend;
@@ -108,7 +111,7 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
     @Override
     public void onStart() {
         super.onStart();
-        isConnected = MyService.returnIsNetworkConnected();
+        isConnected = MyService.returnIsConnected();
         if (!isConnected) {
 //            Toast.makeText(getContext(), "Offline mode", Toast.LENGTH_SHORT).show();
         }
@@ -131,7 +134,7 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_addloca, container, false);
-        isConnected = MyService.returnIsNetworkConnected();
+        isConnected = MyService.returnIsConnected();
         now = Calendar.getInstance();
         gc = new Geocoder(getContext(), Locale.getDefault());
         anhXa(view);
@@ -384,14 +387,58 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
 //        }
 //    }
 
+    public String returnFullname() {
+        String a = mPlaceAttribute.get(pos).getAddressNum();
+        String b = mPlaceAttribute.get(pos).getLocality();
+        String c = mPlaceAttribute.get(pos).getDistrict();
+        String d = mPlaceAttribute.get(pos).getState();
+        String e = "";
+        if (a != null)
+            e += a;
+        if (b != null)
+            if (a == null)
+                e += b;
+            else
+                e += ", " + b;
 
-//    @Override
-//    public void onLocationFinderStart() {
-//
-//    }
-//
-//    @Override
-//    public void onLocationFinderSuccess(PlaceAttribute placeAttribute) {
+        if (c != null)
+            if (a == null && b == null)
+                e += c;
+            else
+                e += ", " + c;
+        if (d != null)
+            if (a == null && b == null && c == null)
+                e += d;
+            else
+                e += ", " + d;
+        return e;
+    }
+
+    private void addNewLoca() {
+        Log.i(LOG + ".addNewLoca", "Da toi đây");
+        newLocation = new Store();
+//        newLocation.setName(edt_tenquan.getText().toString());
+//        newLocation.setSdt(edt_sdt.getText().toString());
+//        newLocation.setTimestart(btn_timestart.getText().toString());
+//        newLocation.setTimeend(btn_timeend.getText().toString());
+//        newLocation.setGiamin(Long.valueOf(edt_giamin.getText().toString()));
+//        newLocation.setGiamax(Long.valueOf(edt_giamax.getText().toString()));
+        if (isConnected) {
+            if (diachi != null) {
+//                newLocation.setDiachi(diachi);
+                placeAPI = new PlaceAPI(diachi, this);
+            }
+        }
+//        else Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLocationFinderStart() {
+
+    }
+
+    @Override
+    public void onLocationFinderSuccess(PlaceAttribute placeAttribute) {
 ////        if (placeAttribute != null) {
 ////            final PlaceAttribute myPlaceAttribute = placeAttribute;
 ////            newLocation.setDiachi(placeAttribute.getFullname());
@@ -426,7 +473,7 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
 //////                                newLocation.setVisible(false);
 ////                            newLocation.setUserId(MyService.getUserAccount().getId());
 ////                            Log.i(LOG + ".onLocation", tinh + " va " + huyen);
-          //                 key = dbRef.child(getResources().getString(R.string.locations_CODE)).push().getKey();
+////                            key = dbRef.child(getResources().getString(R.string.locations_CODE)).push().getKey();
 ////                            Map<String, Object> newLocaValue = newLocation.toMap();
 ////                            Map<String, Object> childUpdates = new HashMap<>();
 ////                            childUpdates.put(getResources().getString(R.string.locations_CODE)
@@ -492,11 +539,11 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
 //            Toast.makeText(getActivity(), "Lỗi! Kiểm tra dữ liệu nhập vàp ", Toast.LENGTH_LONG).show();
 //        }
 //        pos=-1;
-//    }
-//
-//    @Override
-//    public void onGeocodingFinderSuccess(String address) {
-//
-//    }
+    }
+
+    @Override
+    public void onGeocodingFinderSuccess(String address) {
+
+    }
 
 }

@@ -83,12 +83,10 @@
     <string name="txt_noemail">Warning: Chưa nhập email</string>
     <string name="txt_notemail">Error: Email không hợp lệ</string>
     <string name="txt_nopass">Warning: Chưa nhập password</string>
-    <string name="txt_passtooshort">Warning: Password quá ngắn</string>
-    <string name="txt_passconfirmnottrue">Warning: Password xác nhận chưa đúng</string>
     <string name="txt_noho">Warning: Chưa nhập họ</string>
     <string name="txt_notenlot">Warning: Chưa nhập tên lót</string>
     <string name="txt_noten">Warning: Chưa nhập tên</string>
-    <string name="txt_nongsinh">Warning: Chưa nhập ngày-tháng-năm</string>
+    <string name="txt_nongsinh">Warning: Chưa nhập ngày-tháng-năm sinh</string>
     <string name="txt_noun">Warning: Chưa nhập tên tài khoản</string>
     <string name="txt_noconfirmpass">Warning: Chưa nhập mật khẩu xác nhận</string>
     <string name="txt_notenquan">Warning: Chưa nhập tên quán</string>
@@ -113,18 +111,12 @@
     <string name="txt_noChoseFoodCate">Warning: Chưa chọn loại món ăn</string>
     <string name="txt_noFoodCateName">Warning: Chưa nhập tên loại món ăn</string>
     <string name="txt_noaddress">Warning: Chưa nhập địa điểm</string>
-    <string name="txt_nointernet">Warning: Không có mạng</string>
     <string name="txt_choseLoca">Bạn đã chọn địa điểm</string>
     <string name="txt_failaddfoodcate">Error: Không thể thêm loại món mới</string>
     <!--ERROR-->
     <string name="txt_posting_plzwait">Đang đăng bài&#8230;\n Vui lòng đợi chút!</string>
     <string name="txt_plzwait">Please wait &#8230;</string>
     <string name="txt_logging">Đang đăng nhập &#8230;</string>
-    <string name="txt_signup">Đăng ký </string>
-    <string name="txt_signup_loading">Đang đăng ký &#8230;</string>
-    <string name="txt_signup_success">Đăng ký thành công </string>
-    <string name="txt_signout_success">Đăng xuất thành công</string>
-    <string name="txt_tryagain">Vui lòng thử lại</string>
     <string name="txt_addinloca">Đang thêm địa điểm mới &#8230;</string>
     <string name="txt_addinmon">Đang thêm món mới &#8230;</string>
     <string name="txt_addinpost">Đang đăng review mới &#8230;</string>

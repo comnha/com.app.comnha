@@ -29,7 +29,8 @@ public class SingleImageImportRvAdapter extends RecyclerView.Adapter<SingleImage
     ArrayList<SelectedImage> selectedImages;
     int firstPosition = -1;
     OnSingleClickListener onSingleClickListener;
-    public interface OnSingleClickListener{
+
+    public interface OnSingleClickListener {
         void onClick(boolean isDismiss);
     }
 
@@ -85,13 +86,12 @@ public class SingleImageImportRvAdapter extends RecyclerView.Adapter<SingleImage
     }
 
     public SelectedImage getSelectedImage() {
-        SelectedImage selectedImage = new SelectedImage();
+        SelectedImage selectedImage = null;
         for (SelectedImage item : selectedImages) {
             if (item.isSelected()) {
                 selectedImage = item;
             }
         }
-        Log.d("SelectedImage", selectedImages.indexOf(selectedImage) + "");
         return selectedImage;
     }
 
@@ -112,6 +112,7 @@ public class SingleImageImportRvAdapter extends RecyclerView.Adapter<SingleImage
             selected_imgv = (ImageView) itemView.findViewById(R.id.imgv_selected_imageimport);
         }
     }
+
     public void readthentranstoarray() {
         String[] projecttion = {
                 MediaStore.Images.Media._ID,

@@ -50,7 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/admin_color_selection_reports"
+        android:background="@color/color_selection_report"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
         android:orientation="vertical"

@@ -4,9 +4,11 @@ package com.app.ptt.comnha.Fragment;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,15 +21,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.ptt.comnha.Adapters.ImagesImportRvAdapter;
 import com.app.ptt.comnha.Classes.SelectedImage;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.SystemControl;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -47,7 +53,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
     Toolbar toolbar;
     EditText edt_content, edt_title;
     LinearLayout linear_more, linear_rate, linear_pickfood, linear_addimg, linear_pickloca,
-            linear_location, linear_importimg;
+            linear_location, linear_importimg, linear_banner;
     ImageView imgV_banner;
     BottomSheetDialog moreDialog, rateDialog, imgsDialog;
     DatabaseReference dbRef;
@@ -59,12 +65,13 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
     public static int MEDIASTORE_LOADED_ID = 0;
     RecyclerView imagesrv;
     RecyclerView.LayoutManager imageslm;
-    RecyclerView.Adapter imagesAdapter;
     ContentResolver cr;
     ArrayList<SelectedImage> selectedImages;
     ImagesImportRvAdapter imagesImportRvAdapter;
     TextView txtv_locaname, txtv_locaadd, txtv_banner, txtv_importimg;
-
+    int androidVer = Build.VERSION.SDK_INT;
+    RelativeLayout relative_touchoutside;
+    NestedScrollView nested_touchoutside;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -84,8 +91,12 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         edt_title = (EditText) view.findViewById(R.id.edt_title_writepost);
         toolbar = (Toolbar) view.findViewById(R.id.toolbar_writepost);
         toolbar.setNavigationIcon(R.drawable.ic_close_white_24dp);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.admin_color_selection_news));
+        getActivity().getWindow().clearFlags(Window.FEATURE_ACTION_BAR_OVERLAY);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.admin_color_selection_news));
+        }
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-
         getActivity().setTitle(getString(R.string.text_toolbar_title_writepost));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,9 +157,14 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 }
                 if (selectedImages.size() > 0) {
                     linear_importimg.setVisibility(View.VISIBLE);
+                    linear_banner.setVisibility(View.VISIBLE);
                     txtv_importimg.setText(selectedImages.size() + " ảnh đính kèm");
+                    imgV_banner.setImageURI(selectedImages.get(0).getUri());
+                    imgV_banner.setScaleType(ImageView.ScaleType.FIT_XY);
                 } else {
                     linear_importimg.setVisibility(View.GONE);
+                    linear_banner.setVisibility(View.GONE);
+                    imgV_banner.setImageURI(null);
                 }
             }
         });
@@ -165,6 +181,17 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         txtv_importimg = (TextView) view.findViewById(R.id.txtV_importimg_writepost);
         linear_importimg = (LinearLayout) view.findViewById(R.id.linear_importimg_writepost);
         linear_importimg.setVisibility(View.GONE);
+
+        linear_banner = (LinearLayout) view.findViewById(R.id.linear_banner_writepost);
+        linear_banner.setVisibility(View.GONE);
+
+        nested_touchoutside=(NestedScrollView)view.findViewById(R.id.nested_writepost);
+        nested_touchoutside.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SystemControl.hideSoftKeyboard(getActivity());
+            }
+        });
     }
 
     @Override
@@ -177,15 +204,25 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save_writepost:
-                if (edt_content.getText().toString().isEmpty()) {
-
-                } else if (edt_title.getText().toString().isEmpty()) {
-
+                if (checkEmptyEdt(edt_title)) {
+                    Toast.makeText(getContext(), getString(R.string.txt_notitle), Toast.LENGTH_SHORT)
+                            .show();
+                } else if (checkEmptyEdt(edt_content)) {
+                    Toast.makeText(getContext(), getString(R.string.txt_nocontent), Toast.LENGTH_SHORT)
+                            .show();
                 } else
                     return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private boolean checkEmptyEdt(EditText edt) {
+        if (edt.getText().toString().trim().isEmpty()
+                || edt.getText().toString().trim().equals("")) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -241,7 +278,6 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
     public void onStopTrackingTouch(SeekBar seekBar) {
 
     }
-
 
     //    private static final String LOG = AddpostFragment.class.getSimpleName();
 //    Button btn_save, btn_mainImg, btnAddImg;

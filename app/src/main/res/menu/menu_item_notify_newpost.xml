@@ -5,5 +5,5 @@
         android:title="@string/text_del" />
     <item
         android:id="@+id/action_block_post_notify_newpost"
-        android:title="@string/text_admin_block_post_notify_newpost" />
+        android:title="@string/text_block_writepost" />
 </menu>

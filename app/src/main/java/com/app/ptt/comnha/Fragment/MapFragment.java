@@ -807,11 +807,11 @@ public class MapFragment extends Fragment implements View.OnClickListener,
 
         if(b==6 && tinh!=null&&huyen!=null){
             Log.i(LOG + ".sad", "tinh huyen khac NULLLLLLLLLLLLLLL");
-            dbRef.child(getString(R.string.locations_CODE)).orderByChild("index")
+            dbRef.child(getString(R.string.store_CODE)).orderByChild("index")
                     .equalTo(tinh+"_"+huyen).limitToLast(seeMore)
                     .addChildEventListener(childEventListener);
         }else
-        dbRef.child(getString(R.string.locations_CODE)).limitToLast(seeMore)
+        dbRef.child(getString(R.string.store_CODE)).limitToLast(seeMore)
                 .addChildEventListener(childEventListener);
     }
 

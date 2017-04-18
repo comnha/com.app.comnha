@@ -53,11 +53,11 @@ public class NewsNotifyAdminActivity extends AppCompatActivity implements View.O
         tabLayout.setupWithViewPager(viewPager);
 //        tabLayout.getTabAt(0).setIcon(R.drawable.ic_admin_newstore);
 //        tabLayout.getTabAt(1).setIcon(R.drawable.ic_admin_newpost);
-        View tab_store = getLayoutInflater().inflate(R.layout.tab_notify_newstore, null);
-        tab_store.findViewById(R.id.imgV_tab_notify_news).setBackgroundResource(R.drawable.ic_admin_newstore);
+        View tab_store = getLayoutInflater().inflate(R.layout.layout_tab_notify, null);
+        tab_store.findViewById(R.id.imgV_tab_notify).setBackgroundResource(R.drawable.ic_tab_store);
         tabLayout.getTabAt(0).setCustomView(tab_store);
-        View tab_post = getLayoutInflater().inflate(R.layout.tab_notify_newstore, null);
-        tab_post.findViewById(R.id.imgV_tab_notify_news).setBackgroundResource(R.drawable.ic_admin_newpost);
+        View tab_post = getLayoutInflater().inflate(R.layout.layout_tab_notify, null);
+        tab_post.findViewById(R.id.imgV_tab_notify).setBackgroundResource(R.drawable.ic_tab_post);
         tabLayout.getTabAt(1).setCustomView(tab_post);
 //        tabLayout.getTabAt(0).setText("1");
 //        tabLayout.getTabAt(1).setText("2");
@@ -113,7 +113,7 @@ public class NewsNotifyAdminActivity extends AppCompatActivity implements View.O
                         if (!isShowPost) {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                                getWindow().setStatusBarColor(getResources().getColor(R.color.admin_color_notify_newpost));
+                                getWindow().setStatusBarColor(getResources().getColor(R.color.color_notify_newpost));
                             }
                             alpha_show_bg_post.start();
                             alpha_show_icon_post.start();

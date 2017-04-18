@@ -30,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:alpha="0"
-                android:background="@color/admin_color_notify_newpost" />
+                android:background="@color/color_notify_newpost" />
         </RelativeLayout>
 
     </LinearLayout>

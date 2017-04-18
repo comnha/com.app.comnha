@@ -29,8 +29,8 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(intent_news);
                 break;
             case R.id.linear_selection_reports_adminact:
-//                Intent intent_reports = new Intent(this, NewsNotifyAdminActivity.class);
-//                startActivity(intent_reports);
+                Intent intent_reports = new Intent(this, ReportsNotifyAdminActivity.class);
+                startActivity(intent_reports);
                 break;
         }
     }
