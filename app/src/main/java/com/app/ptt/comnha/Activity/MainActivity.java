@@ -38,7 +38,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private static final String LOG = MainActivity.class.getSimpleName();
     private Bundle savedInstanceState;
@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         anhXa();
         LoginSession.getInstance().setTinh("");
         LoginSession.getInstance().setHuyen("");
+        startMyService();
 
     }
 
@@ -389,12 +390,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent_admin);
                 break;
             case R.id.nav_signin:
-//                Intent intent1 = new Intent(MainActivity.this, Adapter2Activity.class);
-//                intent1.putExtra(getString(R.string.fragment_CODE),
-//                        getString(R.string.frg_signin_CODE));
-//                intent1.putExtra("isConnected", isConnected);
-//                startActivity(intent1);
-//                break;
+                Intent intent1 = new Intent(MainActivity.this, Adapter2Activity.class);
+                intent1.putExtra(getString(R.string.fragment_CODE),
+                        getString(R.string.frg_signin_CODE));
+
+                startActivity(intent1);
+                break;
             case R.id.nav_signout:
 //                if (isConnected) {
 //                    showLoading(getString(R.string.txt_plzwait), getString(R.string.txt_logginout));

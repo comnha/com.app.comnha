@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.app.ptt.comnha.Utils.AppUtils.isEqualsNull;
+import static com.app.ptt.comnha.Utils.AppUtils.showSnackbar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -119,7 +120,7 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
                 if (isNetworkConnected) {
                     validateInput(view);
                 } else
-                    AppUtils.showSnackbarWithoutButton(view, getString(R.string.txt_nointernet));
+                    showSnackbar(getActivity(), getView(), "Không có kết nối internet", "Kết nối", Const.SNACKBAR_GO_ONLINE);
                 break;
             case R.id.editText_birth:
                 dpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
