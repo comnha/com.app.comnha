@@ -47,16 +47,13 @@ import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.Notification;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.Store;
-import com.app.ptt.comnha.Utils.Times;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.DoPost;
 import com.app.ptt.comnha.SingletonClasses.EditPost;
 import com.firebase.client.Firebase;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -828,32 +825,32 @@ public class EditPostDialogFragment extends DialogFragment
                 } else {
                     if(!MyService.getUserAccount().getRole()) {
                         Notification notification = new Notification();
-                        String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + "admin").push().getKey();
-                        notification.setAccount(MyService.getUserAccount());
-                        notification.setDate(new Times().getDate());
-                        notification.setTime(new Times().getTime());
-                        notification.setType(7);
-//                        newPost.setPostID(key);
-                        notification.setPost(newPost);
-                        notification.setLocation(updateLoca);
-                        notification.setReaded(false);
-                        notification.setTo("admin");
-                        Map<String, Object> notificationValue = notification.toMap();
-                        childUpdates = new HashMap<>();
-                        childUpdates.put(getResources().getString(R.string.notification_CODE) + "admin/" + key1, notificationValue);
-                        dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isComplete()) {
-                                    mProgressDialog.dismiss();
-                                    Toast.makeText(getActivity(), "Sửa thành công", Toast.LENGTH_SHORT).show();
-                                    getActivity().finish();
-                                } else {
-                                    mProgressDialog.dismiss();
-                                    Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+//                        String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + "admin").push().getKey();
+//                        notification.setAccount(MyService.getUserAccount());
+//                        notification.setDate(new Times().getDate());
+//                        notification.setTime(new Times().getTime());
+//                        notification.setType(7);
+////                        newPost.setPostID(key);
+//                        notification.setPost(newPost);
+//                        notification.setLocation(updateLoca);
+//                        notification.setReaded(false);
+//                        notification.setTo("admin");
+//                        Map<String, Object> notificationValue = notification.toMap();
+//                        childUpdates = new HashMap<>();
+//                        childUpdates.put(getResources().getString(R.string.notification_CODE) + "admin/" + key1, notificationValue);
+//                        dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<Void> task) {
+//                                if (task.isComplete()) {
+//                                    mProgressDialog.dismiss();
+//                                    Toast.makeText(getActivity(), "Sửa thành công", Toast.LENGTH_SHORT).show();
+//                                    getActivity().finish();
+//                                } else {
+//                                    mProgressDialog.dismiss();
+//                                    Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        });
                     }else{
                         mProgressDialog.dismiss();
                         Toast.makeText(getActivity(), "Sửa thành công", Toast.LENGTH_SHORT).show();

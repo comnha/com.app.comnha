@@ -8,23 +8,45 @@ import java.util.Map;
  */
 
 public class NewstoreNotify {
-    String id, storeID, name, address, date, userID, un, district_province;
-    boolean readstate=false;
+    String id, storeID, name, address, date, userID, un, district, provinve;
+    boolean readstate = false;
     String readState_pro_dist;
+
     public NewstoreNotify() {
     }
 
-    public NewstoreNotify(String storeID, String name, String address, String date, String userID, String un,
-                          String district_province, boolean readstate, String readState_pro_dist) {
+    public NewstoreNotify(String storeID, String name, String address, String date,
+                          String userID, String un, String district, String provinve) {
         this.storeID = storeID;
         this.name = name;
         this.address = address;
         this.date = date;
         this.userID = userID;
         this.un = un;
-        this.district_province = district_province;
-        this.readstate = readstate;
-        this.readState_pro_dist = readState_pro_dist;
+        this.district = district;
+        this.provinve = provinve;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("storeID", storeID);
+        result.put("name", name);
+        result.put("address", address);
+        result.put("date", date);
+        result.put("userID", userID);
+        result.put("un", un);
+        result.put("readstate", readstate);
+        result.put("district_province", district + "_" + provinve);
+        result.put("readState_pro_dist", String.valueOf(readstate) + "_" + district + "_" + provinve);
+        return result;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getStoreID() {
@@ -75,14 +97,6 @@ public class NewstoreNotify {
         this.un = un;
     }
 
-    public String getDistrict_province() {
-        return district_province;
-    }
-
-    public void setDistrict_province(String district_province) {
-        this.district_province = district_province;
-    }
-
     public boolean isReadstate() {
         return readstate;
     }
@@ -97,19 +111,5 @@ public class NewstoreNotify {
 
     public void setReadState_pro_dist(String readState_pro_dist) {
         this.readState_pro_dist = readState_pro_dist;
-    }
-
-    public Map<String, Object> toMap() {
-        Map<String, Object> result = new HashMap<>();
-        result.put("storeID", storeID);
-        result.put("name", name);
-        result.put("address", address);
-        result.put("date", date);
-        result.put("userID", userID);
-        result.put("un", un);
-        result.put("readstate", readstate);
-        result.put("district_province", district_province);
-        result.put("readState_pro_dist", readState_pro_dist);
-        return result;
     }
 }

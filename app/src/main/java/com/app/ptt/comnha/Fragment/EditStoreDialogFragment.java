@@ -133,8 +133,8 @@ public class EditStoreDialogFragment extends DialogFragment implements View.OnCl
 //        edt_sdt.setText(EditLocal.getInstance().getStore().getSdt());
 //        edt_giamax.setText(EditLocal.getInstance().getStore().getGiamax()+"");
 //        edt_giamin.setText(EditLocal.getInstance().getStore().getGiamin()+"");
-//        btn_timestart.setText(EditLocal.getInstance().getStore().getTimestart());
-//        btn_timeend.setText(EditLocal.getInstance().getStore().getTimeend());
+//        btn_opentime.setText(EditLocal.getInstance().getStore().getTimestart());
+//        btn_closetime.setText(EditLocal.getInstance().getStore().getTimeend());
     }
 
     @Override
@@ -146,8 +146,8 @@ public class EditStoreDialogFragment extends DialogFragment implements View.OnCl
 //                        && edt_sdt.getText().toString().equals(EditLocal.getInstance().getStore().getSdt())
 //                        && edt_giamax.getText().toString().equals(EditLocal.getInstance().getStore().getGiamax()+"")
 //                        && edt_giamin.getText().toString().equals(EditLocal.getInstance().getStore().getGiamin()+"")
-//                        && btn_timeend.getText().toString().equals(EditLocal.getInstance().getStore().getTimeend())
-//                        && btn_timestart.getText().toString().equals(EditLocal.getInstance().getStore().getTimestart())) {
+//                        && btn_closetime.getText().toString().equals(EditLocal.getInstance().getStore().getTimeend())
+//                        && btn_opentime.getText().toString().equals(EditLocal.getInstance().getStore().getTimestart())) {
 //                    new AlertDialog.Builder(getContext())
 //                            .setMessage("Bạn không có thay đổi nào cả!!!")
 //                            .setPositiveButton("Trở lại", new DialogInterface.OnClickListener() {
@@ -162,8 +162,8 @@ public class EditStoreDialogFragment extends DialogFragment implements View.OnCl
 //                    location.setSdt(edt_sdt.getText().toString());
 //                    location.setGiamax(Long.parseLong(edt_giamax.getText().toString()));
 //                    location.setGiamin(Long.parseLong(edt_giamin.getText().toString()));
-//                    location.setTimestart(btn_timestart.getText().toString());
-//                    location.setTimeend(btn_timeend.getText().toString());
+//                    location.setTimestart(btn_opentime.getText().toString());
+//                    location.setTimeend(btn_closetime.getText().toString());
 //                    if(!edt_diachi.getText().toString().equals(EditLocal.getInstance().getStore().getDiachi())){
 //                            placeAPI = new PlaceAPI(edt_diachi.getText().toString(), this);
 //                    }else{
@@ -273,12 +273,12 @@ public class EditStoreDialogFragment extends DialogFragment implements View.OnCl
         switch (edtID) {
 //            case R.id.frg_addloction_btn_giomo:
 //                if (hour > -1) {
-//                    btn_timestart.setText(hour + "h" + min);
+//                    btn_opentime.setText(hour + "h" + min);
 //                }
 //                break;
 //            case R.id.frg_addloction_btn_giodong:
 //                if (hour > -1) {
-//                    btn_timeend.setText(hour + "h" + min);
+//                    btn_closetime.setText(hour + "h" + min);
 //                }
 //                break;
         }

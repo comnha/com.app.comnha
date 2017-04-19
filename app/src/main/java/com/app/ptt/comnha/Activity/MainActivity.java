@@ -16,7 +16,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +33,7 @@ import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
@@ -73,6 +73,20 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d("onAuthStateChanged", "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d("onAuthStateChanged", "onAuthStateChanged:signed_out");
+                }
+            }
+        };
         anhXa();
         LoginSession.getInstance().setTinh("");
         LoginSession.getInstance().setHuyen("");
@@ -505,6 +519,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             super.onBackPressed();
         }
     }
+
     //
 //
 //    private ChangeLocationBottomSheetDialogFragment changeLccaBtmSheet;
@@ -846,17 +861,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 //        });
 //    }
 //
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        isConnected = MyService.returnIsConnected();
-//        mIntentFilter = new IntentFilter();
-//        mIntentFilter.addAction(Const.BROADCAST_SEND_STATUS_GET_LOCATION);
-//        mBroadcastReceiver = new NetworkChangeReceiver();
-//        registerReceiver(mBroadcastReceiver, mIntentFilter);
-//        Log.i(LOG, "onStart= " + isConnected);
-//    }
-//
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    //
 //    @Override
 //    protected void onResume() {
 //        super.onResume();
@@ -864,14 +875,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 //        Log.i(LOG, "onResume");
 //    }
 //
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        unregisterReceiver(mBroadcastReceiver);
-//
-//        Log.i(LOG, "onStop");
-//
-//    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+
+    }
 //
 //    @Override
 //    protected void onDestroy() {

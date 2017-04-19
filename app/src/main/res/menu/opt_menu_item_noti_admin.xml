@@ -8,11 +8,11 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/menu_notification_dongy"
-        android:title="@string/txt_dongy"
+        android:title="@string/txt_agree"
         app:showAsAction="never" />
     <item
         android:id="@+id/menu_notification_khongdongy"
-        android:title="@string/txt_khongdongy"
+        android:title="@string/txt_disagree"
         app:showAsAction="never" />
 
 </menu>

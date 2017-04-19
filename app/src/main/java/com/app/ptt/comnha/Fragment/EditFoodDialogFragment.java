@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -19,17 +18,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
-import android.widget.Toast;
 
 import com.app.ptt.comnha.Models.FireBase.Food;
-import com.app.ptt.comnha.Models.FireBase.Notification;
-import com.app.ptt.comnha.Utils.Times;
 import com.app.ptt.comnha.R;
-import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -96,36 +88,36 @@ public class EditFoodDialogFragment extends DialogFragment {
                         foodValue=editFood.toMap();
                        // dialog.dismiss();
                         mProgressDialog.show();
-                        Notification notification = new Notification();
-                        String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + "admin").push().getKey();
-                        notification.setAccount(MyService.getUserAccount());
-                        notification.setDate(new Times().getDate());
-                        notification.setTime(new Times().getTime());
-                        notification.setType(11);
-                        notification.setFood(editFood);
-                        notification.setLocation(ChooseFood.getInstance().getLocation());
-                        notification.setReaded(false);
-                        notification.setTo("admin");
-                        Map<String, Object> notificationValue = notification.toMap();
-                        childUpdates = new HashMap<>();
-                        childUpdates.put(getResources().getString(R.string.notification_CODE) + "admin/" + key1, notificationValue);
-                        Map<String,Object> newFood=editFood.toMap();
-//                        childUpdates.put(getResources().getString(R.string.thucdon_CODE)+editFood.getMonID(),newFood);
-                        dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                mProgressDialog.dismiss();
-                                Toast.makeText(getContext(), "Đã sửa thành công", Toast.LENGTH_SHORT).show();
-
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                mProgressDialog.dismiss();
-                                Toast.makeText(getContext(), "Lỗi khi sửa", Toast.LENGTH_SHORT).show();
-
-                            }
-                        });
+//                        Notification notification = new Notification();
+//                                String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + "admin").push().getKey();
+//                                notification.setAccount(MyService.getUserAccount());
+//                                notification.setDate(new Times().getDate());
+//                                notification.setTime(new Times().getTime());
+//                                notification.setType(11);
+//                                notification.setFood(editFood);
+//                                notification.setLocation(ChooseFood.getInstance().getLocation());
+//                                notification.setReaded(false);
+//                                notification.setTo("admin");
+//                                Map<String, Object> notificationValue = notification.toMap();
+//                                childUpdates = new HashMap<>();
+//                                childUpdates.put(getResources().getString(R.string.notification_CODE) + "admin/" + key1, notificationValue);
+//                                Map<String,Object> newFood=editFood.toMap();
+////                        childUpdates.put(getResources().getString(R.string.thucdon_CODE)+editFood.getMonID(),newFood);
+//                                dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                    @Override
+//                                    public void onComplete(@NonNull Task<Void> task) {
+//                                        mProgressDialog.dismiss();
+//                                        Toast.makeText(getContext(), "Đã sửa thành công", Toast.LENGTH_SHORT).show();
+//
+//                                    }
+//                                }).addOnFailureListener(new OnFailureListener() {
+//                                    @Override
+//                                    public void onFailure(@NonNull Exception e) {
+//                                        mProgressDialog.dismiss();
+//                                        Toast.makeText(getContext(), "Lỗi khi sửa", Toast.LENGTH_SHORT).show();
+//
+//                            }
+//                        });
                     }
                 });
                 alert.setNegativeButton("Trờ về", new DialogInterface.OnClickListener() {

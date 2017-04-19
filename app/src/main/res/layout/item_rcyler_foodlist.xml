@@ -34,7 +34,7 @@
                 android:background="@drawable/ic_logo" />
 
             <TextView
-                android:id="@+id/item_rcyler_txtTenquan"
+                android:id="@+id/item_rcyler_txtvstorename"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -46,10 +46,10 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/item_rcyler_txtdiachi"
+                android:id="@+id/item_rcyler_txtvaddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/item_rcyler_txtTenquan"
+                android:layout_below="@+id/item_rcyler_txtvstorename"
                 android:layout_toEndOf="@+id/item_rcyler_imgV"
                 android:maxLength="37"
                 android:text="89 ngô quyên, thủ đức, hồ chí minh"
@@ -59,20 +59,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_below="@+id/item_rcyler_txtTenquan"
+                android:layout_below="@+id/item_rcyler_txtvstorename"
                 android:layout_marginEnd="10dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/item_rcyler_txtkm"
+                    android:id="@+id/item_rcyler_txtvdistance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="16 km"
                     android:textSize="12sp" />
 
                 <TextView
-                    android:id="@+id/item_rcyler_txtscore"
+                    android:id="@+id/item_rcyler_txtvrate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="10"

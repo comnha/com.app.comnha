@@ -54,10 +54,10 @@ public class Store_listview_adapter extends BaseAdapter {
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rcyler_localist, null);
             holder = new ViewHolder();
             holder.cardView = (CardView) convertView.findViewById(R.id.item_rcyler_cardV);
-            holder.txt_diachi = (TextView) convertView.findViewById(R.id.item_rcyler_txtdiachi);
-            holder.txt_tenquan = (TextView) convertView.findViewById(R.id.item_rcyler_txtTenquan);
-            holder.txt_rate = (TextView) convertView.findViewById(R.id.item_rcyler_txtscore);
-            holder.txt_km = (TextView) convertView.findViewById(R.id.item_rcyler_txtkm);
+            holder.txt_diachi = (TextView) convertView.findViewById(R.id.item_rcyler_txtvaddress);
+            holder.txt_tenquan = (TextView) convertView.findViewById(R.id.item_rcyler_txtvstorename);
+            holder.txt_rate = (TextView) convertView.findViewById(R.id.item_rcyler_txtvrate);
+            holder.txt_km = (TextView) convertView.findViewById(R.id.item_rcyler_txtvdistance);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();

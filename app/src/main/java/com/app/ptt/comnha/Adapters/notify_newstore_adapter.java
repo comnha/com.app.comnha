@@ -2,8 +2,10 @@ package com.app.ptt.comnha.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.PopupMenu;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,27 +65,31 @@ public class notify_newstore_adapter extends BaseAdapter {
         }
         holder.name.setText(items.get(i).getName());
         holder.address.setText(items.get(i).getAddress());
-        holder.date.setText("Ngày tạo: " + items.get(i).getDate());
-        holder.createby.setText("Thêm bởi: " + items.get(i).getUn());
-        if (items.get(i).isReadstate()) {
-            holder.readestate.setText("Chưa đọc");
+        holder.date.setText(context.getString(R.string.txt_createdate) + items.get(i).getDate());
+        holder.createby.setText(context.getString(R.string.txt_storeaddby) + items.get(i).getUn());
+        if (!items.get(i).isReadstate()) {
+            holder.readestate.setText(context.getString(R.string.txt_notread));
             holder.readestate.setTextColor(context.getResources().getColor(R.color.admin_color_selection_news));
         } else {
-            holder.readestate.setText("Đã đọc");
+            holder.readestate.setText(context.getString(R.string.txt_read));
         }
         holder.more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupMenu menu = new PopupMenu(context, holder.more, Gravity.TOP);
-                menu.inflate(R.menu.menu_item_notify_newstore);
+                PopupMenu menu = new PopupMenu(context, holder.more, Gravity.END);
+                menu.inflate(R.menu.menu_item_notify);
+                menu.getMenu().add(Menu.NONE, 0, 0, context.getResources().getString(R.string.text_del));
+                menu.getMenu().add(Menu.NONE, 1, 1, context.getResources().getString(R.string.text_block_addstore));
                 menu.show();
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
-                            case R.id.action_del_notify_newstore:
+                            case 0:
+                                Log.d("setOnMenuItemClick", "item " + 0);
                                 break;
-                            case R.id.action_block_addstore_notify_newstore:
+                            case 1:
+                                Log.d("setOnMenuItemClick", "item " + 1);
                                 break;
                         }
                         return true;

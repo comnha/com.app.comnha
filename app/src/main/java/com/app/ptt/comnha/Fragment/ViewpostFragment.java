@@ -322,38 +322,38 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
                         });
             }
         if(MyService.getUserAccount()!=null) {
-            dbRef.child(getResources().getString(R.string.notification_CODE) + ChoosePost.getInstance().getUserID()).
-                    addChildEventListener(new ChildEventListener() {
-                                              @Override
-                                              public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                                                  Notification notification = dataSnapshot.getValue(Notification.class);
-                                                  notification.setNotiID(dataSnapshot.getKey());
-                                                  if (notification.getPost() != null)
-//                                                      if (notification.getPost().getPostID().equals(postID))
-                                                          notifications.add(notification);
-
-                                              }
-
-                                              @Override
-                                              public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                                              }
-
-                                              @Override
-                                              public void onChildRemoved(DataSnapshot dataSnapshot) {
-                                              }
-
-                                              @Override
-                                              public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                                              }
-
-                                              @Override
-                                              public void onCancelled(DatabaseError databaseError) {
-
-                                              }
-                                          }
-                    );
+//            dbRef.child(getResources().getString(R.string.notification_CODE) + ChoosePost.getInstance().getUserID()).
+//                    addChildEventListener(new ChildEventListener() {
+//                                              @Override
+//                                              public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//                                                  Notification notification = dataSnapshot.getValue(Notification.class);
+//                                                  notification.setNotiID(dataSnapshot.getKey());
+//                                                  if (notification.getPost() != null)
+////                                                      if (notification.getPost().getPostID().equals(postID))
+//                                                          notifications.add(notification);
+//
+//                                              }
+//
+//                                              @Override
+//                                              public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//
+//                                              }
+//
+//                                              @Override
+//                                              public void onChildRemoved(DataSnapshot dataSnapshot) {
+//                                              }
+//
+//                                              @Override
+//                                              public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//                                              }
+//
+//                                              @Override
+//                                              public void onCancelled(DatabaseError databaseError) {
+//
+//                                              }
+//                                          }
+//                    );
         }
         return view;
     }

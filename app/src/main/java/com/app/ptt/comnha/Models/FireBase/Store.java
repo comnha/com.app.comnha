@@ -77,7 +77,6 @@ public class Store {
         this.time = time;
         this.date = date;
         this.storeimg = storeimg;
-        this.pro_dict = pro_dict;
     }
 
     public String getLocaID() {

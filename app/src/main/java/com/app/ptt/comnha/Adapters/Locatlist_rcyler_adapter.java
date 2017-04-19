@@ -19,13 +19,14 @@ import java.util.ArrayList;
  * Created by PTT on 9/27/2016.
  */
 
-public class Locatlist_rcyler_adapter extends RecyclerView.Adapter<Locatlist_rcyler_adapter.ViewHolder>{
+public class Locatlist_rcyler_adapter extends RecyclerView.Adapter<Locatlist_rcyler_adapter.ViewHolder> {
     Activity activity;
 
 
     ArrayList<Store> list;
     int previuosPosition = 0;
     LatLng yourLocation;
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView imgV;
         public TextView txt_diachi, txt_tenquan, txt_km, txt_diem;
@@ -33,12 +34,13 @@ public class Locatlist_rcyler_adapter extends RecyclerView.Adapter<Locatlist_rcy
         public ViewHolder(View itemView) {
             super(itemView);
             imgV = (ImageView) itemView.findViewById(R.id.item_rcyler_imgV);
-            txt_diachi = (TextView) itemView.findViewById(R.id.item_rcyler_txtdiachi);
-            txt_tenquan = (TextView) itemView.findViewById(R.id.item_rcyler_txtTenquan);
-            txt_km = (TextView) itemView.findViewById(R.id.item_rcyler_txtkm);
-            txt_diem = (TextView) itemView.findViewById(R.id.item_rcyler_txtscore);
+            txt_diachi = (TextView) itemView.findViewById(R.id.item_rcyler_txtvaddress);
+            txt_tenquan = (TextView) itemView.findViewById(R.id.item_rcyler_txtvstorename);
+            txt_km = (TextView) itemView.findViewById(R.id.item_rcyler_txtvdistance);
+            txt_diem = (TextView) itemView.findViewById(R.id.item_rcyler_txtvrate);
         }
     }
+
     public Locatlist_rcyler_adapter(ArrayList<Store> list) {
         this.list = list;
     }

@@ -154,13 +154,13 @@ public class NotificationFullFragment extends Fragment {
         };
         if(MyService.getUserAccount().getRole()){
             Log.i("NotificationFragment", "ADMIN");
-            dbRef.child(getResources().getString(R.string.notification_CODE)+"admin")
-                    .addChildEventListener(notificatonChildEventListener);
+//            dbRef.child(getResources().getString(R.string.notification_CODE)+"admin")
+//                    .addChildEventListener(notificatonChildEventListener);
         }
         else{
             Log.i("NotificationFragment", "USER");
-            dbRef.child(getResources().getString(R.string.notification_CODE)+MyService.getUserAccount().getId().toString())
-                    .addChildEventListener(notificatonChildEventListener);
+//            dbRef.child(getResources().getString(R.string.notification_CODE)+MyService.getUserAccount().getId().toString())
+//                    .addChildEventListener(notificatonChildEventListener);
         }
 
 
@@ -287,25 +287,25 @@ public class NotificationFullFragment extends Fragment {
         if(MyService.getUserAccount().getRole()) {
             if (deleteAll) {
                 for (String delItem : delList) {
-                    dbRef.child(getResources().getString(R.string.notification_CODE) + "admin" + "/" + delItem).removeValue()
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    Log.i("Thoát trang thông báo", "Xóa tất cả thành công!!!!!");
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            // mProgressDialog.dismiss();
-                            Log.i("Thoát trang thông báo", "Xóa tất cả lỗi!!!!!");
-                        }
-                    });
+//                    dbRef.child(getResources().getString(R.string.notification_CODE) + "admin" + "/" + delItem).removeValue()
+//                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<Void> task) {
+//                                    Log.i("Thoát trang thông báo", "Xóa tất cả thành công!!!!!");
+//                                }
+//                            }).addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            // mProgressDialog.dismiss();
+//                            Log.i("Thoát trang thông báo", "Xóa tất cả lỗi!!!!!");
+//                        }
+//                    });
                 }
             } else if (listNoti.size() > 0) {
                 for (Notification item : listNoti) {
                     Map<String, Object> not = item.toMap();
-                    childUpdates.put(
-                            getResources().getString(R.string.notification_CODE) + "admin" + "/" + item.getNotiID(), not);
+//                    childUpdates.put(
+//                            getResources().getString(R.string.notification_CODE) + "admin" + "/" + item.getNotiID(), not);
                 }
                 dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -323,25 +323,25 @@ public class NotificationFullFragment extends Fragment {
         }else{
             if (deleteAll) {
                 for (String delItem : delList) {
-                    dbRef.child(getResources().getString(R.string.notification_CODE) + MyService.getUserAccount().getId() + "/" + delItem).removeValue()
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    Log.i("Thoát trang thông báo", "Xóa tất cả thành công!!!!!");
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            // mProgressDialog.dismiss();
-                            Log.i("Thoát trang thông báo", "Xóa tất cả lỗi!!!!!");
-                        }
-                    });
+//                    dbRef.child(getResources().getString(R.string.notification_CODE) + MyService.getUserAccount().getId() + "/" + delItem).removeValue()
+//                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<Void> task) {
+//                                    Log.i("Thoát trang thông báo", "Xóa tất cả thành công!!!!!");
+//                                }
+//                            }).addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            // mProgressDialog.dismiss();
+//                            Log.i("Thoát trang thông báo", "Xóa tất cả lỗi!!!!!");
+//                        }
+//                    });
                 }
             } else if (listNoti.size() > 0) {
                 for (Notification item : listNoti) {
                     Map<String, Object> not = item.toMap();
-                    childUpdates.put(
-                            getResources().getString(R.string.notification_CODE) + MyService.getUserAccount().getId()    + "/" + item.getNotiID(), not);
+//                    childUpdates.put(
+//                            getResources().getString(R.string.notification_CODE) + MyService.getUserAccount().getId()    + "/" + item.getNotiID(), not);
                 }
                 dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -364,7 +364,7 @@ public class NotificationFullFragment extends Fragment {
 
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+        // TODO: Update argument type and storename
         void onFragmentInteraction(Uri uri);
     }
 }

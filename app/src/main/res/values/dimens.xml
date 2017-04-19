@@ -30,7 +30,7 @@
     <dimen name="text_rate_mark">20sp</dimen>
     <dimen name="text_rate_txt">10sp</dimen>
     <dimen name="cardv_elevation">2dp</dimen>
-    <dimen name="cardv_cornerRadius">2dp</dimen>
+    <dimen name="cardv_cornerRadius">2.47dp</dimen>
     <dimen name="cardv_loca_item_margin">7dp</dimen>
     <dimen name="cardv_loca_item_marginTop">3dp</dimen>
     <dimen name="cardv_loca_item_marginBot">3dp</dimen>

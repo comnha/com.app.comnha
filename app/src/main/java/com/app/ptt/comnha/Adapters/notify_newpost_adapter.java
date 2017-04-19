@@ -61,13 +61,13 @@ public class notify_newpost_adapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.title.setText(items.get(i).getTitle());
-        holder.date.setText("Ngày đăng: " + items.get(i).getDate());
-        holder.createby.setText("Đăng bởi: " + items.get(i).getUn());
+        holder.date.setText(context.getString(R.string.txt_postdate) + items.get(i).getDate());
+        holder.createby.setText(context.getString(R.string.txt_postby) + items.get(i).getUn());
         if (items.get(i).isReadstate()) {
-            holder.readestate.setText("Chưa đọc");
+            holder.readestate.setText(context.getString(R.string.txt_notread));
             holder.readestate.setTextColor(context.getResources().getColor(R.color.color_notify_newpost));
         } else {
-            holder.readestate.setText("Đã đọc");
+            holder.readestate.setText(context.getString(R.string.txt_read));
             holder.readestate.setTextColor(context.getResources().getColor(R.color.color_read));
 
         }
@@ -75,7 +75,7 @@ public class notify_newpost_adapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 PopupMenu menu = new PopupMenu(context, holder.more, Gravity.TOP);
-                menu.inflate(R.menu.menu_item_notify_newpost);
+                menu.inflate(R.menu.menu_item_notify);
                 menu.show();
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override

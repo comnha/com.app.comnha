@@ -30,7 +30,7 @@ public class AdminNewStoreFragment extends Fragment {
     ArrayList<NewstoreNotify> items;
     DatabaseReference dbRef;
     ChildEventListener childEventListener;
-    String dist_pro = "";
+    String dist_pro = "Quận 9_HCM";
 
     public AdminNewStoreFragment() {
         // Required empty public constructor
@@ -75,7 +75,7 @@ public class AdminNewStoreFragment extends Fragment {
 
             }
         };
-        dbRef.child(getString(R.string.notify_newstore_CODE)).orderByChild("distict_province")
+        dbRef.child(getString(R.string.notify_newstore_CODE)).orderByChild("district_province")
                 .equalTo(dist_pro).addChildEventListener(childEventListener);
         return view;
     }

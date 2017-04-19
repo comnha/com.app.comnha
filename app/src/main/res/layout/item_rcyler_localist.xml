@@ -2,91 +2,99 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="90dp">
+    android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
         android:id="@+id/item_rcyler_cardV"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
         app:cardCornerRadius="@dimen/cardv_cornerRadius"
-        app:cardElevation="@dimen/cardv_elevation"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true">
+        app:cardElevation="@dimen/cardv_elevation">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp">
+            android:orientation="horizontal"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:weightSum="10">
 
             <ImageView
                 android:id="@+id/item_rcyler_imgV"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginStart="10dp"
-                android:background="@drawable/ic_logo" />
-
-            <TextView
-                android:id="@+id/item_rcyler_txtTenquan"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/item_rcyler_imgV"
-                android:maxLength="50"
-                android:text="Cơm ngô quyền 2"
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/item_rcyler_txtmon"
-                android:visibility="invisible"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/item_rcyler_txtdiachi"
-                android:layout_toEndOf="@+id/item_rcyler_imgV"
-                android:maxLength="37"
-                android:text="89 ngô quyên, thủ đức, hồ chí minh11"
-                android:textSize="12sp" />
+                android:layout_weight="2"
+                android:src="@drawable/ic_item_store" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@+id/item_rcyler_txtTenquan"
-                android:layout_marginEnd="10dp"
-                android:gravity="center_horizontal"
+                android:layout_margin="8dp"
+                android:layout_weight="6"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/item_rcyler_txtkm"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/item_rcyler_txtvstorename"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="16 km"
-                    android:textSize="12sp" />
+                    android:lines="1"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/item_rcyler_txtscore"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/item_rcyler_txtvaddress"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:lines="1" />
+
+                <TextView
+                    android:id="@+id/item_rcyler_txtvopentime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lines="1" />
+
+                <TextView
+                    android:id="@+id/item_rcyler_txtvphonenumb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lines="1" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="vertical"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/item_rcyler_txtvdistance"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="16 km" />
+
+                <TextView
+                    android:id="@+id/item_rcyler_txtvrate"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
                     android:text="10"
                     android:textColor="@android:color/holo_green_dark"
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/item_rcyler_txtdiachi"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLength="37"
-                android:text="89 ngô quyên, thủ đức, hồ chí minh"
-                android:textSize="12sp"
-                android:layout_below="@+id/item_rcyler_txtTenquan"
-                android:layout_toEndOf="@+id/item_rcyler_imgV" />
-        </RelativeLayout>
+
+        </LinearLayout>
     </android.support.v7.widget.CardView>
 
 </RelativeLayout>

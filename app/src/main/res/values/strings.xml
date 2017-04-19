@@ -65,7 +65,7 @@
     <string name="text_taomoi">Tạo mới</string>
     <string name="text_signup_successful">Đăng kí thành công!!!</string>
     <string name="text_addnewFoodCate_successful">Thêm loại món mới thành công!!!</string>
-    <string name="text_noti_addloca_succes">Thêm địa điểm thành công</string>
+    <string name="text_addloca_succes">Thêm địa điểm thành công</string>
     <string name="title_activity_nav_draw">NavDrawActivity</string>
     <string name="text_addloca">Thêm địa điểm mới</string>
     <string name="text_dangreview">Thêm review</string>
@@ -80,19 +80,18 @@
     <string name="txt_writecomment">Viết bình luận......</string>
     <!--ERROR-->
     <string name="txt_needlogin">Bạn cần đăng nhập</string>
-    <string name="txt_noemail">Warning: Chưa nhập email</string>
-    <string name="txt_notemail">Error: Email không hợp lệ</string>
-    <string name="txt_nopass">Warning: Chưa nhập password</string>
+    <string name="txt_noemail">Bạn chưa nhập email</string>
+    <string name="txt_notemail">Email không hợp lệ</string>
+    <string name="txt_nopass">Bạn chưa nhập password</string>
     <string name="txt_noho">Warning: Chưa nhập họ</string>
     <string name="txt_notenlot">Warning: Chưa nhập tên lót</string>
     <string name="txt_noten">Warning: Chưa nhập tên</string>
     <string name="txt_nongsinh">Warning: Chưa nhập ngày-tháng-năm sinh</string>
     <string name="txt_noun">Warning: Chưa nhập tên tài khoản</string>
     <string name="txt_noconfirmpass">Warning: Chưa nhập mật khẩu xác nhận</string>
-    <string name="txt_notenquan">Warning: Chưa nhập tên quán</string>
-    <string name="txt_nodiachi">Warning: Chưa nhập địa chỉ</string>
+    <string name="txt_nostorename">Bạn chưa điền tên quán</string>
     <string name="txt_nogia">Warning: Chưa nhập giá</string>
-    <string name="txt_nosdt">Warning: Chưa nhập số điện thoại</string>
+    <string name="txt_nophonenumb">Bạn chưa ghi số điện thoại</string>
     <string name="txt_noopentime">Warning: Chưa nhập giờ mở cửa</string>
     <string name="txt_noprivince">Warning: Chưa nhập Tỉnh/Thành phố</string>
     <string name="txt_nodistrict">Warning: Chưa nhập Quận/Huyện</string>
@@ -101,7 +100,7 @@
     <string name="txt_nochoseloca">Warning: Chưa chọn địa điểm</string>
     <string name="txt_norate">Warning: Chưa đánh giá</string>
     <string name="txt_giawarn">Warning: Giá cuối cùng phải lớn hơn giá bắt đầu</string>
-    <string name="txt_addinlocaerr">Error: Không thể thêm địa điểm mới</string>
+    <string name="txt_addinlocaerr">Bạn không thể thêm địa điểm mới</string>
     <string name="txt_nochosephoto">Warning: Chưa chọn ảnh nào</string>
     <string name="txt_noTenMon">Warning: Chưa nhập tên món ăn</string>
     <string name="txt_nogiaMon">Warning: Chưa nhập giá món ăn</string>
@@ -110,7 +109,7 @@
     <string name="txt_noChoseFood">Warning: Chưa chọn món ăn</string>
     <string name="txt_noChoseFoodCate">Warning: Chưa chọn loại món ăn</string>
     <string name="txt_noFoodCateName">Warning: Chưa nhập tên loại món ăn</string>
-    <string name="txt_noaddress">Warning: Chưa nhập địa điểm</string>
+    <string name="txt_noaddress">Bạn chưa ghi địa chỉ</string>
     <string name="txt_choseLoca">Bạn đã chọn địa điểm</string>
     <string name="txt_failaddfoodcate">Error: Không thể thêm loại món mới</string>
     <!--ERROR-->
@@ -146,8 +145,8 @@
     <string name="txt_setdadoc">Đọc tất cả</string>
     <string name="txt_xemnoidungreport">Xem report</string>
     <string name="txt_denvitri">Xem bài đăng</string>
-    <string name="txt_dongy">Đồng ý</string>
-    <string name="txt_khongdongy">Không đồng ý</string>
+    <string name="txt_agree">Đồng ý</string>
+    <string name="txt_disagree">Không đồng ý</string>
     <!--PATH-->
     <string name="firebase_path">https://comnha-e4dbe.firebaseio.com/</string>
     <string name="firebaseStorage_path">gs://comnha-e4dbe.appspot.com/</string>
@@ -195,12 +194,13 @@
 
     <!--Firebase-->
     <string name="users_CODE">Users/</string>
-    <string name="reports_CODE">Reports/</string>
+    <string name="reportStore_CODE">StoreReports/</string>
+    <string name="reportFood_CODE">FoodReports/</string>
+    <string name="reportPost_CODE">PostReports/</string>
+    <string name="reportimg_CODE">ImgReports/</string>
     <string name="thucdon_CODE">Food/</string>
-    <string name="notification_CODE">Notification/</string>
-    <string name="notify_newstore_CODE">NotifyNewStore</string>
-    <string name="notify_newpost_CODE">NotifyNewPost</string>
-    <string name="notification_CODE1">Notification</string>
+    <string name="notify_newstore_CODE">NotifyNewStore/</string>
+    <string name="notify_newpost_CODE">NotifyNewPost/</string>
     <string name="locathucdon_CODE">StoreFood/</string>
     <string name="store_CODE">Stores/</string>
     <string name="deleted_CODE">Deleted/</string>
@@ -218,7 +218,10 @@
     <string name="district_CODE">District/</string>
     <string name="foodcategory_CODE">FoodCategory/</string>
     <!--Firebase-->
-
+    <!--PROGRESSDIALOG-->
+    <string name="txt_addstore">Đang thêm địa điểm mới</string>
+    <string name="txt_updloadimg">Đang updoad hình ảnh</string>
+    <!--PROGRESSDIALOG-->
     <string name="action_example">Example action</string>
 
     <string name="action_more">More</string>
@@ -591,4 +594,12 @@
     <string name="txt_notmatchpassword">Mật khẩu xác nhận không đúng</string>
     <string name="txt_signup_loading">Đang đăng ký</string>
     <string name="txt_tryagain">Xin thử lại</string>
+    <string name="txt_failedUploadImg">Upload hình ảnh không thành công</string>
+    <string name="text_failedaddloca">Thêm địa điểm mới không thành công</string>
+    <string name="txt_notread">Chưa đọc</string>
+    <string name="txt_read">Đã đọc</string>
+    <string name="txt_storeaddby">Thêm bởi:&#160;</string>
+    <string name="txt_createdate">Ngày tạo:&#160;</string>
+    <string name="txt_postdate">Ngày đăng:&#160;</string>
+    <string name="txt_postby">Đăng bởi: </string>
 </resources>

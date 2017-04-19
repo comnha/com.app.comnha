@@ -9,13 +9,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.app.ptt.comnha.Adapters.notify_newstore_adapter;
+import com.app.ptt.comnha.Models.FireBase.NewstoreNotify;
 import com.app.ptt.comnha.R;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DatabaseReference;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class MainStoreFragment extends Fragment {
     ListView listView;
+    notify_newstore_adapter itemadapter;
+    ArrayList<NewstoreNotify> items;
+    DatabaseReference dbRef;
+    ChildEventListener childEventListener;
+    String prio_dist="Quận 9_HCM";
 
     public MainStoreFragment() {
         // Required empty public constructor
