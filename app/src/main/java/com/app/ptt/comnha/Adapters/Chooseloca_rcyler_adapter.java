@@ -49,8 +49,8 @@ public class Chooseloca_rcyler_adapter extends RecyclerView.Adapter<Chooseloca_r
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-//        holder.txt_tenquan.setText(list.get(position).getName());
-//        holder.txt_diachi.setText(list.get(position).getDiachi());
+//        holder.txtv_storename.setText(list.get(position).getName());
+//        holder.txtv_address.setText(list.get(position).getDiachi());
         if (position > previuosPosition) {
             AnimationUtils.animateItemRcylerV(holder, false);
 
@@ -60,7 +60,7 @@ public class Chooseloca_rcyler_adapter extends RecyclerView.Adapter<Chooseloca_r
         }
         previuosPosition = position;
 //        holder.diem.setText(list.get(position).getName());
-//        holder.txt_km.setText(list.get(position).getName());
+//        holder.txtv_distance.setText(list.get(position).getName());
 //        holder.imgV.setBackground();
     }
 

@@ -141,9 +141,9 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
         });
 //        String key=null;
 //        if(searchByFood){
-//            key=packageFoods.get(position).getLocaID();
+//            key=packageFoods.get(position).getStoreID();
 //        }else{
-//            key = packageLocations.get(position).getLocaID();
+//            key = packageLocations.get(position).getStoreID();
 //
 //        }
 //        if(key!=null) {
@@ -151,7 +151,7 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
 //            intent.putExtra(getResources().getString(R.string.fragment_CODE),
 //                    getResources().getString(R.string.frag_locadetail_CODE));
 //            MyLocation location = new MyLocation();
-//            location.setLocaID(key);
+//            location.setStoreID(key);
 //            ChooseLoca.getInstance().setLocation(location);
 //            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //            startActivity(intent);
@@ -186,12 +186,12 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener1(getActivity(), new RecyclerItemClickListener1.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-//                String key = locaList.get(position).getLocaID();
+//                String key = locaList.get(position).getStoreID();
                 Intent intent = new Intent(getActivity().getApplicationContext(), Adapter2Activity.class);
                 intent.putExtra(getResources().getString(R.string.fragment_CODE),
                         getResources().getString(R.string.frag_locadetail_CODE));
                 Store location=new Store();
-//                location.setLocaID(key);
+//                location.setStoreID(key);
                 ChooseLoca.getInstance().setLocation(location);
 
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -293,7 +293,7 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Store store = dataSnapshot.getValue(Store.class);
-//                store.setLocaID(dataSnapshot.getKey());
+//                store.setStoreID(dataSnapshot.getKey());
                 packageLocations.add(store);
             }
 

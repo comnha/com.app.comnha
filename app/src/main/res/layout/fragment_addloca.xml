@@ -9,7 +9,7 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     android:weightSum="5"
-    tools:context="com.app.ptt.comnha.Fragment.AddlocaFragment">
+    tools:context="com.app.ptt.comnha.Fragment.AddstoreFragment">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

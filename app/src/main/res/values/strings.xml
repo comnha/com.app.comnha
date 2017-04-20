@@ -95,11 +95,10 @@
     <string name="txt_noopentime">Warning: Chưa nhập giờ mở cửa</string>
     <string name="txt_noprivince">Warning: Chưa nhập Tỉnh/Thành phố</string>
     <string name="txt_nodistrict">Warning: Chưa nhập Quận/Huyện</string>
-    <string name="txt_notitle">Warning: Chưa nhập tiêu đề</string>
-    <string name="txt_nocontent">Warning: Chưa nhập nội dung</string>
-    <string name="txt_nochoseloca">Warning: Chưa chọn địa điểm</string>
+    <string name="txt_notitle">Bạn chưa điền tiêu đề</string>
+    <string name="txt_nocontent">Bạn chưa điền nội dung</string>
+    <string name="txt_nochoseloca">Bạn chưa chọn địa điểm</string>
     <string name="txt_norate">Warning: Chưa đánh giá</string>
-    <string name="txt_giawarn">Warning: Giá cuối cùng phải lớn hơn giá bắt đầu</string>
     <string name="txt_addinlocaerr">Bạn không thể thêm địa điểm mới</string>
     <string name="txt_nochosephoto">Warning: Chưa chọn ảnh nào</string>
     <string name="txt_noTenMon">Warning: Chưa nhập tên món ăn</string>
@@ -602,4 +601,6 @@
     <string name="txt_createdate">Ngày tạo:&#160;</string>
     <string name="txt_postdate">Ngày đăng:&#160;</string>
     <string name="txt_postby">Đăng bởi: </string>
+    <string name="txt_comment">&#160;Bình luận</string>
+    <string name="txt_like">&#160;Yêu thích</string>
 </resources>

@@ -14,7 +14,7 @@ public class Sort {
         this.array = inputArr;
         this.length = inputArr.size();
         this.tempMergArr =new ArrayList<>(length);
-        Post post=new Post();
+        Post post;
 //        post.setLocaName("NULL  ");
         for (Post post1: array){
             tempMergArr.add(post1);

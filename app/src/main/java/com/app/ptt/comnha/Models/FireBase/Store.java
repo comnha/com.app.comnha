@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class Store {
     //info
-    String locaID;
+    String storeID;
     String name, address, phonenumb, opentime;
     //location
     String province,
@@ -26,7 +26,7 @@ public class Store {
             rateAVG = 0;
     String storeimg = "";//ảnh đại diện của store
     //phép kết
-    String pro_dict,//tìm theo tỉnh_huyện
+    String pro_dist,//tìm theo tỉnh_huyện
             userID_pro_dist;//tìm theo user_tỉnh_huyện
 
     String distance;//khoảng cách hiển thị trên danh sách quán ăn
@@ -56,7 +56,7 @@ public class Store {
         result.put("healthyAVG", healthyAVG);
         result.put("serviceAVG", serviceAVG);
         result.put("storeimg", storeimg);
-        result.put("pro_dict", district + "_" + province);
+        result.put("pro_dist", district + "_" + province);
         result.put("userID_pro_dist", userID + "_" + district + "_" + province);
         return result;
     }
@@ -79,12 +79,12 @@ public class Store {
         this.storeimg = storeimg;
     }
 
-    public String getLocaID() {
-        return locaID;
+    public String getStoreID() {
+        return storeID;
     }
 
-    public void setLocaID(String locaID) {
-        this.locaID = locaID;
+    public void setStoreID(String storeID) {
+        this.storeID = storeID;
     }
 
     public String getName() {
@@ -247,12 +247,12 @@ public class Store {
         this.storeimg = storeimg;
     }
 
-    public String getPro_dict() {
-        return pro_dict;
+    public String getPro_dist() {
+        return pro_dist;
     }
 
-    public void setPro_dict(String pro_dict) {
-        this.pro_dict = pro_dict;
+    public void setPro_dist(String pro_dist) {
+        this.pro_dist = pro_dist;
     }
 
     public String getUserID_pro_dist() {

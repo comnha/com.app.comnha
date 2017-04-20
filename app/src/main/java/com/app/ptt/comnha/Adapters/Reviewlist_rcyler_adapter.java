@@ -46,14 +46,14 @@ public class Reviewlist_rcyler_adapter extends RecyclerView.Adapter<Reviewlist_r
 
                 txt_ratingtext=(TextView) view.findViewById(R.id.rating_text);
             }else{
-                txt_time = (TextView) view.findViewById(R.id.review_txtv_time);
-                txt_un = (TextView) view.findViewById(R.id.review_txtv_username);
+                txt_time = (TextView) view.findViewById(R.id.post_txtv_time);
+                txt_un = (TextView) view.findViewById(R.id.post_txtv_un);
                 txt_tenmon = (TextView) view.findViewById(R.id.review_txtv_tenmon);
-                txt_postdate = (TextView) view.findViewById(R.id.review_txtv_postdate);
+                txt_postdate = (TextView) view.findViewById(R.id.post_txtv_postdate);
                 txt_gia = (TextView) view.findViewById(R.id.review_txtv_gia);
-                txt_likenumb = (TextView) view.findViewById(R.id.review_txtv_likenumb);
-                txt_commentnumb = (TextView) view.findViewById(R.id.review_txtv_commentnumb);
-                txt_tenquan = (TextView) view.findViewById(R.id.review_txtv_tenquan);
+                txt_likenumb = (TextView) view.findViewById(R.id.post_txtv_likenumb);
+                txt_commentnumb = (TextView) view.findViewById(R.id.post_txtv_commentnumb);
+                txt_tenquan = (TextView) view.findViewById(R.id.post_txtv_storename);
                 txt_diachi = (TextView) view.findViewById(R.id.review_txtv_diachi);
                 img_user = (ImageView) view.findViewById(R.id.review_img_quan);
             }
@@ -115,11 +115,11 @@ public class Reviewlist_rcyler_adapter extends RecyclerView.Adapter<Reviewlist_r
 //                        .into(holder.img_user);
 //
 //            if(type==3) {
-//                holder.txt_tenquan.setText(list.get(position).getUserName());
-//                holder.txt_diachi.setText(list.get(position).getTitle());
+//                holder.txtv_storename.setText(list.get(position).getUserName());
+//                holder.txtv_address.setText(list.get(position).getTitle());
 //            }else{
-//                holder.txt_tenquan.setText(list.get(position).getLocaName());
-//                holder.txt_diachi.setText(list.get(position).getDiachi());
+//                holder.txtv_storename.setText(list.get(position).getLocaName());
+//                holder.txtv_address.setText(list.get(position).getDiachi());
 //            }
 
         }

@@ -439,7 +439,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
 //                                                && (marker.getPosition().longitude != myLocationSearch.getPlaceLatLng().longitude)))) {
 //                                            Store a = returnLocation(marker);
 //
-//                                                if (a != null && a.getQuanhuyen() != null && a.getLocaID() != null && a.getTinhtp() != null) {
+//                                                if (a != null && a.getQuanhuyen() != null && a.getStoreID() != null && a.getTinhtp() != null) {
 //                                                    Intent intent = new Intent(getActivity().getApplicationContext(), Adapter2Activity.class);
 //                                                    intent.putExtra(getResources().getString(R.string.fragment_CODE),
 //                                                            getResources().getString(R.string.frag_locadetail_CODE));
@@ -718,7 +718,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Store newLocation = dataSnapshot.getValue(Store.class);
-//                newLocation.setLocaID(dataSnapshot.getKey());
+//                newLocation.setStoreID(dataSnapshot.getKey());
 //                Log.i(LOG + ".getData", "newLocation.getVisible:"+newLocation.getVisible());
 //                if(newLocation.getVisible()!=null){
 //                    if(newLocation.getVisible()){

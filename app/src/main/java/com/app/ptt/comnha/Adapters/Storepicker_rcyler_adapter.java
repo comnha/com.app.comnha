@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * Created by PTT on 9/27/2016.
  */
 
-public class Locatlist_rcyler_adapter extends RecyclerView.Adapter<Locatlist_rcyler_adapter.ViewHolder> {
+public class Storepicker_rcyler_adapter extends RecyclerView.Adapter<Storepicker_rcyler_adapter.ViewHolder> {
     Activity activity;
 
 
@@ -33,21 +33,21 @@ public class Locatlist_rcyler_adapter extends RecyclerView.Adapter<Locatlist_rcy
 
         public ViewHolder(View itemView) {
             super(itemView);
-            imgV = (ImageView) itemView.findViewById(R.id.item_rcyler_imgV);
-            txt_diachi = (TextView) itemView.findViewById(R.id.item_rcyler_txtvaddress);
-            txt_tenquan = (TextView) itemView.findViewById(R.id.item_rcyler_txtvstorename);
-            txt_km = (TextView) itemView.findViewById(R.id.item_rcyler_txtvdistance);
-            txt_diem = (TextView) itemView.findViewById(R.id.item_rcyler_txtvrate);
+            imgV = (ImageView) itemView.findViewById(R.id.item_list_imgV);
+            txt_diachi = (TextView) itemView.findViewById(R.id.item_list_txtvaddress);
+            txt_tenquan = (TextView) itemView.findViewById(R.id.item_list_txtvstorename);
+            txt_km = (TextView) itemView.findViewById(R.id.item_list_txtvdistance);
+            txt_diem = (TextView) itemView.findViewById(R.id.item_list_txtvrate);
         }
     }
 
-    public Locatlist_rcyler_adapter(ArrayList<Store> list) {
+    public Storepicker_rcyler_adapter(ArrayList<Store> list) {
         this.list = list;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rcyler_localist, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_store, parent, false);
         return new ViewHolder(itemView);
 
     }
@@ -56,8 +56,8 @@ public class Locatlist_rcyler_adapter extends RecyclerView.Adapter<Locatlist_rcy
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-//        holder.txt_tenquan.setText(list.get(position).getName());
-//        holder.txt_diachi.setText(list.get(position).getDiachi());
+//        holder.txtv_storename.setText(list.get(position).getName());
+//        holder.txtv_address.setText(list.get(position).getDiachi());
 //        holder.txt_diem.setText(String.valueOf(list.get(position).getTongAVG()));
         if (position > previuosPosition) {
             AnimationUtils.animateItemRcylerV(holder, true);
@@ -65,7 +65,7 @@ public class Locatlist_rcyler_adapter extends RecyclerView.Adapter<Locatlist_rcy
             AnimationUtils.animateItemRcylerV(holder, false);
         }
         previuosPosition = position;
-//        holder.txt_km.setText(
+//        holder.txtv_distance.setText(
 //                list.get(position).getKhoangcach());
 //        holder.imgV.setBackground();
     }

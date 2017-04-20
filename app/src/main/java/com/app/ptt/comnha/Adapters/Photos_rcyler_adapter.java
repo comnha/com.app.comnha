@@ -22,7 +22,8 @@ public class Photos_rcyler_adapter extends RecyclerView.Adapter<Photos_rcyler_ad
 
     @Override
     public Viewholder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new Viewholder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rcyler_photos, parent, false));
+        return new Viewholder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_rcyler_photos, parent, false));
     }
 
     @Override

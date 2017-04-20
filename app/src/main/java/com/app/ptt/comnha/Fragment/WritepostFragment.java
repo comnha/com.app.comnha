@@ -72,6 +72,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
     int androidVer = Build.VERSION.SDK_INT;
     RelativeLayout relative_touchoutside;
     NestedScrollView nested_touchoutside;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -185,7 +186,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         linear_banner = (LinearLayout) view.findViewById(R.id.linear_banner_writepost);
         linear_banner.setVisibility(View.GONE);
 
-        nested_touchoutside=(NestedScrollView)view.findViewById(R.id.nested_writepost);
+        nested_touchoutside = (NestedScrollView) view.findViewById(R.id.nested_writepost);
         nested_touchoutside.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -381,8 +382,8 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //            public void onClick(View v) {
 //                PickFoodDialogFragment pickFoodFrg = new PickFoodDialogFragment();
 //                pickFoodFrg.show(fm, "fragment_pickFood");
-//                Log.i("CCS", DoPost.getInstance().getMyLocation().getLocaID() + "-------------------------");
-//                pickFoodFrg.setLocaID(DoPost.getInstance().getMyLocation().getLocaID());
+//                Log.i("CCS", DoPost.getInstance().getMyLocation().getStoreID() + "-------------------------");
+//                pickFoodFrg.setStoreID(DoPost.getInstance().getMyLocation().getStoreID());
 //                pickFoodFrg.setOnPickFoodListener(new PickFoodDialogFragment.OnPickFoodListener() {
 //                    @Override
 //                    public void onPickFood(Food food) {
@@ -652,7 +653,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //        } else if (edt_content.getText().toString().trim().equals("")) {
 //            Snackbar.make(view, getResources().getString(R.string.txt_nocontent), Snackbar.LENGTH_SHORT).show();
 //
-//        } else if (cb_monAn.isChecked() && (mFood.getLocaID() == null)) {
+//        } else if (cb_monAn.isChecked() && (mFood.getStoreID() == null)) {
 //            Snackbar.make(view, "Chưa chọn món hoặc chưa đánh giá món", Snackbar.LENGTH_SHORT).show();
 //
 //        } else if (checloca) {
@@ -661,7 +662,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //            dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
 //            key = dbRef.child(getString(R.string.posts_CODE)).push().getKey();
 //            updateLoca = DoPost.getInstance().getMyLocation();
-//            locaID = DoPost.getInstance().getMyLocation().getLocaID();
+//            locaID = DoPost.getInstance().getMyLocation().getStoreID();
 //            Toast.makeText(getContext(), "LOCAL ID:" + locaID, Toast.LENGTH_SHORT).show();
 //            mProgressDialog = ProgressDialog.show(getActivity(),
 //                    getResources().getString(R.string.txt_plzwait),
@@ -684,7 +685,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //            Food tempFood = mFood;
 //            tempFood.setDanhGia(mRating);
 //            newPost.setType(1);
-//            if (mFood.getLocaID() != null) {
+//            if (mFood.getStoreID() != null) {
 //                float a = mFood.getDanhGia();
 //                Log.i("CSS", a + "_---------------------------");
 //                float b = ((a + mRating) / 2);
@@ -737,7 +738,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //        newPost.setUserName(MyService.getUserAccount().getUsername());
 //        newPost.setDate(new Times().getTime());
 //        newPost.setTime(new Times().getDate());
-//        newPost.setLocaID(locaID);
+//        newPost.setStoreID(locaID);
 //        //     if(MyService.getUserAccount().getRole()){
 //        newPost.setVisible(true);
 ////        }else
@@ -835,7 +836,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //                newImage.setName(uri.getLastPathSegment());
 //                newImage.setPostID(key);
 //                newImage.setUserID(MyService.getUserAccount().getId());
-//                newImage.setLocaID(locaID);
+//                newImage.setStoreID(locaID);
 //                images.add(newImage);
 //                Log.i("SSSSSSS", "images=" + images.size());
 //                StorageReference myChildRef = storeRef.child(
@@ -1047,7 +1048,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 ////                newImage.setName(uri.getLastPathSegment());
 ////                newImage.setPostID(key);
 ////                newImage.setUserID(MyService.getUserID());
-////                newImage.setLocaID(locaID);
+////                newImage.setStoreID(locaID);
 ////                childUpdates.put(getResources().getString(R.string.images_CODE)
 ////                        + fileKey, newImage);
 ////            }

@@ -5,10 +5,12 @@
     android:layout_height="wrap_content"
     tools:context="com.app.ptt.comnha.Fragment.MainPostFragment">
 
-    <ListView
-        android:id="@+id/listV_postfrag"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerV_postfrag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="@android:color/transparent"
-        android:scrollbars="none" />
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
+        android:scrollbars="none"
+        app:stackFromEnd="true" />
 </RelativeLayout>

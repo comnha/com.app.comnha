@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.app.ptt.comnha.Fragment.AddFoodFragment;
-import com.app.ptt.comnha.Fragment.AddlocaFragment;
+import com.app.ptt.comnha.Fragment.AddstoreFragment;
 import com.app.ptt.comnha.Fragment.WritepostFragment;
 import com.app.ptt.comnha.Fragment.FooddetailFragment;
 import com.app.ptt.comnha.Fragment.NotificationFragment;
@@ -49,10 +49,10 @@ public class Adapter2Activity extends AppCompatActivity {
         } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frag_addloca_CODE))) {
             if (findViewById(R.id.frame_adapter2) != null) {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter2) == null) {
-                    AddlocaFragment addlocaFragment = new AddlocaFragment();
-                    addlocaFragment.setArguments(getIntent().getExtras());
+                    AddstoreFragment addstoreFragment = new AddstoreFragment();
+                    addstoreFragment.setArguments(getIntent().getExtras());
+                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, addstoreFragment).commit();
 
-                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, addlocaFragment).commit();
                 }
             }
         } else if (FRAGMENT_CODE.equals(getString(R.string.frag_locadetail_CODE))) {

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
+    android:theme="@style/SignInUpEdt"
     tools:context="com.app.ptt.comnha.Fragment.SigninFragment">
 
     <LinearLayout
@@ -45,10 +46,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1.5"
-                android:nextFocusDown="@+id/edt_siFrg_password"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:nextFocusDown="@+id/edt_siFrg_password">
 
                 <EditText
+                    style="@style/SignInUpEdt"
                     android:id="@+id/edt_siFrg_username"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -56,8 +58,8 @@
                     android:gravity="start|center_vertical"
                     android:hint="@string/text_email"
                     android:inputType="textEmailAddress"
-                    android:textColor="@android:color/white"
                     android:nextFocusDown="@+id/edt_siFrg_password"
+                    android:textColor="@android:color/white"
                     android:textColorHint="@android:color/white" />
             </android.support.design.widget.TextInputLayout>
 
@@ -72,10 +74,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@android:color/white"
-                    android:nextFocusDown="@+id/btn_siFrg_signin"
                     android:gravity="start|center_vertical"
                     android:hint="@string/text_password"
                     android:inputType="textPassword"
+                    android:nextFocusDown="@+id/btn_siFrg_signin"
                     android:textColor="@android:color/white" />
 
 
@@ -92,10 +94,12 @@
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 android:weightSum="3">
+
                 <View
-                    android:layout_weight="1.6"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.6" />
+
                 <Button
                     android:id="@+id/btn_siFrg_signin"
                     android:layout_width="0dp"

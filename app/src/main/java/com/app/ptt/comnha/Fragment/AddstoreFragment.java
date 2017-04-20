@@ -68,10 +68,10 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddlocaFragment extends Fragment implements View.OnClickListener, TimePickerDialog.OnTimeSetListener,
+public class AddstoreFragment extends Fragment implements View.OnClickListener, TimePickerDialog.OnTimeSetListener,
         DialogInterface.OnDismissListener, DialogInterface.OnCancelListener, LocationFinderListener, PlaceSelectionListener {
     FloatingActionButton fab_save;
-    public static final String LOG = AddlocaFragment.class.getSimpleName();
+    public static final String LOG = AddstoreFragment.class.getSimpleName();
     ArrayList<PlaceAttribute> mPlaceAttribute;
     EditText edt_storeName, edt_phoneNumb, edt_address;
     PlaceAutocompleteFragment _autocompleteFragment;
@@ -147,7 +147,7 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
         getContext().unregisterReceiver(broadcastReceiver);
     }
 
-    public AddlocaFragment() {
+    public AddstoreFragment() {
         // Required empty public constructor
     }
 
@@ -374,20 +374,22 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
                 public void onDismiss(DialogInterface dialogInterface) {
                     if (isUploadImgSuccess[0]) {
                         mProgressDialog.show();
-                        dbRef.updateChildren(childUpdate).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                mProgressDialog.dismiss();
-
-                                Toast.makeText(getContext(), getString(R.string.text_addloca_succes)
-                                        , Toast.LENGTH_SHORT).show();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
+                        dbRef.updateChildren(childUpdate)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        mProgressDialog.dismiss();
+                                        Toast.makeText(getContext(), getString(R.string.text_addloca_succes)
+                                                , Toast.LENGTH_LONG).show();
+                                        getActivity().onBackPressed();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 mProgressDialog.dismiss();
                                 Toast.makeText(getContext(), getString(R.string.text_failedaddloca)
-                                        , Toast.LENGTH_SHORT).show();
+                                        , Toast.LENGTH_LONG).show();
+
                             }
                         });
 
@@ -402,14 +404,15 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
                 public void onSuccess(Void aVoid) {
                     mProgressDialog.dismiss();
                     Toast.makeText(getContext(), getString(R.string.text_addloca_succes)
-                            , Toast.LENGTH_SHORT).show();
+                            , Toast.LENGTH_LONG).show();
+                    getActivity().onBackPressed();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     mProgressDialog.dismiss();
                     Toast.makeText(getContext(), getString(R.string.text_failedaddloca)
-                            , Toast.LENGTH_SHORT).show();
+                            , Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -636,7 +639,7 @@ public class AddlocaFragment extends Fragment implements View.OnClickListener, T
 ////                            Map<String, Object> childUpdates = new HashMap<>();
 ////                            childUpdates.put(getResources().getString(R.string.locations_CODE)
 ////                                    + key, newLocaValue);
-////                            newLocation.setLocaID(key);
+////                            newLocation.setStoreID(key);
 ////                            dbRef.updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
 ////                                @Override
 ////                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {

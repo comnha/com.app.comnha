@@ -5,6 +5,7 @@
     android:layout_gravity="center"
     android:background="@drawable/bg"
     android:fitsSystemWindows="false"
+    android:theme="@style/SignInUpEdt"
     tools:context=".Fragment.SignupFragment">
 
     <LinearLayout

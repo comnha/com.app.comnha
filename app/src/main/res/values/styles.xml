@@ -94,4 +94,9 @@
         <item name="colorAccent">@color/addlocal_color_opentime</item>
         <item name="android:textColorPrimary">@android:color/black</item>
     </style>
+
+    <style name="SignInUpEdt" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:textColorHint">@android:color/white</item>
+        <item name="colorAccent">@android:color/white</item>
+    </style>
 </resources>

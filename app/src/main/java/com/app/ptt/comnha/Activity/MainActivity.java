@@ -27,7 +27,7 @@ import android.widget.TextView;
 
 import com.app.ptt.comnha.Adapters.MainFragPagerAdapter;
 import com.app.ptt.comnha.Fragment.AboutBottomSheetDialogFragment;
-import com.app.ptt.comnha.Fragment.AddlocaFragment;
+import com.app.ptt.comnha.Fragment.AddstoreFragment;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.github.clans.fab.FloatingActionButton;
@@ -72,7 +72,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -462,7 +462,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     case 1:
                         FragmentTransaction transaction = getSupportFragmentManager()
                                 .beginTransaction()
-                                .add(R.id.frame_btmsheet, new AddlocaFragment(), "addloca_frag");
+                                .add(R.id.frame_btmsheet, new AddstoreFragment(), "addloca_frag");
                         transaction.commit();
                         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
