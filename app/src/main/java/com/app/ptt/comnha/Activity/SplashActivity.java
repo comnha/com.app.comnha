@@ -39,7 +39,7 @@ public class SplashActivity extends BaseActivity {
         dot5 = (TextView) findViewById(R.id.act_splash_dot5);
         dot6 = (TextView) findViewById(R.id.act_splash_dot6);
         imgLogo = (ImageView) findViewById(R.id.act_splash_imglogo);
-        AnimationUtils.animateTransTrip(dot1, dot2, dot3, dot4, dot5, dot6);
+        AnimationUtils.getInstance().animateTransTrip(dot1, dot2, dot3, dot4, dot5, dot6);
         AnimationUtils.animateTransAlpha(imgLogo);
         new Handler().postDelayed(new Runnable() {
             @Override

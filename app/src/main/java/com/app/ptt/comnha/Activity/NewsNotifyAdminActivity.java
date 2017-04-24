@@ -12,14 +12,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.app.ptt.comnha.Adapters.AdminNotifyNewsFragAdapter;
+import com.app.ptt.comnha.Adapters.NotifyNewsFragPagerAdapter;
 import com.app.ptt.comnha.R;
 
 public class NewsNotifyAdminActivity extends AppCompatActivity implements View.OnClickListener {
     Toolbar toolbar;
     ViewPager viewPager;
     TabLayout tabLayout;
-    AdminNotifyNewsFragAdapter adapter;
+    NotifyNewsFragPagerAdapter adapter;
     ImageView imgv_bg_store, imgv_bg_post, imgv_icon_store, imgv_icon_post;
     boolean isShowPost = false, isShowStore = false, isFirstTime = true;
 
@@ -47,16 +47,16 @@ public class NewsNotifyAdminActivity extends AppCompatActivity implements View.O
         });
         viewPager = (ViewPager) findViewById(R.id.viewpager_notify_act);
 
-        adapter = new AdminNotifyNewsFragAdapter(getSupportFragmentManager());
+        adapter = new NotifyNewsFragPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         tabLayout = (TabLayout) findViewById(R.id.tablayout_notify_act);
         tabLayout.setupWithViewPager(viewPager);
 //        tabLayout.getTabAt(0).setIcon(R.drawable.ic_admin_newstore);
 //        tabLayout.getTabAt(1).setIcon(R.drawable.ic_admin_newpost);
-        View tab_store = getLayoutInflater().inflate(R.layout.layout_tab_notify, null);
+        View tab_store = getLayoutInflater().inflate(R.layout.tab_notify, null);
         tab_store.findViewById(R.id.imgV_tab_notify).setBackgroundResource(R.drawable.ic_tab_store);
         tabLayout.getTabAt(0).setCustomView(tab_store);
-        View tab_post = getLayoutInflater().inflate(R.layout.layout_tab_notify, null);
+        View tab_post = getLayoutInflater().inflate(R.layout.tab_notify, null);
         tab_post.findViewById(R.id.imgV_tab_notify).setBackgroundResource(R.drawable.ic_tab_post);
         tabLayout.getTabAt(1).setCustomView(tab_post);
 //        tabLayout.getTabAt(0).setText("1");

@@ -192,18 +192,18 @@
                                     android:id="@+id/frg_vote_txt_gia"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/text_rategia"
-                                    android:textColor="@color/colorgia"
+                                    android:text="@string/text_pricerate"
+                                    android:textColor="@color/colorprice"
                                     android:textSize="20sp" />
 
                                 <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                                     android:id="@+id/frg_vote_slide_gia"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    app:dsb_indicatorColor="@color/colorgia"
+                                    app:dsb_indicatorColor="@color/colorprice"
                                     app:dsb_max="10"
                                     app:dsb_min="1"
-                                    app:dsb_progressColor="@color/colorgia" />
+                                    app:dsb_progressColor="@color/colorprice" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -217,18 +217,18 @@
                                     android:id="@+id/frg_vote_txt_vs"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/text_ratevs"
-                                    android:textColor="@color/colorvesinh"
+                                    android:text="@string/text_healthyrate"
+                                    android:textColor="@color/colorhealthy"
                                     android:textSize="20sp" />
 
                                 <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                                     android:id="@+id/frg_vote_slide_vesinh"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    app:dsb_indicatorColor="@color/colorvesinh"
+                                    app:dsb_indicatorColor="@color/colorhealthy"
                                     app:dsb_max="10"
                                     app:dsb_min="1"
-                                    app:dsb_progressColor="@color/colorvesinh" />
+                                    app:dsb_progressColor="@color/colorhealthy" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -242,18 +242,18 @@
                                     android:id="@+id/frg_vote_txt_pv"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/text_ratepv"
-                                    android:textColor="@color/colorphucvu"
+                                    android:text="@string/text_servicerate"
+                                    android:textColor="@color/colorservice"
                                     android:textSize="20sp" />
 
                                 <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                                     android:id="@+id/frg_vote_slide_phucvu"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    app:dsb_indicatorColor="@color/colorphucvu"
+                                    app:dsb_indicatorColor="@color/colorservice"
                                     app:dsb_max="10"
                                     app:dsb_min="1"
-                                    app:dsb_progressColor="@color/colorphucvu" />
+                                    app:dsb_progressColor="@color/colorservice" />
                             </LinearLayout>
 
                         </LinearLayout>

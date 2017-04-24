@@ -3,14 +3,30 @@ package com.app.ptt.comnha.Classes;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+
+import com.app.ptt.comnha.R;
 
 /**
  * Created by PTT on 11/1/2016.
  */
 
 public class AnimationUtils {
+    private static AnimationUtils instance = null;
+
+    public AnimationUtils() {
+    }
+
+    public static AnimationUtils getInstance() {
+        if (instance == null) {
+            instance = new AnimationUtils();
+        }
+        return instance;
+    }
+
     public static void animateItemRcylerV(RecyclerView.ViewHolder holder, boolean goesDown) {
         ObjectAnimator animatorTraslateY = ObjectAnimator.ofFloat(holder.itemView,
                 "translationY", goesDown == true ? -500 : 500, 0);
@@ -150,7 +166,7 @@ public class AnimationUtils {
 
     }
 
-    public static void animateTransTrip(View view1, View view2, View view3, View view4, View view5, View view6) {
+    public void animateTransTrip(View view1, View view2, View view3, View view4, View view5, View view6) {
         ObjectAnimator traslateX1 = ObjectAnimator.ofFloat(view1, "translationX", -630, 400, 1260);
         ObjectAnimator traslateX2 = ObjectAnimator.ofFloat(view2, "translationX", -630, 370, 1260);
         ObjectAnimator traslateX3 = ObjectAnimator.ofFloat(view3, "translationX", -630, 330, 1260);
@@ -199,5 +215,72 @@ public class AnimationUtils {
         ObjectAnimator rotate = ObjectAnimator.ofFloat(view, "rotation", 180, 0);
         rotate.setDuration(300);
         rotate.start();
+    }
+
+    public void createCircularReveal(View view, long duration, int cx, int cy) {
+        int w = view.getWidth(), h = view.getHeight();
+        int endRadius = Math.max(w, h);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Animator animator = ViewAnimationUtils.createCircularReveal(view,
+                    cx, cy, 0, endRadius);
+            animator.setDuration(duration);
+            animator.start();
+
+        }
+    }
+
+    public View animateShowNotify(View firstview, long duration) {
+        firstview.findViewById(R.id.imgV_news_tabs_main)
+                .setBackgroundResource(R.drawable.ic_notify_new_yellow_18dp);
+        View secondview = firstview.findViewById(R.id.imgV_news_tabs_main);
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(secondview, "scaleX", 0, 1),
+                scaleY = ObjectAnimator.ofFloat(secondview, "scaleY", 0, 1);
+        scaleX.setDuration(duration);
+        scaleY.setDuration(duration);
+        scaleX.start();
+        scaleY.start();
+        return firstview;
+    }
+
+    public void animateHideNotify(final View firstview, long duration) {
+        View secondview = firstview.findViewById(R.id.imgV_news_tabs_main);
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(secondview, "scaleX", 1, 0),
+                scaleY = ObjectAnimator.ofFloat(secondview, "scaleY", 1, 0);
+        scaleX.setDuration(duration);
+        scaleY.setDuration(duration);
+        scaleX.start();
+        scaleY.start();
+        scaleX.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                firstview.findViewById(R.id.imgV_news_tabs_main)
+                        .setBackgroundResource(android.R.color.transparent);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
+    }
+
+    AnimationNotifyListener animationNotifyListener;
+
+    public void setAnimationNotifyListener(AnimationNotifyListener animationNotifyListener) {
+        this.animationNotifyListener = animationNotifyListener;
+    }
+
+    public interface AnimationNotifyListener {
+        void Hiden(boolean b);
     }
 }

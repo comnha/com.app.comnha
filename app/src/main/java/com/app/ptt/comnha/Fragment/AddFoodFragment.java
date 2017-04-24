@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
-import com.app.ptt.comnha.SingletonClasses.ChooseLoca;
+import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -74,7 +74,7 @@ public class AddFoodFragment extends Fragment implements View.OnClickListener{
         isConnected= MyService.returnIsNetworkConnected();
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(
                 getResources().getString(R.string.firebase_path));
-//        locaID = ChooseLoca.getInstance().getLocation().getLocaID();
+//        locaID = ChooseLoca.getInstance().getStore().getLocaID();
         View view = inflater.inflate(R.layout.fragment_addfood, container, false);
         anhxa(view);
         return view;
@@ -101,8 +101,8 @@ public class AddFoodFragment extends Fragment implements View.OnClickListener{
         edt_tenMon = (EditText) view.findViewById(R.id.frg_themMon_edt_tenMon);
         txt_diachi = (TextView) view.findViewById(R.id.frg_themMon_txt_diachi);
         txt_tenquan = (TextView) view.findViewById(R.id.frg_themMon_txt_tenquan);
-//        txt_tenquan.setText(ChooseLoca.getInstance().getLocation().getName());
-//        txt_diachi.setText(ChooseLoca.getInstance().getLocation().getDiachi());
+//        txt_tenquan.setText(ChooseLoca.getInstance().getStore().getName());
+//        txt_diachi.setText(ChooseLoca.getInstance().getStore().getDiachi());
         fab_themMon.setOnClickListener(this);
     }
 
@@ -140,7 +140,7 @@ public class AddFoodFragment extends Fragment implements View.OnClickListener{
 //        newFood.setUserID(MyService.getUserAccount().getId());
 //        newFood.setTenmon(edt_tenMon.getText().toString());
 //        newFood.setLocaID(locaID);
-//        newFood.setIndex(ChooseLoca.getInstance().getLocation().getTinhtp()+"_"+ChooseLoca.getInstance().getLocation().getQuanhuyen());
+//        newFood.setIndex(ChooseLoca.getInstance().getStore().getTinhtp()+"_"+ChooseLoca.getInstance().getStore().getQuanhuyen());
 //        newFood.setVisible(true);
 //        Log.i("Visible----Visible",newFood.getVisible()+"");
         key = dbRef.child(getResources().getString(R.string.thucdon_CODE)).push().getKey();
@@ -158,7 +158,7 @@ public class AddFoodFragment extends Fragment implements View.OnClickListener{
 ////            newFood.setMonID(key);
 //            notification.setFood(newFood);
 //            notification.setType(1);
-//            notification.setLocation(ChooseLoca.getInstance().getLocation());
+//            notification.setStore(ChooseLoca.getInstance().getStore());
 //            notification.setReaded(false);
 //            notification.setTo("admin");
 //            Map<String, Object> notificationValue = notification.toMap();
@@ -198,7 +198,7 @@ public class AddFoodFragment extends Fragment implements View.OnClickListener{
     public void onStop() {
         super.onStop();
         getContext().unregisterReceiver(broadcastReceiver);
-        ChooseLoca.getInstance().setLocation(null);
+        ChooseStore.getInstance().setStore(null);
 
 
     }

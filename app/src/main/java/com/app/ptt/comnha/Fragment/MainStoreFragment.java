@@ -1,6 +1,7 @@
 package com.app.ptt.comnha.Fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,9 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.app.ptt.comnha.Activity.AdapterActivity;
 import com.app.ptt.comnha.Adapters.Store_recyler_adapter;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,7 +44,7 @@ public class MainStoreFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("MainStoreFragment", "createview");
+        Log.d("MainFragmentPage", "createviewStore");
         View view = inflater.inflate(R.layout.fragment_main_store, container, false);
         ref(view);
         dbRef = FirebaseDatabase.getInstance().
@@ -93,7 +96,12 @@ public class MainStoreFragment extends Fragment {
         itemadapter.setOnItemClickLiestner(new Store_recyler_adapter.OnItemClickLiestner() {
             @Override
             public void onItemClick(Store store) {
-
+                Intent intent_storedetail = new Intent(getContext(), AdapterActivity.class);
+                intent_storedetail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent_storedetail.putExtra(getString(R.string.fragment_CODE),
+                        getString(R.string.frag_storedetail_CODE));
+                ChooseStore.getInstance().setStore(store);
+                startActivity(intent_storedetail);
             }
         });
         mRecyclerView.setAdapter(itemadapter);

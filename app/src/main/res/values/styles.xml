@@ -99,4 +99,10 @@
         <item name="android:textColorHint">@android:color/white</item>
         <item name="colorAccent">@android:color/white</item>
     </style>
+
+    <style name="SearchAtivity" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:statusBarColor">@color/color_notify_reportfood</item>
+    </style>
 </resources>

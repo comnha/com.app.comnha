@@ -26,7 +26,7 @@ public class MainNotifyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Log.d("MainNotifyFragment","createview");
+        Log.d("MainFragmentPage","createviewNotify");
         View view = inflater.inflate(R.layout.fragment_main_notify, container, false);
         listView = (ListView) view.findViewById(R.id.listV_notifyfrag);
         return view;

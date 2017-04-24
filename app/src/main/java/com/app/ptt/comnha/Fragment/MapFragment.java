@@ -445,7 +445,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
 //                                                            getResources().getString(R.string.frag_locadetail_CODE));
 //
 //
-//                                                    ChooseLoca.getInstance().setLocation(a);
+//                                                    ChooseLoca.getInstance().setStore(a);
 //
 //                                                    if(!isConnected) {
 //                                                        ChooseLoca.getInstance().setInfo("listLocation" + 1 + "_" + tinh + "_" + huyen);

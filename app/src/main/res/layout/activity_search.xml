@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:weightSum="10"
+    tools:context="com.app.ptt.comnha.Activity.SearchActivity">
+
+    <RelativeLayout
+        android:id="@+id/relative_search"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
+
+        <ImageView
+            android:id="@+id/imgv_reveal_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+
+            <android.support.v7.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="4dp"
+                    app:cardCornerRadius="@dimen/cardv_cornerRadius"
+                    app:cardElevation="@dimen/cardv_elevation">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/imgv_back_search"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="16dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:clickable="true"
+                            android:src="@drawable/ic_50black_24dp" />
+
+                        <EditText
+                            android:id="@+id/edt_content_search"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginStart="16dp"
+                            android:background="@android:color/transparent"
+                            android:gravity="start|center_vertical"
+                            android:hint="@string/txt_search"
+                            android:inputType="text"
+                            android:lines="1"
+                            android:textAllCaps="false" />
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+            </android.support.v7.widget.Toolbar>
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tablayout_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                app:tabGravity="center"
+                app:tabIndicatorColor="@android:color/white"
+                app:tabMode="fixed" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+    <FrameLayout
+        android:id="@+id/frame_content_search"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8" />
+</LinearLayout>

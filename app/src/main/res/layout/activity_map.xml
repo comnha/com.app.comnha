@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_adapter"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:fitsSystemWindows="true"
-    tools:context="com.app.ptt.comnha.Activity.Adapter2Activity">
+    tools:context="com.app.ptt.comnha.Activity.MapActivity">
 
     <FrameLayout
-        android:id="@+id/frame_adapter2"
+        android:id="@+id/frame_map_adapter"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</LinearLayout>
+        android:layout_height="match_parent"/>
+</android.support.design.widget.CoordinatorLayout>

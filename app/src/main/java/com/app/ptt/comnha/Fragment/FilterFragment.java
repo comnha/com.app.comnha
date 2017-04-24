@@ -25,14 +25,14 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.ptt.comnha.Activity.Adapter2Activity;
+import com.app.ptt.comnha.Activity.AdapterActivity;
 import com.app.ptt.comnha.Adapters.LocatlistFilter_rcyler_adapter;
 import com.app.ptt.comnha.Classes.RecyclerItemClickListener1;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
-import com.app.ptt.comnha.SingletonClasses.ChooseLoca;
+import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -152,7 +152,7 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
 //                    getResources().getString(R.string.frag_locadetail_CODE));
 //            MyLocation location = new MyLocation();
 //            location.setStoreID(key);
-//            ChooseLoca.getInstance().setLocation(location);
+//            ChooseLoca.getInstance().setStore(location);
 //            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //            startActivity(intent);
 //        }else{
@@ -187,12 +187,12 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
             @Override
             public void onItemClick(View view, int position) {
 //                String key = locaList.get(position).getStoreID();
-                Intent intent = new Intent(getActivity().getApplicationContext(), Adapter2Activity.class);
+                Intent intent = new Intent(getActivity().getApplicationContext(), AdapterActivity.class);
                 intent.putExtra(getResources().getString(R.string.fragment_CODE),
-                        getResources().getString(R.string.frag_locadetail_CODE));
+                        getResources().getString(R.string.frag_storedetail_CODE));
                 Store location=new Store();
 //                location.setStoreID(key);
-                ChooseLoca.getInstance().setLocation(location);
+                ChooseStore.getInstance().setStore(location);
 
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);

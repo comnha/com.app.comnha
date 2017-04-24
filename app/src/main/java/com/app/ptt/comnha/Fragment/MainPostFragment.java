@@ -40,7 +40,7 @@ public class MainPostFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("MainPostFragment", "createview");
+        Log.d("MainFragmentPage", "createviewPost");
         View view = inflater.inflate(R.layout.fragment_main_post, container, false);
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getString(R.string.firebase_path));
         stRef = FirebaseStorage.getInstance().getReferenceFromUrl(getString(R.string.firebaseStorage_path));

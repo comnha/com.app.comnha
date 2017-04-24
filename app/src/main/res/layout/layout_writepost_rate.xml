@@ -25,7 +25,7 @@
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:textColor="@color/colorgia" />
+            android:textColor="@color/colorprice" />
 
         <SeekBar
             android:id="@+id/seekbar_gia_ratedialog_writepost"
@@ -34,8 +34,8 @@
             android:layout_marginBottom="16dp"
             android:layout_weight="1"
             android:max="9"
-            android:progressTint="@color/colorgia"
-            android:thumbTint="@color/colorgia" />
+            android:progressTint="@color/colorprice"
+            android:thumbTint="@color/colorprice" />
     </LinearLayout>
 
     <LinearLayout
@@ -56,7 +56,7 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
 
-            android:textColor="@color/colorvesinh" />
+            android:textColor="@color/colorhealthy" />
 
         <SeekBar
             android:id="@+id/seekbar_vesinh_ratedialog_writepost"
@@ -65,8 +65,8 @@
             android:layout_marginBottom="16dp"
             android:layout_weight="1"
             android:max="9"
-            android:progressTint="@color/colorvesinh"
-            android:thumbTint="@color/colorvesinh" />
+            android:progressTint="@color/colorhealthy"
+            android:thumbTint="@color/colorhealthy" />
     </LinearLayout>
 
     <LinearLayout
@@ -87,7 +87,7 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
 
-            android:textColor="@color/colorphucvu" />
+            android:textColor="@color/colorservice" />
 
         <SeekBar
             android:id="@+id/seekbar_phucvu_ratedialog_writepost"
@@ -95,7 +95,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:max="9"
-            android:progressTint="@color/colorphucvu"
-            android:thumbTint="@color/colorphucvu" />
+            android:progressTint="@color/colorservice"
+            android:thumbTint="@color/colorservice" />
     </LinearLayout>
 </LinearLayout>

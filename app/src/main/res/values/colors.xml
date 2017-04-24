@@ -7,9 +7,9 @@
     <color name="colorFloat2">#19b8a3</color>
     <color name="colorFloat2dark">#0a7667</color>
     <color name="colorbg1">#A0EADE</color>
-    <color name="colorgia">#C40808</color>
-    <color name="colorvesinh">#cdd400</color>
-    <color name="colorphucvu">#189603</color>
+    <color name="colorprice">#C40808</color>
+    <color name="colorhealthy">#cdd400</color>
+    <color name="colorservice">#189603</color>
     <color name="colorFabShadow">#53e6aaaa</color>
     <color name="colorFabRipple">#99FFFFFF</color>
     <color name="colorGrayText">#808080</color>

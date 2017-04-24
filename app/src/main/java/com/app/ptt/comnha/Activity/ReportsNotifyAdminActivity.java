@@ -11,14 +11,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.app.ptt.comnha.Adapters.AdminNotifyReportsFragAdapter;
+import com.app.ptt.comnha.Adapters.NotifyReportsFragPagerAdapter;
 import com.app.ptt.comnha.R;
 
 public class ReportsNotifyAdminActivity extends AppCompatActivity implements View.OnClickListener {
     Toolbar toolbar;
     ViewPager viewPager;
     TabLayout tabLayout;
-    AdminNotifyReportsFragAdapter adapter;
+    NotifyReportsFragPagerAdapter adapter;
     ImageView imgv_bg_1, imgv_bg_2, imgv_icon_1, imgv_icon_2;
     int firstcolor, firstIcon;
 
@@ -51,22 +51,22 @@ public class ReportsNotifyAdminActivity extends AppCompatActivity implements Vie
         });
         viewPager = (ViewPager) findViewById(R.id.viewpager_notify_reports_act);
 
-        adapter = new AdminNotifyReportsFragAdapter(getSupportFragmentManager());
+        adapter = new NotifyReportsFragPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         tabLayout = (TabLayout) findViewById(R.id.tablayout_notify_reports_act);
         tabLayout.setupWithViewPager(viewPager);
 //        tabLayout.getTabAt(0).setIcon(R.drawable.ic_admin_newstore);
 //        tabLayout.getTabAt(1).setIcon(R.drawable.ic_admin_newpost);
-        View tab_store = getLayoutInflater().inflate(R.layout.layout_tab_notify, null);
+        View tab_store = getLayoutInflater().inflate(R.layout.tab_notify, null);
         tab_store.findViewById(R.id.imgV_tab_notify).setBackgroundResource(R.drawable.ic_tab_store);
         tabLayout.getTabAt(0).setCustomView(tab_store);
-        View tab_post = getLayoutInflater().inflate(R.layout.layout_tab_notify, null);
+        View tab_post = getLayoutInflater().inflate(R.layout.tab_notify, null);
         tab_post.findViewById(R.id.imgV_tab_notify).setBackgroundResource(R.drawable.ic_tab_post);
         tabLayout.getTabAt(1).setCustomView(tab_post);
-        View tab_img = getLayoutInflater().inflate(R.layout.layout_tab_notify, null);
+        View tab_img = getLayoutInflater().inflate(R.layout.tab_notify, null);
         tab_img.findViewById(R.id.imgV_tab_notify).setBackgroundResource(R.drawable.ic_tab_img);
         tabLayout.getTabAt(2).setCustomView(tab_img);
-        View tab_food = getLayoutInflater().inflate(R.layout.layout_tab_notify, null);
+        View tab_food = getLayoutInflater().inflate(R.layout.tab_notify, null);
         tab_food.findViewById(R.id.imgV_tab_notify).setBackgroundResource(R.drawable.ic_tab_food);
         tabLayout.getTabAt(3).setCustomView(tab_food);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

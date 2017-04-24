@@ -22,8 +22,7 @@ public class Store {
     //rating
     long priceSum = 0, healthySum = 0, serviceSum = 0;//điểm tổng giá-vệ sinh-phục vụ
     long size = 0; //số lượng đánh giá
-    long priceAVG = 0, healthyAVG = 0, serviceAVG = 0,//điểm trung bình giá-vệ sinh-phục vụ
-            rateAVG = 0;
+    float rateAVG = 0;
     String storeimg = "";//ảnh đại diện của store
     //phép kết
     String pro_dist,//tìm theo tỉnh_huyện
@@ -52,9 +51,6 @@ public class Store {
         result.put("healthySum", healthySum);
         result.put("serviceSum", serviceSum);
         result.put("size", size);
-        result.put("priceAVG", priceAVG);
-        result.put("healthyAVG", healthyAVG);
-        result.put("serviceAVG", serviceAVG);
         result.put("storeimg", storeimg);
         result.put("pro_dist", district + "_" + province);
         result.put("userID_pro_dist", userID + "_" + district + "_" + province);
@@ -207,35 +203,15 @@ public class Store {
         this.size = size;
     }
 
-    public long getPriceAVG() {
-        return priceAVG;
-    }
-
-    public void setPriceAVG(long priceAVG) {
-        this.priceAVG = priceAVG;
-    }
-
-    public long getHealthyAVG() {
-        return healthyAVG;
-    }
-
-    public void setHealthyAVG(long healthyAVG) {
-        this.healthyAVG = healthyAVG;
-    }
-
-    public long getServiceAVG() {
-        return serviceAVG;
-    }
-
-    public void setServiceAVG(long serviceAVG) {
-        this.serviceAVG = serviceAVG;
-    }
-
-    public long getRateAVG() {
+    public float getRateAVG() {
+        if (size != 0) {
+            rateAVG = (float) (priceSum + healthySum + serviceSum) / (float) size;
+        } else
+            rateAVG = 0;
         return rateAVG;
     }
 
-    public void setRateAVG(long rateAVG) {
+    public void setRateAVG(float rateAVG) {
         this.rateAVG = rateAVG;
     }
 
@@ -278,7 +254,6 @@ public class Store {
     public void setComments(Map<String, Comment> comments) {
         this.comments = comments;
     }
-
 
 }
 

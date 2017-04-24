@@ -10,13 +10,13 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.app.ptt.comnha.Activity.Adapter2Activity;
+import com.app.ptt.comnha.Activity.AdapterActivity;
 import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Models.FireBase.Notification;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
-import com.app.ptt.comnha.SingletonClasses.ChooseLoca;
+import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.SingletonClasses.ChooseNoti;
 
 import java.util.ArrayList;
@@ -78,29 +78,29 @@ public class Notification_rcycler_adapter extends RecyclerView.Adapter<Notificat
 
                 //LOCATION
 //                if (list.get(position).getType() == 1) {
-//                    String text = "Món ăn:  " + list.get(position).getFood().getTenmon() + " mà bạn đã thêm vào quán " + list.get(position).getLocation().getName() + " đã được admin chấp nhận" + "\n.";
+//                    String text = "Món ăn:  " + list.get(position).getFood().getTenmon() + " mà bạn đã thêm vào quán " + list.get(position).getStore().getName() + " đã được admin chấp nhận" + "\n.";
 //                    holder.txt_noidung.setText(text);
 //                }
 //                if(list.get(position).getType()==2){
-//                    String text = "Quán ăn: "+list.get(position).getLocation().getName() +" mà bạn đã thêm đã được admin kiểm duyệt và chấp nhận. Cám ơn bạn đã đóng góp!!";
+//                    String text = "Quán ăn: "+list.get(position).getStore().getName() +" mà bạn đã thêm đã được admin kiểm duyệt và chấp nhận. Cám ơn bạn đã đóng góp!!";
 //                    holder.txt_noidung.setText(text);
 //                }
 //                if(list.get(position).getType()==3){
-//                    String text =  "Bài reiview: "+list.get(position).getLocation().getName() +" mà bạn đã thêm vào quán"+list.get(position).getLocation().getName()+" đã được admin kiểm duyệt và chấp nhận. Cám ơn bạn đã đóng góp!!";
+//                    String text =  "Bài reiview: "+list.get(position).getStore().getName() +" mà bạn đã thêm vào quán"+list.get(position).getStore().getName()+" đã được admin kiểm duyệt và chấp nhận. Cám ơn bạn đã đóng góp!!";
 //                    holder.txt_noidung.setText(text);
 //                }
 //                if(list.get(position).getType()==4){
-//                    String text =  "Admin chưa chấp nhận quán ăn "+list.get(position).getLocation().getName()+" của bạn với lý do : " +
+//                    String text =  "Admin chưa chấp nhận quán ăn "+list.get(position).getStore().getName()+" của bạn với lý do : " +
 //                            ""+list.get(position).getReason().toString()+". Vui lòng sửa lại";
 //                    holder.txt_noidung.setText(text);
 //                }
 //                if(list.get(position).getType()==5){
-//                    String text =  "Quán ăn "+ list.get(position).getLocation().getName()+" của bạn bị report bởi "+list.get(position).getAccount().getUsername()+" với lý do"+ list.get(position).getReason()
+//                    String text =  "Quán ăn "+ list.get(position).getStore().getName()+" của bạn bị report bởi "+list.get(position).getAccount().getUsername()+" với lý do"+ list.get(position).getReason()
 //                            +". Admin đã xác nhận report và xóa quán ăn của bạn";
 //                    holder.txt_noidung.setText(text);
 //                }
 //                if(list.get(position).getType()==6){
-//                    String text =  "Report của bạn về quán ăn "+ list.get(position).getLocation().getName()+" đã được chấp thuận. Cám ơn bạn";
+//                    String text =  "Report của bạn về quán ăn "+ list.get(position).getStore().getName()+" đã được chấp thuận. Cám ơn bạn";
 //                    holder.txt_noidung.setText(text);
 //                }
 //                if(list.get(position).getType()==7){
@@ -145,11 +145,11 @@ public class Notification_rcycler_adapter extends RecyclerView.Adapter<Notificat
             holder.ll_notification.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(activity.getApplicationContext(), Adapter2Activity.class);
+                    Intent intent = new Intent(activity.getApplicationContext(), AdapterActivity.class);
                     intent.putExtra(activity.getString(R.string.fragment_CODE),
-                            activity.getString(R.string.frag_locadetail_CODE));
+                            activity.getString(R.string.frag_storedetail_CODE));
                     Store location=list.get(position).getLocation();
-                    ChooseLoca.getInstance().setLocation(location);
+                    ChooseStore.getInstance().setStore(location);
                     ChooseNoti.getInstance().setNotification(list.get(position));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     activity.startActivity(intent);

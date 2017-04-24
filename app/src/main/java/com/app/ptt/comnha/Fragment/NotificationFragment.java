@@ -20,7 +20,7 @@ import com.app.ptt.comnha.Adapters.FragmentPagerAdapter;
 import com.app.ptt.comnha.Models.FireBase.Notification;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
-import com.app.ptt.comnha.SingletonClasses.ChooseLoca;
+import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -106,7 +106,7 @@ public class NotificationFragment extends Fragment implements View.OnClickListen
     @Override
     public void onDetach() {
         super.onDetach();
-        ChooseLoca.getInstance().setLocation(null);
+        ChooseStore.getInstance().setStore(null);
 
     }
 

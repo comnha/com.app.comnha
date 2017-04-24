@@ -30,9 +30,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.ptt.comnha.Activity.Adapter2Activity;
+import com.app.ptt.comnha.Activity.AdapterActivity;
 import com.app.ptt.comnha.Adapters.Comment_rcyler_adapter;
-import com.app.ptt.comnha.Adapters.Photos_rcyler_adapter;
 import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Models.FireBase.Comment;
 import com.app.ptt.comnha.Models.FireBase.Food;
@@ -427,7 +426,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
         mRecyclerViewAlbum.setLayoutManager(gridLayoutManager);
         mRecyclerViewAlbum.setHorizontalScrollBarEnabled(true);
-        mAdapterAlbum = new Photos_rcyler_adapter(albumList, getActivity());
+//        mAdapterAlbum = new Photo_recycler_adapter(albumList, getActivity());
         mRecyclerViewAlbum.setAdapter(mAdapterAlbum);
 
         linearAlbum.setOnClickListener(this);
@@ -445,7 +444,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 if (albumList.size() > 0) {
-                    Intent intent = new Intent(getActivity(), Adapter2Activity.class);
+                    Intent intent = new Intent(getActivity(), AdapterActivity.class);
                     intent.putExtra(getString(R.string.fragment_CODE),
                             getString(R.string.frg_viewalbum_CODE));
                     intent.putExtra(getString(R.string.fromFrag),
@@ -624,7 +623,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                        notification.setAccount(MyService.getUserAccount());
 //                                                        notification.setDate(new Times().getDate());
 //                                                        notification.setTime(new Times().getTime());
-//                                                        notification.setLocation(myLocation);
+//                                                        notification.setStore(myLocation);
 //                                                        notification.setType(7);
 //                                                        notification.setPost(post);
 //                                                        notification.setReaded(false);
@@ -891,7 +890,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                    notification.setDate(new Times().getDate());
 //                                                    notification.setTime(new Times().getTime());
 //                                                    notification.setPost(EditPost.getInstance().getPost());
-//                                                    notification.setLocation(store);
+//                                                    notification.setStore(store);
 //                                                    notification.setType(8);
 //                                                    notification.setReaded(false);
 //                                                    childUpdates = new HashMap<String, Object>();
@@ -907,7 +906,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                                notification.setDate(new Times().getDate());
 //                                                                notification.setTime(new Times().getTime());
 //                                                                notification.setPost(EditPost.getInstance().getPost());
-//                                                                notification.setLocation(store);
+//                                                                notification.setStore(store);
 //                                                                notification.setType(9);
 //                                                                notification.setReaded(false);
 //                                                                childUpdates = new HashMap<String, Object>();
@@ -941,7 +940,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                    notification.setAccount(MyService.getUserAccount());
 //                                                    notification.setDate(new Times().getDate());
 //                                                    notification.setTime(new Times().getTime());
-//                                                    notification.setLocation(store);
+//                                                    notification.setStore(store);
 //                                                    notification.setPost(EditPost.getInstance().getPost());
 //                                                    notification.setType(10);
 //                                                    notification.setReaded(false);

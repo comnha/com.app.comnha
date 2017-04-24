@@ -13,6 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+
+    <View
+        android:visibility="invisible"
+        android:id="@+id/view_guide_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary" />
+
     <!--NavView phải nằm dưới-->
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

@@ -208,14 +208,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="10"
-                            android:textColor="@color/colorgia"
+                            android:textColor="@color/colorprice"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/text_rategia" />
+                            android:text="@string/text_pricerate" />
                     </LinearLayout>
 
                     <ImageView
@@ -238,14 +238,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="10"
-                            android:textColor="@color/colorvesinh"
+                            android:textColor="@color/colorhealthy"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/text_ratevs" />
+                            android:text="@string/text_healthyrate" />
                     </LinearLayout>
 
                     <ImageView
@@ -268,14 +268,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="10"
-                            android:textColor="@color/colorphucvu"
+                            android:textColor="@color/colorservice"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/text_ratepv" />
+                            android:text="@string/text_servicerate" />
                     </LinearLayout>
                 </LinearLayout>
 

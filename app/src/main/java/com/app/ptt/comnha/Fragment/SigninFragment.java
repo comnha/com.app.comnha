@@ -17,7 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.ptt.comnha.Activity.Adapter2Activity;
+import com.app.ptt.comnha.Activity.AdapterActivity;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Utils.AppUtils;
@@ -77,7 +77,7 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
         switch (view.getId()) {
             case R.id.txtV_signup:
                 if (isNetworkConnected) {
-                    Intent intent = new Intent(getActivity().getApplicationContext(), Adapter2Activity.class);
+                    Intent intent = new Intent(getActivity().getApplicationContext(), AdapterActivity.class);
                     intent.putExtra(getActivity().getResources().getString(R.string.fragment_CODE),
                             getActivity().getResources().getString(R.string.frg_signup_CODE));
                     //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

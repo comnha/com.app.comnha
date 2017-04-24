@@ -129,9 +129,9 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         txtV_gia = (TextView) rateDialog.findViewById(R.id.txtV_gia_ratedialog_writepost);
         txtV_vs = (TextView) rateDialog.findViewById(R.id.txtV_vesinh_ratedialog_writepost);
         txtV_pv = (TextView) rateDialog.findViewById(R.id.txtV_phucvu_ratedialog_writepost);
-        txtV_gia.setText(getString(R.string.text_gia) + ": 1");
-        txtV_vs.setText(getString(R.string.text_ratevs) + ": 1");
-        txtV_pv.setText(getString(R.string.text_ratepv) + ": 1");
+        txtV_gia.setText(getString(R.string.text_price) + ": 1");
+        txtV_vs.setText(getString(R.string.text_healthyrate) + ": 1");
+        txtV_pv.setText(getString(R.string.text_servicerate) + ": 1");
         sb_gia = (SeekBar) rateDialog.findViewById(R.id.seekbar_gia_ratedialog_writepost);
         sb_vs = (SeekBar) rateDialog.findViewById(R.id.seekbar_vesinh_ratedialog_writepost);
         sb_pv = (SeekBar) rateDialog.findViewById(R.id.seekbar_phucvu_ratedialog_writepost);
@@ -257,15 +257,15 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         switch (seekBar.getId()) {
             case R.id.seekbar_gia_ratedialog_writepost:
                 progress_gia = i + 1;
-                txtV_gia.setText(getString(R.string.text_gia) + ": " + progress_gia);
+                txtV_gia.setText(getString(R.string.text_price) + ": " + progress_gia);
                 break;
             case R.id.seekbar_vesinh_ratedialog_writepost:
                 progress_vs = i + 1;
-                txtV_vs.setText(getString(R.string.text_ratevs) + ": " + progress_vs);
+                txtV_vs.setText(getString(R.string.text_healthyrate) + ": " + progress_vs);
                 break;
             case R.id.seekbar_phucvu_ratedialog_writepost:
                 progress_pv = i + 1;
-                txtV_pv.setText(getString(R.string.text_ratepv) + ": " + progress_pv);
+                txtV_pv.setText(getString(R.string.text_servicerate) + ": " + progress_pv);
                 break;
         }
     }
@@ -792,7 +792,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //                        notification.setType(3);
 //                        newPost.setPostID(key);
 //                        notification.setPost(newPost);
-//                        notification.setLocation(DoPost.getInstance().getMyLocation());
+//                        notification.setStore(DoPost.getInstance().getMyLocation());
 //                        notification.setReaded(false);
 //                        notification.setTo("admin");
 //                        Map<String, Object> notificationValue = notification.toMap();

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:theme="@style/AppTheme.NotifyNewsAdminActivity"
+    tools:context="com.app.ptt.comnha.Fragment.StoreDetailFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="5">
+
+        <ImageView
+            android:id="@+id/imgv_avatar_storedetail"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:background="@color/colorPrimary"
+            android:scaleType="fitXY" />
+
+    </LinearLayout>
+
+
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/fab_menu_storedetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_storedetail_menu"
+        app:fab_colorNormal="@color/color_selection_report"
+        app:fab_colorPressed="@color/color_selection_report"
+        app:fab_shadowColor="#8f000000"
+        app:fab_shadowRadius="1.5dp"
+        app:fab_shadowXOffset="0.5dp"
+        app:fab_shadowYOffset="0.5dp"
+        app:fab_showShadow="true"
+        app:fab_size="normal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="6">
+
+        <RelativeLayout
+            android:id="@+id/relate_storedetail"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:weightSum="3">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_storedetail_avatar" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="2">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="bottom|center_horizontal"
+                    android:orientation="horizontal"
+                    android:weightSum="6">
+
+                    <ImageView
+                        android:id="@+id/imgv_writepost_storedetail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:src="@drawable/ic_storedetail_writepost" />
+
+                    <ImageView
+                        android:id="@+id/imgv_addfood_storedetail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:src="@drawable/ic_storedetail_addfood" />
+
+                    <ImageView
+                        android:id="@+id/imgv_viewlocation_storedetail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:src="@drawable/ic_storedetail_viewlocation" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4">
+
+            <include
+                android:id="@+id/include_content"
+                layout="@layout/layout_content_storedetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="0dp"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_storedetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+    </android.support.design.widget.AppBarLayout>
+</android.support.design.widget.CoordinatorLayout>

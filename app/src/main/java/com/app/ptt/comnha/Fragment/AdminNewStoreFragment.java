@@ -41,7 +41,7 @@ public class AdminNewStoreFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_admin_new_store, container, false);
+        View view = inflater.inflate(R.layout.fragment_admin_newstore, container, false);
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getString(R.string.firebase_path));
         listView = (ListView) view.findViewById(R.id.listview_newstore_frag);
         items = new ArrayList<>();

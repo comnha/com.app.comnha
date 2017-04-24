@@ -13,8 +13,8 @@ import com.app.ptt.comnha.Fragment.AdminReportStoreFragment;
  * Created by PTT on 4/7/2017.
  */
 
-public class AdminNotifyReportsFragAdapter extends FragmentStatePagerAdapter {
-    public AdminNotifyReportsFragAdapter(FragmentManager fm) {
+public class NotifyReportsFragPagerAdapter extends FragmentStatePagerAdapter {
+    public NotifyReportsFragPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 

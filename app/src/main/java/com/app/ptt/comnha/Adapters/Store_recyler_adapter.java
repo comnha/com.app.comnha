@@ -20,6 +20,19 @@ public class Store_recyler_adapter extends RecyclerView.Adapter<Store_recyler_ad
     ArrayList<Store> stores;
     OnItemClickLiestner onItemClickLiestner;
 
+    public interface OnItemClickLiestner {
+        void onItemClick(Store store);
+    }
+
+    public void setOnItemClickLiestner(OnItemClickLiestner liestner) {
+        onItemClickLiestner = liestner;
+    }
+
+    public Store_recyler_adapter(ArrayList<Store> stores) {
+        this.stores = stores;
+    }
+
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext())
@@ -27,7 +40,7 @@ public class Store_recyler_adapter extends RecyclerView.Adapter<Store_recyler_ad
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.txtv_storename.setText(stores.get(position).getName());
         holder.txtv_address.setText(stores.get(position).getAddress());
         holder.txtv_rate.setText(stores.get(position).getRateAVG() + "");
@@ -38,7 +51,7 @@ public class Store_recyler_adapter extends RecyclerView.Adapter<Store_recyler_ad
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClickLiestner.onItemClick(stores.get(position));
+                onItemClickLiestner.onItemClick(stores.get(holder.getAdapterPosition()));
             }
         });
     }
@@ -64,18 +77,5 @@ public class Store_recyler_adapter extends RecyclerView.Adapter<Store_recyler_ad
             txtv_phonenumb = (TextView) itemView.findViewById(R.id.item_list_txtvphonenumb);
         }
     }
-
-    public interface OnItemClickLiestner {
-        void onItemClick(Store store);
-    }
-
-    public void setOnItemClickLiestner(OnItemClickLiestner liestner) {
-        onItemClickLiestner = liestner;
-    }
-
-    public Store_recyler_adapter(ArrayList<Store> stores) {
-        this.stores = stores;
-    }
-
 
 }

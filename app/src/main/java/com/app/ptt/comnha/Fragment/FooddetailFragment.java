@@ -24,13 +24,12 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.ptt.comnha.Activity.Adapter2Activity;
+import com.app.ptt.comnha.Activity.AdapterActivity;
 import com.app.ptt.comnha.Adapters.Reviewlist_rcyler_adapter;
 import com.app.ptt.comnha.Classes.RecyclerItemClickListener1;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.Post;
-import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.EditLocal;
@@ -42,7 +41,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.app.ptt.comnha.Models.FireBase.Store;
+
 import java.util.ArrayList;
 
 
@@ -113,14 +112,14 @@ public class FooddetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fooddetail, container, false);
         isConnected = MyService.returnIsNetworkConnected();
-//        locaID = ChooseFood.getInstance().getLocation().getLocaID();
+//        locaID = ChooseFood.getInstance().getStore().getLocaID();
         storeRef = FirebaseStorage.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebaseStorage_path));
         if (locaID != null) {
             andxa(view);
             {
                 getData();
-//                txt_name.setText(ChooseFood.getInstance().getLocation().getName());
-//                txt_diachi.setText(ChooseFood.getInstance().getLocation().getDiachi());
+//                txt_name.setText(ChooseFood.getInstance().getStore().getName());
+//                txt_diachi.setText(ChooseFood.getInstance().getStore().getDiachi());
 //                txt_tenmon.setText(ChooseFood.getInstance().getFood().getTenmon());
 //                ratingBar.setNumStars(3);
 //                ratingBar.setRating(ChooseFood.getInstance().getFood().getDanhGia());
@@ -228,7 +227,7 @@ public class FooddetailFragment extends Fragment {
 //                        Toast.makeText(getActivity(), getString(R.string.txt_needlogin),
 //                                Toast.LENGTH_SHORT).show();
 //                    } else {
-                    Intent intent = new Intent(getActivity(), Adapter2Activity.class);
+                    Intent intent = new Intent(getActivity(), AdapterActivity.class);
                     intent.putExtra(getString(R.string.fragment_CODE), getString(R.string.frg_viewpost_CODE));
 //                    ChoosePost.getInstance().setPostID(postlist.get(position).getPostID());
                     // ChoosePost.getInstance().setTinh(tinh);

@@ -95,7 +95,7 @@ public class EditFoodDialogFragment extends DialogFragment {
 //                                notification.setTime(new Times().getTime());
 //                                notification.setType(11);
 //                                notification.setFood(editFood);
-//                                notification.setLocation(ChooseFood.getInstance().getLocation());
+//                                notification.setStore(ChooseFood.getInstance().getStore());
 //                                notification.setReaded(false);
 //                                notification.setTo("admin");
 //                                Map<String, Object> notificationValue = notification.toMap();

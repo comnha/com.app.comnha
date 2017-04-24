@@ -112,7 +112,7 @@
                                 android:id="@+id/frg_themMon_edt_giaMon"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:hint="@string/text_gia"
+                                android:hint="@string/text_price"
                                 android:inputType="number"
                                 android:maxLines="1" />
                             <RatingBar

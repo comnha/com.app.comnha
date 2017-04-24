@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Geocoder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
@@ -154,7 +155,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_addloca, container, false);
+        View view = inflater.inflate(R.layout.fragment_addstore, container, false);
         isConnected = MyService.returnIsNetworkConnected();
         now = Calendar.getInstance();
         gc = new Geocoder(getContext(), Locale.getDefault());
@@ -167,6 +168,10 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
 
 
     void anhXa(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActivity().getWindow().setStatusBarColor(getResources()
+                    .getColor(R.color.color_selection_report));
+        }
         toolbar = (Toolbar) view.findViewById(R.id.toolbar_addloca);
         toolbar.setTitle(getString(R.string.text_addloca));
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
@@ -174,7 +179,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().onBackPressed();
+                getActivity().finish();
             }
         });
         toolbar.setBackgroundColor(getResources()
@@ -381,7 +386,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
                                         mProgressDialog.dismiss();
                                         Toast.makeText(getContext(), getString(R.string.text_addloca_succes)
                                                 , Toast.LENGTH_LONG).show();
-                                        getActivity().onBackPressed();
+                                        getActivity().finish();
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -405,7 +410,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
                     mProgressDialog.dismiss();
                     Toast.makeText(getContext(), getString(R.string.text_addloca_succes)
                             , Toast.LENGTH_LONG).show();
-                    getActivity().onBackPressed();
+                    getActivity().finish();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -480,7 +485,12 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public void onDetach() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActivity().getWindow().setStatusBarColor(getResources()
+                    .getColor(R.color.colorPrimaryDark));
+        }
         super.onDetach();
+
     }
     //    class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
 //        ArrayList<String> resultList;
@@ -655,7 +665,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
 ////                                            notification.setTime(new Times().getTime());
 ////                                            notification.setType(2);
 ////
-////                                            notification.setLocation(newLocation);
+////                                            notification.setStore(newLocation);
 ////                                            notification.setReaded(false);
 ////                                            notification.setTo("admin");
 ////                                            Map<String, Object> notificationValue = notification.toMap();

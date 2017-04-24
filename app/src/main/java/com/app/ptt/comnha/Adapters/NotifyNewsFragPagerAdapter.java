@@ -11,8 +11,8 @@ import com.app.ptt.comnha.Fragment.AdminNewStoreFragment;
  * Created by PTT on 4/7/2017.
  */
 
-public class AdminNotifyNewsFragAdapter extends FragmentStatePagerAdapter {
-    public AdminNotifyNewsFragAdapter(FragmentManager fm) {
+public class NotifyNewsFragPagerAdapter extends FragmentStatePagerAdapter {
+    public NotifyNewsFragPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 

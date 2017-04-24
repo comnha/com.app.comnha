@@ -40,7 +40,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.ptt.comnha.Activity.Adapter2Activity;
+import com.app.ptt.comnha.Activity.AdapterActivity;
 import com.app.ptt.comnha.Interfaces.DoInBackGroundOK;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
@@ -244,9 +244,9 @@ public class EditPostDialogFragment extends DialogFragment
         mSeekBarGia = (DiscreteSeekBar) view.findViewById(R.id.frg_vote_slide_gia);
         mSeekBarVS = (DiscreteSeekBar) view.findViewById(R.id.frg_vote_slide_vesinh);
         mSeekBarPV = (DiscreteSeekBar) view.findViewById(R.id.frg_vote_slide_phucvu);
-        txt_pv.setText(getResources().getString(R.string.text_ratepv) + ": " + mSeekBarPV.getMin());
-        txt_vs.setText(getResources().getString(R.string.text_ratevs) + ": " + mSeekBarVS.getMin());
-        txt_gia.setText(getResources().getString(R.string.text_rategia) + ": " + mSeekBarGia.getMin());
+        txt_pv.setText(getResources().getString(R.string.text_servicerate) + ": " + mSeekBarPV.getMin());
+        txt_vs.setText(getResources().getString(R.string.text_healthyrate) + ": " + mSeekBarVS.getMin());
+        txt_gia.setText(getResources().getString(R.string.text_pricerate) + ": " + mSeekBarGia.getMin());
         edt_title = (EditText) view.findViewById(R.id.edt_title);
         edt_content = (EditText) view.findViewById(R.id.edt_content);
         btn_save.setOnClickListener(this);
@@ -494,7 +494,7 @@ public class EditPostDialogFragment extends DialogFragment
                 if (isConnected) {
                     MyService.setActionAddPost(1);
                     Toast.makeText(getContext(), "1", Toast.LENGTH_SHORT).show();
-                    Intent intent1 = new Intent(getActivity().getApplicationContext(), Adapter2Activity.class);
+                    Intent intent1 = new Intent(getActivity().getApplicationContext(), AdapterActivity.class);
                     intent1.putExtra(getResources().getString(R.string.fragment_CODE),
                             getResources().getString(R.string.frag_chooseimg_CODE));
 
@@ -509,7 +509,7 @@ public class EditPostDialogFragment extends DialogFragment
             case R.id.btn_addPhoto:
                 if (isConnected) {
                     MyService.setActionAddPost(2);
-                    Intent intent1 = new Intent(getActivity().getApplicationContext(), Adapter2Activity.class);
+                    Intent intent1 = new Intent(getActivity().getApplicationContext(), AdapterActivity.class);
                     intent1.putExtra(getResources().getString(R.string.fragment_CODE),
                             getResources().getString(R.string.frag_chooseimg_CODE));
                     intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -832,7 +832,7 @@ public class EditPostDialogFragment extends DialogFragment
 //                        notification.setType(7);
 ////                        newPost.setPostID(key);
 //                        notification.setPost(newPost);
-//                        notification.setLocation(updateLoca);
+//                        notification.setStore(updateLoca);
 //                        notification.setReaded(false);
 //                        notification.setTo("admin");
 //                        Map<String, Object> notificationValue = notification.toMap();
@@ -937,7 +937,7 @@ public class EditPostDialogFragment extends DialogFragment
     public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
         switch (seekBar.getId()) {
             case R.id.frg_vote_slide_gia:
-                txt_gia.setText(getResources().getString(R.string.text_rategia) + ": " + String.valueOf(value));
+                txt_gia.setText(getResources().getString(R.string.text_pricerate) + ": " + String.valueOf(value));
                 try {
                     gia = (long) seekBar.getProgress();
 
@@ -946,7 +946,7 @@ public class EditPostDialogFragment extends DialogFragment
                 }
                 break;
             case R.id.frg_vote_slide_phucvu:
-                txt_pv.setText(getResources().getString(R.string.text_ratepv) + ": " + String.valueOf(value));
+                txt_pv.setText(getResources().getString(R.string.text_servicerate) + ": " + String.valueOf(value));
                 try {
                     pv = (long) seekBar.getProgress();
                 } catch (NullPointerException mess) {
@@ -954,7 +954,7 @@ public class EditPostDialogFragment extends DialogFragment
                 }
                 break;
             case R.id.frg_vote_slide_vesinh:
-                txt_vs.setText(getResources().getString(R.string.text_ratevs) + ": " + String.valueOf(value));
+                txt_vs.setText(getResources().getString(R.string.text_healthyrate) + ": " + String.valueOf(value));
                 try {
                     vs = (long) seekBar.getProgress();
                 } catch (NullPointerException mess) {

@@ -19,7 +19,7 @@ import android.widget.PopupMenu;
 
 import com.app.ptt.comnha.Adapters.FragmentPagerAdapter;
 import com.app.ptt.comnha.R;
-import com.app.ptt.comnha.SingletonClasses.ChooseLoca;
+import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 
 
@@ -85,7 +85,7 @@ public class ProfiledetailFragment extends Fragment implements View.OnClickListe
     @Override
     public void onDetach() {
         super.onDetach();
-        ChooseLoca.getInstance().setLocation(null);
+        ChooseStore.getInstance().setStore(null);
 
     }
 

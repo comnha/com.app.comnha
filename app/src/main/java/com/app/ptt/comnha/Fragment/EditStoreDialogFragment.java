@@ -182,7 +182,7 @@ public class EditStoreDialogFragment extends DialogFragment implements View.OnCl
 //                                        notification.setDate(new Times().getDate());
 //                                        notification.setTime(new Times().getTime());
 //                                        notification.setType(4);
-//                                        notification.setLocation(location);
+//                                        notification.setStore(location);
 //                                        notification.setReaded(false);
 //                                        notification.setTo("admin");
 //                                        Map<String, Object> notificationValue = notification.toMap();

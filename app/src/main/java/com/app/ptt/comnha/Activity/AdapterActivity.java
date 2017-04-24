@@ -1,114 +1,170 @@
 package com.app.ptt.comnha.Activity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.app.ptt.comnha.Fragment.MapFragment;
-import com.app.ptt.comnha.Models.Route;
+import com.app.ptt.comnha.Fragment.AddFoodFragment;
+import com.app.ptt.comnha.Fragment.AddstoreFragment;
+import com.app.ptt.comnha.Fragment.FooddetailFragment;
+import com.app.ptt.comnha.Fragment.NotificationFragment;
+import com.app.ptt.comnha.Fragment.ProfiledetailFragment;
+import com.app.ptt.comnha.Fragment.SigninFragment;
+import com.app.ptt.comnha.Fragment.SignupFragment;
+import com.app.ptt.comnha.Fragment.StoreDetailFragment;
+import com.app.ptt.comnha.Fragment.ViewpostFragment;
+import com.app.ptt.comnha.Fragment.WritepostFragment;
 import com.app.ptt.comnha.R;
-import com.app.ptt.comnha.SingletonClasses.ChooseLoca;
-
-import java.util.ArrayList;
 
 public class AdapterActivity extends AppCompatActivity {
-    String locaKey;
-    public static final String LOG = "AdapterActivity";
-    public static final String mBroadcast = "mBroadcastComplete";
-    private ProgressDialog progressDialog;
-    private int progressBarStatus = 0;
-    private Handler progressBarHandler = new Handler();
-
-    int temp, count;
-    Boolean isBound = false;
-    private IntentFilter mIntentFilter;
-    boolean isComplete;
-    Bundle savedInstanceState;
-    ArrayList<Route> routes;
-
-    public AdapterActivity() {
-    }
+    static final String STATE_ADDPOST_FRAGMENT = "addpostFragment";
+    static final int CHECK_ADDPOST_FRAGMENT = 1;
+    String FRAGMENT_CODE = null;
+    String fromFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_adapter);
-        Log.i(LOG, "onCreate");
-        //mIntentFilter = new IntentFilter();
-        //mIntentFilter.addAction(mBroadcast);
-        loadData();
-    }
-
-
-    @Override
-    public void finish() {
-        Log.i(LOG, "finish");
-        super.finish();
-    }
-
-
-    public void showToast(final String a) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(AdapterActivity.this, a, Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    private void openMap(int a) {
-        MapFragment mapFragment = new MapFragment();
-        mapFragment.setLocation(ChooseLoca.getInstance().getLocation());
-        ChooseLoca.getInstance().setLocation(null);
-        getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, mapFragment).commit();
-    }
-
-    public void loadData() {
         Intent intent = getIntent();
-        String FRAGMENT_CODE = intent.getExtras().getString(getResources().getString(R.string.fragment_CODE));
-        if (FRAGMENT_CODE.equals(getString(R.string.frag_map_CODE))) {
-            int a= intent.getIntExtra("type",0);
-            Log.i(LOG, "frag_map_CODE");
+        FRAGMENT_CODE = intent.getExtras().getString(getResources().getString(R.string.fragment_CODE));
+        fromFrag = intent.getExtras().getString(getString(R.string.fromFrag));
+        if (FRAGMENT_CODE.equals(getString(R.string.frag_writepost_CODE))) {
             if (findViewById(R.id.frame_adapter) != null) {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
-                    try{
-                        openMap(a);
-                    } catch (Exception e){
-                        Toast.makeText(getApplicationContext(),"Xảy ra lỗi. Xin kiểm tra lại",Toast.LENGTH_LONG).show();
-                    }
+                    WritepostFragment writepostFragment = new WritepostFragment();
+                    writepostFragment.setArguments(getIntent().getExtras());
 
-
+                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, writepostFragment)
+                            .commit();
                 }
             }
+        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frag_localist_CODE))) {
+            if (findViewById(R.id.frame_adapter) != null) {
+                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
+                }
+            }
+        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frag_addstore_CODE))) {
+            if (findViewById(R.id.frame_adapter) != null) {
+                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
+                    AddstoreFragment addstoreFragment = new AddstoreFragment();
+                    addstoreFragment.setArguments(getIntent().getExtras());
+                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, addstoreFragment).commit();
+                }
+            }
+        } else if (FRAGMENT_CODE.equals(getString(R.string.frag_storedetail_CODE))) {
+            if (findViewById(R.id.frame_adapter) != null) {
+                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
+                    StoreDetailFragment storeDetailFragment = new StoreDetailFragment();
+                    storeDetailFragment.setArguments(getIntent().getExtras());
+                    Log.i("LocadetailFragment", "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCc");
+                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, storeDetailFragment).commit();
+                }
+            }
+        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frag_chooseloca_CODE))) {
+            if (findViewById(R.id.frame_adapter) != null) {
+                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
+//                    ChooselocaFragment chooselocaFragment = new ChooselocaFragment();
+//                    chooselocaFragment.setArguments(getIntent().getExtras());
+//                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, chooselocaFragment).commit();
+                }
+            }
+        } else if (FRAGMENT_CODE.equals(getString(R.string.frg_viewpost_CODE))) {
+            if (findViewById(R.id.frame_adapter) != null) {
+                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
+                    ViewpostFragment viewpostFragment = new ViewpostFragment();
+                    viewpostFragment.setArguments(getIntent().getExtras());
+                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, viewpostFragment)
+                            .commit();
+                }
+            }
+        } else if (FRAGMENT_CODE.equals(getString(R.string.frg_signin_CODE))) {
+            if (findViewById(R.id.frame_adapter) != null) {
+                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
+                    SigninFragment signinFragment = new SigninFragment();
+                    signinFragment.setArguments(getIntent().getExtras());
+                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, signinFragment)
+                            .commit();
+                }
+            }
+        } else if (FRAGMENT_CODE.equals(getString(R.string.frg_signup_CODE))) {
+            if (findViewById(R.id.frame_adapter) != null) {
+                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
+                    SignupFragment signupFragment = new SignupFragment();
+                    signupFragment.setArguments(getIntent().getExtras());
+                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, signupFragment)
+                            .commit();
+                }
+            }
+        } else if (FRAGMENT_CODE.equals(getString(R.string.frag_vote_CODE))) {
+            if (findViewById(R.id.frame_adapter) != null) {
+                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
+//                    DoVoteFragment dovoteFragment = new DoVoteFragment();
+//                    dovoteFragment.setArguments(getIntent().getExtras());
+//                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, dovoteFragment)
+//                            .commit();
+                }
+            }
+        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frg_prodetail_CODE))) {
+            if (findViewById(R.id.frame_adapter) != null) {
+                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
+                    ProfiledetailFragment proDetailFrag = new ProfiledetailFragment();
+                    proDetailFrag.setArguments(getIntent().getExtras());
+                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, proDetailFrag)
+                            .commit();
+                }
+            }
+        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frg_themmon_CODE))) {
+            if (findViewById(R.id.frame_adapter) != null) {
+                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
+                    AddFoodFragment addFoodFragment = new AddFoodFragment();
+                    addFoodFragment.setArguments(getIntent().getExtras());
+                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, addFoodFragment)
+                            .commit();
+                }
+            }
+        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frg_viewalbum_CODE))) {
+            if (findViewById(R.id.frame_adapter) != null) {
+                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
+//                    ViewAlbumFragment viewAlbumFragment = new ViewAlbumFragment();
+//                    viewAlbumFragment.setFromFrag(fromFrag);
+//                    viewAlbumFragment.setArguments(getIntent().getExtras());
+//                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, viewAlbumFragment)
+//                            .commit();
+                }
+            }
+        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frg_notification_CODE))) {
+            if (findViewById(R.id.frame_adapter) != null) {
+                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
+                    NotificationFragment notificationFragment = new NotificationFragment();
+                    notificationFragment.setArguments(getIntent().getExtras());
 
+                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, notificationFragment).commit();
+                }
+            }
+        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frg_viewfood_CODE))) {
+            Log.i("ZOOOOOOOOOOOO", "VIEW FOOD");
+            if (findViewById(R.id.frame_adapter) != null) {
+                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
+                    FooddetailFragment fooddetailFragment = new FooddetailFragment();
+                    fooddetailFragment.setArguments(getIntent().getExtras());
+
+                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, fooddetailFragment).commit();
+                }
+            }
         }
     }
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.i(LOG, "onPause");
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE_ADDPOST_FRAGMENT, CHECK_ADDPOST_FRAGMENT);
+        Log.i("saveState", "saved");
     }
 
     @Override
-    protected void onStart() {
-        Log.i(LOG, "onStart");
-        super.onStart();
-
-
+    public void onBackPressed() {
+        super.onBackPressed();
     }
-
-
-    @Override
-    protected void onStop() {
-        Log.i(LOG, "onStop");
-        super.onStop();
-    }
-
 }
-
