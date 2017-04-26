@@ -20,7 +20,6 @@ import android.widget.PopupMenu;
 import com.app.ptt.comnha.Adapters.FragmentPagerAdapter;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
-import com.app.ptt.comnha.SingletonClasses.LoginSession;
 
 
 /**
@@ -55,13 +54,13 @@ public class ProfiledetailFragment extends Fragment implements View.OnClickListe
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(mToolbar);
         ActionBar actionBar = activity.getSupportActionBar();
-        actionBar.setTitle(LoginSession.getInstance().getUsername().trim() + "'s profile");
+//        actionBar.setTitle(LoginSession.getInstance().getUsername().trim() + "'s profile");
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setShowHideAnimationEnabled(true);
         actionBar.setHomeButtonEnabled(true);
         collapsLayout = (CollapsingToolbarLayout) view.findViewById(R.id.frag_prodetail_collapsing_toolbar);
-        collapsLayout.setTitle(LoginSession.getInstance().getUsername());
+//        collapsLayout.setTitle(LoginSession.getInstance().getUsername());
         fragmentPagerAdapter = new FragmentPagerAdapter(
                 activity.getSupportFragmentManager(), activity.getApplicationContext(),1);
         viewPager.setAdapter(fragmentPagerAdapter);

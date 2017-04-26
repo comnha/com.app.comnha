@@ -66,6 +66,7 @@
         <activity android:name=".Activity.ViewPhotoActivity" />
         <activity android:name=".Activity.ReportsNotifyAdminActivity" />
         <activity android:name=".Activity.SearchActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/SearchAtivity"></activity>
     </application>
 

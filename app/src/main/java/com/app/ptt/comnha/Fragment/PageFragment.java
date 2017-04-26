@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.app.ptt.comnha.R;
-import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -300,10 +299,10 @@ public class PageFragment extends Fragment {
 
             }
         };
-        dbRef.child(getResources().getString(R.string.images_CODE)
-                + getResources().getString(R.string.users_CODE)
-                + LoginSession.getInstance().getUserID() + "/"
-                + getResources().getString(R.string.posts_CODE)).addChildEventListener(imgageValueEventListener);
+//        dbRef.child(getResources().getString(R.string.images_CODE)
+//                + getResources().getString(R.string.users_CODE)
+//                + LoginSession.getInstance().getUserID() + "/"
+//                + getResources().getString(R.string.posts_CODE)).addChildEventListener(imgageValueEventListener);
     }
 
     @Override

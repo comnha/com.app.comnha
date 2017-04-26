@@ -1,5 +1,7 @@
 package com.app.ptt.comnha.Models.FireBase;
 
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,13 +10,6 @@ import java.util.Map;
  * Created by PTT on 9/16/2016.
  */
 public class User {
-    public String getUserID() {
-        return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
 
     public String getHo() {
         return ho;
@@ -46,14 +41,6 @@ public class User {
 
     public void setBirth(String birth) {
         this.birth = birth;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getStreet() {
@@ -104,14 +91,6 @@ public class User {
         this.work = work;
     }
 
-    public String getPro_imgName() {
-        return pro_imgName;
-    }
-
-    public void setPro_imgName(String pro_imgName) {
-        this.pro_imgName = pro_imgName;
-    }
-
     public boolean isSexual() {
         return sexual;
     }
@@ -128,12 +107,83 @@ public class User {
         this.dist_prov = dist_prov;
     }
 
-    String userID,
+    public int getPermission() {
+        return permission;
+    }
+
+    public void setPermission(int permission) {
+        this.permission = permission;
+    }
+
+    public FirebaseUser getFbUser() {
+        return fbUser;
+    }
+
+    public void setFbUser(FirebaseUser fbUser) {
+        this.fbUser = fbUser;
+    }
+
+    public boolean isAddfoodBlocked() {
+        return isAddfoodBlocked;
+    }
+
+    public void setAddfoodBlocked(boolean addfoodBlocked) {
+        isAddfoodBlocked = addfoodBlocked;
+    }
+
+    public boolean isWritepostBlocked() {
+        return isWritepostBlocked;
+    }
+
+    public void setWritepostBlocked(boolean writepostBlocked) {
+        isWritepostBlocked = writepostBlocked;
+    }
+
+    public boolean isAddstoreBlocked() {
+        return isAddstoreBlocked;
+    }
+
+    public void setAddstoreBlocked(boolean addstoreBlocked) {
+        isAddstoreBlocked = addstoreBlocked;
+    }
+
+    public boolean isReportpostBlocked() {
+        return isReportpostBlocked;
+    }
+
+    public void setReportpostBlocked(boolean reportpostBlocked) {
+        isReportpostBlocked = reportpostBlocked;
+    }
+
+    public boolean isReportstoreBlocked() {
+        return isReportstoreBlocked;
+    }
+
+    public void setReportstoreBlocked(boolean reportstoreBlocked) {
+        isReportstoreBlocked = reportstoreBlocked;
+    }
+
+    public boolean isReportimgBlocked() {
+        return isReportimgBlocked;
+    }
+
+    public void setReportimgBlocked(boolean reportimgBlocked) {
+        isReportimgBlocked = reportimgBlocked;
+    }
+
+    public boolean isReportfoodBlocked() {
+        return isReportfoodBlocked;
+    }
+
+    public void setReportfoodBlocked(boolean reportfoodBlocked) {
+        isReportfoodBlocked = reportfoodBlocked;
+    }
+
+    String
             ho,
             ten,
             tenlot,
             birth,
-            email,
     //more detail
     street = "",
             ward = "",
@@ -141,24 +191,50 @@ public class User {
             province = "",
             phonenumb = "",
             work = "";
-    //profile image
-    String pro_imgName;//tên ảnh đại diện
 
-    boolean sexual = false;
-    int permission=0;
+    boolean sexual = false,
+            isAddfoodBlocked = false,
+            isWritepostBlocked = false,
+            isAddstoreBlocked = false,
+            isReportpostBlocked = false,
+            isReportstoreBlocked = false,
+            isReportimgBlocked = false,
+            isReportfoodBlocked = false;
+    int permission = 0;
 
     //phép kết
-    String dist_prov;//tìm user theo tỉnh_huyện
+    String dist_prov = "";//tìm user theo tỉnh_huyện
+    FirebaseUser fbUser;
+
+    public User(String ho, String ten, String tenlot, String birth) {
+        this.ho = ho;
+        this.ten = ten;
+        this.tenlot = tenlot;
+        this.birth = birth;
+    }
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("userID", userID);
         result.put("ho", ho);
         result.put("tenlot", tenlot);
         result.put("ten", ten);
         result.put("birth", birth);
-        result.put("email", email);
-        result.put("permission", String.valueOf(permission));
+        result.put("street", street);
+        result.put("ward", ward);
+        result.put("district", district);
+        result.put("province", province);
+        result.put("phonenumb", phonenumb);
+        result.put("work", work);
+        result.put("sexual", sexual);
+        result.put("dist_prov", dist_prov);
+        result.put("permission", permission);
+        result.put("permission", isAddfoodBlocked);
+        result.put("permission", isWritepostBlocked);
+        result.put("permission", isAddstoreBlocked);
+        result.put("permission", isReportpostBlocked);
+        result.put("permission", isReportstoreBlocked);
+        result.put("permission", isReportimgBlocked);
+        result.put("permission", isReportfoodBlocked);
         return result;
     }
 }

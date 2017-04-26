@@ -6,24 +6,75 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    android:weightSum="10"
     tools:context="com.app.ptt.comnha.Activity.SearchActivity">
 
     <RelativeLayout
         android:id="@+id/relative_search"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/imgv_reveal_search"
+        <LinearLayout
+            android:id="@+id/linear_search"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <android.support.v7.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="4dp"
+                    android:visibility="invisible"
+                    app:cardCornerRadius="@dimen/cardv_cornerRadius"
+                    app:cardElevation="@dimen/cardv_elevation">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="16dp"
+                            android:src="@drawable/ic_50black_24dp"
+                            android:visibility="invisible" />
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginStart="16dp"
+                            android:enabled="false"
+                            android:textAllCaps="false"
+                            android:visibility="invisible" />
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+            </android.support.v7.widget.Toolbar>
+
+            <android.support.design.widget.TabLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:visibility="invisible"
+                app:tabGravity="center"
+                app:tabIndicatorColor="@android:color/white"
+                app:tabMode="fixed" />
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:orientation="vertical">
 
 
@@ -88,6 +139,5 @@
     <FrameLayout
         android:id="@+id/frame_content_search"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="8" />
+        android:layout_height="match_parent" />
 </LinearLayout>

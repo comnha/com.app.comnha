@@ -30,8 +30,10 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Picasso;
 
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -40,15 +42,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private Bundle savedInstanceState;
     FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    DatabaseReference dbRef;
-    ValueEventListener profileValueEventListener;
-    public String userID, username, email;
     private String tinh = "", huyen = "";
     private Toolbar mtoolbar;
     private DrawerLayout mdrawer;
     private ActionBarDrawerToggle mtoggle;
     private NavigationView mnavigationView;
     private TextView txt_email, txt_un;
+    private CircularImageView imgv_avatar;
     private FloatingActionMenu fabmenu;
     private ViewPager viewPager;
     private TabLayout tabLayout;
@@ -62,33 +62,44 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     boolean isPostRefreshed = true,
             isStoretRefreshed = true,
             isNotitRefreshed = true;
+    private StorageReference stRef;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
+        stRef = FirebaseStorage.getInstance().getReferenceFromUrl(
+                getString(R.string.firebaseStorage_path));
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
+                    LoginSession.getInstance().setFirebUser(user);
+                    txt_email.setText(user.getEmail());
+                    txt_un.setText(user.getDisplayName());
+                    Picasso.with(getApplicationContext())
+                            .load(user.getPhotoUrl())
+                            .placeholder(R.drawable.ic_logo)
+                            .into(imgv_avatar);
                     Log.d("onAuthStateChanged", "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
                     // User is signed out
                     Log.d("onAuthStateChanged", "onAuthStateChanged:signed_out");
+                    txt_email.setText(null);
+                    txt_un.setText(null);
+                    imgv_avatar.setImageResource(R.drawable.ic_logo);
                 }
             }
         };
-        anhXa();
-        LoginSession.getInstance().setTinh("");
-        LoginSession.getInstance().setHuyen("");
+        ref();
         startMyService();
 
     }
 
-    private void anhXa() {
+    private void ref() {
 
         mtoolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(mtoolbar);
@@ -103,8 +114,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mnavigationView.setNavigationItemSelectedListener(this);
         fab = (FloatingActionButton) findViewById(R.id.fab_main);
         View header = mnavigationView.getHeaderView(0);
-        txt_email = (TextView) header.findViewById(R.id.nav_head_email);
-        txt_un = (TextView) header.findViewById(R.id.nav_head_username);
+        txt_email = (TextView) header.findViewById(R.id.txtv_email_nav_head);
+        txt_un = (TextView) header.findViewById(R.id.txtv_un_nav_head);
+        imgv_avatar = (CircularImageView) header.findViewById(R.id.imgv_avatar_nav_head);
+
         pagerAdapter = new MainFragPagerAdapter(getSupportFragmentManager());
         viewPager = (ViewPager) findViewById(R.id.viewpager_main);
         viewPager.setAdapter(pagerAdapter);
@@ -588,7 +601,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 //    }
 //
 //
-//    void anhXa() {
+//    void ref() {
 //    }
 //
 //    public void bottomBarEvent() {

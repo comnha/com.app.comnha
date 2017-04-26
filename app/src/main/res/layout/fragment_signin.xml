@@ -50,8 +50,8 @@
                 android:nextFocusDown="@+id/edt_siFrg_password">
 
                 <EditText
-                    style="@style/SignInUpEdt"
                     android:id="@+id/edt_siFrg_username"
+                    style="@style/SignInUpEdt"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@android:color/white"

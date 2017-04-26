@@ -42,7 +42,6 @@ import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
-import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.SingletonClasses.OpenAlbum;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -434,11 +433,11 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
         btn_sendcomment.setOnClickListener(this);
         btn_like.setOnClickListener(this);
         btn_comment.setOnClickListener(this);
-        if (LoginSession.getInstance().getUserID() == null) {
-            edt_comment.setVisibility(View.INVISIBLE);
-        } else {
-            edt_comment.setVisibility(View.VISIBLE);
-        }
+//        if (LoginSession.getInstance().getUserID() == null) {
+//            edt_comment.setVisibility(View.INVISIBLE);
+//        } else {
+//            edt_comment.setVisibility(View.VISIBLE);
+//        }
         img_option.setOnClickListener(this);
         txt_albums.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -22,9 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.app.ptt.comnha.Models.FireBase.Account;
 import com.app.ptt.comnha.R;
-import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,8 +33,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -65,7 +61,7 @@ public class ChangeProfileFragment extends DialogFragment implements DatePickerD
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_change_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_update_profile, container, false);
         now = Calendar.getInstance();
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getString(R.string.firebase_path));
         anhxa(view);
@@ -172,9 +168,9 @@ public class ChangeProfileFragment extends DialogFragment implements DatePickerD
                 } else if (editText_password.getText().toString().trim()
                         .equals("")) {
                     Toast.makeText(getContext(), getString(R.string.txt_nopass), Toast.LENGTH_SHORT).show();
-                } else if (!LoginSession.getInstance().getPassword()
-                        .equals(editText_password.getText().toString().trim())) {
-                    Toast.makeText(getContext(), "Mật khẩu không đúng", Toast.LENGTH_SHORT).show();
+//                } else if (!LoginSession.getInstance().getPassword()
+//                        .equals(editText_password.getText().toString().trim())) {
+//                    Toast.makeText(getContext(), "Mật khẩu không đúng", Toast.LENGTH_SHORT).show();
                 } else if (!editText_confirmPass.getText().toString().trim()
                         .equals(editText_password.getText().toString().trim())) {
                     Toast.makeText(getContext(), "Mật khẩu xác nhận không đúng", Toast.LENGTH_SHORT).show();
@@ -191,29 +187,29 @@ public class ChangeProfileFragment extends DialogFragment implements DatePickerD
                                 Toast.makeText(getContext(), task.getException().getMessage(),
                                         Toast.LENGTH_SHORT).show();
                             } else {
-                                String userID = LoginSession.getInstance().getUserID();
-                                Account account = new Account();
-                                account.setTen(editText_ten.getText().toString());
-                                account.setHo(editText_ho.getText().toString());
-                                account.setTenlot(editText_tenlot.getText().toString());
-                                account.setBirth(editText_birth.getText().toString());
-                                account.setPassword(LoginSession.getInstance().getPassword());
-                                Map<String, Object> updateChild = new HashMap<String, Object>();
-                                updateChild.put(getString(R.string.users_CODE)
-                                        + userID, account);
-                                dbRef.updateChildren(updateChild)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (!task.isComplete()) {
-                                                    mProgressDialog.dismiss();
-                                                    Toast.makeText(getContext(), task.getException().getMessage(),
-                                                            Toast.LENGTH_SHORT).show();
-                                                } else
-                                                    mProgressDialog.dismiss();
-                                                dismiss();
-                                            }
-                                        });
+//                                String userID = LoginSession.getInstance().getUserID();
+//                                Account account = new Account();
+//                                account.setTen(editText_ten.getText().toString());
+//                                account.setHo(editText_ho.getText().toString());
+//                                account.setTenlot(editText_tenlot.getText().toString());
+//                                account.setBirth(editText_birth.getText().toString());
+////                                account.setPassword(LoginSession.getInstance().getUser().getp);
+//                                Map<String, Object> updateChild = new HashMap<String, Object>();
+//                                updateChild.put(getString(R.string.users_CODE)
+//                                        + userID, account);
+//                                dbRef.updateChildren(updateChild)
+//                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                            @Override
+//                                            public void onComplete(@NonNull Task<Void> task) {
+//                                                if (!task.isComplete()) {
+//                                                    mProgressDialog.dismiss();
+//                                                    Toast.makeText(getContext(), task.getException().getMessage(),
+//                                                            Toast.LENGTH_SHORT).show();
+//                                                } else
+//                                                    mProgressDialog.dismiss();
+//                                                dismiss();
+//                                            }
+//                                        });
                             }
                         }
                     });
@@ -243,11 +239,6 @@ public class ChangeProfileFragment extends DialogFragment implements DatePickerD
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-        editText_ten.setText(LoginSession.getInstance().getTen());
-        editText_ho.setText(LoginSession.getInstance().getHo());
-        editText_tenlot.setText(LoginSession.getInstance().getTenlot());
-        editText_birth.setText(LoginSession.getInstance().getNgaysinh());
-        editText_username.setText(LoginSession.getInstance().getUsername());
     }
 
     @Override

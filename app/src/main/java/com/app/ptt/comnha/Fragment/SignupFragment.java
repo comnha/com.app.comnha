@@ -34,7 +34,7 @@ import static com.app.ptt.comnha.Utils.AppUtils.showSnackbar;
  */
 public class SignupFragment extends BaseFragment implements DialogInterface.OnCancelListener, DialogInterface.OnDismissListener,
         DatePickerDialog.OnDateSetListener, View.OnClickListener {
-    private EditText editText_ho, editText_ten, editText_tenlot, editText_username, editText_email,
+    private EditText editText_ho, editText_ten, editText_tenlot, editText_un, editText_email,
             editText_password, editText_confirmPass, editText_birth;
     private Button butt_signup;
 
@@ -52,21 +52,19 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_signup, container, false);
         now = Calendar.getInstance();
-        anhXa(view);
-
-
+        ref(view);
         return view;
     }
 
-    private void anhXa(View view) {
-        editText_ho = (EditText) view.findViewById(R.id.editText_ho);
-        editText_ten = (EditText) view.findViewById(R.id.editText_ten);
-        editText_tenlot = (EditText) view.findViewById(R.id.editText_tenLot);
-        editText_username = (EditText) view.findViewById(R.id.editText_username);
-        editText_email = (EditText) view.findViewById(R.id.editText_email);
-        editText_password = (EditText) view.findViewById(R.id.editText_password);
-        editText_confirmPass = (EditText) view.findViewById(R.id.editText_confirmPass);
-        editText_birth = (EditText) view.findViewById(R.id.editText_birth);
+    private void ref(View view) {
+        editText_ho = (EditText) view.findViewById(R.id.editText_ho_signup);
+        editText_ten = (EditText) view.findViewById(R.id.editText_ten_signup);
+        editText_tenlot = (EditText) view.findViewById(R.id.editText_tenLot_signup);
+        editText_un = (EditText) view.findViewById(R.id.editText_un_signup);
+        editText_email = (EditText) view.findViewById(R.id.editText_email_signup);
+        editText_password = (EditText) view.findViewById(R.id.editText_password_signup);
+        editText_confirmPass = (EditText) view.findViewById(R.id.editText_confirmPass_signup);
+        editText_birth = (EditText) view.findViewById(R.id.editText_birth_signup);
         butt_signup = (Button) view.findViewById(R.id.butt_signup);
         dpd = DatePickerDialog.newInstance(this, now.get(Calendar.YEAR),
                 now.get(Calendar.MONTH), now.get(Calendar.DATE));
@@ -74,8 +72,8 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
         editText_birth.setOnClickListener(this);
         dpd.setOnDismissListener(this);
         dpd.setOnCancelListener(this);
-       AppUtils.showKeyboard(getContext());
-        editText_username.requestFocus();
+        AppUtils.showKeyboard(getContext());
+        editText_un.requestFocus();
 
 
     }
@@ -122,7 +120,7 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
                 } else
                     showSnackbar(getActivity(), getView(), "Không có kết nối internet", "Kết nối", Const.SNACKBAR_GO_ONLINE);
                 break;
-            case R.id.editText_birth:
+            case R.id.editText_birth_signup:
                 dpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
                 break;
         }
@@ -130,9 +128,9 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
     }
 
     public void validateInput(View view) {
-        if (isEqualsNull(editText_username)) {
+        if (isEqualsNull(editText_un)) {
             AppUtils.showSnackbarWithoutButton(view, getString(R.string.txt_noun));
-            editText_username.requestFocus();
+            editText_un.requestFocus();
             return;
         }
         if (isEqualsNull(editText_email)) {
@@ -155,12 +153,12 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
             editText_confirmPass.requestFocus();
             return;
         }
-        if(!passWordLenght(AppUtils.getText(editText_password))){
+        if (!passWordLenght(AppUtils.getText(editText_password))) {
             AppUtils.showSnackbarWithoutButton(view, getString(R.string.txt_passtooshort));
             editText_password.requestFocus();
             return;
         }
-        if(!AppUtils.getText(editText_password).equals(AppUtils.getText(editText_confirmPass))){
+        if (!AppUtils.getText(editText_password).equals(AppUtils.getText(editText_confirmPass))) {
             AppUtils.showSnackbarWithoutButton(view, getString(R.string.txt_notmatchpassword));
             editText_confirmPass.requestFocus();
             return;
@@ -187,25 +185,21 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
             return;
         }
 
-
-
-
-        addUserInfo();
+        addUser();
+//        addUserInfo();
     }
 
 
     public void addUser() {
-        auth.createUserWithEmailAndPassword(AppUtils.getText(editText_email), AppUtils.getText(editText_password))
+        showProgressDialog(getContext(), getString(R.string.text_signup), getString(R.string.txt_signup_loading));
+        handleProgressDialog(getString(R.string.txt_tryagain));
+        auth.createUserWithEmailAndPassword(AppUtils.getText(editText_email),
+                AppUtils.getText(editText_password))
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isComplete()) {
-                            closeDialog();
-                            Intent returnIntent = new Intent();
-                            returnIntent.putExtra(Const.INTENT_KEY_EMAIL, AppUtils.getText(editText_email));
-                            returnIntent.putExtra(Const.INTENT_KEY_PASSWORD, AppUtils.getText(editText_password));
-                            getActivity().setResult(Activity.RESULT_OK, returnIntent);
-                            getActivity().finish();
+                            addUserInfo(task.getResult().getUser().getUid());
                         } else {
                             removeUserInfo();
                         }
@@ -214,17 +208,12 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
                 });
     }
 
-    public void addUserInfo() {
-        showProgressDialog(getContext(), getString(R.string.text_signup), getString(R.string.txt_signup_loading));
-        handleProgressDialog(getString(R.string.txt_tryagain));
-        User user = new User();
-        user.setEmail(AppUtils.getText(editText_email));
-        user.setBirth(AppUtils.getText(editText_birth));
-        user.setHo(AppUtils.getText(editText_ho));
-        user.setTenlot(AppUtils.getText(editText_tenlot));
-        user.setTen(AppUtils.getText(editText_ten));
-        String key = dbRef.child(getString(R.string.users_CODE)).push().getKey();
-        user.setUserID(key);
+    public void addUserInfo(String key) {
+        User user = new User(AppUtils.getText(editText_birth),
+                AppUtils.getText(editText_tenlot),
+                AppUtils.getText(editText_ho),
+                AppUtils.getText(editText_ten));
+//        String key = dbRef.child(getString(R.string.users_CODE)).push().getKey();
         Map<String, Object> userInfoMap = user.toMap();
         Map<String, Object> child = new HashMap<>();
         child.put(getResources().getString(R.string.users_CODE) + key, userInfoMap);
@@ -233,7 +222,13 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
-                    addUser();
+//                    addUser();
+                    closeDialog();
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra(Const.INTENT_KEY_EMAIL, AppUtils.getText(editText_email));
+                    returnIntent.putExtra(Const.INTENT_KEY_PASSWORD, AppUtils.getText(editText_password));
+                    getActivity().setResult(Activity.RESULT_OK, returnIntent);
+                    getActivity().finish();
                 } else {
                     closeDialog();
                     AppUtils.showSnackbarWithoutButton(getView(), getString(R.string.txt_tryagain));
@@ -254,7 +249,6 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
             }
         });
     }
-
 
 
 }

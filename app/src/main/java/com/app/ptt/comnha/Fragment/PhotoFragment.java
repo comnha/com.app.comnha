@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.R;
-import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -81,10 +80,10 @@ public class PhotoFragment extends Fragment {
 
             }
         };
-        dbRef.child(getResources().getString(R.string.images_CODE))
-                .orderByChild("userID")
-                .equalTo(LoginSession.getInstance().getUserID())
-                .addChildEventListener(imgageValueEventListener);
+//        dbRef.child(getResources().getString(R.string.images_CODE))
+//                .orderByChild("userID")
+//                .equalTo(LoginSession.getInstance().getUserID())
+//                .addChildEventListener(imgageValueEventListener);
         return view;
     }
 

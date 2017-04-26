@@ -52,15 +52,15 @@
                 android:layout_weight="1.5">
 
                 <EditText
-                    android:id="@+id/editText_username"
+                    android:id="@+id/editText_un_signup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@android:color/white"
                     android:gravity="start|center_vertical"
-                    android:inputType="text"
                     android:hint="@string/text_username"
+                    android:inputType="text"
+                    android:nextFocusDown="@+id/editText_email_signup"
                     android:textColor="@android:color/white"
-                    android:nextFocusDown="@+id/editText_email"
                     android:textColorHint="@android:color/white" />
             </android.support.design.widget.TextInputLayout>
 
@@ -70,14 +70,14 @@
                 android:layout_weight="1.5">
 
                 <EditText
-                    android:id="@+id/editText_email"
+                    android:id="@+id/editText_email_signup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@android:color/white"
                     android:gravity="start|center_vertical"
                     android:hint="@string/text_email"
                     android:inputType="textEmailAddress"
-                    android:nextFocusDown="@+id/editText_password"
+                    android:nextFocusDown="@+id/editText_password_signup"
                     android:textColor="@android:color/white" />
             </android.support.design.widget.TextInputLayout>
 
@@ -87,14 +87,14 @@
                 android:layout_weight="1.5">
 
                 <EditText
-                    android:id="@+id/editText_password"
+                    android:id="@+id/editText_password_signup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@android:color/white"
                     android:gravity="start|center_vertical"
                     android:hint="@string/text_password"
                     android:inputType="textPassword"
-                    android:nextFocusDown="@+id/editText_confirmPass"
+                    android:nextFocusDown="@+id/editText_confirmPass_signup"
                     android:textColor="@android:color/white" />
             </android.support.design.widget.TextInputLayout>
 
@@ -104,14 +104,14 @@
                 android:layout_weight="1.5">
 
                 <EditText
-                    android:id="@+id/editText_confirmPass"
+                    android:id="@+id/editText_confirmPass_signup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@android:color/white"
                     android:gravity="start|center_vertical"
                     android:hint="@string/text_confirmPass"
                     android:inputType="textPassword"
-                    android:nextFocusDown="@+id/editText_ho"
+                    android:nextFocusDown="@+id/editText_ho_signup"
                     android:textColor="@android:color/white" />
             </android.support.design.widget.TextInputLayout>
 
@@ -128,14 +128,14 @@
                     android:layout_weight="1">
 
                     <EditText
-                        android:id="@+id/editText_ho"
+                        android:id="@+id/editText_ho_signup"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:nextFocusDown="@+id/editText_tenLot"
                         android:backgroundTint="@android:color/white"
                         android:gravity="start|center_vertical"
                         android:hint="@string/text_ho"
                         android:inputType="textPersonName"
+                        android:nextFocusDown="@+id/editText_tenLot_signup"
                         android:textColor="@android:color/white" />
                 </android.support.design.widget.TextInputLayout>
 
@@ -145,14 +145,14 @@
                     android:layout_weight="1">
 
                     <EditText
-                        android:id="@+id/editText_tenLot"
+                        android:id="@+id/editText_tenLot_signup"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:backgroundTint="@android:color/white"
                         android:gravity="start|center_vertical"
                         android:hint="@string/text_tenLot"
-                        android:nextFocusDown="@+id/editText_ten"
                         android:inputType="textPersonName"
+                        android:nextFocusDown="@+id/editText_ten_signup"
                         android:textColor="@android:color/white" />
                 </android.support.design.widget.TextInputLayout>
 
@@ -162,14 +162,14 @@
                     android:layout_weight="1">
 
                     <EditText
-                        android:id="@+id/editText_ten"
+                        android:id="@+id/editText_ten_signup"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:backgroundTint="@android:color/white"
                         android:gravity="start|center_vertical"
                         android:hint="@string/text_ten"
-                        android:nextFocusDown="@+id/editText_birth"
                         android:inputType="textPersonName"
+                        android:nextFocusDown="@+id/editText_birth_signup"
                         android:textColor="@android:color/white" />
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
@@ -180,14 +180,14 @@
                 android:layout_weight="1.5">
 
                 <EditText
-                    android:id="@+id/editText_birth"
+                    android:id="@+id/editText_birth_signup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@android:color/white"
                     android:gravity="start|center_vertical"
-                    android:nextFocusDown="@+id/butt_signup"
                     android:hint="@string/text_birth"
                     android:inputType="date"
+                    android:nextFocusDown="@+id/butt_signup"
                     android:textColor="@android:color/white" />
             </android.support.design.widget.TextInputLayout>
 

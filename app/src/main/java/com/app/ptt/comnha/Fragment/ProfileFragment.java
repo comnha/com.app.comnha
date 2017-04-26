@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.app.ptt.comnha.Models.FireBase.Account;
 import com.app.ptt.comnha.R;
-import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,11 +43,11 @@ public class ProfileFragment extends Fragment {
                 Account account = dataSnapshot.getValue(Account.class);
                 txt_Hoten.setText(account.getHo() + " " + account.getTenlot() + " " + account.getTen());
                 txt_Ngsinh.setText(account.getBirth());
-                LoginSession.getInstance().setTen(account.getTen());
-                LoginSession.getInstance().setHo(account.getHo());
-                LoginSession.getInstance().setTenlot(account.getTenlot());
-                LoginSession.getInstance().setNgaysinh(account.getBirth());
-                LoginSession.getInstance().setPassword(account.getPassword());
+//                LoginSession.getInstance().setTen(account.getTen());
+//                LoginSession.getInstance().setHo(account.getHo());
+//                LoginSession.getInstance().setTenlot(account.getTenlot());
+//                LoginSession.getInstance().setNgaysinh(account.getBirth());
+//                LoginSession.getInstance().setPassword(account.getPassword());
             }
 
             @Override
@@ -56,8 +55,8 @@ public class ProfileFragment extends Fragment {
 
             }
         };
-        dbRef.child(getResources().getString(R.string.users_CODE) +//liệt kê tất cả
-                LoginSession.getInstance().getUserID()).addListenerForSingleValueEvent(profileValueEventListener);
+//        dbRef.child(getResources().getString(R.string.users_CODE) +//liệt kê tất cả
+//                LoginSession.getInstance().getUserID()).addListenerForSingleValueEvent(profileValueEventListener);
         return view;
     }
 
@@ -76,8 +75,8 @@ public class ProfileFragment extends Fragment {
                         "fragment_changProfile");
             }
         });
-        txt_email.setText(LoginSession.getInstance().getEmail());
-        txt_un.setText(LoginSession.getInstance().getUsername());
+//        txt_email.setText(LoginSession.getInstance().getEmail());
+//        txt_un.setText(LoginSession.getInstance().getUsername());
     }
 
     @Override

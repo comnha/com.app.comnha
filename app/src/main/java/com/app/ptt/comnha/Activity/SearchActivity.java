@@ -7,13 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.R;
 
 public class SearchActivity extends AppCompatActivity {
-    ImageView imgv_back, imgv_reveal;
+    ImageView imgv_back;
+    LinearLayout reveal_linear;
     TabLayout tabLayout;
     RelativeLayout relative_temp;
 
@@ -33,7 +35,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-        imgv_reveal = (ImageView) findViewById(R.id.imgv_reveal_search);
+        reveal_linear = (LinearLayout) findViewById(R.id.linear_search);
         relative_temp = (RelativeLayout) findViewById(R.id.relative_search);
         relative_temp.setBackgroundColor(
                 getResources().getColor(R.color.color_notify_reportfood));
@@ -51,7 +53,7 @@ public class SearchActivity extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                int top = tabLayout.getTop(), btm = imgv_reveal.getBottom(),
+                int top = tabLayout.getTop(), btm = reveal_linear.getBottom(),
                         left = tabLayout.getLeft(),
                         right = tabLayout.getRight(), h = tabLayout.getHeight(),
                         w = tabLayout.getWidth();
@@ -65,11 +67,11 @@ public class SearchActivity extends AppCompatActivity {
                             cy = btm;
                             relative_temp.setBackgroundColor(getResources()
                                     .getColor(R.color.admin_color_selection_news));
-                            imgv_reveal.setBackgroundColor(
+                            reveal_linear.setBackgroundColor(
                                     getResources()
                                             .getColor(R.color.color_notify_reportfood));
                             AnimationUtils.getInstance()
-                                    .createCircularReveal(imgv_reveal, duration, cx, cy);
+                                    .createCircularReveal(reveal_linear, duration, cx, cy);
                             getWindow().setStatusBarColor(
                                     getResources().getColor(R.color.color_notify_reportfood));
                             break;
@@ -78,11 +80,11 @@ public class SearchActivity extends AppCompatActivity {
                             cy = btm;
                             relative_temp.setBackgroundColor(getResources()
                                     .getColor(R.color.color_notify_reportfood));
-                            imgv_reveal.setBackgroundColor(
+                            reveal_linear.setBackgroundColor(
                                     getResources()
                                             .getColor(R.color.admin_color_selection_news));
                             AnimationUtils.getInstance()
-                                    .createCircularReveal(imgv_reveal, duration, cx, cy);
+                                    .createCircularReveal(reveal_linear, duration, cx, cy);
                             getWindow().setStatusBarColor(
                                     getResources().getColor(R.color.admin_color_selection_news));
                             break;
