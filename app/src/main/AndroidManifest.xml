@@ -62,12 +62,14 @@
 
         <activity
             android:name=".Activity.NewsNotifyAdminActivity"
-            android:theme="@style/AppTheme.NotifyNewsAdminActivity"></activity>
+            android:theme="@style/AppTheme.NotifyNewsAdminActivity" />
         <activity android:name=".Activity.ViewPhotoActivity" />
         <activity android:name=".Activity.ReportsNotifyAdminActivity" />
-        <activity android:name=".Activity.SearchActivity"
+        <activity
+            android:name=".Activity.SearchActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/SearchAtivity"></activity>
+            android:theme="@style/SearchAtivity" />
+        <activity android:name=".Activity.StoreDeatailActivity"></activity>
     </application>
 
 </manifest>

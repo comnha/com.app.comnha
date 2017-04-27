@@ -26,7 +26,7 @@ public class Photo_recycler_adapter extends RecyclerView.Adapter<Photo_recycler_
     private OnItemClickLiestner onItemClickLiestner;
 
     public interface OnItemClickLiestner {
-        void onItemClick(Image post);
+        void onItemClick(Image post, Activity activity);
     }
 
     public void setOnItemClickLiestner(OnItemClickLiestner liestner) {
@@ -51,7 +51,7 @@ public class Photo_recycler_adapter extends RecyclerView.Adapter<Photo_recycler_
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onItemClickLiestner.onItemClick(photos.get(holder.getAdapterPosition()));
+                onItemClickLiestner.onItemClick(photos.get(holder.getAdapterPosition()), activity);
             }
         });
 

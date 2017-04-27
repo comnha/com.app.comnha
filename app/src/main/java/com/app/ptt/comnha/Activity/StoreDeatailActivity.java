@@ -1,25 +1,20 @@
-package com.app.ptt.comnha.Fragment;
+package com.app.ptt.comnha.Activity;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.app.ptt.comnha.Activity.AdapterActivity;
-import com.app.ptt.comnha.Activity.ViewPhotoActivity;
 import com.app.ptt.comnha.Adapters.Photo_recycler_adapter;
 import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
 import com.app.ptt.comnha.Models.FireBase.Image;
@@ -27,9 +22,8 @@ import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.github.clans.fab.FloatingActionButton;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,14 +31,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-/**
- * Created by PTT on 4/20/2017.
- */
-
-public class StoreDetailFragment extends Fragment implements View.OnClickListener {
+public class StoreDeatailActivity extends AppCompatActivity implements View.OnClickListener {
     RecyclerView postRecycler, photoRecycler;
     RecyclerView.LayoutManager postLayoutManager, photoLayoutManager;
     Post_recycler_adapter postAdapter;
@@ -55,8 +47,8 @@ public class StoreDetailFragment extends Fragment implements View.OnClickListene
     TextView txtv_storename, txtv_address, txtv_opentime, txtv_phonenumb,
             txtv_pricerate, txtv_healthyrate, txtv_servicerate;
     Toolbar toolbar;
-    ImageView imgv_writepost, imgv_addfood, imgv_viewlocation,
-            imgv_avatar;
+    ImageView imgv_writepost, imgv_addfood, imgv_viewlocation;
+    CircularImageView imgv_avatar;
     FloatingActionButton fab;
 
     DatabaseReference dbRef;
@@ -67,45 +59,40 @@ public class StoreDetailFragment extends Fragment implements View.OnClickListene
     LinearLayout linear_progress;
     String storeID = store.getStoreID();
 
-    public StoreDetailFragment() {
-    }
-
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_storedetail, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_store_deatail);
         dbRef = FirebaseDatabase.getInstance()
                 .getReferenceFromUrl(getString(R.string.firebase_path));
         stRef = FirebaseStorage.getInstance()
                 .getReferenceFromUrl(getString(R.string.firebaseStorage_path));
-        ref(view);
+        ref();
         if (store == null) {
-            getActivity().finish();
+            finish();
         }
-        return view;
     }
 
-    private void ref(View view) {
-        View include_view = view.findViewById(R.id.include_content);
+    private void ref() {
+        View include_view = findViewById(R.id.include_content);
         postRecycler = (RecyclerView) include_view.findViewById(R.id.recycler_post_storedetail);
-        postLayoutManager = new LinearLayoutManager(getContext(),
+        postLayoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, true);
         postRecycler.setLayoutManager(postLayoutManager);
         posts = new ArrayList<>();
-        postAdapter = new Post_recycler_adapter(posts, getActivity(), stRef);
+        postAdapter = new Post_recycler_adapter(posts, this, stRef);
         postRecycler.setAdapter(postAdapter);
         photoRecycler = (RecyclerView) include_view.findViewById(R.id.recycler_photo_storedetail);
-        photoLayoutManager = new LinearLayoutManager(getContext(),
+        photoLayoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, true);
         photoRecycler.setLayoutManager(photoLayoutManager);
         images = new ArrayList<>();
-        photoAdapter = new Photo_recycler_adapter(images, stRef, getActivity());
+        photoAdapter = new Photo_recycler_adapter(images, stRef, this);
         photoRecycler.setAdapter(photoAdapter);
         photoAdapter.setOnItemClickLiestner(new Photo_recycler_adapter.OnItemClickLiestner() {
             @Override
-            public void onItemClick(Image post) {
-                Intent intent_openPhoto = new Intent(getContext(), ViewPhotoActivity.class);
+            public void onItemClick(Image post, Activity activity) {
+                Intent intent_openPhoto = new Intent(activity, ViewPhotoActivity.class);
                 intent_openPhoto.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent_openPhoto);
             }
@@ -118,36 +105,34 @@ public class StoreDetailFragment extends Fragment implements View.OnClickListene
         txtv_pricerate = (TextView) include_view.findViewById(R.id.txtv_price_storedetail);
         txtv_healthyrate = (TextView) include_view.findViewById(R.id.txtv_healthy_storedetail);
         txtv_servicerate = (TextView) include_view.findViewById(R.id.txtv_service_storedetail);
-        toolbar = (Toolbar) view.findViewById(R.id.toolbar_storedetail);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_storedetail);
         toolbar.setTitle("");
-        toolbar.setTitleTextColor(getContext().getResources().getColor(android.R.color.white));
-        setHasOptionsMenu(true);
+        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) this).setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().finish();
+                onBackPressed();
             }
         });
-        imgv_writepost = (ImageView) view.findViewById(R.id.imgv_writepost_storedetail);
-        imgv_addfood = (ImageView) view.findViewById(R.id.imgv_addfood_storedetail);
-        imgv_viewlocation = (ImageView) view.findViewById(R.id.imgv_viewlocation_storedetail);
-        imgv_avatar = (ImageView) view.findViewById(R.id.imgv_avatar_storedetail);
-        fab = (FloatingActionButton) view.findViewById(R.id.fab_menu_storedetail);
+        imgv_writepost = (ImageView) findViewById(R.id.imgv_writepost_storedetail);
+        imgv_addfood = (ImageView) findViewById(R.id.imgv_addfood_storedetail);
+        imgv_viewlocation = (ImageView) findViewById(R.id.imgv_viewlocation_storedetail);
+        imgv_avatar = (CircularImageView) findViewById(R.id.imgv_avatar_storedetail);
+        fab = (FloatingActionButton) findViewById(R.id.fab_menu_storedetail);
         imgv_writepost.setOnClickListener(this);
         imgv_addfood.setOnClickListener(this);
         imgv_viewlocation.setOnClickListener(this);
         fab.setOnClickListener(this);
-        linear_progress = (LinearLayout) view.findViewById(R.id.linear_progress_storedetail);
+        linear_progress = (LinearLayout) findViewById(R.id.linear_progress_storedetail);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(Menu.NONE, 0, Menu.NONE, getString(R.string.txt_reportStore));
         menu.add(Menu.NONE, 1, Menu.NONE, getString(R.string.txt_followtStore));
-//        inflater.inflate(R.menu.menu_item_notify, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -163,8 +148,8 @@ public class StoreDetailFragment extends Fragment implements View.OnClickListene
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onStart() {
+        super.onStart();
         postChildListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -225,11 +210,6 @@ public class StoreDetailFragment extends Fragment implements View.OnClickListene
 
             }
         };
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
         createStoreInfo();
     }
 
@@ -249,11 +229,16 @@ public class StoreDetailFragment extends Fragment implements View.OnClickListene
         }
         if (!store.getStoreimg().equals("")) {
             StorageReference imageRef = stRef.child(store.getStoreimg());
-            Glide.with(getActivity())
-                    .using(new FirebaseImageLoader())
-                    .load(imageRef)
-                    .placeholder(R.color.colorPrimary)
-                    .into(imgv_avatar);
+            imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Picasso.with(getApplicationContext())
+                            .load(uri)
+                            .placeholder(R.drawable.ic_storedetail_avatar)
+                            .into(imgv_avatar);
+                }
+            });
+
         }
     }
 
@@ -261,7 +246,7 @@ public class StoreDetailFragment extends Fragment implements View.OnClickListene
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgv_writepost_storedetail:
-                Intent intent_writepost = new Intent(getContext(), AdapterActivity.class);
+                Intent intent_writepost = new Intent(this, AdapterActivity.class);
                 intent_writepost.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent_writepost.putExtra(getString(R.string.fragment_CODE),
                         getString(R.string.frag_writepost_CODE));
@@ -273,7 +258,7 @@ public class StoreDetailFragment extends Fragment implements View.OnClickListene
 
                 break;
             case R.id.fab_menu_storedetail:
-                Intent intent_openmenu = new Intent(getContext(), AdapterActivity.class);
+                Intent intent_openmenu = new Intent(this, AdapterActivity.class);
                 intent_openmenu.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent_openmenu.putExtra(getString(R.string.fragment_CODE),
                         getString(R.string.frag_menu_CODE));

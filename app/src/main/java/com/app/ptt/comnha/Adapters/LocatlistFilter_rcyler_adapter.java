@@ -5,13 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.google.android.gms.maps.model.LatLng;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.ArrayList;
 
@@ -28,12 +28,12 @@ public class LocatlistFilter_rcyler_adapter extends RecyclerView.Adapter<Locatli
     LatLng yourLocation;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView imgV;
+        public CircularImageView imgV;
         public TextView txt_diachi, txt_tenquan, txt_km, txt_diem,txt_mon;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            imgV = (ImageView) itemView.findViewById(R.id.item_list_imgV);
+            imgV = (CircularImageView) itemView.findViewById(R.id.item_list_imgV);
             txt_diachi = (TextView) itemView.findViewById(R.id.item_list_txtvaddress);
             txt_tenquan = (TextView) itemView.findViewById(R.id.item_list_txtvstorename);
             txt_km = (TextView) itemView.findViewById(R.id.item_list_txtvdistance);

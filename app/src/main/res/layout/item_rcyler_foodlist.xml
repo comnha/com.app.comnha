@@ -24,7 +24,7 @@
             android:paddingTop="5dp">
 
             <ImageView
-                android:id="@+id/item_list_imgV"
+                android:id="@+id/item_imgV"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginEnd="12dp"
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/item_list_imgV"
+                android:layout_toEndOf="@+id/item_imgV"
                 android:maxLength="50"
                 android:text="Cơm ngô quyền 2"
                 android:textColor="@android:color/black"
@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/item_list_txtvstorename"
-                android:layout_toEndOf="@+id/item_list_imgV"
+                android:layout_toEndOf="@+id/item_imgV"
                 android:maxLength="37"
                 android:text="89 ngô quyên, thủ đức, hồ chí minh"
                 android:textSize="12sp" />

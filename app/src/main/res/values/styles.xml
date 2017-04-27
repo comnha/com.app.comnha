@@ -8,12 +8,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <!--<item name="android:alertDialogTheme">@style/AppThem.LoadingDialog</item>-->
-        <!--<item name="android:alertDialogStyle">@style/AppThem.LoadingDialog</item>-->
+        <item name="android:windowActivityTransitions">true</item>
     </style>
-    <!--<style name="AppTheme.ProgressBar" parent="Widget.AppCompat.Spinner">-->
-    <!--<item name="android:colorAccent">@color/black</item>-->
-    <!--</style>-->
+
     <style name="AppThem.LoadingDialog" parent="Base.Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:height">40dp</item>

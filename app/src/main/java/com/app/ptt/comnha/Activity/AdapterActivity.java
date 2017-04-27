@@ -12,7 +12,6 @@ import com.app.ptt.comnha.Fragment.NotificationFragment;
 import com.app.ptt.comnha.Fragment.ProfiledetailFragment;
 import com.app.ptt.comnha.Fragment.SigninFragment;
 import com.app.ptt.comnha.Fragment.SignupFragment;
-import com.app.ptt.comnha.Fragment.StoreDetailFragment;
 import com.app.ptt.comnha.Fragment.ViewpostFragment;
 import com.app.ptt.comnha.Fragment.WritepostFragment;
 import com.app.ptt.comnha.R;
@@ -51,15 +50,6 @@ public class AdapterActivity extends AppCompatActivity {
                     AddstoreFragment addstoreFragment = new AddstoreFragment();
                     addstoreFragment.setArguments(getIntent().getExtras());
                     getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, addstoreFragment).commit();
-                }
-            }
-        } else if (FRAGMENT_CODE.equals(getString(R.string.frag_storedetail_CODE))) {
-            if (findViewById(R.id.frame_adapter) != null) {
-                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
-                    StoreDetailFragment storeDetailFragment = new StoreDetailFragment();
-                    storeDetailFragment.setArguments(getIntent().getExtras());
-                    Log.i("LocadetailFragment", "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCc");
-                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, storeDetailFragment).commit();
                 }
             }
         } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frag_chooseloca_CODE))) {

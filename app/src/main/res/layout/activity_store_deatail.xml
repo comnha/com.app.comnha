@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:theme="@style/AppTheme.NotifyNewsAdminActivity"
-    tools:context="com.app.ptt.comnha.Fragment.StoreDetailFragment">
+    tools:context="com.app.ptt.comnha.Activity.StoreDeatailActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +15,6 @@
         android:weightSum="5">
 
         <ImageView
-            android:id="@+id/imgv_avatar_storedetail"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
@@ -58,14 +57,24 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:weightSum="3">
-
-                <ImageView
+                android:weightSum="5">
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_storedetail_avatar" />
+                    android:orientation="horizontal"
+                    android:layout_weight="2"
+                    android:weightSum="5"
+                    android:gravity="center"
+                    android:layout_height="0dp">
+                    <com.mikhaellopez.circularimageview.CircularImageView
+                        android:id="@+id/imgv_avatar_storedetail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_storedetail_avatar"
+                        android:transitionName="avatarStore"
+                        app:civ_border_width="0dp" />
+                </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout
