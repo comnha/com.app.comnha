@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -34,13 +35,14 @@ import java.util.Map;
  */
 public class EditFoodDialogFragment extends DialogFragment {
     ProgressDialog mProgressDialog;
-    EditText edtTenMon,edtGia;
+    EditText edtTenMon, edtGia;
     RatingBar rbDanhGia;
     Map<String, Object> childUpdates;
     Map<String, Object> foodValue;
-    Button btnOK,btnCancel;
+    Button btnOK, btnCancel;
     DatabaseReference dbRef;
     Food editFood;
+
     public EditFoodDialogFragment() {
         // Required empty public constructor
     }
@@ -60,16 +62,16 @@ public class EditFoodDialogFragment extends DialogFragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_food_dialog, container, false);
-        editFood=ChooseFood.getInstance().getFood();
-        childUpdates=new HashMap<>();
-        dbRef=FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
-        edtTenMon=(EditText) view.findViewById(R.id.edt_tenmon);
-//        edtTenMon.setText(ChooseFood.getInstance().getFood().getTenmon());
+        editFood = ChooseFood.getInstance().getFood();
+        childUpdates = new HashMap<>();
+        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
+        edtTenMon = (EditText) view.findViewById(R.id.edt_tenmon);
+//        edtTenMon.setText(ChooseFood.getInstance().getFood().getName());
 //        edtGia=(EditText) view.findViewById(R.id.edt_gia);
-//        edtGia.setText(ChooseFood.getInstance().getFood().getGia()+"");
+//        edtGia.setText(ChooseFood.getInstance().getFood().getPrice()+"");
 //        rbDanhGia=(RatingBar) view.findViewById(R.id.rb_danhGiaMon);
-//        rbDanhGia.setRating(ChooseFood.getInstance().getFood().getDanhGia());
-        btnOK=(Button) view.findViewById(R.id.btn_OK);
+//        rbDanhGia.setRating(ChooseFood.getInstance().getFood().getRating());
+        btnOK = (Button) view.findViewById(R.id.btn_OK);
         mProgressDialog = ProgressDialog.show(getActivity(),
                 getResources().getString(R.string.txt_plzwait),
                 "Đang xử lý",
@@ -77,16 +79,16 @@ public class EditFoodDialogFragment extends DialogFragment {
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final AlertDialog.Builder alert=new AlertDialog.Builder(getContext());
+                final AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setTitle("Thông báo");
                 alert.setMessage("Bạn có muốn sửa món ăn này không?");
                 alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        editFood.setTenmon(edtTenMon.getText().toString());
-//                        editFood.setGia(Long.parseLong(edtGia.getText().toString()));
-                        foodValue=editFood.toMap();
-                       // dialog.dismiss();
+//                        editFood.setName(edtTenMon.getText().toString());
+//                        editFood.setPrice(Long.parseLong(edtGia.getText().toString()));
+                        foodValue = editFood.toMap();
+                        // dialog.dismiss();
                         mProgressDialog.show();
 //                        Notification notification = new Notification();
 //                                String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + "admin").push().getKey();
@@ -102,7 +104,7 @@ public class EditFoodDialogFragment extends DialogFragment {
 //                                childUpdates = new HashMap<>();
 //                                childUpdates.put(getResources().getString(R.string.notification_CODE) + "admin/" + key1, notificationValue);
 //                                Map<String,Object> newFood=editFood.toMap();
-////                        childUpdates.put(getResources().getString(R.string.thucdon_CODE)+editFood.getMonID(),newFood);
+////                        childUpdates.put(getResources().getString(R.string.thucdon_CODE)+editFood.getFoodID(),newFood);
 //                                dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
 //                                    @Override
 //                                    public void onComplete(@NonNull Task<Void> task) {
@@ -129,7 +131,7 @@ public class EditFoodDialogFragment extends DialogFragment {
                 alert.show();
             }
         });
-        btnCancel=(Button) view.findViewById(R.id.btn_cancel);
+        btnCancel = (Button) view.findViewById(R.id.btn_cancel);
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,6 +139,11 @@ public class EditFoodDialogFragment extends DialogFragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

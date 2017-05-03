@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,14 +19,9 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
-import com.app.ptt.comnha.Adapters.Notification_rcycler_adapter;
-import com.app.ptt.comnha.Adapters.Notification_rcycler_adapter_admin;
 import com.app.ptt.comnha.Models.FireBase.Notification;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -152,16 +146,16 @@ public class NotificationFullFragment extends Fragment {
 
             }
         };
-        if(MyService.getUserAccount().getRole()){
-            Log.i("NotificationFragment", "ADMIN");
-//            dbRef.child(getResources().getString(R.string.notification_CODE)+"admin")
-//                    .addChildEventListener(notificatonChildEventListener);
-        }
-        else{
-            Log.i("NotificationFragment", "USER");
-//            dbRef.child(getResources().getString(R.string.notification_CODE)+MyService.getUserAccount().getId().toString())
-//                    .addChildEventListener(notificatonChildEventListener);
-        }
+//        if(MyService.getUserAccount().getRole()){
+//            Log.i("NotificationFragment", "ADMIN");
+////            dbRef.child(getResources().getString(R.string.notification_CODE)+"admin")
+////                    .addChildEventListener(notificatonChildEventListener);
+//        }
+//        else{
+//            Log.i("NotificationFragment", "USER");
+////            dbRef.child(getResources().getString(R.string.notification_CODE)+MyService.getUserAccount().getId().toString())
+////                    .addChildEventListener(notificatonChildEventListener);
+//        }
 
 
 
@@ -240,13 +234,13 @@ public class NotificationFullFragment extends Fragment {
                                    delList.add(not.getNotiID());
                                }
                                listNoti=new ArrayList<>();
-                               if(MyService.getUserAccount().getRole()) {
-                                   mAdapter = new Notification_rcycler_adapter_admin(listNoti, getActivity(), 1);
-                                   mRecyclerView.setAdapter(mAdapter);
-                               }else{
-                                   mAdapter = new Notification_rcycler_adapter(listNoti, getActivity(), 1);
-                                   mRecyclerView.setAdapter(mAdapter);
-                               }
+//                               if(MyService.getUserAccount().getRole()) {
+//                                   mAdapter = new Notification_rcycler_adapter_admin(listNoti, getActivity(), 1);
+//                                   mRecyclerView.setAdapter(mAdapter);
+//                               }else{
+//                                   mAdapter = new Notification_rcycler_adapter(listNoti, getActivity(), 1);
+//                                   mRecyclerView.setAdapter(mAdapter);
+//                               }
                                mAdapter.notifyDataSetChanged();
                                break;
                        }
@@ -266,11 +260,11 @@ public class NotificationFullFragment extends Fragment {
         mRecyclerView.setLayoutManager(mRecyclerViewLayoutManager);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
-        if(MyService.getUserAccount().getRole()) {
-            mAdapter = new Notification_rcycler_adapter_admin(listNoti, getActivity(), 1);
-        }else{
-            mAdapter=new Notification_rcycler_adapter(listNoti,getActivity(),1);
-        }
+//        if(MyService.getUserAccount().getRole()) {
+//            mAdapter = new Notification_rcycler_adapter_admin(listNoti, getActivity(), 1);
+//        }else{
+//            mAdapter=new Notification_rcycler_adapter(listNoti,getActivity(),1);
+//        }
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -284,9 +278,9 @@ public class NotificationFullFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         childUpdates=new HashMap<>();
-        if(MyService.getUserAccount().getRole()) {
-            if (deleteAll) {
-                for (String delItem : delList) {
+//        if(MyService.getUserAccount().getRole()) {
+//            if (deleteAll) {
+//                for (String delItem : delList) {
 //                    dbRef.child(getResources().getString(R.string.notification_CODE) + "admin" + "/" + delItem).removeValue()
 //                            .addOnCompleteListener(new OnCompleteListener<Void>() {
 //                                @Override
@@ -300,29 +294,29 @@ public class NotificationFullFragment extends Fragment {
 //                            Log.i("Thoát trang thông báo", "Xóa tất cả lỗi!!!!!");
 //                        }
 //                    });
-                }
-            } else if (listNoti.size() > 0) {
-                for (Notification item : listNoti) {
-                    Map<String, Object> not = item.toMap();
-//                    childUpdates.put(
-//                            getResources().getString(R.string.notification_CODE) + "admin" + "/" + item.getNotiID(), not);
-                }
-                dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.i("Thoát trang thông báo", "Đoc tất cả thành công!!!!!");
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.i("Thoát trang thông báo", "Đọc tất cả lỗi!!!!!");
-                    }
-                });
-            }
-        }else{
-            if (deleteAll) {
-                for (String delItem : delList) {
+//                }
+//            } else if (listNoti.size() > 0) {
+//                for (Notification item : listNoti) {
+//                    Map<String, Object> not = item.toMap();
+////                    childUpdates.put(
+////                            getResources().getString(R.string.notification_CODE) + "admin" + "/" + item.getNotiID(), not);
+//                }
+//                dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        Log.i("Thoát trang thông báo", "Đoc tất cả thành công!!!!!");
+//
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.i("Thoát trang thông báo", "Đọc tất cả lỗi!!!!!");
+//                    }
+//                });
+//            }
+//        }else{
+//            if (deleteAll) {
+//                for (String delItem : delList) {
 //                    dbRef.child(getResources().getString(R.string.notification_CODE) + MyService.getUserAccount().getId() + "/" + delItem).removeValue()
 //                            .addOnCompleteListener(new OnCompleteListener<Void>() {
 //                                @Override
@@ -336,29 +330,29 @@ public class NotificationFullFragment extends Fragment {
 //                            Log.i("Thoát trang thông báo", "Xóa tất cả lỗi!!!!!");
 //                        }
 //                    });
-                }
-            } else if (listNoti.size() > 0) {
-                for (Notification item : listNoti) {
-                    Map<String, Object> not = item.toMap();
-//                    childUpdates.put(
-//                            getResources().getString(R.string.notification_CODE) + MyService.getUserAccount().getId()    + "/" + item.getNotiID(), not);
-                }
-                dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.i("Thoát trang thông báo", "Đoc tất cả thành công!!!!!");
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.i("Thoát trang thông báo", "Đọc tất cả lỗi!!!!!");
-                    }
-                });
-            }
-        }
-        MyService.setNotifications(null);
-
+//                }
+//            } else if (listNoti.size() > 0) {
+//                for (Notification item : listNoti) {
+//                    Map<String, Object> not = item.toMap();
+////                    childUpdates.put(
+////                            getResources().getString(R.string.notification_CODE) + MyService.getUserAccount().getId()    + "/" + item.getNotiID(), not);
+//                }
+//                dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        Log.i("Thoát trang thông báo", "Đoc tất cả thành công!!!!!");
+//
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.i("Thoát trang thông báo", "Đọc tất cả lỗi!!!!!");
+//                    }
+//                });
+//            }
+//        }
+//        MyService.setNotifications(null);
+//
 
     }
 

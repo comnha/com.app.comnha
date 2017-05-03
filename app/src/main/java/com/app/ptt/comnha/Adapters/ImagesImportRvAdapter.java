@@ -74,7 +74,7 @@ public class ImagesImportRvAdapter extends RecyclerView.Adapter<ImagesImportRvAd
 
     @Override
     public int getItemCount() {
-        Log.d("getItemCount", "" + imageCursor.getCount());
+//        Log.d("getItemCount", "" + imageCursor.getCount());
         return selectedImages.size();
     }
 

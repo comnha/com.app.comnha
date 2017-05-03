@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_width="230dp"
-    android:layout_height="90dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView
+        android:id="@+id/item_rcyler_food_cardv"
+        android:layout_width="100dp"
+        android:layout_height="150dp"
         android:layout_margin="5dp"
-        android:layout_width="197dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
         card_view:cardCornerRadius="@dimen/cardv_cornerRadius"
@@ -18,48 +22,53 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:weightSum="2">
 
             <ImageView
-                android:id="@+id/item_rcyler_thucdon_imgV"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/ic_logo" />
+                android:id="@+id/item_rcyler_food_imgV"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                android:transitionName="foodphoto" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginStart="5dp"
-
+                android:layout_height="0dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/item_rcyler_thucdon_txttenMon"
+                    android:id="@+id/item_rcyler_food_txtvname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLength="16"
-                    android:text="Tên món ăn"
-                    android:textColor="@android:color/black" />
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold" />
+
+
+                <RatingBar
+                    android:id="@+id/item_rcyler_food_rb_rating"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:numStars="5"
+                    android:stepSize="1" />
 
                 <TextView
-                    android:id="@+id/item_rcyler_thucdon_txtGia"
+                    android:id="@+id/item_rcyler_food_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="25000đ"
-                    android:textSize="10dp" />
-                <RatingBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:numStars="3"
-                    android:stepSize="1"
-                    android:rating="2"
-                    android:id="@+id/rb_danhGiaMon"
-                    />
+                    android:lines="1"
+                    android:maxLines="1" />
             </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>

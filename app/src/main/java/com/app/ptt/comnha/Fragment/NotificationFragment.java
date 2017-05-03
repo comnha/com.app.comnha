@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import com.app.ptt.comnha.Adapters.FragmentPagerAdapter;
 import com.app.ptt.comnha.Models.FireBase.Notification;
 import com.app.ptt.comnha.R;
-import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
@@ -68,13 +67,13 @@ public class NotificationFragment extends Fragment implements View.OnClickListen
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(mToolbar);
         ActionBar actionBar = activity.getSupportActionBar();
-        actionBar.setTitle(MyService.getUserAccount().getUsername() + "'s notification");
+//        actionBar.setTitle(MyService.getUserAccount().getFbUser().getDisplayName() + "'s notification");
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setShowHideAnimationEnabled(true);
         actionBar.setHomeButtonEnabled(true);
         collapsLayout = (CollapsingToolbarLayout) view.findViewById(R.id.frag_noti_collapsing_toolbar);
-        collapsLayout.setTitle(MyService.getUserAccount().getUsername());
+//        collapsLayout.setTitle(MyService.getUserAccount().getUsername());
         fragmentPagerAdapter = new FragmentPagerAdapter(
                 activity.getSupportFragmentManager(), activity.getApplicationContext(),2);
         viewPager.setAdapter(fragmentPagerAdapter);

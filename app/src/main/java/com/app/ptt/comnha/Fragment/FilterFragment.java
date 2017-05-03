@@ -265,7 +265,7 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Food food=dataSnapshot.getValue(Food.class);
-//                food.setMonID(dataSnapshot.getKey());
+//                food.setFoodID(dataSnapshot.getKey());
                 packageFoods.add(food);
             }
 
@@ -353,7 +353,7 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
 
         if(type==0){
             dbRef.child(
-                    getString(R.string.thucdon_CODE)).limitToLast(seemore)
+                    getString(R.string.food_CODE)).limitToLast(seemore)
                     .addChildEventListener(foodMenuChildEventListener);
             dbRef.child(
                     getString(R.string.store_CODE)).limitToLast(seemore)
@@ -375,7 +375,7 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
                     getString(R.string.store_CODE)).orderByChild("index").equalTo(tinh + "_" + quan).limitToLast(seemore)
                     .addChildEventListener(locaMenuChildEventListener);
             dbRef.child(
-                    getString(R.string.thucdon_CODE)).orderByChild("index").equalTo(tinh + "_" + quan).limitToLast(seemore)
+                    getString(R.string.food_CODE)).orderByChild("index").equalTo(tinh + "_" + quan).limitToLast(seemore)
                     .addChildEventListener(foodMenuChildEventListener);
         }
     }

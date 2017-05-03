@@ -1,7 +1,5 @@
 package com.app.ptt.comnha.Models.FireBase;
 
-import com.google.firebase.auth.FirebaseUser;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -107,20 +105,12 @@ public class User {
         this.dist_prov = dist_prov;
     }
 
-    public int getPermission() {
-        return permission;
+    public int getRole() {
+        return role;
     }
 
-    public void setPermission(int permission) {
-        this.permission = permission;
-    }
-
-    public FirebaseUser getFbUser() {
-        return fbUser;
-    }
-
-    public void setFbUser(FirebaseUser fbUser) {
-        this.fbUser = fbUser;
+    public void setRole(int role) {
+        this.role = role;
     }
 
     public boolean isAddfoodBlocked() {
@@ -179,6 +169,14 @@ public class User {
         isReportfoodBlocked = reportfoodBlocked;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     String
             ho,
             ten,
@@ -190,7 +188,7 @@ public class User {
             district = "",
             province = "",
             phonenumb = "",
-            work = "";
+            work = "", avatar = "";
 
     boolean sexual = false,
             isAddfoodBlocked = false,
@@ -200,11 +198,10 @@ public class User {
             isReportstoreBlocked = false,
             isReportimgBlocked = false,
             isReportfoodBlocked = false;
-    int permission = 0;
+    int role = 0;
 
     //phép kết
     String dist_prov = "";//tìm user theo tỉnh_huyện
-    FirebaseUser fbUser;
 
     public User(String ho, String ten, String tenlot, String birth) {
         this.ho = ho;
@@ -227,14 +224,15 @@ public class User {
         result.put("work", work);
         result.put("sexual", sexual);
         result.put("dist_prov", dist_prov);
-        result.put("permission", permission);
-        result.put("permission", isAddfoodBlocked);
-        result.put("permission", isWritepostBlocked);
-        result.put("permission", isAddstoreBlocked);
-        result.put("permission", isReportpostBlocked);
-        result.put("permission", isReportstoreBlocked);
-        result.put("permission", isReportimgBlocked);
-        result.put("permission", isReportfoodBlocked);
+        result.put("role", role);
+        result.put("avatar", avatar);
+        result.put("isAddfoodBlocked", isAddfoodBlocked);
+        result.put("isWritepostBlocked", isWritepostBlocked);
+        result.put("isAddstoreBlocked", isAddstoreBlocked);
+        result.put("isReportpostBlocked", isReportpostBlocked);
+        result.put("isReportstoreBlocked", isReportstoreBlocked);
+        result.put("isReportimgBlocked", isReportimgBlocked);
+        result.put("isReportfoodBlocked", isReportfoodBlocked);
         return result;
     }
 }

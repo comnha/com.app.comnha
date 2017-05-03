@@ -1,143 +1,259 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.app.ptt.comnha.Fragment.AddFoodFragment">
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="460dp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingTop="10dp">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_themMon"
-                android:layout_width="@dimen/cardv_sign_width"
-                android:layout_height="390dp"
-                android:focusableInTouchMode="true"
-                card_view:cardCornerRadius="@dimen/cardv_cornerRadius"
-                card_view:cardElevation="@dimen/cardv_elevation">
+            <ImageView
+                android:id="@+id/imgv_photo_addfood"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:scaleType="center"
+                android:src="@drawable/ic_add_to_photos_50black_24dp" />
 
-                <LinearLayout
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ilayout_name_addfood"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:orientation="vertical"
+                app:counterEnabled="true"
+                app:errorEnabled="true"
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="true">
+
+                <EditText
+                    android:id="@+id/edt_foodname_addfood"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@android:color/transparent"
+                    android:hint="@string/text_foodname"
+                    android:inputType="text|textFilter"
+                    android:lines="1"
+                    android:nextFocusDown="@+id/edt_price_addfood"
+                    android:textAllCaps="false" />
+
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ilayout_price_addfood"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:orientation="vertical"
+                app:counterEnabled="false"
+                app:errorEnabled="true"
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="true">
+
+                <EditText
+                    android:id="@+id/edt_price_addfood"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:backgroundTint="@android:color/transparent"
+                    android:hint="@string/text_price"
+                    android:inputType="numberDecimal"
+                    android:lines="1"
+                    android:nextFocusDown="@+id/edt_comment_addfood"
+                    android:textAllCaps="false" />
+            </android.support.design.widget.TextInputLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/colorAccent"
-                        android:gravity="center_horizontal"
-                        android:orientation="vertical">
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ilayout_comment_addfood"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:orientation="vertical"
+                app:counterEnabled="true"
+                app:errorEnabled="true"
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="true">
 
-                        <ImageView
-                            android:id="@+id/frg_themMon_ic"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginTop="10dp"
-                            android:background="@drawable/ic_logo" />
+                <EditText
+                    android:id="@+id/edt_comment_addfood"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@android:color/transparent"
+                    android:hint="@string/text_fooddescribe"
+                    android:inputType="textMultiLine|textFilter"
+                    android:textAllCaps="false" />
+            </android.support.design.widget.TextInputLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/text_themMon"
-                            android:textAllCaps="true"
-                            android:textColor="@android:color/white"
-                            android:textSize="35sp" />
-                    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:gravity="end"
+                android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginTop="10dp"
-                        android:orientation="vertical">
+                <Button
+                    android:id="@+id/btn_cancel_addfood"
+                    style="@style/BtnBorderlessGrey"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_cancel" />
 
-                        <TextView
-                            android:id="@+id/frg_themMon_txt_tenquan"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:maxLength="30"
-                            android:maxLines="1"
-                            android:text="Tên quán"
-                            android:textSize="17sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/frg_themMon_txt_diachi"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:maxLength="43"
-                            android:maxLines="1"
-                            android:text="Địa chỉ"
-                            android:textSize="15dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="5dp">
-
-                        <android.support.design.widget.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <EditText
-                                android:id="@+id/frg_themMon_edt_tenMon"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="start|top"
-                                android:hint="@string/text_tenMon"
-                                android:inputType="textEmailAddress"
-                                android:maxLines="1" />
-                        </android.support.design.widget.TextInputLayout>
-
-                        <android.support.design.widget.TextInputLayout
-
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <EditText
-                                android:id="@+id/frg_themMon_edt_giaMon"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:hint="@string/text_price"
-                                android:inputType="number"
-                                android:maxLines="1" />
-                            <RatingBar
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:numStars="3"
-                                android:stepSize="1"
-                                android:rating="2"
-                                android:id="@+id/rb_danhGiaMon"
-                                />
-                        </android.support.design.widget.TextInputLayout>
-                    </LinearLayout>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
+                <Button
+                    android:id="@+id/btn_save_addfood"
+                    style="@style/BtnBorderlessGreen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_add" />
+            </LinearLayout>
         </LinearLayout>
+    </ScrollView>
 
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/frg_themMon_btn_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="90dp"
-            android:src="@drawable/ic_check_white_36dp"
-            app:fab_colorNormal="@color/colorFloat2"
-            app:fab_colorPressed="@color/colorFloat2dark" />
-    </RelativeLayout>
-</android.support.design.widget.CoordinatorLayout>
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="460dp"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:gravity="center"-->
+    <!--android:orientation="vertical"-->
+    <!--android:paddingTop="10dp">-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:gravity="center">-->
+
+    <!--<android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"-->
+    <!--android:id="@+id/card_themMon"-->
+    <!--android:layout_width="@dimen/cardv_sign_width"-->
+    <!--android:layout_height="390dp"-->
+    <!--android:focusableInTouchMode="true"-->
+    <!--card_view:cardCornerRadius="@dimen/cardv_cornerRadius"-->
+    <!--card_view:cardElevation="@dimen/cardv_elevation">-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@color/colorAccent"-->
+    <!--android:gravity="center_horizontal"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/frg_themMon_ic"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center_horizontal"-->
+    <!--android:layout_marginTop="10dp"-->
+    <!--android:background="@drawable/ic_logo" />-->
+
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="@string/text_themMon"-->
+    <!--android:textAllCaps="true"-->
+    <!--android:textColor="@android:color/white"-->
+    <!--android:textSize="35sp" />-->
+    <!--</LinearLayout>-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginStart="5dp"-->
+    <!--android:layout_marginTop="10dp"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/frg_themMon_txt_tenquan"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:maxLength="30"-->
+    <!--android:maxLines="1"-->
+    <!--android:text="Tên quán"-->
+    <!--android:textSize="17sp"-->
+    <!--android:textStyle="bold" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/frg_themMon_txt_diachi"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="5dp"-->
+    <!--android:maxLength="43"-->
+    <!--android:maxLines="1"-->
+    <!--android:text="Địa chỉ"-->
+    <!--android:textSize="15dp" />-->
+    <!--</LinearLayout>-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="vertical"-->
+    <!--android:padding="5dp">-->
+
+    <!--<android.support.design.widget.TextInputLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
+
+    <!--<EditText-->
+    <!--android:id="@+id/frg_themMon_edt_tenMon"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:gravity="start|top"-->
+    <!--android:hint="@string/text_tenMon"-->
+    <!--android:inputType="textEmailAddress"-->
+    <!--android:maxLines="1" />-->
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+    <!--<android.support.design.widget.TextInputLayout-->
+
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
+
+    <!--<EditText-->
+    <!--android:id="@+id/frg_themMon_edt_giaMon"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:hint="@string/text_price"-->
+    <!--android:inputType="number"-->
+    <!--android:maxLines="1" />-->
+
+    <!--<RatingBar-->
+    <!--android:id="@+id/rb_foodrate"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:numStars="5"-->
+    <!--android:stepSize="0.5" />-->
+    <!--</android.support.design.widget.TextInputLayout>-->
+    <!--</LinearLayout>-->
+    <!--</LinearLayout>-->
+    <!--</android.support.v7.widget.CardView>-->
+    <!--</LinearLayout>-->
+
+    <!--<com.github.clans.fab.FloatingActionButton-->
+    <!--android:id="@+id/frg_themMon_btn_save"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_alignParentStart="true"-->
+    <!--android:layout_marginStart="90dp"-->
+    <!--android:src="@drawable/ic_check_white_36dp"-->
+    <!--app:fab_colorNormal="@color/colorFloat2"-->
+    <!--app:fab_colorPressed="@color/colorFloat2dark" />-->
+    <!--</RelativeLayout>-->
+</LinearLayout>

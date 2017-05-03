@@ -1,32 +1,59 @@
 package com.app.ptt.comnha.Fragment;
 
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RatingBar;
-import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.app.ptt.comnha.Adapters.SingleImageImportRvAdapter;
+import com.app.ptt.comnha.Classes.SelectedImage;
 import com.app.ptt.comnha.Models.FireBase.Food;
+import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
-import com.github.clans.fab.FloatingActionButton;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
+import com.app.ptt.comnha.Utils.AppUtils;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,29 +61,43 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddFoodFragment extends Fragment implements View.OnClickListener{
-    private static final String LOG=AddFoodFragment.class.getSimpleName();
-    FloatingActionButton fab_themMon;
-    RatingBar ratingBar;
-    EditText edt_tenMon, edt_giamon;
+public class AddFoodFragment extends DialogFragment implements View.OnClickListener {
+    private static final String LOG = AddFoodFragment.class.getSimpleName();
+    EditText edt_name, edt_price, edt_comment;
     DatabaseReference dbRef;
+    StorageReference stRef;
     private ProgressDialog mProgressDialog;
-    TextView txt_tenquan, txt_diachi;
     private String locaID;
+    Button btn_save, btn_cancel;
     FragmentManager dialogFm;
-    boolean isConnected=true;
+    boolean isConnected = true;
+    ImageView imgv_photo;
     Map<String, Object> childUpdates;
-    float mRating=2;
-    boolean isChange=false;
-    String key;
-    Food newFood = new Food();
     IntentFilter mIntentFilter;
+    TextInputLayout ilayout_name, ilayout_commnent, ilayout_price;
     public static final String mBroadcastSendAddress = "mBroadcastSendAddress";
-    BroadcastReceiver broadcastReceiver=new BroadcastReceiver() {
+    String name = "", comment = "", avatarname = "",
+            price = "", key = "";
+    Food newFood;
+    private Store store;
+
+    SingleImageImportRvAdapter singleImageImportRvAdapter;
+    private RecyclerView imagesrv;
+    private GridLayoutManager imageslm;
+    private SelectedImage selectedImage;
+    private BottomSheetDialog imgsDialog;
+    UploadTask uploadTask;
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
+
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(mBroadcastSendAddress)) {
-                Log.i(LOG+".onReceive form Service","isConnected= "+ intent.getBooleanExtra("isConnected", false));
+            if (intent.getAction().equals(mBroadcastSendAddress)) {
+                Log.i(LOG + ".onReceive form Service", "isConnected= "
+                        + intent.getBooleanExtra("isConnected", false));
                 if (intent.getBooleanExtra("isConnected", false)) {
                     isConnected = true;
                 } else
@@ -64,134 +105,264 @@ public class AddFoodFragment extends Fragment implements View.OnClickListener{
             }
         }
     };
+
     public AddFoodFragment() {
         // Required empty public constructor
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        isConnected= MyService.returnIsNetworkConnected();
+        isConnected = MyService.returnIsNetworkConnected();
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(
                 getResources().getString(R.string.firebase_path));
-//        locaID = ChooseLoca.getInstance().getStore().getLocaID();
+        stRef = FirebaseStorage.getInstance().getReferenceFromUrl(
+                getResources().getString(R.string.firebaseStorage_path));
         View view = inflater.inflate(R.layout.fragment_addfood, container, false);
-        anhxa(view);
+        ref(view);
         return view;
     }
 
-    private void anhxa(View view) {
-        ratingBar=(RatingBar) view.findViewById(R.id.rb_danhGiaMon);
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.setTitle(getString(R.string.text_addfood));
+        return dialog;
+    }
+
+    private void ref(View view) {
+        dialogFm = getActivity().getSupportFragmentManager();
+        edt_price = (EditText) view.findViewById(R.id.edt_price_addfood);
+        edt_price.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                mRating=rating;
-                isChange=true;
-                if (rating == 1)
-                    Toast.makeText(getContext(), "Dở tệ", Toast.LENGTH_SHORT).show();
-                if (rating == 2  )
-                    Toast.makeText(getContext(), "Bình thường", Toast.LENGTH_SHORT).show();
-                if (rating == 3)
-                    Toast.makeText(getContext(), "Ngon tuyệt", Toast.LENGTH_SHORT).show();
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!charSequence.toString().equals("")) {
+                    price = charSequence.toString();
+                } else {
+                    price = "";
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() > 0) {
+                    ilayout_price.setError(null);
+                } else {
+                    ilayout_price.setError(
+                            getResources().getString(R.string.txt_nofoodprice));
+                }
             }
         });
-        dialogFm = getActivity().getSupportFragmentManager();
-        fab_themMon = (FloatingActionButton) view.findViewById(R.id.frg_themMon_btn_save);
-        edt_giamon = (EditText) view.findViewById(R.id.frg_themMon_edt_giaMon);
-        edt_tenMon = (EditText) view.findViewById(R.id.frg_themMon_edt_tenMon);
-        txt_diachi = (TextView) view.findViewById(R.id.frg_themMon_txt_diachi);
-        txt_tenquan = (TextView) view.findViewById(R.id.frg_themMon_txt_tenquan);
-//        txt_tenquan.setText(ChooseLoca.getInstance().getStore().getName());
-//        txt_diachi.setText(ChooseLoca.getInstance().getStore().getDiachi());
-        fab_themMon.setOnClickListener(this);
+        edt_name = (EditText) view.findViewById(R.id.edt_foodname_addfood);
+        edt_name.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
+        edt_name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                name = charSequence.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() > 0) {
+                    ilayout_name.setError(null);
+                } else {
+                    ilayout_name.setError(
+                            getResources().getString(R.string.txt_nofoodname));
+                }
+            }
+        });
+        edt_comment = (EditText) view.findViewById(R.id.edt_comment_addfood);
+        edt_comment.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                comment = charSequence.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() > 0) {
+                    ilayout_commnent.setError(null);
+                } else {
+                    ilayout_commnent.setError(
+                            getResources().getString(R.string.txt_nodescribefood));
+                }
+            }
+        });
+        edt_comment.setFilters(new InputFilter[]{new InputFilter.LengthFilter(200)});
+        btn_save = (Button) view.findViewById(R.id.btn_save_addfood);
+        btn_cancel = (Button) view.findViewById(R.id.btn_cancel_addfood);
+        btn_save.setOnClickListener(this);
+        btn_cancel.setOnClickListener(this);
+        ilayout_commnent = (TextInputLayout) view.findViewById(R.id.ilayout_comment_addfood);
+        ilayout_name = (TextInputLayout) view.findViewById(R.id.ilayout_name_addfood);
+        ilayout_price = (TextInputLayout) view.findViewById(R.id.ilayout_price_addfood);
+        ilayout_name.setCounterMaxLength(50);
+        ilayout_commnent.setCounterMaxLength(200);
+        imgv_photo = (ImageView) view.findViewById(R.id.imgv_photo_addfood);
+        imgv_photo.setOnClickListener(this);
+        imgv_photo.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                imgv_photo.setImageURI(null);
+                imgv_photo.setImageResource(
+                        R.drawable.ic_add_to_photos_50black_24dp);
+                selectedImage = null;
+                imgv_photo.setScaleType(ImageView.ScaleType.CENTER);
+                return true;
+            }
+        });
+        imgsDialog = new BottomSheetDialog(getContext());
+        imgsDialog.setContentView(R.layout.layout_writepost_imgimporting);
+        imgsDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                selectedImage = singleImageImportRvAdapter.getSelectedImage();
+                if (selectedImage != null) {
+                    avatarname = selectedImage.getUri().getLastPathSegment();
+                    imgv_photo.setImageURI(selectedImage.getUri());
+                    imgv_photo.setScaleType(ImageView.ScaleType.FIT_XY);
+                }
+            }
+        });
+
+        imagesrv = (RecyclerView) imgsDialog.findViewById(R.id.rv_images_imgimporting);
+        imageslm = new GridLayoutManager(getContext(), 3, LinearLayoutManager.VERTICAL, false);
+        imagesrv.setLayoutManager(imageslm);
+        singleImageImportRvAdapter = new SingleImageImportRvAdapter(getContext(), getContext().getContentResolver());
+        imagesrv.setAdapter(singleImageImportRvAdapter);
+        singleImageImportRvAdapter.setOnSingleClickListener(new SingleImageImportRvAdapter.OnSingleClickListener() {
+            @Override
+            public void onClick(boolean isDismiss) {
+                if (isDismiss) {
+                    imgsDialog.dismiss();
+                }
+            }
+        });
+
+        mProgressDialog = new ProgressDialog(getContext());
+        mProgressDialog.setMessage(getResources().getString(R.string.txt_addinmon));
+        mProgressDialog.setCancelable(true);
+        mProgressDialog.setCanceledOnTouchOutside(true);
+
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.frg_themMon_btn_save:
-                if (edt_tenMon.getText().toString().trim().equals("")) {
-                    Snackbar.make(v, getResources().getString(R.string.txt_noTenMon), Snackbar.LENGTH_SHORT).show();
-
+            case R.id.btn_save_addfood:
+                if (AppUtils.checkEmptyEdt(edt_name)) {
+                    edt_name.requestFocus();
+                } else if (AppUtils.checkEmptyEdt(edt_price)) {
+                    edt_price.requestFocus();
+                } else if (AppUtils.checkEmptyEdt(edt_comment)) {
+                    edt_comment.requestFocus();
+                } else {
+                    savefood();
                 }
-
-                else if (edt_giamon.getText().toString().trim().equals("")) {
-                    Snackbar.make(v, getResources().getString(R.string.txt_nogiaMon), Snackbar.LENGTH_SHORT).show();
-                }  else {
-                    if(isConnected){
-                        if(MyService.getUserAccount()!=null)
-                            DoSave();
-                        else Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
-                    }
-                    else Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
-                }
+                break;
+            case R.id.btn_cancel_addfood:
+                getDialog().cancel();
+                break;
+            case R.id.imgv_photo_addfood:
+                singleImageImportRvAdapter.readthentranstoarray();
+                imagesrv.scrollToPosition(0);
+                imgsDialog.show();
                 break;
         }
     }
 
-    private void DoSave() {
-        mProgressDialog = ProgressDialog.show(getActivity(),
-                getResources().getString(R.string.txt_plzwait),
-                getResources().getString(R.string.txt_addinmon), true, false);
+    @Override
+    public void onResume() {
+        super.onResume();
+        Window window = getDialog().getWindow();
+        Point size = new Point();
+        // Store dimensions of the screen in `size`
+        Display display = window.getWindowManager().getDefaultDisplay();
+        display.getSize(size);
+        // Set the width of the dialog proportional to 75% of the screen width
+        window.setLayout((int) (size.x * 0.95), WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setGravity(Gravity.CENTER);
+    }
 
-        newFood = new Food();
-//        newFood.setGia(Long.valueOf(edt_giamon.getText().toString()));
-//        newFood.setDanhGia(mRating);
-//        newFood.setUserID(MyService.getUserAccount().getId());
-//        newFood.setTenmon(edt_tenMon.getText().toString());
-//        newFood.setLocaID(locaID);
-//        newFood.setIndex(ChooseLoca.getInstance().getStore().getTinhtp()+"_"+ChooseLoca.getInstance().getStore().getQuanhuyen());
-//        newFood.setVisible(true);
-//        Log.i("Visible----Visible",newFood.getVisible()+"");
-        key = dbRef.child(getResources().getString(R.string.thucdon_CODE)).push().getKey();
-        Map<String, Object> thucdonValue = newFood.toMap();
+    private void savefood() {
+        mProgressDialog.show();
+        newFood = new Food(name, comment, Long.valueOf(price),
+                0, LoginSession.getInstance().getFirebUser().getUid(),
+                store.getStoreID(), store.getDistrict(), store.getProvince(),
+                avatarname);
+        key = dbRef.child(getResources().getString(R.string.food_CODE)).push().getKey();
+        Map<String, Object> foodvalue = newFood.toMap();
         childUpdates = new HashMap<>();
         childUpdates.put(
-                getResources().getString(R.string.thucdon_CODE)
-                + key, thucdonValue);
-//        if(!MyService.getUserAccount().getRole()) {
-//            Notification notification = new Notification();
-//            String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + "admin").push().getKey();
-//            notification.setAccount(MyService.getUserAccount());
-//            notification.setDate(new Times().getDate());
-//            notification.setTime(new Times().getTime());
-////            newFood.setMonID(key);
-//            notification.setFood(newFood);
-//            notification.setType(1);
-//            notification.setStore(ChooseLoca.getInstance().getStore());
-//            notification.setReaded(false);
-//            notification.setTo("admin");
-//            Map<String, Object> notificationValue = notification.toMap();
-//            childUpdates.put(getResources().getString(R.string.notification_CODE) + "admin/" + key1, notificationValue);
-//
+                getResources().getString(R.string.food_CODE)
+                        + key, foodvalue);
+        StorageReference imgRef = stRef.child(avatarname);
+        uploadTask = imgRef.putFile(
+                Uri.fromFile(new File(selectedImage.getUri().toString())));
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                dbRef.updateChildren(childUpdates).addOnSuccessListener(
+                        new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                mProgressDialog.dismiss();
+                                getDialog().dismiss();
+                                Toast.makeText(getContext(),
+                                        getString(R.string.text_addfood_succ),
+                                        Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        mProgressDialog.cancel();
+                        Toast.makeText(getContext(),
+                                getString(R.string.text_addfood_failed),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                mProgressDialog.cancel();
+                Toast.makeText(getContext(), getString(R.string.txt_failedUploadImg)
+                        , Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        }
-//        dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-//            @Override
-//            public void onComplete(@NonNull Task<Void> task) {
-//                if (task.isComplete()) {
-//                    mProgressDialog.dismiss();
-//                    Toast.makeText(getActivity(),
-//                            getResources().getString(R.string.txt_addedMon), Toast.LENGTH_SHORT).show();
-//                    getActivity().finish();
-//                } else {
-//                    mProgressDialog.dismiss();
-//                    Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
+
+    }
 
 
     @Override
     public void onStart() {
         super.onStart();
-        isConnected= MyService.returnIsNetworkConnected();
-        if(!isConnected){
-            Toast.makeText(getContext(),"Offline mode",Toast.LENGTH_SHORT).show();
+        isConnected = MyService.returnIsNetworkConnected();
+        if (!isConnected) {
+            Toast.makeText(getContext(), "Offline mode", Toast.LENGTH_SHORT).show();
         }
-        mIntentFilter=new IntentFilter();
+        mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(mBroadcastSendAddress);
-        getContext().registerReceiver(broadcastReceiver,mIntentFilter);
+        getContext().registerReceiver(broadcastReceiver, mIntentFilter);
     }
 
     @Override
@@ -199,8 +370,7 @@ public class AddFoodFragment extends Fragment implements View.OnClickListener{
         super.onStop();
         getContext().unregisterReceiver(broadcastReceiver);
         ChooseStore.getInstance().setStore(null);
-
-
     }
+
 
 }

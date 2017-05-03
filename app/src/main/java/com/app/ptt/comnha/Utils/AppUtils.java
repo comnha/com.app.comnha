@@ -33,7 +33,7 @@ public class AppUtils {
             public void onClick(View v) {
                 Intent snackBarIntent = new Intent();
                 snackBarIntent.setAction(Const.SNACKBAR_GO_ONLINE);
-                snackBarIntent.putExtra(Const.SNACKBAR_GO_ONLINE,type);
+                snackBarIntent.putExtra(Const.SNACKBAR_GO_ONLINE, type);
                 c.sendBroadcast(snackBarIntent);
             }
         });
@@ -47,8 +47,9 @@ public class AppUtils {
     }
 
     public static boolean isEqualsNull(EditText editText) {
-        return editText.getText().toString().trim().length()<=0;
+        return editText.getText().toString().trim().length() <= 0;
     }
+
     public static boolean isTextEqualsNull(String text) {
         return text.trim().equals("");
     }
@@ -60,7 +61,8 @@ public class AppUtils {
     public static void requestPermission(Context context, List<String> listPermission, int type) {
         ActivityCompat.requestPermissions((Activity) context, listPermission.toArray(new String[listPermission.size()]), type);
     }
-    public static void showKeyboard(Context context){
+
+    public static void showKeyboard(Context context) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
@@ -118,6 +120,12 @@ public class AppUtils {
             Toast.makeText(c, text, Toast.LENGTH_LONG).show();
     }
 
+    public static boolean checkEmptyEdt(EditText edt) {
+        if (edt.getText().toString().trim().equals("") || edt.getText().toString().isEmpty()) {
+            return true;
+        }
+        return false;
+    }
 //    public  boolean showSettingGPSAlert() {
 //
 //        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);

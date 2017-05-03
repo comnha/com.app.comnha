@@ -12,7 +12,6 @@ import com.app.ptt.comnha.Fragment.NotificationFragment;
 import com.app.ptt.comnha.Fragment.ProfiledetailFragment;
 import com.app.ptt.comnha.Fragment.SigninFragment;
 import com.app.ptt.comnha.Fragment.SignupFragment;
-import com.app.ptt.comnha.Fragment.ViewpostFragment;
 import com.app.ptt.comnha.Fragment.WritepostFragment;
 import com.app.ptt.comnha.R;
 
@@ -39,7 +38,7 @@ public class AdapterActivity extends AppCompatActivity {
                             .commit();
                 }
             }
-        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frag_localist_CODE))) {
+        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frag_storelist_CODE))) {
             if (findViewById(R.id.frame_adapter) != null) {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
                 }
@@ -52,7 +51,7 @@ public class AdapterActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, addstoreFragment).commit();
                 }
             }
-        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frag_chooseloca_CODE))) {
+        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frag_choosestore_CODE))) {
             if (findViewById(R.id.frame_adapter) != null) {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
 //                    ChooselocaFragment chooselocaFragment = new ChooselocaFragment();
@@ -63,10 +62,10 @@ public class AdapterActivity extends AppCompatActivity {
         } else if (FRAGMENT_CODE.equals(getString(R.string.frg_viewpost_CODE))) {
             if (findViewById(R.id.frame_adapter) != null) {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
-                    ViewpostFragment viewpostFragment = new ViewpostFragment();
-                    viewpostFragment.setArguments(getIntent().getExtras());
-                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, viewpostFragment)
-                            .commit();
+//                    ViewpostFragment viewpostFragment = new ViewpostFragment();
+//                    viewpostFragment.setArguments(getIntent().getExtras());
+//                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, viewpostFragment)
+//                            .commit();
                 }
             }
         } else if (FRAGMENT_CODE.equals(getString(R.string.frg_signin_CODE))) {
@@ -83,17 +82,19 @@ public class AdapterActivity extends AppCompatActivity {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
                     SignupFragment signupFragment = new SignupFragment();
                     signupFragment.setArguments(getIntent().getExtras());
+                    signupFragment.setEmail(intent.getExtras().getString("email"));
+                    signupFragment.setPass(intent.getExtras().getString("pass"));
                     getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, signupFragment)
                             .commit();
                 }
             }
-        } else if (FRAGMENT_CODE.equals(getString(R.string.frag_vote_CODE))) {
+        } else if (FRAGMENT_CODE.equals(getString(R.string.frag_foodetail_CODE))) {
             if (findViewById(R.id.frame_adapter) != null) {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
-//                    DoVoteFragment dovoteFragment = new DoVoteFragment();
-//                    dovoteFragment.setArguments(getIntent().getExtras());
-//                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, dovoteFragment)
-//                            .commit();
+                    FooddetailFragment fooddetailFragment = new FooddetailFragment();
+                    fooddetailFragment.setArguments(getIntent().getExtras());
+                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter,
+                            fooddetailFragment).commit();
                 }
             }
         } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frg_prodetail_CODE))) {

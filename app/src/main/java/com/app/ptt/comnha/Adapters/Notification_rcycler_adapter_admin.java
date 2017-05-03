@@ -16,10 +16,8 @@ import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Models.FireBase.Notification;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
-import com.app.ptt.comnha.Service.MyService;
-import com.app.ptt.comnha.SingletonClasses.ChooseFood;
-import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.SingletonClasses.ChooseNoti;
+import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.SingletonClasses.EditPost;
 
 import java.util.ArrayList;
@@ -83,7 +81,7 @@ public class Notification_rcycler_adapter_admin extends RecyclerView.Adapter<Not
 
             ////LOCATION
 //                if (list.get(position).getType() == 1) {
-//                    String text = list.get(position).getAccount().getUsername() + " đã thêm món " + list.get(position).getFood().getTenmon() + " vào quán " + list.get(position).getStore().getName();
+//                    String text = list.get(position).getAccount().getUsername() + " đã thêm món " + list.get(position).getFood().getName() + " vào quán " + list.get(position).getStore().getName();
 //                    holder.txt_noidung.setText(text);
 //                }
 //                if (list.get(position).getType() == 2) {
@@ -126,7 +124,7 @@ public class Notification_rcycler_adapter_admin extends RecyclerView.Adapter<Not
 //            }
         //Food
 //        if (list.get(position).getType() ==11 ){
-//            String text = list.get(position).getAccount().getUsername() +" đã sửa thông tin món ăn "+ list.get(position).getFood().getTenmon();
+//            String text = list.get(position).getAccount().getUsername() +" đã sửa thông tin món ăn "+ list.get(position).getFood().getName();
 //            holder.txt_noidung.setText(text);
 //        }
 
@@ -164,23 +162,23 @@ public class Notification_rcycler_adapter_admin extends RecyclerView.Adapter<Not
 //                    ChoosePost.getInstance().setType(list.get(position).getPost().getType());
 //                    ChoosePost.getInstance().setUserID(list.get(position).getPost().getUserId());
 //                    if(list.get(position).getType()==1)
-//                        ChoosePost.getInstance().setFoodID(list.get(position).getFood().getMonID());
+//                        ChoosePost.getInstance().setFoodID(list.get(position).getFood().getFoodID());
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     activity.startActivity(intent);
                 }
-                if(list.get(position).getType() ==1) {
-                    Intent intent=new Intent(activity,AdapterActivity.class);
-                    intent.putExtra(activity.getString(R.string.fragment_CODE),activity.getString(R.string.frg_viewfood_CODE));
-                    ChooseFood.getInstance().setFood(list.get(position).getFood());
-                    ChooseFood.getInstance().setLocation(list.get(position).getLocation());
-                    activity.startActivity(intent);
-                }
-                if (!list.get(position).getReaded()) {
-                    holder.txt_date.setTypeface(null, Typeface.NORMAL);
-                    holder.txt_time.setTypeface(null, Typeface.NORMAL);
-                    holder.txt_noidung.setTypeface(null, Typeface.NORMAL);
-                    MyService.setPosNotification(position);
-                }
+//                if(list.get(position).getType() ==1) {
+//                    Intent intent=new Intent(activity,AdapterActivity.class);
+//                    intent.putExtra(activity.getString(R.string.fragment_CODE),activity.getString(R.string.frg_viewfood_CODE));
+//                    ChooseFood.getInstance().setFood(list.get(position).getFood());
+//                    ChooseFood.getInstance().setLocation(list.get(position).getLocation());
+//                    activity.startActivity(intent);
+//                }
+//                if (!list.get(position).getReaded()) {
+//                    holder.txt_date.setTypeface(null, Typeface.NORMAL);
+//                    holder.txt_time.setTypeface(null, Typeface.NORMAL);
+//                    holder.txt_noidung.setTypeface(null, Typeface.NORMAL);
+//                    MyService.setPosNotification(position);
+//                }
             }
         });
 

@@ -5,11 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -20,27 +20,26 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.ptt.comnha.Activity.AdapterActivity;
-import com.app.ptt.comnha.Adapters.Reviewlist_rcyler_adapter;
-import com.app.ptt.comnha.Classes.RecyclerItemClickListener1;
+import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
 import com.app.ptt.comnha.Models.FireBase.Food;
-import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
-import com.app.ptt.comnha.SingletonClasses.EditLocal;
+import com.app.ptt.comnha.SingletonClasses.ChooseFood;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -49,24 +48,22 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  */
 public class FooddetailFragment extends Fragment {
-    private String locaID;
     private static final String LOG = FooddetailFragment.class.getSimpleName();
     DatabaseReference dbRef;
-    RecyclerView mRecyclerView, menuRecyclerView, albumRecyclerView;
-    RecyclerView.Adapter mAdapter, menuAdapter, albumAdapter;
-    RecyclerView.LayoutManager mlayoutManager, albumLayoutManager;
-    TextView txt_name, txt_diachi, txt_ratingText,txt_tenmon;
+    StorageReference stRef;
+    ArrayList<Food> foodList;
+    RecyclerView postRecyclerView;
+    Post_recycler_adapter postAdapter;
+    RecyclerView.LayoutManager postLayoutManager;
+    TextView txt_name, txt_price, txt_comment;
+    ImageView imgv_photo;
     RatingBar ratingBar;
     ArrayList<Post> postlist;
-    ValueEventListener locationValueEventListener;
-    ChildEventListener postChildEventListener, imageChildEventListener;
+    ChildEventListener postChildListener;
     ActionBar actionBar;
     Toolbar toolbar;
-    StorageReference storeRef;
-    com.app.ptt.comnha.Models.FireBase.Store location;
-    ArrayList<Food> foodList;
-    ArrayList<Image> files;
-    TextView txtalbum;
+    Food food = ChooseFood.getInstance().getFood();
+    String storeID = "", foodID = "";
     public static final String mBroadcastSendAddress = "mBroadcastSendAddress";
     boolean isConnected = false;
     IntentFilter mIntentFilter;
@@ -111,30 +108,16 @@ public class FooddetailFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fooddetail, container, false);
+        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
         isConnected = MyService.returnIsNetworkConnected();
 //        locaID = ChooseFood.getInstance().getStore().getLocaID();
-        storeRef = FirebaseStorage.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebaseStorage_path));
-        if (locaID != null) {
-            andxa(view);
-            {
-                getData();
-//                txt_name.setText(ChooseFood.getInstance().getStore().getName());
-//                txt_diachi.setText(ChooseFood.getInstance().getStore().getDiachi());
-//                txt_tenmon.setText(ChooseFood.getInstance().getFood().getTenmon());
-//                ratingBar.setNumStars(3);
-//                ratingBar.setRating(ChooseFood.getInstance().getFood().getDanhGia());
-////                float temp=ChooseFood.getInstance().getFood().getDanhGia();
-//                if (temp < 1.5) {
-//                    txt_ratingText.setText("Dở tệ");
-//                }
-//                if (temp > 1.5 &&temp < 2.5) {
-//                    txt_ratingText.setText("Bình thường");
-//                }
-//                if (temp >= 2.5) {
-//                    txt_ratingText.setText("Ngon tuyệt");
-//                }
-                return view;
-            }
+        stRef = FirebaseStorage.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebaseStorage_path));
+        if (food != null) {
+            storeID = food.getStoreID();
+            foodID = food.getFoodID();
+            ref(view);
+            getData();
+            return view;
         }
 
 
@@ -142,20 +125,26 @@ public class FooddetailFragment extends Fragment {
     }
 
     public void getData() {
-        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
-
-        postChildEventListener = new ChildEventListener() {
+        txt_comment.setText(food.getComment());
+        txt_name.setText(food.getName());
+        txt_price.setText(food.getPrice() + "");
+        ratingBar.setRating(food.getTotal() == 0 ? 0 : food.getRating() / food.getTotal());
+        StorageReference imgRef = stRef.child(food.getFoodImg());
+        imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Picasso.with(getContext())
+                        .load(uri)
+                        .into(imgv_photo);
+            }
+        });
+        postChildListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Post post = dataSnapshot.getValue(Post.class);
-//                post.setPostID(dataSnapshot.getKey());
-//                if(post.getVisible()) {
-//                    if (post.getType() == 1 && post.getFood().getMonID().equals(ChooseFood.getInstance().getFood().getMonID())) {
-//                        Log.i("Mon id:" + post.getFood().getMonID(), "Mon:" + ChooseFood.getInstance().getFood().getMonID());
-//                        postlist.add(post);
-//                        mAdapter.notifyDataSetChanged();
-//                    }
-//                }
+                post.setPostID(dataSnapshot.getKey());
+                postlist.add(post);
+                postAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -180,113 +169,86 @@ public class FooddetailFragment extends Fragment {
         };
 
         dbRef.child(
-                getResources().getString(R.string.posts_CODE)).orderByChild("locaID").equalTo(locaID)
-                .addChildEventListener(postChildEventListener);
+                getResources().getString(R.string.posts_CODE))
+                .orderByChild("foodID")
+                .equalTo(foodID)
+                .addChildEventListener(postChildListener);
 
     }
 
-    private void andxa(View view) {
-        txtalbum = (TextView) view.findViewById(R.id.food_detail_txtAlbum);
-        toolbar = (Toolbar) view.findViewById(R.id.food_detail_toolbar);
-        txt_diachi = (TextView) view.findViewById(R.id.food_detail_txt_diachi);
-        txt_name = (TextView) view.findViewById(R.id.food_detail_txt_tenquan);
-        txt_tenmon=(TextView) view.findViewById(R.id.food_detail_tenmon);
-        ratingBar = (RatingBar) view.findViewById(R.id.food_detail_ratingbar);
+    private void ref(View view) {
+        txt_name = (TextView) view.findViewById(R.id.txtv_name_fooddetail);
+        txt_price = (TextView) view.findViewById(R.id.txtv_price_fooddetail);
+        txt_comment = (TextView) view.findViewById(R.id.txtv_comment_fooddetail);
+        imgv_photo = (ImageView) view.findViewById(R.id.imgv_photo_fooddetail);
+        ratingBar = (RatingBar) view.findViewById(R.id.rb_rating_fooddetail);
         ratingBar.setIsIndicator(true);
-        txt_ratingText = (TextView) view.findViewById(R.id.food_detail_ratingtext);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(toolbar);
-        actionBar = activity.getSupportActionBar();
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setTitle("Location Detail");
+        toolbar = (Toolbar) view.findViewById(R.id.toolbar_fooddetail);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         setHasOptionsMenu(true);
-        postlist = new ArrayList<Post>();
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.food_detail_rcyler_review);
-        mRecyclerView.setHasFixedSize(true);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-        linearLayoutManager.setReverseLayout(true);
-        linearLayoutManager.setStackFromEnd(true);
-        mlayoutManager = linearLayoutManager;
-        mRecyclerView.setLayoutManager(mlayoutManager);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        mAdapter = new Reviewlist_rcyler_adapter(postlist, getActivity(), 2);
-        mRecyclerView.setAdapter(mAdapter);
-
-
-        foodList = new ArrayList<>();
-
-        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener1(getActivity().getApplicationContext()
-                , new RecyclerItemClickListener1.OnItemClickListener() {
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
-                if (isConnected) {
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
+        toolbar.setTitle(getString(R.string.txt_fooddetail));
+
+        postlist = new ArrayList<>();
+        postRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_post_fooddetail);
+        postRecyclerView.setHasFixedSize(true);
+        foodList = new ArrayList<>();
+        postLayoutManager = new LinearLayoutManager(getContext(),
+                LinearLayoutManager.VERTICAL,
+                false);
+        postRecyclerView.setLayoutManager(postLayoutManager);
+        postAdapter = new Post_recycler_adapter(postlist, getActivity(), stRef);
+        postRecyclerView.setAdapter(postAdapter);
+
+
+        postAdapter.setOnItemClickLiestner(new Post_recycler_adapter.OnItemClickLiestner() {
+            @Override
+            public void onItemClick(Post post) {
+
+            }
+        });
 //                    if (LoginSession.getInstance().getUserID() == null) {
 //                        Toast.makeText(getActivity(), getString(R.string.txt_needlogin),
 //                                Toast.LENGTH_SHORT).show();
 //                    } else {
-                    Intent intent = new Intent(getActivity(), AdapterActivity.class);
-                    intent.putExtra(getString(R.string.fragment_CODE), getString(R.string.frg_viewpost_CODE));
-//                    ChoosePost.getInstance().setPostID(postlist.get(position).getPostID());
-                    // ChoosePost.getInstance().setTinh(tinh);
-                    // ChoosePost.getInstance().setHuyen(huyen);
-                    startActivity(intent);
+//        Intent intent = new Intent(getActivity(), AdapterActivity.class);
+//        intent.putExtra(getString(R.string.fragment_CODE), getString(R.string.frg_viewpost_CODE));
+////                    ChoosePost.getInstance().setPostID(postlist.get(position).getPostID());
+//        // ChoosePost.getInstance().setTinh(tinh);
+//        // ChoosePost.getInstance().setHuyen(huyen);
+//        startActivity(intent);
 //                    }
-                } else Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
-            }
-        }));
+//                } else Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.add(Menu.NONE, 0, Menu.NONE, getString(R.string.txt_reportfood));
+        menu.add(Menu.NONE, 1, Menu.NONE, getString(R.string.txt_updatefood));
+        menu.add(Menu.NONE, 2, Menu.NONE, getString(R.string.text_delfood));
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.option_menu_fooddetail, menu);
-        MenuItem ycx =menu.findItem(R.id.menu_fooddetail_ycxoa);
-        MenuItem sua=menu.findItem(R.id.menu_fooddetail_sua);
-        MenuItem xoa=menu.findItem(R.id.menu_fooddetail_xoa);
-        MenuItem report=menu.findItem(R.id.menu_fooddetail_report);
-        if(MyService.getUserAccount().getRole()){
-            sua.setVisible(true);
-            xoa.setVisible(true);
-        }
-//        else if(MyService.getUserAccount().getId().equals(ChooseFood.getInstance().getFood().getUserID())){
-//            sua.setVisible(true);
-//            ycx.setVisible(true);
-//        }else{
-//            report.setVisible(true);
-//        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                getActivity().finish();
+            case 0:
                 return true;
-            case R.id.menu_fooddetail_sua:
-                EditFoodDialogFragment editFoodDialogFragment = new EditFoodDialogFragment();
-                editFoodDialogFragment.show(getActivity().getSupportFragmentManager(), "fragment_editFood");
+            case 1:
                 return true;
-            case R.id.menu_fooddetail_report:
-                if (isConnected) {
-                    EditLocal.getInstance().setStore(location);
-                    EditStoreDialogFragment reportStoreDialog = new EditStoreDialogFragment();
-                    reportStoreDialog.show(getActivity().getSupportFragmentManager(), "fragment_reportStore");
-                    return true;
-                } else Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
-            case R.id.menu_fooddetail_xoa:
-                Toast.makeText(getContext(), "Đã xóa", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.menu_fooddetail_ycxoa:
+            case 2:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
 
 
     @Override

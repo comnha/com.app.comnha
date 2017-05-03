@@ -80,13 +80,15 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
                     Intent intent = new Intent(getActivity().getApplicationContext(), AdapterActivity.class);
                     intent.putExtra(getActivity().getResources().getString(R.string.fragment_CODE),
                             getActivity().getResources().getString(R.string.frg_signup_CODE));
+                    intent.putExtra("email",AppUtils.getText(edt_email));
+                    intent.putExtra("pass",AppUtils.getText(edt_pass));
                     //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivityForResult(intent, Const.INTENT_KEY_SIGN_UP);
                 } else {
                     showSnackbar(getActivity(), getView(), "Không có kết nối internet", "Kết nối", Const.SNACKBAR_GO_ONLINE);
                 }
                 break;
-            case btn_siFrg_signin:
+            case R.id.btn_siFrg_signin:
                 if (isNetworkConnected) {
                     doSignin(view);
                 } else
@@ -131,7 +133,8 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
 
     void doSignin(View view) {
         if(checkInput(view)){
-                auth.signInWithEmailAndPassword(edt_email.getText().toString(), edt_pass.getText().toString())
+                auth.signInWithEmailAndPassword(edt_email.getText().toString(),
+                        edt_pass.getText().toString())
                         .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {

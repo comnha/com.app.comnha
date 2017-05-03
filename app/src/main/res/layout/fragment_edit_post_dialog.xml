@@ -135,7 +135,7 @@
                             android:numStars="3"
                             android:stepSize="1"
                             android:rating="2"
-                            android:id="@+id/rb_danhGiaMon"
+                            android:id="@+id/item_rcyler_food_rb_rating"
                             />
                     </LinearLayout>
 

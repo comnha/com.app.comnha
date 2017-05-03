@@ -103,11 +103,11 @@ public class Reviewlist_rcyler_adapter extends RecyclerView.Adapter<Reviewlist_r
 
         }else {
 //            if (list.get(position).getType() == 1) {
-//                holder.txt_tenmon.setText(list.get(position).getFood().getTenmon());
-//                holder.txt_gia.setText(list.get(position).getFood().getGia() + " đ");
+//                holder.txt_tenmon.setText(list.get(position).getFood().getName());
+//                holder.txt_price.setText(list.get(position).getFood().getGia() + " đ");
 //            } else {
 //                holder.txt_tenmon.setText("");
-//                holder.txt_gia.setText("");
+//                holder.txt_price.setText("");
 //            }
 //            if (list.get(position).getHinh() != null)
 //                Picasso.with(activity)

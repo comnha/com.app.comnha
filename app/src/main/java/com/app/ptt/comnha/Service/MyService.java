@@ -15,9 +15,9 @@ import android.provider.Settings;
 import android.util.Log;
 
 import com.app.ptt.comnha.Const.Const;
-import com.app.ptt.comnha.Models.FireBase.Account;
 import com.app.ptt.comnha.Models.FireBase.Notification;
 import com.app.ptt.comnha.Models.FireBase.Store;
+import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.Utils.MyTool;
 import com.app.ptt.comnha.Utils.Storage;
 
@@ -78,17 +78,17 @@ public class MyService extends Service {
 
     static ArrayList<Notification> notifications;
 
-    public static Account getUserAccount() {
+    public static User getUserAccount() {
         return userAccount;
     }
 
-    public static void setUserAccount(Account mUserAccount) {
+    public static void setUserAccount(User mUserAccount) {
         userAccount = mUserAccount;
     }
 
-    private static Account userAccount;
-    public boolean isNetworkConnected = false,isLocationConnected=false;
-    static boolean isNetworkConnectedStatic = false, isSuccess = false,isLocationConnectedStatic=false;
+    private static User userAccount;
+    public boolean isNetworkConnected = false, isLocationConnected = false;
+    static boolean isNetworkConnectedStatic = false, isSuccess = false, isLocationConnectedStatic = false;
     public boolean isSaved = false;
     MyTool myTool;
     static String changeContent = "";
@@ -257,27 +257,27 @@ public class MyService extends Service {
                     context.sendBroadcast(broadcastIntent);
                 }
             }
-            if(intent.getAction().equals(Const.BROADCAST_CONNECTIVITY_CHANGE)){
-                if(isNetworkAvailable(context)) {
-                    isNetworkConnected=true;
-                    isNetworkConnectedStatic=true;
+            if (intent.getAction().equals(Const.BROADCAST_CONNECTIVITY_CHANGE)) {
+                if (isNetworkAvailable(context)) {
+                    isNetworkConnected = true;
+                    isNetworkConnectedStatic = true;
                     broadcastIntent.setAction(Const.BROADCAST_SEND_STATUS_INTERNET);
                     broadcastIntent.putExtra(Const.BROADCAST_SEND_STATUS_INTERNET, Const.CONNECTED);
-                }else{
-                        isNetworkConnected=false;
-                        isNetworkConnectedStatic=false;
-                        broadcastIntent.setAction(Const.BROADCAST_SEND_STATUS_INTERNET);
-                        broadcastIntent.putExtra(Const.BROADCAST_SEND_STATUS_INTERNET, Const.NOTCONNECTED);
+                } else {
+                    isNetworkConnected = false;
+                    isNetworkConnectedStatic = false;
+                    broadcastIntent.setAction(Const.BROADCAST_SEND_STATUS_INTERNET);
+                    broadcastIntent.putExtra(Const.BROADCAST_SEND_STATUS_INTERNET, Const.NOTCONNECTED);
 
                 }
-            context.sendBroadcast(broadcastIntent);
+                context.sendBroadcast(broadcastIntent);
             }
-            if(intent.getAction().equals(Const.BROADCAST_PROVIDER_CHANGED)){
+            if (intent.getAction().equals(Const.BROADCAST_PROVIDER_CHANGED)) {
                 if (canGetLocation(context)) {
                     myTool = new MyTool(context);
-                }else {
-                    isLocationConnected=false;
-                    isLocationConnectedStatic=false;
+                } else {
+                    isLocationConnected = false;
+                    isLocationConnectedStatic = false;
                     broadcastIntent.setAction(Const.BROADCAST_SEND_STATUS_GET_LOCATION);
                     broadcastIntent.putExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION, Const.NOTCONNECTED);
                 }
@@ -298,7 +298,7 @@ public class MyService extends Service {
         }
 
         private boolean isNetworkAvailable(Context context) {
-            boolean flag=false;
+            boolean flag = false;
             ConnectivityManager connectivity = (ConnectivityManager)
                     context.getSystemService(Context.CONNECTIVITY_SERVICE);
             if (connectivity != null) {
@@ -307,7 +307,7 @@ public class MyService extends Service {
                 if (info != null) {
                     for (int i = 0; i < info.length; i++) {
                         if (info[i].getState() == NetworkInfo.State.CONNECTED) {
-                            flag=true;
+                            flag = true;
                             break;
                         }
                     }

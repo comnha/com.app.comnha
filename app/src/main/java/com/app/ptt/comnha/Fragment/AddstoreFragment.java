@@ -42,6 +42,7 @@ import com.app.ptt.comnha.Modules.PlaceAttribute;
 import com.app.ptt.comnha.Modules.Times;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
+import com.app.ptt.comnha.Utils.AppUtils;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -301,11 +302,11 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.frg_addloction_txtv_save:
-                if (checkEmptyEdt(edt_storeName)) {
+                if (AppUtils.checkEmptyEdt(edt_storeName)) {
                     edt_storeName.setError(getString(R.string.txt_nostorename));
-                } else if (checkEmptyEdt(edt_address)) {
+                } else if (AppUtils.checkEmptyEdt(edt_address)) {
                     edt_address.setError(getString(R.string.txt_noaddress));
-                } else if (checkEmptyEdt(edt_phoneNumb)) {
+                } else if (AppUtils.checkEmptyEdt(edt_phoneNumb)) {
                     edt_phoneNumb.setError(getText(R.string.txt_nophonenumb));
                 } else {
                     savestore();
@@ -349,7 +350,8 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
             Log.d("path", selectedImage.getUri().toString());
             uploadImgDialog.show();
             StorageReference mStorageReference = stRef.child(storeimg);
-            uploadTask = mStorageReference.putFile(Uri.fromFile(new File(selectedImage.getUri().toString())));
+            uploadTask = mStorageReference.putFile(
+                    Uri.fromFile(new File(selectedImage.getUri().toString())));
 
             uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -384,7 +386,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         mProgressDialog.dismiss();
-                                        Toast.makeText(getContext(), getString(R.string.text_addloca_succes)
+                                        Toast.makeText(getContext(), getString(R.string.text_addloca_succ)
                                                 , Toast.LENGTH_LONG).show();
                                         getActivity().finish();
                                     }
@@ -408,7 +410,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
                 @Override
                 public void onSuccess(Void aVoid) {
                     mProgressDialog.dismiss();
-                    Toast.makeText(getContext(), getString(R.string.text_addloca_succes)
+                    Toast.makeText(getContext(), getString(R.string.text_addloca_succ)
                             , Toast.LENGTH_LONG).show();
                     getActivity().finish();
                 }
@@ -423,12 +425,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
-    private boolean checkEmptyEdt(EditText edt) {
-        if (edt.getText().toString().trim().equals("") || edt.getText().toString().isEmpty()) {
-            return true;
-        }
-        return false;
-    }
+
 
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {

@@ -5,6 +5,7 @@
     <string name="text_admin_selection_news">Thông báo thêm mới: từ bài đánh giá, quán ăn</string>
     <string name="text_admin_selection_reports">Thông báo report: từ những bài đánh giá, hình ảnh, quán ăn, món ăn</string>
     <string name="text_del">Xóa</string>
+    <string name="text_delfood">Xóa món ăn</string>
     <string name="text_rate">Đánh giá quán ăn</string>
     <string name="text_addimg">Đánh giá quán ăn</string>
     <string name="text_post">Bài viết</string>
@@ -13,8 +14,8 @@
     <string name="text_admin_block_post_notify_newpost">Chặn \"Đăng Review\"</string>
     <string name="text_tenquan">Tên quán</string>
     <string name="text_btnsendreport">Gửi</string>
-    <string name="text_tenMon">Tên món ăn</string>
-    <string name="text_themMon">Thêm món ăn</string>
+    <string name="text_foodname">Tên món ăn</string>
+    <string name="text_addfood">Thêm món ăn</string>
     <string name="text_tinhTP">Tỉnh/Thành phố</string>
     <string name="text_thucdon">Thực đơn</string>
     <string name="text_quanhuyen">Quận/Huyện</string>
@@ -31,7 +32,7 @@
     <string name="text_servicerate">Phục vụ</string>
     <string name="text_save">Save</string>
     <string name="text_saveaddloca">Lưu địa điểm</string>
-    <string name="text_add">Thêm mới</string>
+    <string name="text_add">Thêm</string>
     <string name="text_foodcateName">Tên loại món</string>
     <string name="text_cancel">Hủy</string>
     <string name="text_address">Địa chỉ</string>
@@ -64,20 +65,21 @@
     <string name="text_select">Chọn</string>
     <string name="text_taomoi">Tạo mới</string>
     <string name="text_signup_successful">Đăng kí thành công!!!</string>
-    <string name="text_addnewFoodCate_successful">Thêm loại món mới thành công!!!</string>
-    <string name="text_addloca_succes">Thêm địa điểm thành công</string>
+    <string name="text_addfood_succ">Bạn vừa thêm món</string>
+    <string name="text_addfood_failed">Lỗi thêm món ăn</string>
+    <string name="text_addloca_succ">Thêm địa điểm thành công</string>
     <string name="title_activity_nav_draw">NavDrawActivity</string>
     <string name="text_addloca">Thêm địa điểm mới</string>
     <string name="text_dangreview">Thêm review</string>
     <string name="text_themanh">Thêm ảnh</string>
-    <string name="text_comment">Bình luận</string>
+    <string name="text_comment1">Nhận xét</string>
     <string name="text_like">Thích</string>
     <string name="text_hello">Xin chào</string>
     <string name="text_user">User</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
-    <string name="txt_writecomment">Viết bình luận......</string>
+    <string name="txt_writecomment">Viết bình luận …</string>
     <!--ERROR-->
     <string name="txt_needlogin">Bạn cần đăng nhập</string>
     <string name="txt_noemail">Bạn chưa nhập email</string>
@@ -101,8 +103,8 @@
     <string name="txt_norate">Warning: Chưa đánh giá</string>
     <string name="txt_addinlocaerr">Bạn không thể thêm địa điểm mới</string>
     <string name="txt_nochosephoto">Warning: Chưa chọn ảnh nào</string>
-    <string name="txt_noTenMon">Warning: Chưa nhập tên món ăn</string>
-    <string name="txt_nogiaMon">Warning: Chưa nhập giá món ăn</string>
+    <string name="txt_nofoodname">Bạn chưa điền tên món ăn</string>
+    <string name="txt_nofoodprice">Bạn chưa điền giá món ăn</string>
     <string name="txt_noChoseProvince">Warning: Chưa chọn Tỉnh/Thành phố</string>
     <string name="txt_noChoseDistrict">Warning: Chưa chọn Quận/Huyện</string>
     <string name="txt_noChoseFood">Warning: Chưa chọn món ăn</string>
@@ -139,7 +141,7 @@
     <string name="txt_local">Vị trí:</string>
     <string name="txt_localview">Xem theo Quán ăn\t</string>
     <string name="txt_reviewview">Xem theo Review\t</string>
-    <string name="txt_reportStore">Report</string>
+    <string name="txt_report">Report</string>
     <string name="txt_followtStore">Theo dõi</string>
     <string name="txt_xoataca">Xóa tất cả</string>
     <string name="txt_setdadoc">Đọc tất cả</string>
@@ -166,13 +168,14 @@
     <string name="check2">5NX62wZ6JBQNu8zPNydI6qeJC5I3</string>
     <!--CODE-->
     <string name="DATA_FROM_FRAG">datafromfrag</string>
-    <string name="frag_localist_CODE">localist</string>
+    <string name="frag_storelist_CODE">storelist</string>
     <string name="frag_about_CODE">about</string>
+    <string name="frag_foodetail_CODE">fooddetail</string>
     <string name="frag_chooseimg_CODE">chooseimg</string>
-    <string name="frag_chooseloca_CODE">chooseloca</string>
-    <string name="frag_addstore_CODE">addloca</string>
+    <string name="frag_choosestore_CODE">choosestore</string>
+    <string name="frag_addstore_CODE">addstore</string>
     <string name="frag_map_CODE">map</string>
-    <string name="frag_writepost_CODE">addpost</string>
+    <string name="frag_writepost_CODE">writepost</string>
     <string name="frag_menu_CODE">menu</string>
     <string name="frg_viewpost_CODE">viewpost</string>
     <string name="frg_viewfood_CODE">viewfood</string>
@@ -199,7 +202,7 @@
     <string name="reportFood_CODE">FoodReports/</string>
     <string name="reportPost_CODE">PostReports/</string>
     <string name="reportimg_CODE">ImgReports/</string>
-    <string name="thucdon_CODE">Food/</string>
+    <string name="food_CODE">Foods/</string>
     <string name="notify_newstore_CODE">NotifyNewStore/</string>
     <string name="notify_newpost_CODE">NotifyNewPost/</string>
     <string name="locathucdon_CODE">StoreFood/</string>
@@ -606,4 +609,9 @@
     <string name="txt_comment">&#160;Bình luận</string>
     <string name="txt_like">&#160;Yêu thích</string>
     <string name="_ID">ID</string>
+    <string name="txt_nodescribefood">Bạn chưa viết mô tả cho món ăn này</string>
+    <string name="text_fooddescribe">Mô tả món ăn</string>
+    <string name="txt_reportfood">Report món ăn</string>
+    <string name="txt_updatefood">Sửa món ăn</string>
+    <string name="txt_fooddetail">Thông tin món ăn</string>
 </resources>

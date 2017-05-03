@@ -35,33 +35,52 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/edt_title_writepost"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:background="@android:color/transparent"
-                android:gravity="start"
-                android:hint="@string/text_title"
-                android:inputType="text"
-                android:lines="1"
-                android:textColor="@android:color/black"
-                android:textColorHint="#7f000000" />
+                app:counterEnabled="false"
+                app:errorEnabled="false"
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="false">
 
-            <EditText
-                android:id="@+id/edt_content_writepost"
+                <EditText
+                    android:id="@+id/edt_title_writepost"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:gravity="start"
+                    android:hint="@string/text_title"
+                    android:inputType="text"
+                    android:lines="1"
+                    android:nextFocusDown="@+id/edt_content_writepost"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="#7f000000" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:background="@android:color/transparent"
-                android:gravity="start"
-                android:hint="@string/text_content"
-                android:inputType="textMultiLine"
-                android:textColor="@android:color/black"
-                android:textColorHint="#7f000000" />
+                app:counterEnabled="true"
+                app:counterMaxLength="500"
+                app:errorEnabled="true"
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="false">
 
+                <EditText
+                    android:id="@+id/edt_content_writepost"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:gravity="start"
+                    android:hint="@string/text_content"
+                    android:inputType="textMultiLine"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="#7f000000" />
+            </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

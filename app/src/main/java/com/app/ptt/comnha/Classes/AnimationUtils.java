@@ -29,7 +29,7 @@ public class AnimationUtils {
 
     public static void animateItemRcylerV(RecyclerView.ViewHolder holder, boolean goesDown) {
         ObjectAnimator animatorTraslateY = ObjectAnimator.ofFloat(holder.itemView,
-                "translationY", goesDown == true ? -500 : 500, 0);
+                "translationY", goesDown ? -500 : 500, 0);
         animatorTraslateY.setDuration(500);
         animatorTraslateY.start();
     }

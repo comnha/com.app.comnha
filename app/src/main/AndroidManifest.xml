@@ -3,10 +3,10 @@
     package="com.app.ptt.comnha">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-role android:name="android.role.ACCESS_COARSE_LOCATION" />
+    <uses-role android:name="android.role.ACCESS_FINE_LOCATION" />
+    <uses-role android:name="android.role.INTERNET" />
+    <uses-role android:name="android.role.ACCESS_NETWORK_STATE" />
 
     <uses-feature android:name="android.hardware.store.gps" />
 

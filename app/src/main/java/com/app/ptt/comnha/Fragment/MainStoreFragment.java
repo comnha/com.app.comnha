@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.app.ptt.comnha.Activity.StoreDeatailActivity;
-import com.app.ptt.comnha.Adapters.Store_recyler_adapter;
+import com.app.ptt.comnha.Adapters.Store_recycler_adapter;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 public class MainStoreFragment extends Fragment {
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager layoutManager;
-    Store_recyler_adapter itemadapter;
+    Store_recycler_adapter itemadapter;
     ArrayList<Store> items;
     DatabaseReference dbRef;
     ChildEventListener childEventListener;
@@ -100,20 +100,18 @@ public class MainStoreFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         items = new ArrayList<>();
-        itemadapter = new Store_recyler_adapter(items, getContext());
-        itemadapter.setOnItemClickLiestner(new Store_recyler_adapter.OnItemClickLiestner() {
+        itemadapter = new Store_recycler_adapter(items, getContext());
+        itemadapter.setOnItemClickLiestner(new Store_recycler_adapter.OnItemClickLiestner() {
             @Override
-            public void onItemClick(Store store,View itemView) {
+            public void onItemClick(Store store, View itemView) {
                 Intent intent_storedetail = new Intent(getContext(), StoreDeatailActivity.class);
                 intent_storedetail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 ActivityOptionsCompat optionsCompat
                         = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        getActivity(), itemView.findViewById(R.id.item_list_imgV), "avatarStore");
-
-                intent_storedetail.putExtra(getString(R.string.fragment_CODE),
-                        getString(R.string.frag_storedetail_CODE));
+                        getActivity(), itemView.findViewById(R.id.item_list_imgV),
+                        "avatarStore");
                 ChooseStore.getInstance().setStore(store);
-                startActivity(intent_storedetail,optionsCompat.toBundle());
+                startActivity(intent_storedetail, optionsCompat.toBundle());
             }
         });
         mRecyclerView.setAdapter(itemadapter);

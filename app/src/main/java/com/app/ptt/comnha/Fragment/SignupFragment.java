@@ -42,6 +42,7 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
     private Calendar now;
     private int day, month, year;
     private String childDirection;
+    String email, pass;
 
     public SignupFragment() {
         // Required empty public constructor
@@ -62,7 +63,9 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
         editText_tenlot = (EditText) view.findViewById(R.id.editText_tenLot_signup);
         editText_un = (EditText) view.findViewById(R.id.editText_un_signup);
         editText_email = (EditText) view.findViewById(R.id.editText_email_signup);
+        editText_email.setText(email);
         editText_password = (EditText) view.findViewById(R.id.editText_password_signup);
+        editText_password.setText(pass);
         editText_confirmPass = (EditText) view.findViewById(R.id.editText_confirmPass_signup);
         editText_birth = (EditText) view.findViewById(R.id.editText_birth_signup);
         butt_signup = (Button) view.findViewById(R.id.butt_signup);
@@ -251,4 +254,12 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
     }
 
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
 }

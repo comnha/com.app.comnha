@@ -63,10 +63,10 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
     private String postID;
     ArrayList<Bitmap> listBitmap;
     private static final String LOG = ViewpostFragment.class.getSimpleName();
-    ImageView img_option,img_post;
+    ImageView img_option, img_post;
     TextView txt_un, txt_date, txt_title,
             txt_content, txt_likenumb, btn_like, btn_comment,
-            txt_gia, txt_vs, txt_pv,txt_monan,txt_giamonan;
+            txt_gia, txt_vs, txt_pv, txt_monan, txt_giamonan;
     Button btn_sendcomment;
     boolean deletesuccess;
     RatingBar ratingBar;
@@ -121,11 +121,11 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
         storeRef = FirebaseStorage.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebaseStorage_path));
         postID = ChoosePost.getInstance().getPostID();
-        listBitmap=new ArrayList<>();
-        albumList=new ArrayList<>();
-        childUpdates=new HashMap<>();
+        listBitmap = new ArrayList<>();
+        albumList = new ArrayList<>();
+        childUpdates = new HashMap<>();
         anhxa(view);
-        postFood=new Food();
+        postFood = null;
         mProgressDialog.show();
 //        tracklocaValueEventListener = new ValueEventListener() {
 //            @Override
@@ -164,7 +164,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
                     Log.d("checkListenerFromImages", "have changed");
                     final Image image = dataSnapshot.getValue(Image.class);
 //                    image.setImageID(dataSnapshot.getKey());
-//                    storeRef.child(getResources().getString(R.string.images_CODE)
+//                    stRef.child(getResources().getString(R.string.images_CODE)
 //                            + image.getName())
 //                            .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
 //                        @Override
@@ -217,7 +217,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                txt_un.setText(post.getUserName());
 //                Picasso.with(getContext()).load(post.getHinh()).into(img_post);
 //                txt_likenumb.setText(post.getLikeCount() + " Likes   " + post.getCommentCount() + " Comments");
-//                txt_gia.setText(post.getGia() + "");
+//                txt_price.setText(post.getPrice() + "");
 //                txt_pv.setText(post.getPhucvu() + "");
 //                txt_vs.setText(post.getVesinh() + "");
 //                if(post.getType()==2) {
@@ -229,12 +229,12 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                    txt_monan.setVisibility(View.VISIBLE);
 //                    ratingBar.setVisibility(View.VISIBLE);
 //                    postFood=post.getFood();
-//                    txt_giamonan.setText(postFood.getGia()+" đ");
-//                    txt_monan.setText("Tên món: "+postFood.getTenmon());
+//                    txt_giamonan.setText(postFood.getPrice()+" đ");
+//                    txt_monan.setText("Tên món: "+postFood.getName());
 //                    ratingBar.setIsIndicator(true);
 //                    ratingBar.setNumStars(3);
 //                    ratingBar.setStepSize(1);
-//                    ratingBar.setRating(postFood.getDanhGia());
+//                    ratingBar.setRating(postFood.getRating());
 //                }
 
                 mProgressDialog.dismiss();
@@ -284,42 +284,42 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
                 .addChildEventListener(commentChildEventListener);
         dbRef.child(getString(R.string.images_CODE)).orderByChild("postID").equalTo(postID)
                 .addChildEventListener(albumChildEventListener);
-        if( ChoosePost.getInstance().getType()==1) {
-                dbRef.child(getResources().getString(R.string.thucdon_CODE) )
-                        .addChildEventListener(new ChildEventListener() {
-                            @Override
-                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                                if(dataSnapshot.getKey().equals(ChoosePost.getInstance().getFoodID())) {
-                                    Food food = dataSnapshot.getValue(Food.class);
-                                    mainFood = food;
-//                                    mainFood.setMonID(dataSnapshot.getKey());
-
-                                }
+        if (ChoosePost.getInstance().getType() == 1) {
+            dbRef.child(getResources().getString(R.string.food_CODE))
+                    .addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                            if (dataSnapshot.getKey().equals(ChoosePost.getInstance().getFoodID())) {
+                                Food food = dataSnapshot.getValue(Food.class);
+                                mainFood = food;
+//                                    mainFood.setFoodID(dataSnapshot.getKey());
 
                             }
 
-                            @Override
-                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                        }
 
-                            }
+                        @Override
+                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-                            @Override
-                            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                        }
 
-                            }
+                        @Override
+                        public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-                            @Override
-                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                        }
 
-                            }
+                        @Override
+                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                        }
 
-                            }
-                        });
-            }
-        if(MyService.getUserAccount()!=null) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+        }
+        if (MyService.getUserAccount() != null) {
 //            dbRef.child(getResources().getString(R.string.notification_CODE) + ChoosePost.getInstance().getUserID()).
 //                    addChildEventListener(new ChildEventListener() {
 //                                              @Override
@@ -391,8 +391,8 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
         mProgressDialog.setMessage(getString(R.string.txt_plzwait));
         mProgressDialog.setCancelable(false);
         mProgressDialog.setIndeterminate(true);
-        img_post=(ImageView) view.findViewById(R.id.frg_viewrev_img_user);
-        mBitmap=BitmapFactory.decodeResource(getResources(),R.drawable.ic_logo);
+        img_post = (ImageView) view.findViewById(R.id.frg_viewrev_img_user);
+        mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_logo);
         img_option = (ImageView) view.findViewById(R.id.frg_viewreview_imgoption);
         txt_albums = (TextView) view.findViewById(R.id.frg_frg_viewpost_txt_album);
         linearAlbum = (LinearLayout) view.findViewById(R.id.frg_viewrev_lnearAlbum);
@@ -405,14 +405,14 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
         txt_content = (TextView) view.findViewById(R.id.frg_viewrev_txtv_content);
         txt_likenumb = (TextView) view.findViewById(R.id.frg_viewrev_txtv_likenumb);
         btn_like = (TextView) view.findViewById(R.id.frg_viewrev_txtv_like);
-        ratingBar=(RatingBar) view.findViewById(R.id.rb_danhGiaMon);
-        txt_monan=(TextView) view.findViewById(R.id.frg_viewrev_txtv_monan);
-        txt_giamonan=(TextView) view.findViewById(R.id.frg_viewrev_txtv_giamon) ;
+        ratingBar = (RatingBar) view.findViewById(R.id.item_rcyler_food_rb_rating);
+        txt_monan = (TextView) view.findViewById(R.id.frg_viewrev_txtv_monan);
+        txt_giamonan = (TextView) view.findViewById(R.id.frg_viewrev_txtv_giamon);
         btn_comment = (TextView) view.findViewById(R.id.frg_viewrev_txtv_comment);
         btn_sendcomment = (Button) view.findViewById(R.id.frg_viewrev_btn_sendcomment);
         edt_comment = (EditText) view.findViewById(R.id.frg_viewrev_edt_comment);
         comment_List = new ArrayList<Comment>();
-        notifications=new ArrayList<>();
+        notifications = new ArrayList<>();
         mRecyclerView = (RecyclerView) view.findViewById(R.id.frg_viewrev_rcyler_comments);
         mRecyclerView.setHasFixedSize(true);
         mlayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
@@ -523,27 +523,27 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
                     AnimationUtils.rotate90postoption(img_option);
                     final PopupMenu popupMenu = new PopupMenu(getActivity(), img_option, Gravity.START);
                     popupMenu.getMenuInflater().inflate(R.menu.popup_menu_reviewdetial, popupMenu.getMenu());
-                    Menu menu=popupMenu.getMenu();
-                    if(MyService.getUserAccount()!=null) {
-                        if(MyService.getUserAccount().getRole())
-                        {
-//                            if(post.getVisible()){
-//                                menu.findItem(R.id.menu_postdetail_phandoi).setVisible(true);
-//                            }else
-//                                menu.findItem(R.id.menu_postdetail_dongy).setVisible(true);
-                            menu.findItem(R.id.menu_postdetail_xoa).setVisible(true);
-                            menu.findItem(R.id.menu_postdetail_sua).setVisible(true);
-                        }
-//                        if(MyService.getUserAccount().getId().equals(post.getUserId()))
+                    Menu menu = popupMenu.getMenu();
+                    if (MyService.getUserAccount() != null) {
+//                        if(MyService.getUserAccount().getRole())
 //                        {
+////                            if(post.getVisible()){
+////                                menu.findItem(R.id.menu_postdetail_phandoi).setVisible(true);
+////                            }else
+////                                menu.findItem(R.id.menu_postdetail_dongy).setVisible(true);
+//                            menu.findItem(R.id.menu_postdetail_xoa).setVisible(true);
 //                            menu.findItem(R.id.menu_postdetail_sua).setVisible(true);
-//                            if(!MyService.getUserAccount().getRole())
-//                                menu.findItem(R.id.menu_postdetail_ycxoa).setVisible(true);
 //                        }
-//                        else if(MyService.getUserAccount()!=null)
-//                        {
-//                            menu.findItem(R.id.menu_postdetail_report).setVisible(true);
-//                        }
+////                        if(MyService.getUserAccount().getId().equals(post.getUserId()))
+////                        {
+////                            menu.findItem(R.id.menu_postdetail_sua).setVisible(true);
+////                            if(!MyService.getUserAccount().getRole())
+////                                menu.findItem(R.id.menu_postdetail_ycxoa).setVisible(true);
+////                        }
+////                        else if(MyService.getUserAccount()!=null)
+////                        {
+////                            menu.findItem(R.id.menu_postdetail_report).setVisible(true);
+////                        }
                     }
                     popupMenu.show();
                     popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
@@ -592,7 +592,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                        "Đang xử lý",
 //                                                        true, false);
 //                                                post.setVisible(true);
-//                                                long giaTong = myLocation.getGiaTong() + post.getGia(),
+//                                                long giaTong = myLocation.getGiaTong() + post.getPrice(),
 //                                                        vsTong = myLocation.getVsTong() + post.getVesinh(),
 //                                                        pvTong = myLocation.getPvTong() + post.getPhucvu(),
 //                                                        size = myLocation.getSize() + 1;
@@ -606,11 +606,11 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //
 //                                                Map<String, Object> updateLocal = myLocation.toMap();
 //                                                if (ChoosePost.getInstance().getType() == 1 && mainFood!=null) {
-//                                                    float a = mainFood.getDanhGia();
-//                                                    float b = ((a + EditPost.getInstance().getPost().getFood().getDanhGia()) / 2);
-//                                                    mainFood.setDanhGia(b);
+//                                                    float a = mainFood.getRating();
+//                                                    float b = ((a + EditPost.getInstance().getPost().getFood().getRating()) / 2);
+//                                                    mainFood.setRating(b);
 //                                                    Map<String, Object> updateFood = mainFood.toMap();
-//                                                    childUpdates.put(getResources().getString(R.string.thucdon_CODE) + mainFood.getMonID(), updateFood);
+//                                                    childUpdates.put(getResources().getString(R.string.thucdon_CODE) + mainFood.getFoodID(), updateFood);
 //                                                }
 //                                                childUpdates.put(getResources().getString(R.string.posts_CODE) + postID, post);
 //                                                childUpdates.put(getResources().getString(R.string.locations_CODE) + myLocation.getLocaID(), updateLocal);
@@ -678,7 +678,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //
 //
 //                                                    post.setVisible(false);
-//                                                    long giaTong = myLocation.getGiaTong() - post.getGia(),
+//                                                    long giaTong = myLocation.getGiaTong() - post.getPrice(),
 //                                                            vsTong = myLocation.getVsTong() - post.getVesinh(),
 //                                                            pvTong = myLocation.getPvTong() - post.getPhucvu(),
 //                                                            size = myLocation.getSize() - 1;
@@ -691,11 +691,11 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                    myLocation.setPvAVG(pvTong / size);
 //                                                    Map<String, Object> updateLocal = myLocation.toMap();
 //                                                    if (ChoosePost.getInstance().getType() == 1) {
-//                                                        float a = mainFood.getDanhGia();
-//                                                        float b = (2 * a - EditPost.getInstance().getPost().getFood().getDanhGia());
-//                                                        mainFood.setDanhGia(b);
+//                                                        float a = mainFood.getRating();
+//                                                        float b = (2 * a - EditPost.getInstance().getPost().getFood().getRating());
+//                                                        mainFood.setRating(b);
 //                                                        Map<String, Object> updateFood = mainFood.toMap();
-//                                                        childUpdates.put(getResources().getString(R.string.thucdon_CODE) + mainFood.getMonID(), updateFood);
+//                                                        childUpdates.put(getResources().getString(R.string.thucdon_CODE) + mainFood.getFoodID(), updateFood);
 //                                                    }
 //                                                    childUpdates.put(getResources().getString(R.string.locations_CODE) + myLocation.getLocaID(), updateLocal);
 //                                                    Map<String, Object> updatePost = post.toMap();
@@ -753,7 +753,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
                                                     true, false);
                                             childUpdates = new HashMap<>();
 //                                    if(post.getVisible()) {
-//                                        long giaTong = store.getGiaTong() - post.getGia(),
+//                                        long giaTong = store.getGiaTong() - post.getPrice(),
 //                                                vsTong = store.getVsTong() - post.getVesinh(),
 //                                                pvTong = store.getPvTong() - post.getPhucvu(),
 //                                                size = store.getSize() - 1;
@@ -766,11 +766,11 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                        store.setPvAVG(pvTong / size);
 //                                        Map<String, Object> updateLocal = store.toMap();
 //                                        if (ChoosePost.getInstance().getType() == 1) {
-//                                            float a = mainFood.getDanhGia();
-//                                            float b = (2 * a - EditPost.getInstance().getPost().getFood().getDanhGia());
-//                                            mainFood.setDanhGia(b);
+//                                            float a = mainFood.getRating();
+//                                            float b = (2 * a - EditPost.getInstance().getPost().getFood().getRating());
+//                                            mainFood.setRating(b);
 //                                            Map<String, Object> updateFood = mainFood.toMap();
-//                                            childUpdates.put(getResources().getString(R.string.thucdon_CODE) + mainFood.getMonID(), updateFood);
+//                                            childUpdates.put(getResources().getString(R.string.thucdon_CODE) + mainFood.getFoodID(), updateFood);
 //                                        }
 
 //                                        childUpdates.put(getResources().getString(R.string.locations_CODE) + store.getLocaID(), updateLocal);
@@ -839,7 +839,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                            for (Image img : albumList) {
 //                                                Log.i("OK", "img:" + img.getName());
 //                                                if (deletesuccess) {
-//                                                    StorageReference myChildRef = storeRef.child(
+//                                                    StorageReference myChildRef = stRef.child(
 //                                                            getResources().getString(R.string.images_CODE)
 //                                                                    + img.getName());
 //                                                    Log.i("OK", "url:" + getResources().getString(R.string.images_CODE)
@@ -974,7 +974,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                        EditPost.getInstance().setPost(post);
 //                                        EditPost.getInstance().setAlbumList(albumList);
 //                                        if(ChoosePost.getInstance().getType() == 1 && mainFood!=null){
-//                                            EditPost.getInstance().setDanhgia(mainFood.getDanhGia());
+//                                            EditPost.getInstance().setDanhgia(mainFood.getRating());
 //                                               }
 //
 //                                        EditPostDialogFragment editPostDialog = new EditPostDialogFragment();
@@ -1043,7 +1043,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //        long size = store.getSize() - 1;
 //        store.setSize(size);
 //        if (size != 0) {
-//            store.setGiaTong(store.getGiaTong() - post.getGia());
+//            store.setGiaTong(store.getGiaTong() - post.getPrice());
 //            store.setVsTong(store.getVsTong() - post.getVesinh());
 //            store.setPvTong(store.getPvTong() - post.getPhucvu());
 //            store.setGiaAVG(store.getGiaTong() / size);

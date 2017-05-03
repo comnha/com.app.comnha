@@ -58,7 +58,14 @@
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
         <item name="android:textColor">#57d43d</item>
     </style>
-
+    <style name="BtnBorderlessGreen" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
+        <item name="android:textColor">@color/color_notify_reportfood</item>
+    </style>
+    <style name="BtnBorderlessGrey" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
+    </style>
     <style name="AppTheme.ButtonExit" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
         <item name="android:textColor">@android:color/darker_gray</item>
@@ -101,5 +108,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:statusBarColor">@color/color_notify_reportfood</item>
+    </style>
+    <style name="AddfoodDialog" parent="@style/Theme.AppCompat.Light.Dialog">
+        <item name="android:windowNoTitle">false</item>
     </style>
 </resources>

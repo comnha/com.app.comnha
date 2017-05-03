@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * Created by PTT on 11/26/2016.
  */
 
-public class Store_recyler_adapter extends RecyclerView.Adapter<Store_recyler_adapter.ViewHolder> {
+public class Store_recycler_adapter extends RecyclerView.Adapter<Store_recycler_adapter.ViewHolder> {
     ArrayList<Store> stores;
     OnItemClickLiestner onItemClickLiestner;
     StorageReference stRef;
@@ -41,7 +41,7 @@ public class Store_recyler_adapter extends RecyclerView.Adapter<Store_recyler_ad
         onItemClickLiestner = liestner;
     }
 
-    public Store_recyler_adapter(ArrayList<Store> stores, Context context) {
+    public Store_recycler_adapter(ArrayList<Store> stores, Context context) {
         this.stores = stores;
         this.context = context;
     }

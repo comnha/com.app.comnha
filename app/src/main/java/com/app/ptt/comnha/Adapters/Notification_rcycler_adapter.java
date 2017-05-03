@@ -78,7 +78,7 @@ public class Notification_rcycler_adapter extends RecyclerView.Adapter<Notificat
 
                 //LOCATION
 //                if (list.get(position).getType() == 1) {
-//                    String text = "Món ăn:  " + list.get(position).getFood().getTenmon() + " mà bạn đã thêm vào quán " + list.get(position).getStore().getName() + " đã được admin chấp nhận" + "\n.";
+//                    String text = "Món ăn:  " + list.get(position).getFood().getName() + " mà bạn đã thêm vào quán " + list.get(position).getStore().getName() + " đã được admin chấp nhận" + "\n.";
 //                    holder.txt_noidung.setText(text);
 //                }
 //                if(list.get(position).getType()==2){

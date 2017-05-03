@@ -122,7 +122,7 @@ public class EditStoreDialogFragment extends DialogFragment implements View.OnCl
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getDialog().setTitle(getResources().getString(R.string.txt_reportStore));
+        getDialog().setTitle(getResources().getString(R.string.txt_report));
     }
 
     @Override

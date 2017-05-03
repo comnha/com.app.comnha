@@ -1,9 +1,11 @@
 package com.app.ptt.comnha.Activity;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,12 +17,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.app.ptt.comnha.Adapters.Food_recycler_adapter;
 import com.app.ptt.comnha.Adapters.Photo_recycler_adapter;
 import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
+import com.app.ptt.comnha.Fragment.AddFoodFragment;
+import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.SingletonClasses.ChooseFood;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -37,13 +43,15 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 public class StoreDeatailActivity extends AppCompatActivity implements View.OnClickListener {
-    RecyclerView postRecycler, photoRecycler;
-    RecyclerView.LayoutManager postLayoutManager, photoLayoutManager;
+    RecyclerView postRecycler, photoRecycler, foodRecycler;
+    RecyclerView.LayoutManager postLayoutManager, photoLayoutManager,
+            foodLayoutManager;
     Post_recycler_adapter postAdapter;
     Photo_recycler_adapter photoAdapter;
+    Food_recycler_adapter foodAdapter;
     ArrayList<Post> posts;
     ArrayList<Image> images;
-
+    ArrayList<Food> foods;
     TextView txtv_storename, txtv_address, txtv_opentime, txtv_phonenumb,
             txtv_pricerate, txtv_healthyrate, txtv_servicerate;
     Toolbar toolbar;
@@ -53,11 +61,12 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
 
     DatabaseReference dbRef;
     StorageReference stRef;
-    ChildEventListener postChildListener, photoChildListener;
+    ChildEventListener postChildListener, photoChildListener,
+            foodChildListener;
 
     Store store = ChooseStore.getInstance().getStore();
     LinearLayout linear_progress;
-    String storeID = store.getStoreID();
+    String storeID = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +77,12 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         stRef = FirebaseStorage.getInstance()
                 .getReferenceFromUrl(getString(R.string.firebaseStorage_path));
         ref();
+
         if (store == null) {
             finish();
+        } else {
+            storeID = store.getStoreID();
+            createStoreInfo();
         }
     }
 
@@ -91,13 +104,35 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         photoRecycler.setAdapter(photoAdapter);
         photoAdapter.setOnItemClickLiestner(new Photo_recycler_adapter.OnItemClickLiestner() {
             @Override
-            public void onItemClick(Image post, Activity activity) {
+            public void onItemClick(Image image, Activity activity) {
                 Intent intent_openPhoto = new Intent(activity, ViewPhotoActivity.class);
                 intent_openPhoto.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent_openPhoto);
             }
         });
-
+        foodRecycler = (RecyclerView) include_view.findViewById(R.id.recycler_foods_storedetail);
+        foodLayoutManager = new LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false);
+        foodRecycler.setLayoutManager(foodLayoutManager);
+        foods = new ArrayList<>();
+        foodAdapter = new Food_recycler_adapter(foods, this, stRef);
+        foodRecycler.setAdapter(foodAdapter);
+        foodAdapter.setOnItemClickLiestner(new Food_recycler_adapter.OnItemClickLiestner() {
+            @Override
+            public void onItemClick(Food food, Activity activity, View itemView) {
+                Intent intent_openFood = new Intent(getApplicationContext(),
+                        AdapterActivity.class);
+                ActivityOptionsCompat optionsCompat
+                        = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        activity, itemView.findViewById(R.id.item_rcyler_food_imgV),
+                        "foodphoto");
+                intent_openFood.putExtra(getString(R.string.fragment_CODE)
+                        , getString(R.string.frag_foodetail_CODE));
+                ChooseFood.getInstance().setFood(food);
+                intent_openFood.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent_openFood, optionsCompat.toBundle());
+            }
+        });
         txtv_storename = (TextView) include_view.findViewById(R.id.txtv_storename_storedetail);
         txtv_address = (TextView) include_view.findViewById(R.id.txtv_address_storedetail);
         txtv_opentime = (TextView) include_view.findViewById(R.id.txtv_opentime_storedetail);
@@ -130,7 +165,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, 0, Menu.NONE, getString(R.string.txt_reportStore));
+        menu.add(Menu.NONE, 0, Menu.NONE, getString(R.string.txt_report));
         menu.add(Menu.NONE, 1, Menu.NONE, getString(R.string.txt_followtStore));
         return super.onCreateOptionsMenu(menu);
     }
@@ -150,6 +185,36 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onStart() {
         super.onStart();
+
+    }
+
+    private void createStoreInfo() {
+        txtv_storename.setText(store.getName());
+        txtv_address.setText(store.getAddress());
+        txtv_opentime.setText(store.getOpentime());
+        txtv_phonenumb.setText(store.getPhonenumb());
+        if (store.getSize() != 0) {
+            txtv_pricerate.setText(store.getPriceSum() / store.getSize() + "");
+            txtv_servicerate.setText(store.getServiceSum() / store.getSize() + "");
+            txtv_healthyrate.setText(store.getHealthySum() / store.getSize() + "");
+        } else {
+            txtv_pricerate.setText("0");
+            txtv_servicerate.setText("0");
+            txtv_healthyrate.setText("0");
+        }
+        if (!store.getStoreimg().equals("")) {
+            StorageReference imageRef = stRef.child(store.getStoreimg());
+            imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Picasso.with(getApplicationContext())
+                            .load(uri)
+                            .placeholder(R.drawable.ic_storedetail_avatar)
+                            .into(imgv_avatar);
+                }
+            });
+
+        }
         postChildListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -210,36 +275,40 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
 
             }
         };
-        createStoreInfo();
-    }
+        foodChildListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Food food = dataSnapshot.getValue(Food.class);
+                String key = dataSnapshot.getKey();
+                food.setFoodID(key);
+                foods.add(food);
+                foodAdapter.notifyDataSetChanged();
+            }
 
-    private void createStoreInfo() {
-        txtv_storename.setText(store.getName());
-        txtv_address.setText(store.getAddress());
-        txtv_opentime.setText(store.getOpentime());
-        txtv_phonenumb.setText(store.getPhonenumb());
-        if (store.getSize() != 0) {
-            txtv_pricerate.setText(store.getPriceSum() / store.getSize() + "");
-            txtv_servicerate.setText(store.getServiceSum() / store.getSize() + "");
-            txtv_healthyrate.setText(store.getHealthySum() / store.getSize() + "");
-        } else {
-            txtv_pricerate.setText("0");
-            txtv_servicerate.setText("0");
-            txtv_healthyrate.setText("0");
-        }
-        if (!store.getStoreimg().equals("")) {
-            StorageReference imageRef = stRef.child(store.getStoreimg());
-            imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Picasso.with(getApplicationContext())
-                            .load(uri)
-                            .placeholder(R.drawable.ic_storedetail_avatar)
-                            .into(imgv_avatar);
-                }
-            });
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-        }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        dbRef.child(getString(R.string.food_CODE))
+                .orderByChild("storeID")
+                .equalTo(storeID)
+                .addChildEventListener(foodChildListener);
     }
 
     @Override
@@ -253,6 +322,11 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 startActivity(intent_writepost);
                 break;
             case R.id.imgv_addfood_storedetail:
+                AddFoodFragment addFoodFragment = new AddFoodFragment();
+                addFoodFragment.setStyle(DialogFragment.STYLE_NORMAL,
+                        R.style.AddfoodDialog);
+                addFoodFragment.setStore(store);
+                addFoodFragment.show(getSupportFragmentManager(), "addfood_frag");
                 break;
             case R.id.imgv_viewlocation_storedetail:
 
@@ -268,5 +342,13 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
             default:
                 return;
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        dbRef.removeEventListener(foodChildListener);
+        dbRef.removeEventListener(photoChildListener);
+        dbRef.removeEventListener(postChildListener);
     }
 }

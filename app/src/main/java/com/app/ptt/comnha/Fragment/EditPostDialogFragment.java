@@ -44,7 +44,6 @@ import com.app.ptt.comnha.Activity.AdapterActivity;
 import com.app.ptt.comnha.Interfaces.DoInBackGroundOK;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
-import com.app.ptt.comnha.Models.FireBase.Notification;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
@@ -91,7 +90,7 @@ public class EditPostDialogFragment extends DialogFragment
     boolean checloca = false;
     boolean checkrate = false;
     RatingBar rb_danhGiaMon;
-    Food mFood=new Food();
+    Food mFood;
     float mRating;
     ArrayList<String> ListID;
     String key;
@@ -191,7 +190,7 @@ public class EditPostDialogFragment extends DialogFragment
         View view = inflater.inflate(R.layout.fragment_edit_post_dialog, container, false);
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
         storeRef = FirebaseStorage.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebaseStorage_path));
-        anhXa(view);
+        ref(view);
         setData();
 
         Firebase.setAndroidContext(getActivity());
@@ -200,9 +199,9 @@ public class EditPostDialogFragment extends DialogFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getDialog().setTitle(getResources().getString(R.string.txt_reportStore));
+        getDialog().setTitle(getResources().getString(R.string.txt_report));
     }
-    void anhXa(View view) {
+    void ref(View view) {
         fm = getActivity().getSupportFragmentManager();
         frg_filter_txtmon=(TextView) view.findViewById(R.id.frg_filter_txtmon);
 
@@ -215,15 +214,15 @@ public class EditPostDialogFragment extends DialogFragment
 //                pickFoodFrg.setOnPickFoodListener(new PickFoodDialogFragment.OnPickFoodListener() {
 //                    @Override
 //                    public void onPickFood(Food food) {
-//                        frg_filter_txtmon.setText(food.getTenmon());
+//                        frg_filter_txtmon.setText(food.getName());
 //                        mFood = food;
 //                        newFood=true;
-//                        rb_danhGiaMon.setRating(food.getDanhGia());
+//                        rb_danhGiaMon.setRating(food.getRating());
 //                    }
 //                });
             }
         });
-        rb_danhGiaMon=(RatingBar) view.findViewById(R.id.rb_danhGiaMon);
+        rb_danhGiaMon=(RatingBar) view.findViewById(R.id.item_rcyler_food_rb_rating);
         rb_danhGiaMon.setNumStars(3);
         rb_danhGiaMon.setStepSize(1);
         ll_danhGiaQuan=(LinearLayout) view.findViewById(R.id.ll_danhGiaQuan);
@@ -269,7 +268,7 @@ public class EditPostDialogFragment extends DialogFragment
                 gia = (long) 1;
                 vs = (long) 1;
                 pv = (long) 1;
-//                mSeekBarGia.setProgress((int) oldPost.getGia());
+//                mSeekBarGia.setProgress((int) oldPost.getPrice());
 //                mSeekBarPV.setProgress((int) oldPost.getPhucvu());
 //                mSeekBarVS.setProgress((int) oldPost.getVesinh());
             }
@@ -288,7 +287,7 @@ public class EditPostDialogFragment extends DialogFragment
                 }
                 frg_filter_txtmon.setText("Chọn món");
 //                if(oldPost.getType()==1)
-//                    rb_danhGiaMon.setRating(oldPost.getFood().getDanhGia());
+//                    rb_danhGiaMon.setRating(oldPost.getFood().getRating());
             }
         });
         btnAddImg.setOnClickListener(this);
@@ -338,27 +337,27 @@ public class EditPostDialogFragment extends DialogFragment
 //        Picasso.with(getContext()).load(oldPost.getHinh()).into(img_Daidien);
 //        if (oldPost.getType() == 1) {
 //            cb_monAn.setChecked(true);
-//            rb_danhGiaMon.setRating(oldPost.getFood().getDanhGia());
+//            rb_danhGiaMon.setRating(oldPost.getFood().getRating());
 //            frg_filter_txtmon.setVisibility(View.VISIBLE);
-//            frg_filter_txtmon.setText(oldPost.getFood().getTenmon());
+//            frg_filter_txtmon.setText(oldPost.getFood().getName());
 //            rb_danhGiaMon.setVisibility(View.VISIBLE);
-//            mRating = oldPost.getFood().getDanhGia();
+//            mRating = oldPost.getFood().getRating();
 //            mFood = oldPost.getFood();
 //        } else {
 //            cb_monAn.setChecked(false);
 //            frg_filter_txtmon.setVisibility(View.INVISIBLE);
 //            rb_danhGiaMon.setVisibility(View.INVISIBLE);
 //        }
-//        if(oldPost.getVesinh()!=0&&oldPost.getGia()!=0&&oldPost.getPhucvu()!=0) {
+//        if(oldPost.getVesinh()!=0&&oldPost.getPrice()!=0&&oldPost.getPhucvu()!=0) {
 //            ll_danhGiaQuan.setVisibility(View.VISIBLE);
 //            cb_quanAn.setChecked(true);
 //            txt_vs.setText("Vệ sinh:" +oldPost.getVesinh());
-//            txt_gia.setText("Giá:"+ oldPost.getGia());
+//            txt_price.setText("Giá:"+ oldPost.getPrice());
 //            txt_pv.setText("Phục vụ:"+ oldPost.getPhucvu());
-//            gia = oldPost.getGia();
+//            gia = oldPost.getPrice();
 //            vs = oldPost.getVesinh();
 //            pv = oldPost.getPhucvu();
-//            mSeekBarGia.setProgress((int) oldPost.getGia());
+//            mSeekBarGia.setProgress((int) oldPost.getPrice());
 //            mSeekBarPV.setProgress((int) oldPost.getPhucvu());
 //            mSeekBarVS.setProgress((int) oldPost.getVesinh());
 //        }
@@ -592,82 +591,82 @@ public class EditPostDialogFragment extends DialogFragment
 //        if(cb_monAn.isChecked()&&oldPost.getType()==2){
 //            Log.d("Chưa có món","");
 //            Food food=mFood;
-//            food.setDanhGia(mRating);
-//            float d = (int) ((mFood.getDanhGia() + mRating) / 2);
+//            food.setRating(mRating);
+//            float d = (int) ((mFood.getRating() + mRating) / 2);
 //            newPost.setType(1);
 //            newPost.setFood(food);
-//            Log.d("Đã thêm .có món"+ food.getTenmon()+"-d:"+d,"");
-//            food.setDanhGia(d);
+//            Log.d("Đã thêm .có món"+ food.getName()+"-d:"+d,"");
+//            food.setRating(d);
 //            Map<String, Object> updateFood = food.toMap();
 //            childUpdates.put(
 //                    getResources().getString(R.string.thucdon_CODE)
-//                            + food.getMonID(), updateFood);
+//                            + food.getFoodID(), updateFood);
 //            pc_Success++;
-//            Toast.makeText(getContext(),"Đã thêm .có món"+ food.getTenmon()+"-d:"+d, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(),"Đã thêm .có món"+ food.getName()+"-d:"+d, Toast.LENGTH_SHORT).show();
 //        }else{
 //            if(cb_monAn.isChecked()&&oldPost.getType()==1){
-                //Toast.makeText(getContext(),mFood.getMonID()+"-"+oldPost.getFood().getMonID(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(),mFood.getFoodID()+"-"+oldPost.getFood().getFoodID(), Toast.LENGTH_SHORT).show();
 //                Log.i("Đã có món","");
 //                if(newFood){
-//                    if(mFood.getMonID().equals(oldPost.getFood().getMonID())){
+//                    if(mFood.getFoodID().equals(oldPost.getFood().getFoodID())){
 //                        Log.i("Món cũ","");
-//                        if(mRating==oldPost.getFood().getDanhGia()){
+//                        if(mRating==oldPost.getFood().getRating()){
 //                            Log.i("Đánh giá cũ","");
 //                        }else{
-//                            float a=oldPost.getFood().getDanhGia();
-//                            float b= (2 *mFood.getDanhGia()-a);
+//                            float a=oldPost.getFood().getRating();
+//                            float b= (2 *mFood.getRating()-a);
 //                            float d =((b + mRating) / 2);
-//                            mFood.setDanhGia(d);
+//                            mFood.setRating(d);
 //                            Map<String, Object> updateFood = mFood.toMap();
 //                            childUpdates.put(
 //                                    getResources().getString(R.string.thucdon_CODE)
-//                                            + mFood.getMonID(), updateFood);
+//                                            + mFood.getFoodID(), updateFood);
 //                            Log.i("Đánh giá mới","a="+a+"-b="+b+"-d="+d);
 //                        }
 //                    }else{
-//                        float a=oldPost.getFood().getDanhGia();
+//                        float a=oldPost.getFood().getRating();
 //                        float b= (2 *EditPost.getInstance().getDanhgia()-a);
 //                        Log.i("Hủy đánh giá cũ a="+a+"-"+EditPost.getInstance().getDanhgia(),"Đánh giá mới b="+b);
 //                        Food oldFood=oldPost.getFood();
-//                        oldFood.setDanhGia(b);
+//                        oldFood.setRating(b);
 //                        Map<String, Object> updateFood = oldFood.toMap();
 //                        childUpdates.put(
 //                                getResources().getString(R.string.thucdon_CODE)
-//                                        + oldFood.getMonID(), updateFood);
-//                        Toast.makeText(getContext(),"Update mon cu:"+oldFood.getTenmon()+"-"+oldFood.getDanhGia(), Toast.LENGTH_SHORT).show();
+//                                        + oldFood.getFoodID(), updateFood);
+//                        Toast.makeText(getContext(),"Update mon cu:"+oldFood.getName()+"-"+oldFood.getRating(), Toast.LENGTH_SHORT).show();
 //                        Food newFood =mFood;
 //
-//                        Log.i("Món mới:"+newFood.getTenmon(),"Đánh giá mới:"+mRating);
-//                        float d =((mFood.getDanhGia() + mRating) / 2);
-//                        newFood.setDanhGia(d);
+//                        Log.i("Món mới:"+newFood.getName(),"Đánh giá mới:"+mRating);
+//                        float d =((mFood.getRating() + mRating) / 2);
+//                        newFood.setRating(d);
 //                        Map<String, Object> updateFood1 = newFood.toMap();
 //                        childUpdates.put(
 //                                getResources().getString(R.string.thucdon_CODE)
-//                                        + newFood.getMonID(), updateFood1);
-//                        Toast.makeText(getContext(),"Update mon moi:"+newFood.getTenmon()+"-"+newFood.getDanhGia(), Toast.LENGTH_SHORT).show();
+//                                        + newFood.getFoodID(), updateFood1);
+//                        Toast.makeText(getContext(),"Update mon moi:"+newFood.getName()+"-"+newFood.getRating(), Toast.LENGTH_SHORT).show();
 //
 //                        Log.i("","Lưu món mới và đánh giá vào");
-//                        newFood.setDanhGia(mRating);
+//                        newFood.setRating(mRating);
 //                        newPost.setFood(newFood);
 //                        Log.i("","Lưu món vào newPost");
-//                        Toast.makeText(getContext(),"Update bai post:"+newPost.getFood().getTenmon()+"-"+newPost.getFood().getDanhGia(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(),"Update bai post:"+newPost.getFood().getName()+"-"+newPost.getFood().getRating(), Toast.LENGTH_SHORT).show();
 
 //                    }
 //                }else{
-//                        if(mRating==oldPost.getFood().getDanhGia()){
+//                        if(mRating==oldPost.getFood().getRating()){
 //                            Log.i("Đánh giá cũ","");
 //                        }else{
-//                            float a=oldPost.getFood().getDanhGia();
+//                            float a=oldPost.getFood().getRating();
 //                            Food temp=mFood;
-//                            temp.setDanhGia(mRating);
-//                            float b= (2 *mFood.getDanhGia()-a);
+//                            temp.setRating(mRating);
+//                            float b= (2 *mFood.getRating()-a);
 //                            float d =((b + mRating) / 2);
 //                            newPost.setFood(temp);
-//                            mFood.setDanhGia(d);
+//                            mFood.setRating(d);
 //                            Map<String, Object> updateFood = mFood.toMap();
 //                            childUpdates.put(
 //                                    getResources().getString(R.string.thucdon_CODE)
-//                                            + mFood.getMonID(), updateFood);
+//                                            + mFood.getFoodID(), updateFood);
 //
 //                            Log.i("Đánh giá mới1111","a="+a+"-b="+b+"-d="+d);
 //                        }
@@ -683,22 +682,22 @@ public class EditPostDialogFragment extends DialogFragment
 //        if (cb_monAn.isChecked()) {
 //                float b =EditPost.getInstance().getDanhgia();
 //                Food food=mFood;
-//                food.setDanhGia(mRating);
+//                food.setRating(mRating);
 //
 //            Toast.makeText(getContext(), "old:"+oldPost.getType()+"---- new:"+newPost.getType(), Toast.LENGTH_SHORT).show();
 //                if(oldPost.getType()==1){
 //                    Log.i("B1","oldpost_type=1");
 //                    float a = EditPost.getInstance().getDanhgia();
-//                    b= (2 * a - EditPost.getInstance().getPost().getFood().getDanhGia());
+//                    b= (2 * a - EditPost.getInstance().getPost().getFood().getRating());
 //                    Log.i("B2","a="+a+"-b="+b);
 //                }
 //                if (mFood != null) {
 //                    float c = b;
 //                    float d = (int) ((c + mRating) / 2);
-//                    mFood.setDanhGia(d);
+//                    mFood.setRating(d);
 //                    childUpdates.put(
 //                            getResources().getString(R.string.thucdon_CODE)
-//                                    + mFood.getMonID(), mFood);
+//                                    + mFood.getFoodID(), mFood);
 //
 //                    Log.i("SSSSSSS","pc_Success1="+pc_Success);
 //                }
@@ -712,7 +711,7 @@ public class EditPostDialogFragment extends DialogFragment
 //            Log.i("SSSSSSS","pc_Success1_Not choose="+pc_Success);
 //        }
 //        if (!checkrate && cb_quanAn.isChecked()) {
-//            newPost.setGia(gia);
+//            newPost.setPrice(gia);
 //            newPost.setVesinh(vs);
 //            newPost.setPhucvu(pv);
 //            long giaTong = updateLoca.getGiaTong() + gia,
@@ -766,7 +765,7 @@ public class EditPostDialogFragment extends DialogFragment
 //            }
 //            for(Image img:albumList){
 //                Log.i("OK", "img:"+img.getName());
-//                    StorageReference myChildRef = storeRef.child(
+//                    StorageReference myChildRef = stRef.child(
 //                            getResources().getString(R.string.images_CODE)
 //                                    + img.getName());
 //                    Log.i("OK", "url:"+  getResources().getString(R.string.images_CODE)
@@ -823,8 +822,8 @@ public class EditPostDialogFragment extends DialogFragment
                     mProgressDialog.dismiss();
                     Toast.makeText(getActivity(), "Sửa bị lỗi" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 } else {
-                    if(!MyService.getUserAccount().getRole()) {
-                        Notification notification = new Notification();
+//                    if(!MyService.getUserAccount().getRole()) {
+//                        Notification notification = new Notification();
 //                        String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + "admin").push().getKey();
 //                        notification.setAccount(MyService.getUserAccount());
 //                        notification.setDate(new Times().getDate());
@@ -851,11 +850,11 @@ public class EditPostDialogFragment extends DialogFragment
 //                                }
 //                            }
 //                        });
-                    }else{
-                        mProgressDialog.dismiss();
-                        Toast.makeText(getActivity(), "Sửa thành công", Toast.LENGTH_SHORT).show();
-                        getActivity().finish();
-                    }
+//                    }else{
+//                        mProgressDialog.dismiss();
+//                        Toast.makeText(getActivity(), "Sửa thành công", Toast.LENGTH_SHORT).show();
+//                        getActivity().finish();
+//                    }
                 }
             }
         });

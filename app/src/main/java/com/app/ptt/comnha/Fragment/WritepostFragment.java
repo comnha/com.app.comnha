@@ -1,9 +1,11 @@
 package com.app.ptt.comnha.Fragment;
 
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
@@ -34,6 +36,7 @@ import com.app.ptt.comnha.Adapters.ImagesImportRvAdapter;
 import com.app.ptt.comnha.Classes.SelectedImage;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SystemControl;
+import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -205,10 +208,10 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save_writepost:
-                if (checkEmptyEdt(edt_title)) {
+                if (AppUtils.checkEmptyEdt(edt_title)) {
                     Toast.makeText(getContext(), getString(R.string.txt_notitle), Toast.LENGTH_SHORT)
                             .show();
-                } else if (checkEmptyEdt(edt_content)) {
+                } else if (AppUtils.checkEmptyEdt(edt_content)) {
                     Toast.makeText(getContext(), getString(R.string.txt_nocontent), Toast.LENGTH_SHORT)
                             .show();
                 } else
@@ -218,13 +221,6 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         }
     }
 
-    private boolean checkEmptyEdt(EditText edt) {
-        if (edt.getText().toString().trim().isEmpty()
-                || edt.getText().toString().trim().equals("")) {
-            return true;
-        }
-        return false;
-    }
 
     @Override
     public void onClick(View view) {
@@ -240,6 +236,21 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 moreDialog.dismiss();
                 break;
             case R.id.linear_addimg_more_writepost_dialog:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+
+                        // Should we show an explanation?
+                        if (shouldShowRequestPermissionRationale(
+                                Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                            // Explain to the user why we need to read the contacts
+                        }
+
+                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                1);
+                        return;
+                    }
+                }
                 imagesImportRvAdapter.readthentranstoarray();
                 imagesrv.scrollToPosition(0);
                 imgsDialog.show();
@@ -298,10 +309,10 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //    File anh_dai_dien;
 //    UploadTask uploadTask = null;
 //    ArrayList<File> myFile;
-//    StorageReference storeRef;
+//    StorageReference stRef;
 //    LinearLayout ll_danhGiaQuan;
 //    DiscreteSeekBar mSeekBarGia, mSeekBarVS, mSeekBarPV;
-//    TextView txt_gia, txt_vs, txt_pv;
+//    TextView txt_price, txt_vs, txt_pv;
 //    Long gia = (long) 1, vs = (long) 1, pv = (long) 1;
 //    ImageView img, img_Daidien;
 //    Post newPost;
@@ -373,7 +384,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //        getContext().unregisterReceiver(broadcastReceiver);
 //    }
 
-//    void anhXa(View view) {
+//    void ref(View view) {
 //        fm = getActivity().getSupportFragmentManager();
 //        frg_filter_txtmon = (TextView) view.findViewById(frg_filter_txtmon);
 //
@@ -387,9 +398,9 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //                pickFoodFrg.setOnPickFoodListener(new PickFoodDialogFragment.OnPickFoodListener() {
 //                    @Override
 //                    public void onPickFood(Food food) {
-//                        frg_filter_txtmon.setText(food.getTenmon());
+//                        frg_filter_txtmon.setText(food.getName());
 //                        mFood = food;
-//                        rb_danhGiaMon.setRating(food.getDanhGia());
+//                        rb_danhGiaMon.setRating(food.getRating());
 //                    }
 //                });
 //            }
@@ -406,7 +417,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //        txt_name = (TextView) view.findViewById(R.id.frg_post_name);
 //        txt_address = (TextView) view.findViewById(R.id.frg_post_address);
 //        btn_save = (Button) view.findViewById(R.id.btn_save);
-//        txt_gia = (TextView) view.findViewById(R.id.frg_vote_txt_gia);
+//        txt_price = (TextView) view.findViewById(R.id.frg_vote_txt_gia);
 //        txt_vs = (TextView) view.findViewById(R.id.frg_vote_txt_vs);
 //        txt_pv = (TextView) view.findViewById(R.id.frg_vote_txt_pv);
 //        mSeekBarGia = (DiscreteSeekBar) view.findViewById(R.id.frg_vote_slide_gia);
@@ -414,7 +425,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //        mSeekBarPV = (DiscreteSeekBar) view.findViewById(R.id.frg_vote_slide_phucvu);
 //        txt_pv.setText(getResources().getString(R.string.text_ratepv) + ": " + mSeekBarPV.getMin());
 //        txt_vs.setText(getResources().getString(R.string.text_ratevs) + ": " + mSeekBarVS.getMin());
-//        txt_gia.setText(getResources().getString(R.string.text_rategia) + ": " + mSeekBarGia.getMin());
+//        txt_price.setText(getResources().getString(R.string.text_rategia) + ": " + mSeekBarGia.getMin());
 //        edt_title = (EditText) view.findViewById(R.id.edt_title);
 //        edt_content = (EditText) view.findViewById(R.id.edt_content);
 //        btn_save.setOnClickListener(this);
@@ -432,7 +443,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //                } else
 //                    ll_danhGiaQuan.setVisibility(View.INVISIBLE);
 //                txt_vs.setText("Vệ sinh");
-//                txt_gia.setText("Giá");
+//                txt_price.setText("Giá");
 //                txt_pv.setText("Phục vụ");
 //                gia = (long) 1;
 //                vs = (long) 1;
@@ -625,7 +636,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //        super.onDetach();
 //        DoPost.getInstance().setMyLocation(null);
 //        DoPost.getInstance().setVesinh(0);
-//        DoPost.getInstance().setGia(0);
+//        DoPost.getInstance().setPrice(0);
 //        DoPost.getInstance().setFiles(null);
 //        DoPost.getInstance().setPhucvu(0);
 //    }
@@ -683,17 +694,17 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //        newPost = new Post();
 //        if (cb_monAn.isChecked()) {
 //            Food tempFood = mFood;
-//            tempFood.setDanhGia(mRating);
+//            tempFood.setRating(mRating);
 //            newPost.setType(1);
 //            if (mFood.getStoreID() != null) {
-//                float a = mFood.getDanhGia();
+//                float a = mFood.getRating();
 //                Log.i("CSS", a + "_---------------------------");
 //                float b = ((a + mRating) / 2);
 //                Log.i("CSS", b + "_---------------------------");
-//                mFood.setDanhGia(b);
+//                mFood.setRating(b);
 //                childUpdates.put(
 //                        getResources().getString(R.string.thucdon_CODE)
-//                                + mFood.getMonID(), mFood);
+//                                + mFood.getFoodID(), mFood);
 //                pc_Success++;
 //                Log.i("SSSSSSS", "pc_Success1=" + pc_Success);
 //                newPost.setFood(tempFood);
@@ -704,7 +715,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //            Log.i("SSSSSSS", "pc_Success_Not choose=" + pc_Success);
 //        }
 //        if (!checkrate && cb_quanAn.isChecked()) {
-//            newPost.setGia(gia);
+//            newPost.setPrice(gia);
 //            newPost.setVesinh(vs);
 //            newPost.setPhucvu(pv);
 //            long giaTong = updateLoca.getGiaTong() + gia,
@@ -825,7 +836,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //    class uploadImg extends AsyncTask<Void, Void, Void> {
 //        @Override
 //        protected Void doInBackground(Void... params) {
-//            storeRef = FirebaseStorage.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebaseStorage_path));
+//            stRef = FirebaseStorage.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebaseStorage_path));
 //            ListID = new ArrayList<>();
 //            Log.i("uploadImg", "myFile=" + myFile.size());
 //            for (File f : myFile) {
@@ -839,7 +850,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //                newImage.setStoreID(locaID);
 //                images.add(newImage);
 //                Log.i("SSSSSSS", "images=" + images.size());
-//                StorageReference myChildRef = storeRef.child(
+//                StorageReference myChildRef = stRef.child(
 //                        getResources().getString(R.string.images_CODE)
 //                                + uri.getLastPathSegment());
 //                uploadTask = myChildRef.putFile(uri);
@@ -891,12 +902,12 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //
 //    //        class StoreImg extends AsyncTask<ArrayList<File>,Void,Boolean> {
 ////        DoInBackGroundOK doInBackGroundOK;
-////        StorageReference storeRef;
+////        StorageReference stRef;
 ////        UploadTask uploadTask;
 ////        boolean isSuccess=false;
 ////        public StoreImg(DoInBackGroundOK mdoInBackGroundOK, StorageReference storageReference,UploadTask mup){
 ////            doInBackGroundOK=mdoInBackGroundOK;
-////            storeRef=storageReference;
+////            stRef=storageReference;
 ////            uploadTask=mup;
 ////        }
 ////        @Override
@@ -1110,7 +1121,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //    public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
 //        switch (seekBar.getId()) {
 //            case R.id.frg_vote_slide_gia:
-//                txt_gia.setText(getResources().getString(R.string.text_rategia) + ": " + String.valueOf(value));
+//                txt_price.setText(getResources().getString(R.string.text_rategia) + ": " + String.valueOf(value));
 //                try {
 //                    gia = (long) seekBar.getProgress();
 //

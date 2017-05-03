@@ -1,7 +1,6 @@
 package com.app.ptt.comnha.Models.FireBase;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,14 +29,14 @@ public class Post {
     long priceRate,
             healthyRate,
             serviceRate;
-    List<Comment> comments = null;
+    Map<String, Comment> comments = null;
     //phép kết
     String userID_dist_prov,//tìm post theo uid_tỉnh_huyện
             dist_pro;//tìm post theo tỉnh_huyện
 
     public Post(String title, String content,
                 String date, String time,
-                String un, String userID,String avatar, String storeID,
+                String un, String userID, String avatar, String storeID,
                 String storeName, String foodID, String banner,
                 long priceRate, long healthyRate,
                 long serviceRate, String dist_pro) {
@@ -193,11 +192,11 @@ public class Post {
         this.serviceRate = serviceRate;
     }
 
-    public List<Comment> getComments() {
+    public Map<String, Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(Map<String, Comment> comments) {
         this.comments = comments;
     }
 

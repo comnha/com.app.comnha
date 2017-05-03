@@ -24,22 +24,6 @@
     </LinearLayout>
 
 
-    <com.github.clans.fab.FloatingActionButton
-        android:id="@+id/fab_menu_storedetail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_storedetail_menu"
-        app:fab_colorNormal="@color/color_selection_report"
-        app:fab_colorPressed="@color/color_selection_report"
-        app:fab_shadowColor="#8f000000"
-        app:fab_shadowRadius="1.5dp"
-        app:fab_shadowXOffset="0.5dp"
-        app:fab_shadowYOffset="0.5dp"
-        app:fab_showShadow="true"
-        app:fab_size="normal" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -58,13 +42,15 @@
                 android:gravity="center"
                 android:orientation="vertical"
                 android:weightSum="5">
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:orientation="horizontal"
+                    android:layout_height="0dp"
                     android:layout_weight="2"
-                    android:weightSum="5"
                     android:gravity="center"
-                    android:layout_height="0dp">
+                    android:orientation="horizontal"
+                    android:weightSum="5">
+
                     <com.mikhaellopez.circularimageview.CircularImageView
                         android:id="@+id/imgv_avatar_storedetail"
                         android:layout_width="0dp"
@@ -154,4 +140,21 @@
             app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </android.support.design.widget.AppBarLayout>
+
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/fab_menu_storedetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_storedetail_menu"
+        app:fab_colorNormal="@color/color_selection_report"
+        app:fab_colorPressed="@color/color_selection_report"
+        app:fab_shadowColor="#8f000000"
+        app:fab_shadowRadius="1.5dp"
+        app:fab_shadowXOffset="0.5dp"
+        app:fab_shadowYOffset="0.5dp"
+        app:fab_showShadow="true"
+        app:fab_size="normal" />
+
 </android.support.design.widget.CoordinatorLayout>
