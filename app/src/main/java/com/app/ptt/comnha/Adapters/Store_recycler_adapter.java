@@ -1,6 +1,8 @@
 package com.app.ptt.comnha.Adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -73,23 +75,25 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<Store_recycler_
 //                    holder.imgv_avatar.setImageURI(uri);
                     Picasso.with(context)
                             .load(uri)
-                            .placeholder(R.drawable.ic_item_store)
                             .into(holder.imgv_avatar);
                 }
             });
-//            Glide.with(context)
-//                    .using(new FirebaseImageLoader())
-//                    .load(imgRef)
-//                    .placeholder(R.drawable.ic_item_store)
-//                    .into(holder.imgv_avatar).getRequest().begin();
-//            notifyItemChanged(holder.getAdapterPosition());
         } else {
             holder.imgv_avatar.setImageResource(R.drawable.ic_item_store);
         }
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClickLiestner.onItemClick(stores.get(holder.getAdapterPosition()), holder.itemView);
+                try {
+                    Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_avatar.getDrawable())
+                            .getBitmap();
+                    stores.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
+                    onItemClickLiestner.onItemClick(stores.get(holder.getAdapterPosition()),
+                            holder.itemView);
+                } catch (NullPointerException e) {
+                    onItemClickLiestner.onItemClick(stores.get(holder.getAdapterPosition()),
+                            holder.itemView);
+                }
             }
         });
     }

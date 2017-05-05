@@ -1,5 +1,7 @@
 package com.app.ptt.comnha.Models.FireBase;
 
+import android.graphics.Bitmap;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +32,7 @@ public class Store {
 
     String distance;//khoảng cách hiển thị trên danh sách quán ăn
     Map<String, Comment> comments = null;//comment trong post
+    Bitmap imgBitmap = null;
 
     public Store() {
     }
@@ -255,5 +258,12 @@ public class Store {
         this.comments = comments;
     }
 
+    public Bitmap getImgBitmap() {
+        return imgBitmap;
+    }
+
+    public void setImgBitmap(Bitmap imgBitmap) {
+        this.imgBitmap = imgBitmap;
+    }
 }
 

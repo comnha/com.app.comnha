@@ -28,6 +28,7 @@ import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
+import com.app.ptt.comnha.Utils.AppUtils;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
@@ -165,8 +166,11 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, 0, Menu.NONE, getString(R.string.txt_report));
-        menu.add(Menu.NONE, 1, Menu.NONE, getString(R.string.txt_followtStore));
+        menu = AppUtils.createMenu(menu, new String[]{
+                getString(R.string.txt_report),
+                getString(R.string.txt_followStore),
+                getString(R.string.text_hidestore),
+                getString(R.string.txt_changeinfo)});
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -176,6 +180,10 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
             case 0:
                 return true;
             case 1:
+                return true;
+            case 2:
+                return true;
+            case 3:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -193,6 +201,22 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         txtv_address.setText(store.getAddress());
         txtv_opentime.setText(store.getOpentime());
         txtv_phonenumb.setText(store.getPhonenumb());
+        if (store.getImgBitmap() == null) {
+            if (!store.getStoreimg().equals("")) {
+                StorageReference imageRef = stRef.child(store.getStoreimg());
+                imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.with(getApplicationContext())
+                                .load(uri)
+                                .into(imgv_avatar);
+                    }
+                });
+
+            }
+        } else {
+            imgv_avatar.setImageBitmap(store.getImgBitmap());
+        }
         if (store.getSize() != 0) {
             txtv_pricerate.setText(store.getPriceSum() / store.getSize() + "");
             txtv_servicerate.setText(store.getServiceSum() / store.getSize() + "");
@@ -202,19 +226,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
             txtv_servicerate.setText("0");
             txtv_healthyrate.setText("0");
         }
-        if (!store.getStoreimg().equals("")) {
-            StorageReference imageRef = stRef.child(store.getStoreimg());
-            imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Picasso.with(getApplicationContext())
-                            .load(uri)
-                            .placeholder(R.drawable.ic_storedetail_avatar)
-                            .into(imgv_avatar);
-                }
-            });
 
-        }
         postChildListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {

@@ -273,6 +273,9 @@ public class AddFoodFragment extends DialogFragment implements View.OnClickListe
                     edt_price.requestFocus();
                 } else if (AppUtils.checkEmptyEdt(edt_comment)) {
                     edt_comment.requestFocus();
+                } else if (selectedImage == null) {
+                    Toast.makeText(getContext(), getString(R.string.txt_nophoto),
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     savefood();
                 }

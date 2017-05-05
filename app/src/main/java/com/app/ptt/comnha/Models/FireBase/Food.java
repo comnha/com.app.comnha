@@ -1,5 +1,7 @@
 package com.app.ptt.comnha.Models.FireBase;
 
+import android.graphics.Bitmap;
+
 import com.app.ptt.comnha.Modules.Times;
 
 import java.util.HashMap;
@@ -30,6 +32,8 @@ public class Food {
     //phép kết
     String dist_prov;//món ăn theo location
 
+
+    private Bitmap imgBitmap = null;
 
     public Map<String, Object> toMap() {
         Map<String, Object> result = new HashMap<>();
@@ -193,5 +197,13 @@ public class Food {
 
     public void setTotal(long total) {
         this.total = total;
+    }
+
+    public Bitmap getImgBitmap() {
+        return imgBitmap;
+    }
+
+    public void setImgBitmap(Bitmap imgBitmap) {
+        this.imgBitmap = imgBitmap;
     }
 }

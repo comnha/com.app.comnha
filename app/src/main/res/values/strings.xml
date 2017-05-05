@@ -5,7 +5,7 @@
     <string name="text_admin_selection_news">Thông báo thêm mới: từ bài đánh giá, quán ăn</string>
     <string name="text_admin_selection_reports">Thông báo report: từ những bài đánh giá, hình ảnh, quán ăn, món ăn</string>
     <string name="text_del">Xóa</string>
-    <string name="text_delfood">Xóa món ăn</string>
+    <string name="text_hidefood">Ẩn món ăn</string>
     <string name="text_rate">Đánh giá quán ăn</string>
     <string name="text_addimg">Đánh giá quán ăn</string>
     <string name="text_post">Bài viết</string>
@@ -102,7 +102,7 @@
     <string name="txt_nochoseloca">Bạn chưa chọn địa điểm</string>
     <string name="txt_norate">Warning: Chưa đánh giá</string>
     <string name="txt_addinlocaerr">Bạn không thể thêm địa điểm mới</string>
-    <string name="txt_nochosephoto">Warning: Chưa chọn ảnh nào</string>
+    <string name="txt_nophoto">Bạn chưa chọn ảnh </string>
     <string name="txt_nofoodname">Bạn chưa điền tên món ăn</string>
     <string name="txt_nofoodprice">Bạn chưa điền giá món ăn</string>
     <string name="txt_noChoseProvince">Warning: Chưa chọn Tỉnh/Thành phố</string>
@@ -141,8 +141,8 @@
     <string name="txt_local">Vị trí:</string>
     <string name="txt_localview">Xem theo Quán ăn\t</string>
     <string name="txt_reviewview">Xem theo Review\t</string>
-    <string name="txt_report">Report</string>
-    <string name="txt_followtStore">Theo dõi</string>
+    <string name="txt_report">Báo cáo</string>
+    <string name="txt_followStore">Theo dõi quán ăn</string>
     <string name="txt_xoataca">Xóa tất cả</string>
     <string name="txt_setdadoc">Đọc tất cả</string>
     <string name="txt_xemnoidungreport">Xem report</string>
@@ -611,7 +611,7 @@
     <string name="_ID">ID</string>
     <string name="txt_nodescribefood">Bạn chưa viết mô tả cho món ăn này</string>
     <string name="text_fooddescribe">Mô tả món ăn</string>
-    <string name="txt_reportfood">Report món ăn</string>
-    <string name="txt_updatefood">Sửa món ăn</string>
+    <string name="txt_changeinfo">Thay đổi thông tin</string>
     <string name="txt_fooddetail">Thông tin món ăn</string>
+    <string name="text_hidestore">Ẩn quán ăn</string>
 </resources>

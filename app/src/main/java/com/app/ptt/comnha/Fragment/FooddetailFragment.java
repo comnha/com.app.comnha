@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -31,6 +32,7 @@ import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;
+import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -129,15 +131,21 @@ public class FooddetailFragment extends Fragment {
         txt_name.setText(food.getName());
         txt_price.setText(food.getPrice() + "");
         ratingBar.setRating(food.getTotal() == 0 ? 0 : food.getRating() / food.getTotal());
-        StorageReference imgRef = stRef.child(food.getFoodImg());
-        imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Picasso.with(getContext())
-                        .load(uri)
-                        .into(imgv_photo);
-            }
-        });
+        if (food.getImgBitmap() == null) {
+            StorageReference imgRef = stRef.child(food.getFoodImg());
+            imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Picasso.with(getContext())
+                            .load(uri)
+                            .into(imgv_photo);
+                }
+            });
+        } else {
+            imgv_photo.setImageBitmap(food.getImgBitmap());
+
+        }
+
         postChildListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -177,6 +185,10 @@ public class FooddetailFragment extends Fragment {
     }
 
     private void ref(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActivity().getWindow().setStatusBarColor(getResources()
+                    .getColor(R.color.color_notify_reportfood));
+        }
         txt_name = (TextView) view.findViewById(R.id.txtv_name_fooddetail);
         txt_price = (TextView) view.findViewById(R.id.txtv_price_fooddetail);
         txt_comment = (TextView) view.findViewById(R.id.txtv_comment_fooddetail);
@@ -185,7 +197,10 @@ public class FooddetailFragment extends Fragment {
         ratingBar.setIsIndicator(true);
         toolbar = (Toolbar) view.findViewById(R.id.toolbar_fooddetail);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setBackgroundColor(getResources()
+                .getColor(R.color.color_notify_reportfood));
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+        toolbar.setTitle(getString(R.string.txt_fooddetail));
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         setHasOptionsMenu(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -194,7 +209,6 @@ public class FooddetailFragment extends Fragment {
                 getActivity().onBackPressed();
             }
         });
-        toolbar.setTitle(getString(R.string.txt_fooddetail));
 
         postlist = new ArrayList<>();
         postRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_post_fooddetail);
@@ -230,9 +244,10 @@ public class FooddetailFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.add(Menu.NONE, 0, Menu.NONE, getString(R.string.txt_reportfood));
-        menu.add(Menu.NONE, 1, Menu.NONE, getString(R.string.txt_updatefood));
-        menu.add(Menu.NONE, 2, Menu.NONE, getString(R.string.text_delfood));
+        menu = AppUtils.createMenu(menu, new String[]{
+                getString(R.string.txt_report),
+                getString(R.string.txt_changeinfo),
+                getString(R.string.text_hidefood)});
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -253,8 +268,11 @@ public class FooddetailFragment extends Fragment {
 
     @Override
     public void onDetach() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActivity().getWindow().setStatusBarColor(getResources()
+                    .getColor(R.color.color_notify_reportfood));
+        }
         super.onDetach();
-
     }
 
     private class Store {

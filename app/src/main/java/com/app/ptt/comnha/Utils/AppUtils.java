@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -125,6 +126,14 @@ public class AppUtils {
             return true;
         }
         return false;
+    }
+
+    public static Menu createMenu(Menu menu,
+                                  String[] menuitems) {
+        for (int i = 0; i < menuitems.length; i++) {
+            menu.add(Menu.NONE, i, Menu.NONE, menuitems[i]);
+        }
+        return menu;
     }
 //    public  boolean showSettingGPSAlert() {
 //
