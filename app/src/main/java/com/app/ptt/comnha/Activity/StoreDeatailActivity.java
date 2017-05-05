@@ -213,6 +213,8 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     }
                 });
 
+            }else {
+                imgv_avatar.setImageResource(R.drawable.ic_item_store);
             }
         } else {
             imgv_avatar.setImageBitmap(store.getImgBitmap());

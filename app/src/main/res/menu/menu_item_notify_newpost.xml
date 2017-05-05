@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_del_notify_newstore"
-        android:title="@string/text_del" />
+        android:title="@string/text_delnotify" />
     <item
         android:id="@+id/action_block_post_notify_newpost"
         android:title="@string/text_block_writepost" />

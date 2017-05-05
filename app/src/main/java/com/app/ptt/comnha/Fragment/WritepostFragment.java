@@ -75,6 +75,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
     int androidVer = Build.VERSION.SDK_INT;
     RelativeLayout relative_touchoutside;
     NestedScrollView nested_touchoutside;
+    boolean isReadImg = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -251,7 +252,10 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                         return;
                     }
                 }
-                imagesImportRvAdapter.readthentranstoarray();
+                if (!isReadImg) {
+                    imagesImportRvAdapter.readthentranstoarray();
+                    isReadImg = true;
+                }
                 imagesrv.scrollToPosition(0);
                 imgsDialog.show();
                 moreDialog.dismiss();

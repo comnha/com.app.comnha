@@ -83,9 +83,9 @@ public class notify_reportstore_adapter extends BaseAdapter {
             public void onClick(View view) {
                 PopupMenu menu = new PopupMenu(context, holder.more, Gravity.TOP);
                 menu.inflate(R.menu.menu_item_notify);
-                menu.getMenu().add(Menu.NONE, 0, 0, context.getResources().getString(R.string.text_del));
+                menu.getMenu().add(Menu.NONE, 0, 0, context.getResources().getString(R.string.text_delnotify));
                 menu.getMenu().add(Menu.NONE, 1, 1, context.getResources().getString(R.string.text_block_reportpost));
-                menu.getMenu().add(Menu.NONE, 2, 2, context.getResources().getString(R.string.text_del));
+                menu.getMenu().add(Menu.NONE, 2, 2, context.getResources().getString(R.string.text_delnotify));
                 menu.show();
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override

@@ -1,6 +1,7 @@
 package com.app.ptt.comnha.Adapters;
 
-import android.content.Context;
+import android.app.Activity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.Gravity;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.app.ptt.comnha.Models.FireBase.NewstoreNotify;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.Utils.AppUtils;
 
 import java.util.ArrayList;
 
@@ -23,11 +25,20 @@ import java.util.ArrayList;
  */
 
 public class notify_newstore_adapter extends BaseAdapter {
-    Context context;
+    Activity activity;
     ArrayList<NewstoreNotify> items;
+    private OnItemClickLiestner onItemClickLiestner;
 
-    public notify_newstore_adapter(Context context, ArrayList<NewstoreNotify> items) {
-        this.context = context;
+    public interface OnItemClickLiestner {
+        void onItemClick(NewstoreNotify notify, Activity activity);
+    }
+
+    public void setOnItemClickLiestner(OnItemClickLiestner liestner) {
+        onItemClickLiestner = liestner;
+    }
+
+    public notify_newstore_adapter(Activity activity, ArrayList<NewstoreNotify> items) {
+        this.activity = activity;
         this.items = items;
     }
 
@@ -47,41 +58,66 @@ public class notify_newstore_adapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int i, View convertView, ViewGroup viewGroup) {
+    public View getView(final int position, View convertView, ViewGroup viewGroup) {
         final ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_listv_notify_newstore, null);
-            holder.name = (TextView) convertView.findViewById(R.id.textV_storename_item_notify_newstore);
-            holder.address = (TextView) convertView.findViewById(R.id.textV_storeaddress_item_notify_newstore);
-            holder.date = (TextView) convertView.findViewById(R.id.textV_createday_item_notify_newstore);
-            holder.createby = (TextView) convertView.findViewById(R.id.textV_createby_item_notify_newstore);
-            holder.readestate = (TextView) convertView.findViewById(R.id.textV_readstate_item_notify_newstore);
-            holder.more = (ImageView) convertView.findViewById(R.id.imgV_option_item_notify_newstore);
+            convertView = LayoutInflater.from(activity).
+                    inflate(R.layout.item_listv_notify_newstore, null);
+            holder.name = (TextView) convertView.
+                    findViewById(R.id.textV_storename_item_notify_newstore);
+            holder.address = (TextView) convertView.
+                    findViewById(R.id.textV_storeaddress_item_notify_newstore);
+            holder.date = (TextView) convertView
+                    .findViewById(R.id.textV_createday_item_notify_newstore);
+            holder.createby = (TextView) convertView
+                    .findViewById(R.id.textV_createby_item_notify_newstore);
+            holder.readestate = (TextView) convertView
+                    .findViewById(R.id.textV_readstate_item_notify_newstore);
+            holder.more = (ImageView) convertView
+                    .findViewById(R.id.imgV_option_item_notify_newstore);
+            holder.cardv = (CardView) convertView
+                    .findViewById(R.id.cardv_item_notify_newstore);
             convertView.setTag(holder);
         } else {
-
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.name.setText(items.get(i).getName());
-        holder.address.setText(items.get(i).getAddress());
-        holder.date.setText(context.getString(R.string.txt_createdate) + items.get(i).getDate());
-        holder.createby.setText(context.getString(R.string.txt_storeaddby) + items.get(i).getUn());
-        if (!items.get(i).isReadstate()) {
-            holder.readestate.setText(context.getString(R.string.txt_notread));
-            holder.readestate.setTextColor(context.getResources().getColor(R.color.admin_color_selection_news));
+        holder.name.setText(items.get(position).getName());
+        holder.address.setText(items.get(position).getAddress());
+        holder.date.setText(activity.getString(R.string.txt_createdate) + items.get(position).getDate());
+        holder.createby.setText(activity.getString(R.string.txt_storeaddby) + items.get(position).getUn());
+        if (!items.get(position).isReadstate()) {
+            holder.readestate.setText(activity.getString(R.string.txt_notread));
+            holder.readestate.setTextColor(activity.getResources()
+                    .getColor(R.color.admin_color_selection_news));
         } else {
-            holder.readestate.setText(context.getString(R.string.txt_read));
+            holder.readestate.setText(activity.getString(R.string.txt_read));
+            holder.readestate.setTextColor(activity.getResources()
+                    .getColor(android.R.color.darker_gray));
         }
+        holder.cardv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!items.get(position).isReadstate()) {
+                    holder.readestate.setText(activity.getString(R.string.txt_read));
+                    holder.readestate.setTextColor(activity.getResources()
+                            .getColor(android.R.color.darker_gray));
+                }
+                onItemClickLiestner.onItemClick(items.get(position),
+                        activity);
+            }
+        });
         holder.more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupMenu menu = new PopupMenu(context, holder.more, Gravity.END);
-                menu.inflate(R.menu.menu_item_notify);
-                menu.getMenu().add(Menu.NONE, 0, 0, context.getResources().getString(R.string.text_del));
-                menu.getMenu().add(Menu.NONE, 1, 1, context.getResources().getString(R.string.text_block_addstore));
-                menu.show();
-                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                PopupMenu popupMenu = new PopupMenu(activity, holder.more, Gravity.END);
+//                popupMenu.inflate(R.popupMenu.menu_item_notify);
+                Menu menu = popupMenu.getMenu();
+                menu = AppUtils.createMenu(menu, new String[]{
+                        activity.getResources().getString(R.string.text_delnotify),
+                        activity.getResources().getString(R.string.text_block_addstore)});
+                popupMenu.show();
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
@@ -103,5 +139,6 @@ public class notify_newstore_adapter extends BaseAdapter {
     class ViewHolder {
         TextView name, address, date, createby, readestate;
         ImageView more;
+        CardView cardv;
     }
 }

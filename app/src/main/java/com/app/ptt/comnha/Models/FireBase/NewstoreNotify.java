@@ -10,7 +10,7 @@ import java.util.Map;
 public class NewstoreNotify {
     String id, storeID, name, address, date, userID, un, district, provinve;
     boolean readstate = false;
-    String readState_pro_dist;
+    String readState_pro_dist, district_province;
 
     public NewstoreNotify() {
     }
@@ -23,8 +23,7 @@ public class NewstoreNotify {
         this.date = date;
         this.userID = userID;
         this.un = un;
-        this.district = district;
-        this.provinve = provinve;
+        this.district_province = district + "_" + provinve;
     }
 
     public Map<String, Object> toMap() {
@@ -36,8 +35,9 @@ public class NewstoreNotify {
         result.put("userID", userID);
         result.put("un", un);
         result.put("readstate", readstate);
-        result.put("district_province", district + "_" + provinve);
-        result.put("readState_pro_dist", String.valueOf(readstate) + "_" + district + "_" + provinve);
+        result.put("district_province", district_province);
+        result.put("readState_pro_dist", String.valueOf(readstate) + "_"
+                + district_province);
         return result;
     }
 
@@ -111,5 +111,13 @@ public class NewstoreNotify {
 
     public void setReadState_pro_dist(String readState_pro_dist) {
         this.readState_pro_dist = readState_pro_dist;
+    }
+
+    public String getDistrict_province() {
+        return district_province;
+    }
+
+    public void setDistrict_province(String district_province) {
+        this.district_province = district_province;
     }
 }

@@ -104,7 +104,8 @@ public class MainStoreFragment extends Fragment {
         itemadapter.setOnItemClickLiestner(new Store_recycler_adapter.OnItemClickLiestner() {
             @Override
             public void onItemClick(Store store, View itemView) {
-                Intent intent_storedetail = new Intent(getContext(), StoreDeatailActivity.class);
+                Intent intent_storedetail = new Intent(getContext(),
+                        StoreDeatailActivity.class);
                 intent_storedetail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 ActivityOptionsCompat optionsCompat
                         = ActivityOptionsCompat.makeSceneTransitionAnimation(
