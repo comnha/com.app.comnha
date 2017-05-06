@@ -130,6 +130,7 @@ public class AdminNewStoreFragment extends Fragment {
                             }
                     );
                 } else {
+
                     dbRef.child(getString(R.string.store_CODE) +
                             notify.getStoreID())
                             .addValueEventListener(storeValueListener);
