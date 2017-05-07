@@ -31,6 +31,7 @@ public class Const {
     public static final int PERMISSION_LOCATION_FLAG = 2;
 
     public enum BLOCK_TYPE {
+
         BLOCK_ADDSTORE, BLOCK_WRITEPOST,
         BLOCK_ADDFOOD, BLOCK_REPRTFOOD,
         BLOCK_REPRTIMG, BLOCK_REPRTSTORE,
