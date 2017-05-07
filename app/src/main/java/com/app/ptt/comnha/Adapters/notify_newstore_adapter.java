@@ -28,6 +28,7 @@ public class notify_newstore_adapter extends BaseAdapter {
     Activity activity;
     ArrayList<NewstoreNotify> items;
     private OnItemClickLiestner onItemClickLiestner;
+    private OnOptionItemClickListener onOptionItemClickListener;
 
     public interface OnItemClickLiestner {
         void onItemClick(NewstoreNotify notify, Activity activity);
@@ -40,6 +41,16 @@ public class notify_newstore_adapter extends BaseAdapter {
     public notify_newstore_adapter(Activity activity, ArrayList<NewstoreNotify> items) {
         this.activity = activity;
         this.items = items;
+    }
+
+    public interface OnOptionItemClickListener {
+        void onDelNotify(NewstoreNotify notify);
+
+        void onBlockUser(NewstoreNotify notify);
+    }
+
+    public void setOnOptionItemClickListener(OnOptionItemClickListener onOptionItemClickListener) {
+        this.onOptionItemClickListener = onOptionItemClickListener;
     }
 
     @Override
@@ -122,9 +133,13 @@ public class notify_newstore_adapter extends BaseAdapter {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case 0:
+                                onOptionItemClickListener.onDelNotify(
+                                        items.get(position));
                                 Log.d("setOnMenuItemClick", "item " + 0);
                                 break;
                             case 1:
+                                onOptionItemClickListener.onBlockUser(
+                                        items.get(position));
                                 Log.d("setOnMenuItemClick", "item " + 1);
                                 break;
                         }

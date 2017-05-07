@@ -42,6 +42,7 @@ import com.app.ptt.comnha.Modules.PlaceAttribute;
 import com.app.ptt.comnha.Modules.Times;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.common.api.Status;
@@ -109,11 +110,9 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
     String storename, address = "89 Man Thiện, Hiệp Phú", phonenumb, opentime,
             province = "HCM", district = "Quận 9", storeimg = "";
     double lat = 35464, lng = 56488949;
-    String userID = "65648931";//người tạo
-    String time;//giờ tạo
-    String date;//ngày tạo
+    String userID;//người tạo
     Store store;
-    String un = "tungpham";
+    String un;
     NewstoreNotify notify;
 
     public static final String mBroadcastSendAddress = "mBroadcastSendAddress";
@@ -160,6 +159,15 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         isConnected = MyService.returnIsNetworkConnected();
         now = Calendar.getInstance();
         gc = new Geocoder(getContext(), Locale.getDefault());
+        if (LoginSession.getInstance().getFirebUser() != null) {
+            userID = LoginSession.getInstance().getFirebUser().getUid();
+            un = LoginSession.getInstance().getFirebUser().getDisplayName();
+            if (un==null){
+                un=LoginSession.getInstance().getFirebUser().getEmail();
+            }
+        } else {
+            getActivity().finish();
+        }
         anhXa(view);
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -330,15 +338,12 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
 
     private void savestore() {
         final boolean[] isUploadImgSuccess = {false};
-        date = new Times().getDate();
-        time = new Times().getTime();
         String key = dbRef.child(getString(R.string.store_CODE)).push().getKey(),
                 notifyKey = dbRef.child(getString(R.string.notify_newstore_CODE))
                         .push().getKey();
         store = new Store(storename, address, phonenumb, opentime,
-                province, district, lat, lng, userID,
-                time, date, storeimg);
-        notify = new NewstoreNotify(key, storename, address, date,
+                province, district, lat, lng, userID, storeimg);
+        notify = new NewstoreNotify(key, storename, address,
                 userID, un, district, province);
         Map<String, Object> storeValues = store.toMap(),
                 notifyValues = notify.toMap();
@@ -426,7 +431,6 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
     }
 
 
-
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
         switch (edtID) {
@@ -489,71 +493,6 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         super.onDetach();
 
     }
-    //    class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
-//        ArrayList<String> resultList;
-//        Context mContext;
-//        int mResource;
-//
-//        public PlacesAutoCompleteAdapter(Context context, int resource) {
-//            super(context, resource);
-//            mContext = context;
-//            mPlaceAttribute = new ArrayList<>();
-//            mResource = resource;
-//            myTool = new MyTool(getContext(), AddlocaFragment.class.getSimpleName());
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            if (resultList != null) {
-//                return resultList.size();
-//            } else return 0;
-//        }
-//
-//        @Nullable
-//        @Override
-//        public String getItem(int position) {
-//            return resultList.get(position);
-//        }
-//
-//        @NonNull
-//        @Override
-//        public Filter getFilter() {
-//            final Filter filter = new Filter() {
-//                @Override
-//                protected FilterResults performFiltering(CharSequence constraint) {
-//                    FilterResults filterResults = new FilterResults();
-//                    if (constraint != null) {
-//                        mPlaceAttribute = new ArrayList<>();
-//                        mPlaceAttribute = myTool.returnPlaceAttributeByName(constraint.toString());
-//                        if (mPlaceAttribute != null) {
-//                            a = "OK";
-//                            resultList = new ArrayList<>();
-//                            for (PlaceAttribute placeAttribute : mPlaceAttribute)
-//                                resultList.add(placeAttribute.getFullname());
-//                            filterResults.values = resultList;
-//                            filterResults.count = resultList.size();
-//                        } else {
-//                            a = null;
-//                            PlaceAttribute a1 =new PlaceAttribute();
-//                            a1.setFullname(constraint.toString());
-//                            mPlaceAttribute.add(a1);
-//                        }
-//                    }
-//                    return filterResults;
-//                }
-//
-//                @Override
-//                protected void publishResults(CharSequence constraint, FilterResults results) {
-//                    if (results != null && results.count > 0) {
-//                        notifyDataSetChanged();
-//                    } else {
-//                        notifyDataSetInvalidated();
-//                    }
-//                }
-//            };
-//            return filter;
-//        }
-//    }
 
     public String returnFullname() {
         String a = mPlaceAttribute.get(pos).getAddressNum();
@@ -582,23 +521,6 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         return e;
     }
 
-    private void addNewLoca() {
-        Log.i(LOG + ".addNewLoca", "Da toi đây");
-        newLocation = new Store();
-//        newLocation.setName(edt_tenquan.getText().toString());
-//        newLocation.setSdt(edt_sdt.getText().toString());
-//        newLocation.setTimestart(btn_opentime.getText().toString());
-//        newLocation.setTimeend(btn_closetime.getText().toString());
-//        newLocation.setGiamin(Long.valueOf(edt_giamin.getText().toString()));
-//        newLocation.setGiamax(Long.valueOf(edt_giamax.getText().toString()));
-        if (isConnected) {
-            if (diachi != null) {
-//                newLocation.setDiachi(diachi);
-                placeAPI = new PlaceAPI(diachi, this);
-            }
-        }
-//        else Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     public void onLocationFinderStart() {

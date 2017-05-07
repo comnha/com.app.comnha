@@ -6,13 +6,20 @@
     android:descendantFocusability="blocksDescendants"
     tools:context="com.app.ptt.comnha.Fragment.MainStoreFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:descendantFocusability="blocksDescendants"
-        android:id="@+id/recyclerV_storefrag"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_storefrag"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        app:stackFromEnd="false"
-        android:layout_marginTop="4dp"
-        android:scrollbars="none" />
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerV_storefrag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:descendantFocusability="blocksDescendants"
+            android:scrollbarSize="0dp"
+            android:scrollbars="vertical"
+            app:stackFromEnd="false" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

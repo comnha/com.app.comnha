@@ -24,9 +24,17 @@ public class Const {
     public static final boolean CONNECTED = true;
     public static final boolean NOTCONNECTED = false;
 
-    public static final int INTENT_KEY_SIGN_UP= 1000;
-    public static final String INTENT_KEY_EMAIL= "EMAIL";
-    public static final String INTENT_KEY_PASSWORD= "PASSWORD";
+    public static final int INTENT_KEY_SIGN_UP = 1000;
+    public static final String INTENT_KEY_EMAIL = "EMAIL";
+    public static final String INTENT_KEY_PASSWORD = "PASSWORD";
     //
     public static final int PERMISSION_LOCATION_FLAG = 2;
+
+    public enum BLOCK_TYPE {
+        BLOCK_ADDSTORE, BLOCK_WRITEPOST,
+        BLOCK_ADDFOOD, BLOCK_REPRTFOOD,
+        BLOCK_REPRTIMG, BLOCK_REPRTSTORE,
+        BLOCK_REPRTPOST
+    }
+
 }

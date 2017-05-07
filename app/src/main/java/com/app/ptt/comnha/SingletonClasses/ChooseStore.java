@@ -20,8 +20,6 @@ public class ChooseStore {
     private ChooseStore() {
     }
 
-    Class aClass = getClass();
-
     private Store store;
 
     public static ChooseStore getInstance() {

@@ -1,6 +1,7 @@
 package com.app.ptt.comnha.Utils;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -134,6 +135,26 @@ public class AppUtils {
             menu.add(Menu.NONE, i, Menu.NONE, menuitems[i]);
         }
         return menu;
+    }
+
+    public static ProgressDialog SetupProgressDialog(Context context, String message,
+                                                     String title, boolean cancelable,
+                                                     boolean ontouchoutside,
+                                                     int progressstyle, int max) {
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setCancelable(cancelable);
+        progressDialog.setCanceledOnTouchOutside(ontouchoutside);
+        progressDialog.setProgressStyle(progressstyle);
+        if (title != null) {
+            progressDialog.setTitle(title);
+        }
+        if (message != null) {
+            progressDialog.setMessage(message);
+        }
+        if (progressstyle == ProgressDialog.STYLE_HORIZONTAL) {
+            progressDialog.setMax(max);
+        }
+        return progressDialog;
     }
 //    public  boolean showSettingGPSAlert() {
 //

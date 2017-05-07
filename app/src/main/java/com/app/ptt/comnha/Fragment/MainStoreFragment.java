@@ -1,10 +1,12 @@
 package com.app.ptt.comnha.Fragment;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,11 +19,11 @@ import com.app.ptt.comnha.Adapters.Store_recycler_adapter;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -36,9 +38,10 @@ public class MainStoreFragment extends Fragment {
     Store_recycler_adapter itemadapter;
     ArrayList<Store> items;
     DatabaseReference dbRef;
-    ChildEventListener childEventListener;
+    ValueEventListener childEventListener;
     String pro_dist = "Quận 9_HCM";
     StorageReference stRef;
+    SwipeRefreshLayout swipeRefresh;
 
     public MainStoreFragment() {
         // Required empty public constructor
@@ -55,44 +58,15 @@ public class MainStoreFragment extends Fragment {
         stRef = FirebaseStorage.getInstance().getReferenceFromUrl(
                 getString(R.string.firebaseStorage_path));
         ref(view);
-        childEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Store store = dataSnapshot.getValue(Store.class);
-                store.setStoreID(dataSnapshot.getKey());
-                items.add(store);
-                itemadapter.setStorageRef(
-                        FirebaseStorage.getInstance().getReferenceFromUrl(
-                                getString(R.string.firebaseStorage_path)));
-                Log.d("added", "added");
-                itemadapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        dbRef.child(getString(R.string.store_CODE))
-                .orderByChild("pro_dist")
-                .equalTo(pro_dist)
-                .addChildEventListener(childEventListener);
+        getStoreList();
         return view;
+    }
+
+    private void getStoreList() {
+        dbRef.child(getString(R.string.store_CODE))
+                .orderByChild("isHidden_dis_pro")
+                .equalTo(String.valueOf(false) + "_" + pro_dist)
+                .addValueEventListener(childEventListener);
     }
 
     private void ref(final View view) {
@@ -112,10 +86,52 @@ public class MainStoreFragment extends Fragment {
                         getActivity(), itemView.findViewById(R.id.item_list_imgV),
                         "avatarStore");
                 ChooseStore.getInstance().setStore(store);
+//                Toast.makeText(getContext(),
+//                        store.getName() + "", Toast.LENGTH_SHORT).show();
                 startActivity(intent_storedetail, optionsCompat.toBundle());
             }
         });
         mRecyclerView.setAdapter(itemadapter);
+        swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swipe_storefrag);
+        swipeRefresh.setColorSchemeResources(R.color.admin_color_selection_news,
+                R.color.color_selection_report);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                items.clear();
+                getStoreList();
+            }
+        });
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        childEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot item : dataSnapshot.getChildren()) {
+                    Store store = item.getValue(Store.class);
+                    store.setStoreID(item.getKey());
+                    items.add(store);
+                    itemadapter.setStorageRef(
+                            FirebaseStorage.getInstance().getReferenceFromUrl(
+                                    getString(R.string.firebaseStorage_path)));
+                    Log.d("added", "added");
+                }
+                itemadapter.notifyDataSetChanged();
+                swipeRefresh.setRefreshing(false);
+                dbRef.child(getString(R.string.store_CODE))
+                        .orderByChild("isHidden_dis_pro")
+                        .equalTo(String.valueOf(false) + "_" + pro_dist)
+                        .removeEventListener(childEventListener);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
     }
 
     @Override

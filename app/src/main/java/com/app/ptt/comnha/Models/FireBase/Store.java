@@ -2,6 +2,8 @@ package com.app.ptt.comnha.Models.FireBase;
 
 import android.graphics.Bitmap;
 
+import com.app.ptt.comnha.Modules.Times;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,9 +28,11 @@ public class Store {
     long size = 0; //số lượng đánh giá
     float rateAVG = 0;
     String storeimg = "";//ảnh đại diện của store
+    boolean isHidden = false;
     //phép kết
     String pro_dist,//tìm theo tỉnh_huyện
-            userID_pro_dist;//tìm theo user_tỉnh_huyện
+            userID_pro_dist,//tìm theo user_tỉnh_huyện
+            isHidden_dis_pro;
 
     String distance;//khoảng cách hiển thị trên danh sách quán ăn
     Map<String, Comment> comments = null;//comment trong post
@@ -55,6 +59,9 @@ public class Store {
         result.put("serviceSum", serviceSum);
         result.put("size", size);
         result.put("storeimg", storeimg);
+        result.put("isHidden", isHidden);
+        result.put("isHidden_dis_pro", String.valueOf(isHidden)
+                + "_" + district + "_" + province);
         result.put("pro_dist", district + "_" + province);
         result.put("userID_pro_dist", userID + "_" + district + "_" + province);
         return result;
@@ -63,7 +70,7 @@ public class Store {
     public Store(String name, String address, String phonenumb,
                  String opentime, String province,
                  String district, double lat, double lng, String userID,
-                 String time, String date, String storeimg) {
+                 String storeimg) {
         this.name = name;
         this.address = address;
         this.phonenumb = phonenumb;
@@ -73,9 +80,9 @@ public class Store {
         this.lat = lat;
         this.lng = lng;
         this.userID = userID;
-        this.time = time;
-        this.date = date;
         this.storeimg = storeimg;
+        this.date = new Times().getDate();
+        this.time = new Times().getTime();
     }
 
     public String getStoreID() {
@@ -264,6 +271,22 @@ public class Store {
 
     public void setImgBitmap(Bitmap imgBitmap) {
         this.imgBitmap = imgBitmap;
+    }
+
+    public String getIsHidden_dis_pro() {
+        return isHidden_dis_pro;
+    }
+
+    public void setIsHidden_dis_pro(String isHidden_dis_pro) {
+        this.isHidden_dis_pro = isHidden_dis_pro;
+    }
+
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
     }
 }
 

@@ -63,7 +63,10 @@
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
         <item name="android:textColor">@color/color_notify_reportfood</item>
     </style>
-
+    <style name="BtnBorderlessRed" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
+        <item name="android:textColor">@color/color_selection_report</item>
+    </style>
     <style name="BtnBorderlessGrey" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
         <item name="android:textColor">@android:color/darker_gray</item>

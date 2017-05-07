@@ -1,5 +1,7 @@
 package com.app.ptt.comnha.Models.FireBase;
 
+import com.app.ptt.comnha.Modules.Times;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,12 +17,11 @@ public class NewstoreNotify {
     public NewstoreNotify() {
     }
 
-    public NewstoreNotify(String storeID, String name, String address, String date,
+    public NewstoreNotify(String storeID, String name, String address,
                           String userID, String un, String district, String provinve) {
         this.storeID = storeID;
         this.name = name;
         this.address = address;
-        this.date = date;
         this.userID = userID;
         this.un = un;
         this.district_province = district + "_" + provinve;
@@ -31,7 +32,7 @@ public class NewstoreNotify {
         result.put("storeID", storeID);
         result.put("name", name);
         result.put("address", address);
-        result.put("date", date);
+        result.put("date", new Times().getDate());
         result.put("userID", userID);
         result.put("un", un);
         result.put("readstate", readstate);

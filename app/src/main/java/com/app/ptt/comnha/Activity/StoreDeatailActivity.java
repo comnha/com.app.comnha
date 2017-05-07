@@ -2,10 +2,14 @@ package com.app.ptt.comnha.Activity;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.ptt.comnha.Adapters.Food_recycler_adapter;
 import com.app.ptt.comnha.Adapters.Photo_recycler_adapter;
@@ -30,6 +35,7 @@ import com.app.ptt.comnha.SingletonClasses.ChooseFood;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.github.clans.fab.FloatingActionButton;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -42,6 +48,8 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StoreDeatailActivity extends AppCompatActivity implements View.OnClickListener {
     RecyclerView postRecycler, photoRecycler, foodRecycler;
@@ -68,6 +76,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     Store store = ChooseStore.getInstance().getStore();
     LinearLayout linear_progress;
     String storeID = null;
+    ProgressDialog plzw8Dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,15 +171,27 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         imgv_viewlocation.setOnClickListener(this);
         fab.setOnClickListener(this);
         linear_progress = (LinearLayout) findViewById(R.id.linear_progress_storedetail);
+        plzw8Dialog = AppUtils.SetupProgressDialog(StoreDeatailActivity.this,
+                getString(R.string.txt_plzwait), null, false, false,
+                ProgressDialog.STYLE_SPINNER, -1);
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu = AppUtils.createMenu(menu, new String[]{
-                getString(R.string.txt_report),
-                getString(R.string.txt_followStore),
-                getString(R.string.text_hidestore),
-                getString(R.string.txt_changeinfo)});
+        if (store.isHidden()) {
+            menu = AppUtils.createMenu(menu, new String[]{
+                    getString(R.string.txt_report),
+                    getString(R.string.txt_followStore),
+                    getString(R.string.txt_showstore),
+                    getString(R.string.txt_changeinfo)});
+        } else {
+            menu = AppUtils.createMenu(menu, new String[]{
+                    getString(R.string.txt_report),
+                    getString(R.string.txt_followStore),
+                    getString(R.string.text_hidestore),
+                    getString(R.string.txt_changeinfo)});
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -182,12 +203,100 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
             case 1:
                 return true;
             case 2:
+                if (store.isHidden()) {
+                    showStore(item);
+                } else {
+                    hideStore(item);
+                }
                 return true;
             case 3:
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void showStore(final MenuItem item) {
+        plzw8Dialog.show();
+        store.setHidden(false);
+        String key = store.getStoreID();
+//        Toast.makeText(StoreDeatailActivity.this,
+//                key, Toast.LENGTH_SHORT).show();
+        Store childStore = store;
+        Map<String, Object> storeValue = childStore.toMap();
+        Map<String, Object> childUpdate = new HashMap<>();
+        childUpdate.put(getString(R.string.store_CODE)
+                + key, storeValue);
+        dbRef.updateChildren(childUpdate)
+                .addOnSuccessListener(
+                        new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                item.setTitle(getString(R.string.text_hidestore));
+                                plzw8Dialog.cancel();
+                            }
+                        }).addOnFailureListener(
+                new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        plzw8Dialog.cancel();
+                        Toast.makeText(getApplicationContext(),
+                                e.getMessage(), Toast.LENGTH_LONG)
+                                .show();
+                    }
+                });
+    }
+
+    private void hideStore(final MenuItem item) {
+        new AlertDialog.Builder(this)
+                .setCancelable(true)
+                .setMessage(getString(R.string.txt_hideconfirm))
+                .setPositiveButton(getString(R.string.txt_hide),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(
+                                    final DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                                plzw8Dialog.show();
+                                store.setHidden(true);
+                                String key = store.getStoreID();
+//                                Toast.makeText(StoreDeatailActivity.this,
+//                                        key, Toast.LENGTH_SHORT).show();
+                                Store childStore = store;
+                                Map<String, Object> storeValue = childStore.toMap();
+                                Map<String, Object> childUpdate = new HashMap<>();
+                                childUpdate.put(getString(R.string.store_CODE)
+                                        + key, storeValue);
+                                dbRef.updateChildren(childUpdate)
+                                        .addOnSuccessListener(
+                                                new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        item.setTitle(getString(R.string.txt_showstore));
+                                                        plzw8Dialog.cancel();
+                                                    }
+                                                }).addOnFailureListener(
+                                        new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                plzw8Dialog.cancel();
+                                                Toast.makeText(getApplicationContext(),
+                                                        e.getMessage(), Toast.LENGTH_LONG)
+                                                        .show();
+                                            }
+                                        });
+                            }
+                        })
+                .setNegativeButton(getString(R.string.text_no),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(
+                                    DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        })
+                .show();
     }
 
     @Override
@@ -197,6 +306,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void createStoreInfo() {
+
         txtv_storename.setText(store.getName());
         txtv_address.setText(store.getAddress());
         txtv_opentime.setText(store.getOpentime());
@@ -213,7 +323,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     }
                 });
 
-            }else {
+            } else {
                 imgv_avatar.setImageResource(R.drawable.ic_item_store);
             }
         } else {

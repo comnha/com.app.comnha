@@ -27,6 +27,12 @@ public class AnimationUtils {
         return instance;
     }
 
+    public static void fadeAnimation(View view, long duration,long delay) {
+        ObjectAnimator fade = ObjectAnimator.ofFloat(view, "alpha", 0, 1);
+        fade.setDuration(duration);
+        fade.start();
+    }
+
     public static void animateItemRcylerV(RecyclerView.ViewHolder holder, boolean goesDown) {
         ObjectAnimator animatorTraslateY = ObjectAnimator.ofFloat(holder.itemView,
                 "translationY", goesDown ? -500 : 500, 0);

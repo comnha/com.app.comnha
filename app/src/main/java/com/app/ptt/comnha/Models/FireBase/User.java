@@ -8,6 +8,37 @@ import java.util.Map;
  * Created by PTT on 9/16/2016.
  */
 public class User {
+    public String getuID() {
+        return uID;
+    }
+
+    public void setuID(String uID) {
+        this.uID = uID;
+    }
+
+    public String getPass() {
+        return pass;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
+
+    public String getUn() {
+        return un;
+    }
+
+    public void setUn(String un) {
+        this.un = un;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public String getHo() {
         return ho;
@@ -177,11 +208,14 @@ public class User {
         this.avatar = avatar;
     }
 
-    String
+    String uID,
             ho,
             ten,
             tenlot,
             birth,
+            pass,
+            un,
+            email,
     //more detail
     street = "",
             ward = "",
@@ -203,7 +237,14 @@ public class User {
     //phép kết
     String dist_prov = "";//tìm user theo tỉnh_huyện
 
-    public User(String ho, String ten, String tenlot, String birth) {
+    public User() {
+    }
+
+    public User(String un, String email, String pass,
+                String ho, String ten, String tenlot, String birth) {
+        this.un = un;
+        this.email = email;
+        this.pass = pass;
         this.ho = ho;
         this.ten = ten;
         this.tenlot = tenlot;
@@ -212,6 +253,9 @@ public class User {
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
+        result.put("un", un);
+        result.put("pass", pass);
+        result.put("email", email);
         result.put("ho", ho);
         result.put("tenlot", tenlot);
         result.put("ten", ten);

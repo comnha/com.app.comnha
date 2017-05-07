@@ -1,0 +1,102 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.app.ptt.comnha.Fragment.BlockUserDialog">
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nested_addfood"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/imgv_avatar_blockuser"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                app:civ_border_color="@android:color/transparent" />
+
+
+            <TextView
+                android:id="@+id/txtv_un_blockuser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:gravity="center_vertical|start"
+                android:lines="1"
+                android:maxLines="1"
+                android:textAllCaps="false" />
+
+            <TextView
+                android:id="@+id/txtv_email_blockuser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:gravity="center_vertical|start"
+                android:lines="1"
+                android:maxLines="1"
+                android:textAllCaps="false" />
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="24dp"
+                android:background="@android:color/white"
+                android:gravity="end"
+                android:orientation="horizontal"
+                android:visibility="invisible">
+
+                <Button
+                    style="@style/BtnBorderlessGrey"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_cancel" />
+
+                <Button
+                    style="@style/BtnBorderlessGreen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_add" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="24dp"
+        android:background="@android:color/white"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_negative_blockuser"
+            style="@style/BtnBorderlessGrey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_no" />
+
+        <Button
+            android:id="@+id/btn_positive_blockuser"
+            style="@style/BtnBorderlessRed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_block" />
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

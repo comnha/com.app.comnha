@@ -115,7 +115,7 @@
     <string name="txt_failaddfoodcate">Error: Không thể thêm loại món mới</string>
     <!--ERROR-->
     <string name="txt_posting_plzwait">Đang đăng bài&#8230;\n Vui lòng đợi chút!</string>
-    <string name="txt_plzwait">Please wait &#8230;</string>
+    <string name="txt_plzwait">Vui lòng đợi &#8230;</string>
     <string name="txt_logging">Đang đăng nhập &#8230;</string>
     <string name="txt_addinloca">Đang thêm địa điểm mới &#8230;</string>
     <string name="txt_addinmon">Đang thêm món mới &#8230;</string>
@@ -584,6 +584,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="txt_banner">Ảnh bìa</string>
+
     <string name="text_block_writepost">Chặn \"Viết Review\"</string>
     <string name="text_block_addstore">Chặn \"Thêm quán ăn\"</string>
     <string name="nav_setting">Cài đặt</string>
@@ -614,4 +615,14 @@
     <string name="txt_changeinfo">Thay đổi thông tin</string>
     <string name="txt_fooddetail">Thông tin món ăn</string>
     <string name="text_hidestore">Ẩn quán ăn</string>
+    <string name="text_blockuser">Chặn tài khoản?</string>
+    <string name="text_no">Không</string>
+    <string name="text_block">Chặn</string>
+    <string name="txt_error">Lỗi</string>
+    <string name="txt_blockeduser">Tài khoản đã được chặn chức năng này</string>
+    <string name="txt_delconfirm">Bạn muốn xóa thông báo này?</string>
+    <string name="txt_del">Xóa</string>
+    <string name="txt_hideconfirm">Bạn có muốn ẩn?</string>
+    <string name="txt_hide">Ẩn</string>
+    <string name="txt_showstore">Hiện quán ăn</string>
 </resources>

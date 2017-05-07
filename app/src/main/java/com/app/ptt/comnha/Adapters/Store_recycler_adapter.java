@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -56,6 +57,7 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<Store_recycler_
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        AnimationUtils.fadeAnimation(holder.itemView, 700, 0);
         holder.txtv_storename.setText(stores.get(position).getName());
         holder.txtv_address.setText(stores.get(position).getAddress());
         holder.txtv_rate.setText(String.valueOf(stores.get(position).getRateAVG()));

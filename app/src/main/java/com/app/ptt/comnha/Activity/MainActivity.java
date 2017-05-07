@@ -24,12 +24,18 @@ import android.widget.TextView;
 import com.app.ptt.comnha.Adapters.MainFragPagerAdapter;
 import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Fragment.AboutBottomSheetDialogFragment;
+import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -56,6 +62,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private FloatingActionButton fab;
     NestedScrollView nestedScrollView;
     View guideView;
+
     private View posttabview,
             storetabview,
             notifytabview;
@@ -63,6 +70,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             isStoretRefreshed = true,
             isNotitRefreshed = true;
     private StorageReference stRef;
+    private DatabaseReference dbRef;
+    private ValueEventListener userValueListener;
+    private User user;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,32 +81,62 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mAuth = FirebaseAuth.getInstance();
         stRef = FirebaseStorage.getInstance().getReferenceFromUrl(
                 getString(R.string.firebaseStorage_path));
+        dbRef = FirebaseDatabase.getInstance()
+                .getReferenceFromUrl(getString(R.string.firebase_path));
+        ref();
+        startMyService();
+    }
+
+    private void getUser() {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
-                    LoginSession.getInstance().setFirebUser(user);
                     txt_email.setText(user.getEmail());
                     txt_un.setText(user.getDisplayName());
                     Picasso.with(getApplicationContext())
                             .load(user.getPhotoUrl())
                             .placeholder(R.drawable.ic_logo)
                             .into(imgv_avatar);
+                    getUserInfo(user);
                     Log.d("onAuthStateChanged", "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
                     // User is signed out
                     Log.d("onAuthStateChanged", "onAuthStateChanged:signed_out");
+                    LoginSession.getInstance().setFirebUser(null);
+                    LoginSession.getInstance().setUser(null);
                     txt_email.setText(null);
                     txt_un.setText(null);
                     imgv_avatar.setImageResource(R.drawable.ic_logo);
                 }
             }
         };
-        ref();
-        startMyService();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
 
+    private void getUserInfo(final FirebaseUser firebaseUser) {
+        userValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = dataSnapshot.getValue(User.class);
+                String key = firebaseUser.getUid();
+                user.setuID(key);
+                LoginSession.getInstance().setUser(user);
+                LoginSession.getInstance().setFirebUser(firebaseUser);
+                dbRef.child(getString(R.string.users_CODE)
+                        + key).removeEventListener(userValueListener);
+                mAuth.removeAuthStateListener(mAuthListener);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+        dbRef.child(getString(R.string.users_CODE)
+                + firebaseUser.getUid())
+                .addValueEventListener(userValueListener);
     }
 
     private void ref() {
@@ -201,8 +241,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 switch (tab.getPosition()) {
                     case 0:
                         cx = l;
-                        AnimationUtils.getInstance().createCircularReveal(viewPager, duration,
-                                cx, cy);
+//                        AnimationUtils.getInstance().createCircularReveal(viewPager, duration,
+//                                cx, cy);
                         scalefabX.start();
                         scalefabY.start();
                         fab.setColorNormal(getResources()
@@ -213,8 +253,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     case 1:
                         cx = (l + r) / 2;
-                        AnimationUtils.getInstance().createCircularReveal(viewPager, duration,
-                                cx, cy);
+//                        AnimationUtils.getInstance().createCircularReveal(viewPager, duration,
+//                                cx, cy);
                         if (fab.getScaleX() == 0) {
                             fab.setVisibility(View.VISIBLE);
 //                            fab.setScaleX(0);
@@ -238,8 +278,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     case 2:
                         cx = r;
-                        AnimationUtils.getInstance().createCircularReveal(viewPager, duration,
-                                cx, cy);
+//                        AnimationUtils.getInstance().createCircularReveal(viewPager, duration,
+//                                cx, cy);
                         collapsefabX.start();
                         collapsefabY.start();
                         collapsefabX.addListener(new Animator.AnimatorListener() {
@@ -792,25 +832,30 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+        getUser();
+        Log.i("mainact", "onStart");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i("mainact", "onPause");
 
     }
 
-    //
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//
-//        Log.i(LOG, "onResume");
-//    }
-//
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Log.i("mainact", "onResume");
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
-
+        Log.i("mainact", "onStop");
+//        if (mAuthListener != null) {
+//        }
     }
 //
 //    @Override

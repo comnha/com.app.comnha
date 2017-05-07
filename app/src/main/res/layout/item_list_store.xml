@@ -32,7 +32,6 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 app:civ_border_color="@android:color/transparent"
-                android:src="@drawable/ic_item_store"
                 android:transitionName="avatarStore"
                  />
 

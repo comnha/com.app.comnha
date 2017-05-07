@@ -212,10 +212,13 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
     }
 
     public void addUserInfo(String key) {
-        User user = new User(AppUtils.getText(editText_birth),
-                AppUtils.getText(editText_tenlot),
+        User user = new User(AppUtils.getText(editText_un),
+                AppUtils.getText(editText_email),
+                AppUtils.getText(editText_password),
                 AppUtils.getText(editText_ho),
-                AppUtils.getText(editText_ten));
+                AppUtils.getText(editText_ten),
+                AppUtils.getText(editText_tenlot),
+                AppUtils.getText(editText_birth));
 //        String key = dbRef.child(getString(R.string.users_CODE)).push().getKey();
         Map<String, Object> userInfoMap = user.toMap();
         Map<String, Object> child = new HashMap<>();
