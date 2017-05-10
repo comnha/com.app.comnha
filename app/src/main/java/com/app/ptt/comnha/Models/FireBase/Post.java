@@ -1,5 +1,7 @@
 package com.app.ptt.comnha.Models.FireBase;
 
+import com.app.ptt.comnha.Utils.Times;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +24,7 @@ public class Post {
     String storeName;
 
     //attachedfood
-    String foodID;
+    String foodID = "";
     //attachedimage
     String banner;//
     //rating
@@ -34,16 +36,19 @@ public class Post {
     String userID_dist_prov,//tìm post theo uid_tỉnh_huyện
             dist_pro;//tìm post theo tỉnh_huyện
 
+    public Post() {
+
+    }
+
     public Post(String title, String content,
-                String date, String time,
                 String un, String userID, String avatar, String storeID,
-                String storeName, String foodID, String banner,
-                long priceRate, long healthyRate,
+                String storeName, String foodID,
+                String banner, long priceRate, long healthyRate,
                 long serviceRate, String dist_pro) {
         this.title = title;
         this.content = content;
-        this.date = date;
-        this.time = time;
+        this.date = new Times().getDate();
+        this.time = new Times().getTime();
         this.un = un;
         this.userID = userID;
         this.avatar = avatar;

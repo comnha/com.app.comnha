@@ -87,7 +87,7 @@ public class MainStoreFragment extends Fragment {
                         "avatarStore");
                 ChooseStore.getInstance().setStore(store);
 //                Toast.makeText(getContext(),
-//                        store.getName() + "", Toast.LENGTH_SHORT).show();
+//                        selected_store.getName() + "", Toast.LENGTH_SHORT).show();
                 startActivity(intent_storedetail, optionsCompat.toBundle());
             }
         });

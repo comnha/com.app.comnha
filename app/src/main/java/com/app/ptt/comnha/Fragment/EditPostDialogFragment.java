@@ -841,17 +841,17 @@ public class EditPostDialogFragment extends DialogFragment
 //                            @Override
 //                            public void onComplete(@NonNull Task<Void> task) {
 //                                if (task.isComplete()) {
-//                                    mProgressDialog.dismiss();
+//                                    plzw8Dialog.dismiss();
 //                                    Toast.makeText(getActivity(), "Sửa thành công", Toast.LENGTH_SHORT).show();
 //                                    getActivity().finish();
 //                                } else {
-//                                    mProgressDialog.dismiss();
+//                                    plzw8Dialog.dismiss();
 //                                    Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 //                                }
 //                            }
 //                        });
 //                    }else{
-//                        mProgressDialog.dismiss();
+//                        plzw8Dialog.dismiss();
 //                        Toast.makeText(getActivity(), "Sửa thành công", Toast.LENGTH_SHORT).show();
 //                        getActivity().finish();
 //                    }

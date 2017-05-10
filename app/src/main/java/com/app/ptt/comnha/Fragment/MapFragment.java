@@ -601,8 +601,8 @@ public class MapFragment extends Fragment implements View.OnClickListener,
     }
 
     public void addMarker(Store store) {
-//        Log.i(LOG + ".addMarker", "Them dia diem nhan duoc: " + store.getDiachi());
-//        LatLng locatioLatLng = new LatLng(store.getLat(), store.getLng());
+//        Log.i(LOG + ".addMarker", "Them dia diem nhan duoc: " + selected_store.getDiachi());
+//        LatLng locatioLatLng = new LatLng(selected_store.getLat(), selected_store.getLng());
 //        myGoogleMap.addMarker(new MarkerOptions()
 //                .position(locatioLatLng));
     }

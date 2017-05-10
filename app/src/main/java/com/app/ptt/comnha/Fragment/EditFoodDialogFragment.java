@@ -108,14 +108,14 @@ public class EditFoodDialogFragment extends DialogFragment {
 //                                dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
 //                                    @Override
 //                                    public void onComplete(@NonNull Task<Void> task) {
-//                                        mProgressDialog.dismiss();
+//                                        plzw8Dialog.dismiss();
 //                                        Toast.makeText(getContext(), "Đã sửa thành công", Toast.LENGTH_SHORT).show();
 //
 //                                    }
 //                                }).addOnFailureListener(new OnFailureListener() {
 //                                    @Override
 //                                    public void onFailure(@NonNull Exception e) {
-//                                        mProgressDialog.dismiss();
+//                                        plzw8Dialog.dismiss();
 //                                        Toast.makeText(getContext(), "Lỗi khi sửa", Toast.LENGTH_SHORT).show();
 //
 //                            }

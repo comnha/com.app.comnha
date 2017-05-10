@@ -77,56 +77,56 @@ public class Notification_rcycler_adapter extends RecyclerView.Adapter<Notificat
 
 
                 //LOCATION
-//                if (list.get(position).getType() == 1) {
-//                    String text = "Món ăn:  " + list.get(position).getFood().getName() + " mà bạn đã thêm vào quán " + list.get(position).getStore().getName() + " đã được admin chấp nhận" + "\n.";
+//                if (stores.get(position).getType() == 1) {
+//                    String text = "Món ăn:  " + stores.get(position).getFood().getName() + " mà bạn đã thêm vào quán " + stores.get(position).getStore().getName() + " đã được admin chấp nhận" + "\n.";
 //                    holder.txt_noidung.setText(text);
 //                }
-//                if(list.get(position).getType()==2){
-//                    String text = "Quán ăn: "+list.get(position).getStore().getName() +" mà bạn đã thêm đã được admin kiểm duyệt và chấp nhận. Cám ơn bạn đã đóng góp!!";
+//                if(stores.get(position).getType()==2){
+//                    String text = "Quán ăn: "+stores.get(position).getStore().getName() +" mà bạn đã thêm đã được admin kiểm duyệt và chấp nhận. Cám ơn bạn đã đóng góp!!";
 //                    holder.txt_noidung.setText(text);
 //                }
-//                if(list.get(position).getType()==3){
-//                    String text =  "Bài reiview: "+list.get(position).getStore().getName() +" mà bạn đã thêm vào quán"+list.get(position).getStore().getName()+" đã được admin kiểm duyệt và chấp nhận. Cám ơn bạn đã đóng góp!!";
+//                if(stores.get(position).getType()==3){
+//                    String text =  "Bài reiview: "+stores.get(position).getStore().getName() +" mà bạn đã thêm vào quán"+stores.get(position).getStore().getName()+" đã được admin kiểm duyệt và chấp nhận. Cám ơn bạn đã đóng góp!!";
 //                    holder.txt_noidung.setText(text);
 //                }
-//                if(list.get(position).getType()==4){
-//                    String text =  "Admin chưa chấp nhận quán ăn "+list.get(position).getStore().getName()+" của bạn với lý do : " +
-//                            ""+list.get(position).getReason().toString()+". Vui lòng sửa lại";
+//                if(stores.get(position).getType()==4){
+//                    String text =  "Admin chưa chấp nhận quán ăn "+stores.get(position).getStore().getName()+" của bạn với lý do : " +
+//                            ""+stores.get(position).getReason().toString()+". Vui lòng sửa lại";
 //                    holder.txt_noidung.setText(text);
 //                }
-//                if(list.get(position).getType()==5){
-//                    String text =  "Quán ăn "+ list.get(position).getStore().getName()+" của bạn bị report bởi "+list.get(position).getAccount().getUsername()+" với lý do"+ list.get(position).getReason()
+//                if(stores.get(position).getType()==5){
+//                    String text =  "Quán ăn "+ stores.get(position).getStore().getName()+" của bạn bị report bởi "+stores.get(position).getAccount().getUsername()+" với lý do"+ stores.get(position).getReason()
 //                            +". Admin đã xác nhận report và xóa quán ăn của bạn";
 //                    holder.txt_noidung.setText(text);
 //                }
-//                if(list.get(position).getType()==6){
-//                    String text =  "Report của bạn về quán ăn "+ list.get(position).getStore().getName()+" đã được chấp thuận. Cám ơn bạn";
+//                if(stores.get(position).getType()==6){
+//                    String text =  "Report của bạn về quán ăn "+ stores.get(position).getStore().getName()+" đã được chấp thuận. Cám ơn bạn";
 //                    holder.txt_noidung.setText(text);
 //                }
-//                if(list.get(position).getType()==7){
-//                    String text =  "Admin chưa chấp nhận bài đăng "+list.get(position).getPost().getTitle()+" của bạn với lý do : " +
-//                            ""+list.get(position).getReason().toString()+". Vui lòng sửa lại";
+//                if(stores.get(position).getType()==7){
+//                    String text =  "Admin chưa chấp nhận bài đăng "+stores.get(position).getPost().getTitle()+" của bạn với lý do : " +
+//                            ""+stores.get(position).getReason().toString()+". Vui lòng sửa lại";
 //                    holder.txt_noidung.setText(text);
 //                }
 //
 //
 //
 //                //POST
-//                if(list.get(position).getType()==7){
-//                    String text = "Bài đăng: "+list.get(position).getPost().getTitle() +" mà bạn đã thêm đã được admin kiểm duyệt và chấp nhận. Cám ơn bạn đã đóng góp!!";
+//                if(stores.get(position).getType()==7){
+//                    String text = "Bài đăng: "+stores.get(position).getPost().getTitle() +" mà bạn đã thêm đã được admin kiểm duyệt và chấp nhận. Cám ơn bạn đã đóng góp!!";
 //                    holder.txt_noidung.setText(text);
 //                }
-//                if(list.get(position).getType()==8){
-//                    String text =  "Bài đăng "+ list.get(position).getPost().getTitle()+" của bạn bị report bởi "+list.get(position).getAccount().getUsername()+" với lý do"+ list.get(position).getReason()
+//                if(stores.get(position).getType()==8){
+//                    String text =  "Bài đăng "+ stores.get(position).getPost().getTitle()+" của bạn bị report bởi "+stores.get(position).getAccount().getUsername()+" với lý do"+ stores.get(position).getReason()
 //                            +". Admin đã xác nhận report và xóa quán ăn của bạn";
 //                    holder.txt_noidung.setText(text);
 //                }
-//                if(list.get(position).getType()==9){
-//                    String text =  "Report của bạn về bài đăng "+ list.get(position).getPost().getTitle()+" đã được chấp thuận. Cám ơn bạn";
+//                if(stores.get(position).getType()==9){
+//                    String text =  "Report của bạn về bài đăng "+ stores.get(position).getPost().getTitle()+" đã được chấp thuận. Cám ơn bạn";
 //                    holder.txt_noidung.setText(text);
 //                }
-//                if(list.get(position).getType()==10){
-//                    String text =  "Bài đăng "+ list.get(position).getPost().getTitle()+" đã được xóa";
+//                if(stores.get(position).getType()==10){
+//                    String text =  "Bài đăng "+ stores.get(position).getPost().getTitle()+" đã được xóa";
 //                    holder.txt_noidung.setText(text);
 //                }
 //
@@ -141,7 +141,7 @@ public class Notification_rcycler_adapter extends RecyclerView.Adapter<Notificat
             AnimationUtils.animateItemRcylerV(holder, false);
 
         }
-        //if(list.get(position).getIndex().equals("user")) {
+        //if(stores.get(position).getIndex().equals("user")) {
             holder.ll_notification.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

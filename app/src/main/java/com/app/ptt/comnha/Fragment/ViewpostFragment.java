@@ -144,7 +144,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 store = dataSnapshot.getValue(Store.class);
-//                store.setLocaID(dataSnapshot.getKey());
+//                selected_store.setLocaID(dataSnapshot.getKey());
                 Log.d("myLocation", "have changed");
 //                dbRef.child( getString(R.string.usertrackloca_CODE)
 //                        + post.getUserId() + "/" + myLocation.getLocaID())
@@ -587,7 +587,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                            @Override
 //                                            public void onClick(DialogInterface dialog, int which) {
 //                                                dialog.cancel();
-//                                                mProgressDialog = ProgressDialog.show(getActivity(),
+//                                                plzw8Dialog = ProgressDialog.show(getActivity(),
 //                                                        getResources().getString(R.string.txt_plzwait),
 //                                                        "Đang xử lý",
 //                                                        true, false);
@@ -634,10 +634,10 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                            public void onComplete(@NonNull Task<Void> task) {
 //                                                                if (task.isComplete()) {
 //                                                                    Toast.makeText(getContext(), "Đã thông qua bài viết", Toast.LENGTH_SHORT).show();
-//                                                                    mProgressDialog.dismiss();
+//                                                                    plzw8Dialog.dismiss();
 //                                                                    getActivity().finish();
 //                                                                } else {
-//                                                                    mProgressDialog.dismiss();
+//                                                                    plzw8Dialog.dismiss();
 //                                                                    Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 //                                                                }
 //                                                            }
@@ -647,7 +647,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                    @Override
 //                                                    public void onFailure(@NonNull Exception e) {
 //                                                        Toast.makeText(getContext(), "Lỗi!!", Toast.LENGTH_SHORT).show();
-//                                                        mProgressDialog.dismiss();
+//                                                        plzw8Dialog.dismiss();
 //                                                    }
 //                                                });
 //                                            }
@@ -671,7 +671,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                @Override
 //                                                public void onClick(DialogInterface dialog, int which) {
 //                                                    dialog.cancel();
-//                                                    mProgressDialog = ProgressDialog.show(getActivity(),
+//                                                    plzw8Dialog = ProgressDialog.show(getActivity(),
 //                                                            getResources().getString(R.string.txt_plzwait),
 //                                                            "Đang xử lý",
 //                                                            true, false);
@@ -703,7 +703,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                    dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
 //                                                        @Override
 //                                                        public void onComplete(@NonNull Task<Void> task) {
-//                                                            mProgressDialog.dismiss();
+//                                                            plzw8Dialog.dismiss();
 //                                                            EditPost.getInstance().setPost(post);
 //                                                            ReasonPostDialogFragment temp = new ReasonPostDialogFragment();
 //                                                            temp.setType(1);
@@ -714,7 +714,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                        @Override
 //                                                        public void onFailure(@NonNull Exception e) {
 //                                                            Toast.makeText(getContext(), "Lỗi khi ẩn", Toast.LENGTH_SHORT).show();
-//                                                            mProgressDialog.dismiss();
+//                                                            plzw8Dialog.dismiss();
 //                                                            getActivity().finish();
 //                                                            return;
 //
@@ -753,18 +753,18 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
                                                     true, false);
                                             childUpdates = new HashMap<>();
 //                                    if(post.getVisible()) {
-//                                        long giaTong = store.getGiaTong() - post.getPrice(),
-//                                                vsTong = store.getVsTong() - post.getVesinh(),
-//                                                pvTong = store.getPvTong() - post.getPhucvu(),
-//                                                size = store.getSize() - 1;
-//                                        store.setGiaTong(giaTong);
-//                                        store.setVsTong(vsTong);
-//                                        store.setPvTong(pvTong);
-//                                        store.setSize(size);
-//                                        store.setGiaAVG(giaTong / size);
-//                                        store.setVsAVG(vsTong / size);
-//                                        store.setPvAVG(pvTong / size);
-//                                        Map<String, Object> updateLocal = store.toMap();
+//                                        long giaTong = selected_store.getGiaTong() - post.getPrice(),
+//                                                vsTong = selected_store.getVsTong() - post.getVesinh(),
+//                                                pvTong = selected_store.getPvTong() - post.getPhucvu(),
+//                                                size = selected_store.getSize() - 1;
+//                                        selected_store.setGiaTong(giaTong);
+//                                        selected_store.setVsTong(vsTong);
+//                                        selected_store.setPvTong(pvTong);
+//                                        selected_store.setSize(size);
+//                                        selected_store.setGiaAVG(giaTong / size);
+//                                        selected_store.setVsAVG(vsTong / size);
+//                                        selected_store.setPvAVG(pvTong / size);
+//                                        Map<String, Object> updateLocal = selected_store.toMap();
 //                                        if (ChoosePost.getInstance().getType() == 1) {
 //                                            float a = mainFood.getRating();
 //                                            float b = (2 * a - EditPost.getInstance().getPost().getFood().getRating());
@@ -773,7 +773,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                            childUpdates.put(getResources().getString(R.string.thucdon_CODE) + mainFood.getFoodID(), updateFood);
 //                                        }
 
-//                                        childUpdates.put(getResources().getString(R.string.locations_CODE) + store.getLocaID(), updateLocal);
+//                                        childUpdates.put(getResources().getString(R.string.locations_CODE) + selected_store.getLocaID(), updateLocal);
 //                                    }
 //                                            deletesuccess = true;
 //                                            for(Comment comment:comment_List){
@@ -791,7 +791,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                    });
 //                                                } else {
 //                                                    Toast.makeText(getContext(), "Xóa comment không thành công", Toast.LENGTH_SHORT).show();
-//                                                    mProgressDialog.dismiss();
+//                                                    plzw8Dialog.dismiss();
 //                                                    getActivity().finish();
 //                                                    return;
 //                                                }
@@ -811,7 +811,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                    });
 //                                                } else {
 //                                                    Toast.makeText(getContext(), "Xóa hình không thành công", Toast.LENGTH_SHORT).show();
-//                                                    mProgressDialog.dismiss();
+//                                                    plzw8Dialog.dismiss();
 //                                                    getActivity().finish();
 //                                                    return;
 //                                                }
@@ -832,7 +832,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                    });
 //                                                } else {
 //                                                    Toast.makeText(getContext(), "Xóa thông báo không thành công", Toast.LENGTH_SHORT).show();
-//                                                    mProgressDialog.dismiss();
+//                                                    plzw8Dialog.dismiss();
 //                                                    getActivity().finish();
 //                                                    return;
 //                                                }
@@ -859,7 +859,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                    });
 //                                                } else {
 //                                                    Toast.makeText(getContext(), "Xóa hình không thành công", Toast.LENGTH_SHORT).show();
-//                                                    mProgressDialog.dismiss();
+//                                                    plzw8Dialog.dismiss();
 //                                                    getActivity().finish();
 //                                                    return;
 //                                                }
@@ -878,7 +878,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                });
 //                                            } else {
 //                                                Toast.makeText(getContext(), "Xóa bài đăng không thành công", Toast.LENGTH_SHORT).show();
-//                                                mProgressDialog.dismiss();
+//                                                plzw8Dialog.dismiss();
 //                                                getActivity().finish();
 //                                            }
 //                                            if (deletesuccess) {
@@ -889,7 +889,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                    notification.setDate(new Times().getDate());
 //                                                    notification.setTime(new Times().getTime());
 //                                                    notification.setPost(EditPost.getInstance().getPost());
-//                                                    notification.setStore(store);
+//                                                    notification.setStore(selected_store);
 //                                                    notification.setType(8);
 //                                                    notification.setReaded(false);
 //                                                    childUpdates = new HashMap<String, Object>();
@@ -905,7 +905,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                                notification.setDate(new Times().getDate());
 //                                                                notification.setTime(new Times().getTime());
 //                                                                notification.setPost(EditPost.getInstance().getPost());
-//                                                                notification.setStore(store);
+//                                                                notification.setStore(selected_store);
 //                                                                notification.setType(9);
 //                                                                notification.setReaded(false);
 //                                                                childUpdates = new HashMap<String, Object>();
@@ -916,10 +916,10 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                                    public void onComplete(@NonNull Task<Void> task) {
 //                                                                        if (task.isComplete()) {
 //                                                                            Toast.makeText(getContext(), "Xóa thành công. Đã thông báo tới người sử dụng", Toast.LENGTH_SHORT).show();
-//                                                                            mProgressDialog.dismiss();
+//                                                                            plzw8Dialog.dismiss();
 //                                                                            getActivity().finish();
 //                                                                        } else {
-//                                                                            mProgressDialog.dismiss();
+//                                                                            plzw8Dialog.dismiss();
 //                                                                            getActivity().finish();
 //                                                                            Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 //                                                                        }
@@ -927,7 +927,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                                });
 //
 //                                                            } else {
-//                                                                mProgressDialog.dismiss();
+//                                                                plzw8Dialog.dismiss();
 //                                                                Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 //                                                                getActivity().finish();
 //                                                            }
@@ -939,7 +939,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                    notification.setAccount(MyService.getUserAccount());
 //                                                    notification.setDate(new Times().getDate());
 //                                                    notification.setTime(new Times().getTime());
-//                                                    notification.setStore(store);
+//                                                    notification.setStore(selected_store);
 //                                                    notification.setPost(EditPost.getInstance().getPost());
 //                                                    notification.setType(10);
 //                                                    notification.setReaded(false);
@@ -950,7 +950,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                        @Override
 //                                                        public void onComplete(@NonNull Task<Void> task) {
 //                                                            Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show();
-//                                                            mProgressDialog.dismiss();
+//                                                            plzw8Dialog.dismiss();
 //                                                            getActivity().finish();
 //
 //                                                        }
@@ -1040,29 +1040,29 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //    }
 
     private void delete() {
-//        long size = store.getSize() - 1;
-//        store.setSize(size);
+//        long size = selected_store.getSize() - 1;
+//        selected_store.setSize(size);
 //        if (size != 0) {
-//            store.setGiaTong(store.getGiaTong() - post.getPrice());
-//            store.setVsTong(store.getVsTong() - post.getVesinh());
-//            store.setPvTong(store.getPvTong() - post.getPhucvu());
-//            store.setGiaAVG(store.getGiaTong() / size);
-//            store.setVsAVG(store.getVsTong() / size);
-//            store.setPvAVG(store.getPvTong() / size);
+//            selected_store.setGiaTong(selected_store.getGiaTong() - post.getPrice());
+//            selected_store.setVsTong(selected_store.getVsTong() - post.getVesinh());
+//            selected_store.setPvTong(selected_store.getPvTong() - post.getPhucvu());
+//            selected_store.setGiaAVG(selected_store.getGiaTong() / size);
+//            selected_store.setVsAVG(selected_store.getVsTong() / size);
+//            selected_store.setPvAVG(selected_store.getPvTong() / size);
 //        } else {
-//            store.setGiaTong(0);
-//            store.setVsTong(0);
-//            store.setPvTong(0);
-//            store.setGiaAVG(0);
-//            store.setVsAVG(0);
-//            store.setPvAVG(0);
+//            selected_store.setGiaTong(0);
+//            selected_store.setVsTong(0);
+//            selected_store.setPvTong(0);
+//            selected_store.setGiaAVG(0);
+//            selected_store.setVsAVG(0);
+//            selected_store.setPvAVG(0);
 //        }
 
-//        store.setTongAVG((store.getGiaAVG() + store.getVsAVG() +
-//                store.getPvAVG()) / 3);
+//        selected_store.setTongAVG((selected_store.getGiaAVG() + selected_store.getVsAVG() +
+//                selected_store.getPvAVG()) / 3);
 //        Map<String, Object> updateChild = new HashMap<>();
 //        updateChild.put(
-//                getString(R.string.locations_CODE) + store.getLocaID(), store);
+//                getString(R.string.locations_CODE) + selected_store.getLocaID(), selected_store);
 //        dbRef.updateChildren(updateChild).addOnCompleteListener(new OnCompleteListener<Void>() {
 //            @Override
 //            public void onComplete(@NonNull Task<Void> task) {
@@ -1072,7 +1072,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                            @Override
 //                            public void onComplete(@NonNull Task<Void> task) {
 //                                if (!task.isComplete()) {
-//                                    mProgressDialog.dismiss();
+//                                    plzw8Dialog.dismiss();
 //                                    Toast.makeText(getContext(),
 //                                            task.getException().getMessage(),
 //                                            Toast.LENGTH_SHORT).show();
@@ -1087,7 +1087,7 @@ public class ViewpostFragment extends Fragment implements View.OnClickListener {
 //                                                        task.getException().getMessage(),
 //                                                        Toast.LENGTH_SHORT).show();
 //                                            } else {
-//                                                mProgressDialog.dismiss();
+//                                                plzw8Dialog.dismiss();
 //                                                Toast.makeText(getContext(), "Xóa thành công",
 //                                                        Toast.LENGTH_SHORT).show();
 //                                                MyService.setChangeContent("justDelete");

@@ -43,7 +43,7 @@ public class NotificationFullFragment extends Fragment {
     ArrayList<Notification> listNoti, listReaded;
     ChildEventListener notificatonChildEventListener;
     boolean readAll,deleteAll;
-    //ProgressDialog mProgressDialog;
+    //ProgressDialog plzw8Dialog;
     Map<String, Object> childUpdates;
     ArrayList<String> delList;
     public NotificationFullFragment() {
@@ -290,7 +290,7 @@ public class NotificationFullFragment extends Fragment {
 //                            }).addOnFailureListener(new OnFailureListener() {
 //                        @Override
 //                        public void onFailure(@NonNull Exception e) {
-//                            // mProgressDialog.dismiss();
+//                            // plzw8Dialog.dismiss();
 //                            Log.i("Thoát trang thông báo", "Xóa tất cả lỗi!!!!!");
 //                        }
 //                    });
@@ -326,7 +326,7 @@ public class NotificationFullFragment extends Fragment {
 //                            }).addOnFailureListener(new OnFailureListener() {
 //                        @Override
 //                        public void onFailure(@NonNull Exception e) {
-//                            // mProgressDialog.dismiss();
+//                            // plzw8Dialog.dismiss();
 //                            Log.i("Thoát trang thông báo", "Xóa tất cả lỗi!!!!!");
 //                        }
 //                    });

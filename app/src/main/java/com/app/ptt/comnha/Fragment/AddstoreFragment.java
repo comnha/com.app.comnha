@@ -539,7 +539,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
 ////                        @Override
 ////                        public void onClick(DialogInterface dialog, int which) {
 ////                            dialog.dismiss();
-////                            mProgressDialog = ProgressDialog.show(getActivity(),
+////                            plzw8Dialog = ProgressDialog.show(getActivity(),
 ////                                    getResources().getString(R.string.txt_plzwait),
 ////                                    getResources().getString(R.string.txt_addinloca), true, true);
 ////                            newLocation.setLat(myPlaceAttribute.getPlaceLatLng().latitude);
@@ -573,7 +573,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
 ////                                @Override
 ////                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
 ////                                    if (databaseError != null) {
-////                                        mProgressDialog.dismiss();
+////                                        plzw8Dialog.dismiss();
 ////                                        Toast.makeText(getActivity(), "Lỗi: " + databaseError.getMessage(), Toast.LENGTH_LONG).show();
 ////                                    } else {
 ////                                            Map<String, Object> childUpdates = new HashMap<>();
@@ -593,13 +593,13 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
 ////                                                @Override
 ////                                                public void onComplete(@NonNull Task<Void> task) {
 ////                                                    if (task.isComplete()) {
-////                                                        mProgressDialog.dismiss();
+////                                                        plzw8Dialog.dismiss();
 ////                                                        Toast.makeText(getActivity(),
 ////                                                                getResources().getString(R.string.text_noti_addloca_succes)
 ////                                                                , Toast.LENGTH_SHORT).show();
 ////                                                        getActivity().finish();
 ////                                                    } else {
-////                                                        mProgressDialog.dismiss();
+////                                                        plzw8Dialog.dismiss();
 ////                                                        Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 ////                                                    }
 ////                                                }
@@ -625,7 +625,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
 ////            dialog.show();
 //            //builder.create();
 //        } else {
-//            //mProgressDialog.dismiss();
+//            //plzw8Dialog.dismiss();
 //            Toast.makeText(getActivity(), "Lỗi! Kiểm tra dữ liệu nhập vàp ", Toast.LENGTH_LONG).show();
 //        }
 //        pos=-1;

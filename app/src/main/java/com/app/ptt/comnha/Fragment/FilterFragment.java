@@ -293,7 +293,7 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Store store = dataSnapshot.getValue(Store.class);
-//                store.setStoreID(dataSnapshot.getKey());
+//                selected_store.setStoreID(dataSnapshot.getKey());
                 packageLocations.add(store);
             }
 

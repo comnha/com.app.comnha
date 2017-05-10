@@ -4,11 +4,13 @@ package com.app.ptt.comnha.Fragment;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +18,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,58 +29,91 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.app.ptt.comnha.Adapters.ImagesImportRvAdapter;
+import com.app.ptt.comnha.Adapters.Storeselection_rcyler_adapter;
+import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Classes.SelectedImage;
+import com.app.ptt.comnha.Models.FireBase.Food;
+import com.app.ptt.comnha.Models.FireBase.NewpostNotify;
+import com.app.ptt.comnha.Models.FireBase.Post;
+import com.app.ptt.comnha.Models.FireBase.Store;
+import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.SystemControl;
 import com.app.ptt.comnha.Utils.AppUtils;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class WritepostFragment extends Fragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
+
     public WritepostFragment() {
         // Required empty public constructor
     }
 
     Toolbar toolbar;
     EditText edt_content, edt_title;
-    LinearLayout linear_more, linear_rate, linear_pickfood, linear_addimg, linear_pickloca,
+    LinearLayout linear_more, linear_rate, linear_rate_dial, linear_pickfood_dial,
+            linear_addimg_dial, linear_pickloca_dial,
             linear_location, linear_importimg, linear_banner;
     ImageView imgV_banner;
-    BottomSheetDialog moreDialog, rateDialog, imgsDialog;
+    BottomSheetDialog moreDialog, rateDialog, imgsDialog,
+            storeDialog, foodDialog;
     DatabaseReference dbRef;
-    StorageReference storeRef;
-    ProgressDialog mProgressDialog;
-    TextView txtV_gia, txtV_vs, txtV_pv;
-    SeekBar sb_gia, sb_vs, sb_pv;
-    int progress_gia = 0, progress_vs = 0, progress_pv = 0;
+    StorageReference stRef;
+    ProgressDialog plzw8Dialog;
+    TextView txtV_price_dial, txtV_health_dial, txtV_service_dial;
+    SeekBar sb_price, sb_health, sb_service;
+    int progress_price = 0, progress_health = 0, progress_service = 0;
     public static int MEDIASTORE_LOADED_ID = 0;
-    RecyclerView imagesrv;
-    RecyclerView.LayoutManager imageslm;
+    RecyclerView imagesrv, storesrv, foodsrv;
+    RecyclerView.LayoutManager imageslm, storeslm, foodslm;
     ContentResolver cr;
     ArrayList<SelectedImage> selectedImages;
     ImagesImportRvAdapter imagesImportRvAdapter;
-    TextView txtv_locaname, txtv_locaadd, txtv_banner, txtv_importimg;
+    ArrayList<Store> stores;
+    Storeselection_rcyler_adapter storesAdater;
+    ArrayList<Food> foods;
+    TextView txtv_locaname, txtv_locaadd, txtv_banner, txtv_importimg,
+            txtv_pricerate, txtv_healthrate, txtv_servicerate;
     int androidVer = Build.VERSION.SDK_INT;
     RelativeLayout relative_touchoutside;
     NestedScrollView nested_touchoutside;
     boolean isReadImg = false;
+    TextInputLayout ilayout_title, ilayout_content;
+    String title = "", content, banner = "";
+    long pricerate = 0, healthrate = 0, servicerate = 0;
+    Button btn_imgdial_select, btn_imgdial_close,
+            btn_ratedial_select, btn_ratedial_cancel;
+    String un = "", uID = "", avatar = "";
+    User user = null;
+    Store selected_store = null;
+    Food food = null;
+    Post post;
+    NewpostNotify notify = null;
+    Map<String, Object> images = null;
+    String dist_prov = "Quận 9_HCM";
+    ValueEventListener storeValueListener, foodValueListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,17 +121,98 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         // Inflate the layout for this fragment
 //        isConnected = MyService.returnIsConnected();
         View view = inflater.inflate(R.layout.fragment_writepost, container, false);
-        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getString(R.string.firebase_path));
-        storeRef = FirebaseStorage.getInstance().getReferenceFromUrl(getString(R.string.firebaseStorage_path));
+        dbRef = FirebaseDatabase.getInstance()
+                .getReferenceFromUrl(getString(R.string.firebase_path));
+        stRef = FirebaseStorage.getInstance()
+                .getReferenceFromUrl(getString(R.string.firebaseStorage_path));
         cr = getContext().getContentResolver();
-        anhXa(view);
+        if (LoginSession.getInstance().getFirebUser() != null) {
+            user = LoginSession.getInstance().getUser();
+            un = LoginSession.getInstance().getUser().getUn();
+            uID = LoginSession.getInstance().getUser().getuID();
+            avatar = LoginSession.getInstance().getUser().getAvatar();
+        } else {
+            getActivity().finish();
+        }
+        ref(view);
         return view;
     }
 
-    private void anhXa(View view) {
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        storeValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
+                    String key = dataItem.getKey();
+                    Store store = dataItem.getValue(Store.class);
+                    store.setStoreID(key);
+                    stores.add(store);
+                }
+                dbRef.child(getString(R.string.store_CODE))
+                        .orderByChild("isHidden_dis_pro")
+                        .equalTo(String.valueOf(false) + "_" + dist_prov)
+                        .removeEventListener(storeValueListener);
+                storesAdater.notifyDataSetChanged();
+                plzw8Dialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+    }
+
+    private void ref(View view) {
         linear_more = (LinearLayout) view.findViewById(R.id.linear_more_writepost);
         edt_content = (EditText) view.findViewById(R.id.edt_content_writepost);
         edt_title = (EditText) view.findViewById(R.id.edt_title_writepost);
+        edt_title.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
+        edt_title.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                title = charSequence.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() > 0) {
+                    ilayout_title.setError(null);
+                } else {
+                    ilayout_title.setError(
+                            getResources().getString(R.string.txt_notitle));
+                }
+            }
+        });
+        edt_content.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
+        edt_content.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                content = charSequence.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() > 0) {
+                    ilayout_content.setError(null);
+                } else {
+                    ilayout_content.setError(
+                            getResources().getString(R.string.txt_nocontent));
+                }
+            }
+        });
         toolbar = (Toolbar) view.findViewById(R.id.toolbar_writepost);
         toolbar.setNavigationIcon(R.drawable.ic_close_white_24dp);
         toolbar.setBackgroundColor(getResources().getColor(R.color.admin_color_selection_news));
@@ -115,51 +234,75 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         moreDialog = new BottomSheetDialog(getContext());
         moreDialog.setContentView(R.layout.layout_writepost_more);
 
-        linear_rate = (LinearLayout) moreDialog.findViewById(R.id.linear_rate_more_writepost_dialog);
-        linear_pickfood = (LinearLayout) moreDialog.findViewById(R.id.linear_foodrating_more_writepost_dialog);
-        linear_addimg = (LinearLayout) moreDialog.findViewById(R.id.linear_addimg_more_writepost_dialog);
-        linear_pickloca = (LinearLayout) moreDialog.findViewById(R.id.linear_place_more_writepost_dialog);
 
-        linear_rate.setOnClickListener(this);
-        linear_pickfood.setOnClickListener(this);
-        linear_addimg.setOnClickListener(this);
-        linear_pickloca.setOnClickListener(this);
-        mProgressDialog = new ProgressDialog(getActivity().getApplicationContext());
-        mProgressDialog.setCancelable(true);
-        mProgressDialog.setMessage(getString(R.string.txt_posting_plzwait));
+        linear_rate_dial = (LinearLayout) moreDialog.findViewById(R.id.linear_rate_more_writepost_dialog);
+        linear_pickfood_dial = (LinearLayout) moreDialog.findViewById(R.id.linear_foodrating_more_writepost_dialog);
+        linear_addimg_dial = (LinearLayout) moreDialog.findViewById(R.id.linear_addimg_more_writepost_dialog);
+        linear_pickloca_dial = (LinearLayout) moreDialog.findViewById(R.id.linear_place_more_writepost_dialog);
 
+        linear_rate_dial.setOnClickListener(this);
+        linear_pickfood_dial.setOnClickListener(this);
+        linear_addimg_dial.setOnClickListener(this);
+        linear_pickloca_dial.setOnClickListener(this);
+
+        plzw8Dialog = AppUtils.SetupProgressDialog(getActivity(),
+                getString(R.string.txt_plzwait), null, true, true, ProgressDialog.STYLE_SPINNER,
+                0);
         rateDialog = new BottomSheetDialog(getContext());
         rateDialog.setContentView(R.layout.layout_writepost_rate);
-        txtV_gia = (TextView) rateDialog.findViewById(R.id.txtV_gia_ratedialog_writepost);
-        txtV_vs = (TextView) rateDialog.findViewById(R.id.txtV_vesinh_ratedialog_writepost);
-        txtV_pv = (TextView) rateDialog.findViewById(R.id.txtV_phucvu_ratedialog_writepost);
-        txtV_gia.setText(getString(R.string.text_price) + ": 1");
-        txtV_vs.setText(getString(R.string.text_healthyrate) + ": 1");
-        txtV_pv.setText(getString(R.string.text_servicerate) + ": 1");
-        sb_gia = (SeekBar) rateDialog.findViewById(R.id.seekbar_gia_ratedialog_writepost);
-        sb_vs = (SeekBar) rateDialog.findViewById(R.id.seekbar_vesinh_ratedialog_writepost);
-        sb_pv = (SeekBar) rateDialog.findViewById(R.id.seekbar_phucvu_ratedialog_writepost);
-        sb_gia.setOnSeekBarChangeListener(this);
-        sb_vs.setOnSeekBarChangeListener(this);
-        sb_pv.setOnSeekBarChangeListener(this);
+        rateDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                int x;
+                int y = (linear_rate.getTop() + linear_rate.getBottom()) / 2;
+                long duration = 300;
+                if (healthrate > 0 && servicerate > 0 && pricerate > 0) {
+                    Log.d("rateDialonDismiss", "select");
+                    x = linear_rate.getLeft();
+                    AnimationUtils.createOpenCR(linear_rate, duration, x, y);
+                    txtv_pricerate.setText(pricerate + "");
+                    txtv_servicerate.setText(servicerate + "");
+                    txtv_healthrate.setText(healthrate + "");
+                } else {
+                    x = linear_rate.getRight();
+                    AnimationUtils.createCloseCR(linear_rate, duration, x, y);
+                    sb_price.setProgress(0);
+                    sb_health.setProgress(0);
+                    sb_service.setProgress(0);
+                    Log.d("rateDialonDismiss", "cancel");
 
-        linear_location = (LinearLayout) view.findViewById(R.id.linear_location_writepost);
+                }
+            }
+        });
+        btn_ratedial_select = (Button) rateDialog.findViewById(R.id.btn_select_ratedialog);
+        btn_ratedial_cancel = (Button) rateDialog.findViewById(R.id.btn_cancel_ratedialog);
+        btn_ratedial_select.setOnClickListener(this);
+        btn_ratedial_cancel.setOnClickListener(this);
+        txtV_price_dial = (TextView) rateDialog.findViewById(R.id.txtV_price_ratedialog);
+        txtV_health_dial = (TextView) rateDialog.findViewById(R.id.txtV_health_ratedialog);
+        txtV_service_dial = (TextView) rateDialog.findViewById(R.id.txtV_service_ratedialog);
+        txtV_price_dial.setText(getString(R.string.text_price) + ": 1");
+        txtV_health_dial.setText(getString(R.string.text_healthyrate) + ": 1");
+        txtV_service_dial.setText(getString(R.string.text_servicerate) + ": 1");
+        sb_price = (SeekBar) rateDialog.findViewById(R.id.sb_price_ratedialog);
+        sb_health = (SeekBar) rateDialog.findViewById(R.id.sb_health_ratedialog);
+        sb_service = (SeekBar) rateDialog.findViewById(R.id.sb_service_ratedialog);
+        sb_price.setOnSeekBarChangeListener(this);
+        sb_health.setOnSeekBarChangeListener(this);
+        sb_service.setOnSeekBarChangeListener(this);
+
+        linear_location = (LinearLayout) view.findViewById(R.id.linear_store_writepost);
         linear_location.setVisibility(View.GONE);
 
         selectedImages = new ArrayList<>();
         imgsDialog = new BottomSheetDialog(getContext());
         imgsDialog.setContentView(R.layout.layout_writepost_imgimporting);
+        imgsDialog.setCanceledOnTouchOutside(false);
         imgsDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
                 Log.d("onDismiss", "onDismiss");
-                selectedImages.clear();
-                for (SelectedImage i : imagesImportRvAdapter.getSelectedImgs()
-                        ) {
-                    if (i.isSelected()) {
-                        selectedImages.add(i);
-                    }
-                }
+
                 if (selectedImages.size() > 0) {
                     linear_importimg.setVisibility(View.VISIBLE);
                     linear_banner.setVisibility(View.VISIBLE);
@@ -167,10 +310,13 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                     imgV_banner.setImageURI(selectedImages.get(0).getUri());
                     imgV_banner.setScaleType(ImageView.ScaleType.FIT_XY);
                 } else {
+                    imagesImportRvAdapter.cancelSelection();
+                    selectedImages.clear();
                     linear_importimg.setVisibility(View.GONE);
                     linear_banner.setVisibility(View.GONE);
                     imgV_banner.setImageURI(null);
                 }
+                Log.d("imgDialogonDismiss", "onDismiss");
             }
         });
 
@@ -180,8 +326,15 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         imagesImportRvAdapter = new ImagesImportRvAdapter(getContext(), getContext().getContentResolver());
         imagesrv.setAdapter(imagesImportRvAdapter);
 
-        txtv_locaname = (TextView) view.findViewById(R.id.txtV_locaname_writepost);
-        txtv_locaadd = (TextView) view.findViewById(R.id.txtV_locaaddress_writepost);
+        btn_imgdial_select = (Button) imgsDialog.findViewById(R.id.btn_select_imgimporting);
+        btn_imgdial_close = (Button) imgsDialog.findViewById(R.id.btn_close_imgimporting);
+        btn_imgdial_select.setOnClickListener(this);
+        btn_imgdial_close.setOnClickListener(this);
+        txtv_locaname = (TextView) view.findViewById(R.id.txtV_storename_writepost);
+        txtv_locaadd = (TextView) view.findViewById(R.id.txtV_storeaddress_writepost);
+        txtv_pricerate = (TextView) view.findViewById(R.id.txtv_price_writepost);
+        txtv_healthrate = (TextView) view.findViewById(R.id.txtv_health_writepost);
+        txtv_servicerate = (TextView) view.findViewById(R.id.txtv_service_writepost);
         txtv_banner = (TextView) view.findViewById(R.id.txtV_banner_writepost);
         txtv_importimg = (TextView) view.findViewById(R.id.txtV_importimg_writepost);
         linear_importimg = (LinearLayout) view.findViewById(R.id.linear_importimg_writepost);
@@ -190,6 +343,9 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         linear_banner = (LinearLayout) view.findViewById(R.id.linear_banner_writepost);
         linear_banner.setVisibility(View.GONE);
 
+        linear_rate = (LinearLayout) view.findViewById(R.id.linear_rate_writepost);
+        linear_rate.setVisibility(View.GONE);
+
         nested_touchoutside = (NestedScrollView) view.findViewById(R.id.nested_writepost);
         nested_touchoutside.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,6 +353,41 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 SystemControl.hideSoftKeyboard(getActivity());
             }
         });
+        ilayout_title = (TextInputLayout) view.findViewById(R.id.ilayout_title);
+        ilayout_content = (TextInputLayout) view.findViewById(R.id.ilayout_content);
+        storeDialog = new BottomSheetDialog(getContext());
+        storeDialog.setContentView(R.layout.layout_writepost_storelist);
+        storeDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                if (selected_store != null) {
+                    if (linear_location.getVisibility() == View.VISIBLE) {
+
+                    } else {
+                        linear_location.setVisibility(View.VISIBLE);
+                        AnimationUtils.fadeAnimation(linear_location, 300, 0);
+                    }
+                    txtv_locaadd.setText(selected_store.getAddress());
+                    txtv_locaname.setText(selected_store.getName());
+                }
+            }
+        });
+        storesrv = (RecyclerView) storeDialog.findViewById(R.id.rv_stores_storeselection);
+        storeslm = new LinearLayoutManager(getContext(),
+                LinearLayoutManager.VERTICAL, false);
+        storesrv.setLayoutManager(storeslm);
+        stores = new ArrayList<>();
+        storesAdater = new Storeselection_rcyler_adapter(getActivity(), stores, stRef);
+        storesrv.setAdapter(storesAdater);
+        storesAdater.setOnItemClickLiestner(new Storeselection_rcyler_adapter.OnItemClickLiestner() {
+            @Override
+            public void onItemClick(Store store) {
+                selected_store = store;
+                storeDialog.dismiss();
+            }
+        });
+        foodDialog = new BottomSheetDialog(getContext());
+        foodDialog.setContentView(R.layout.layout_writepost_foodlist);
     }
 
     @Override
@@ -210,11 +401,9 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         switch (item.getItemId()) {
             case R.id.action_save_writepost:
                 if (AppUtils.checkEmptyEdt(edt_title)) {
-                    Toast.makeText(getContext(), getString(R.string.txt_notitle), Toast.LENGTH_SHORT)
-                            .show();
+                    edt_title.requestFocus();
                 } else if (AppUtils.checkEmptyEdt(edt_content)) {
-                    Toast.makeText(getContext(), getString(R.string.txt_nocontent), Toast.LENGTH_SHORT)
-                            .show();
+                    edt_content.requestFocus();
                 } else
                     return true;
             default:
@@ -262,25 +451,58 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 break;
             case R.id.linear_place_more_writepost_dialog:
                 moreDialog.dismiss();
+                if (stores.size() == 0) {
+                    plzw8Dialog.show();
+                    dbRef.child(getString(R.string.store_CODE))
+                            .orderByChild("isHidden_dis_pro")
+                            .equalTo(String.valueOf(false) + "_" + dist_prov)
+                            .addValueEventListener(storeValueListener);
+                    plzw8Dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialogInterface) {
+                            storeDialog.show();
+                        }
+                    });
+                } else {
+                    storeDialog.show();
+                }
                 break;
-
+            case R.id.btn_close_imgimporting:
+                imgsDialog.dismiss();
+                break;
+            case R.id.btn_select_imgimporting:
+                selectedImages = imagesImportRvAdapter.getSelectedImgs();
+                imgsDialog.dismiss();
+                break;
+            case R.id.btn_select_ratedialog:
+                healthrate = sb_health.getProgress() + 1;
+                pricerate = sb_price.getProgress() + 1;
+                servicerate = sb_service.getProgress() + 1;
+                rateDialog.dismiss();
+                break;
+            case R.id.btn_cancel_ratedialog:
+                healthrate = 0;
+                servicerate = 0;
+                pricerate = 0;
+                rateDialog.cancel();
+                break;
         }
     }
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         switch (seekBar.getId()) {
-            case R.id.seekbar_gia_ratedialog_writepost:
-                progress_gia = i + 1;
-                txtV_gia.setText(getString(R.string.text_price) + ": " + progress_gia);
+            case R.id.sb_price_ratedialog:
+                progress_price = i + 1;
+                txtV_price_dial.setText(getString(R.string.text_price) + ": " + progress_price);
                 break;
-            case R.id.seekbar_vesinh_ratedialog_writepost:
-                progress_vs = i + 1;
-                txtV_vs.setText(getString(R.string.text_healthyrate) + ": " + progress_vs);
+            case R.id.sb_health_ratedialog:
+                progress_health = i + 1;
+                txtV_health_dial.setText(getString(R.string.text_healthyrate) + ": " + progress_health);
                 break;
-            case R.id.seekbar_phucvu_ratedialog_writepost:
-                progress_pv = i + 1;
-                txtV_pv.setText(getString(R.string.text_servicerate) + ": " + progress_pv);
+            case R.id.sb_service_ratedialog:
+                progress_service = i + 1;
+                txtV_service_dial.setText(getString(R.string.text_servicerate) + ": " + progress_service);
                 break;
         }
     }
@@ -295,6 +517,14 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 
     }
 
+    private void savePost() {
+        String pro_dist = selected_store.getPro_dist(),
+                storename = selected_store.getName(),
+                storeID = selected_store.getStoreID(), foodID = food.getFoodID();
+        post = new Post(title, content, un, uID, avatar, storeID, storename,
+                foodID, banner, pricerate, healthrate, servicerate,
+                pro_dist);
+    }
     //    private static final String LOG = AddpostFragment.class.getSimpleName();
 //    Button btn_save, btn_mainImg, btnAddImg;
 //    CheckBox cb_monAn, cb_quanAn;
@@ -329,7 +559,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //    TextView txt_name, txt_address, frg_filter_txtmon;
 //    EditText edt_title, edt_content;
 //    boolean mainImg = false;
-//    ProgressDialog mProgressDialog;
+//    ProgressDialog plzw8Dialog;
 //    FragmentManager fm;
 
 //
@@ -375,7 +605,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //                }
 //            } else {
 //                pc_Success = 0;
-//                mProgressDialog.dismiss();
+//                plzw8Dialog.dismiss();
 //                Toast.makeText(getActivity(), "Xảy ra lỗi. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
 //
 //            }
@@ -679,7 +909,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //            updateLoca = DoPost.getInstance().getMyLocation();
 //            locaID = DoPost.getInstance().getMyLocation().getStoreID();
 //            Toast.makeText(getContext(), "LOCAL ID:" + locaID, Toast.LENGTH_SHORT).show();
-//            mProgressDialog = ProgressDialog.show(getActivity(),
+//            plzw8Dialog = ProgressDialog.show(getActivity(),
 //                    getResources().getString(R.string.txt_plzwait),
 //                    getResources().getString(R.string.txt_addinpost),
 //                    true, false);
@@ -795,7 +1025,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //            @Override
 //            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
 //                if (databaseError != null) {
-//                    mProgressDialog.dismiss();
+//                    plzw8Dialog.dismiss();
 //                    Toast.makeText(getActivity(), "Đăng bài bị lỗi" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
 //                } else {
 //                    if (!MyService.getUserAccount().getRole()) {
@@ -817,17 +1047,17 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //                            @Override
 //                            public void onComplete(@NonNull Task<Void> task) {
 //                                if (task.isComplete()) {
-//                                    mProgressDialog.dismiss();
+//                                    plzw8Dialog.dismiss();
 //                                    Toast.makeText(getActivity(), "Đăng bài thành công", Toast.LENGTH_SHORT).show();
 //                                    getActivity().finish();
 //                                } else {
-//                                    mProgressDialog.dismiss();
+//                                    plzw8Dialog.dismiss();
 //                                    Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 //                                }
 //                            }
 //                        });
 //                    } else {
-//                        mProgressDialog.dismiss();
+//                        plzw8Dialog.dismiss();
 //                        Toast.makeText(getActivity(), "Đăng bài thành công", Toast.LENGTH_SHORT).show();
 //                        getActivity().finish();
 //                    }
@@ -1111,7 +1341,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 ////                getActivity().finish();
 ////            }else
 ////                Toast.makeText(getContext(),"Thêm thất bại. Xin thử lại",Toast.LENGTH_SHORT).show();
-////            mProgressDialog.dismiss();
+////            plzw8Dialog.dismiss();
 ////        }
 ////        if(pc_Success==4){
 //////            Log.i("DoInBackGroundOK","pc_Success==4 ---"+childUpdates.size());

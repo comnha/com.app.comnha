@@ -76,55 +76,55 @@ public class Notification_rcycler_adapter_admin extends RecyclerView.Adapter<Not
             }
             holder.txt_date.setText(list.get(position).getDate());
             holder.txt_time.setText(list.get(position).getTime());
-           // if (list.get(position).getTo().equals("admin")) {
+           // if (stores.get(position).getTo().equals("admin")) {
 
 
             ////LOCATION
-//                if (list.get(position).getType() == 1) {
-//                    String text = list.get(position).getAccount().getUsername() + " đã thêm món " + list.get(position).getFood().getName() + " vào quán " + list.get(position).getStore().getName();
+//                if (stores.get(position).getType() == 1) {
+//                    String text = stores.get(position).getAccount().getUsername() + " đã thêm món " + stores.get(position).getFood().getName() + " vào quán " + stores.get(position).getStore().getName();
 //                    holder.txt_noidung.setText(text);
 //                }
-//                if (list.get(position).getType() == 2) {
-//                    String text = list.get(position).getAccount().getUsername() + " đã thêm quán ăn:  " + list.get(position).getStore().getName();
+//                if (stores.get(position).getType() == 2) {
+//                    String text = stores.get(position).getAccount().getUsername() + " đã thêm quán ăn:  " + stores.get(position).getStore().getName();
 //                    holder.txt_noidung.setText(text);
 //                }
-//                if (list.get(position).getType() == 3) {
-//                    String text = list.get(position).getAccount().getUsername() + " đã thêm review vào quán " + list.get(position).getStore().getName();
+//                if (stores.get(position).getType() == 3) {
+//                    String text = stores.get(position).getAccount().getUsername() + " đã thêm review vào quán " + stores.get(position).getStore().getName();
 //                    holder.txt_noidung.setText(text);
 //                }
-//                if (list.get(position).getType() == 4) {
-//                    String text = list.get(position).getAccount().getUsername() +" đã sửa thông tin quán ăn"+ list.get(position).getStore().getName()+" và đang chờ phê duyệt";
+//                if (stores.get(position).getType() == 4) {
+//                    String text = stores.get(position).getAccount().getUsername() +" đã sửa thông tin quán ăn"+ stores.get(position).getStore().getName()+" và đang chờ phê duyệt";
 //                    holder.txt_noidung.setText(text);
 //                }
-//                if (list.get(position).getType() == 5) {
-//                    String text = list.get(position).getAccount().getUsername() +" đã report quán "+ list.get(position).getStore().getName()+" với lý do là "+list.get(position).getReason()+" và đang chờ phê duyệt";
+//                if (stores.get(position).getType() == 5) {
+//                    String text = stores.get(position).getAccount().getUsername() +" đã report quán "+ stores.get(position).getStore().getName()+" với lý do là "+stores.get(position).getReason()+" và đang chờ phê duyệt";
 //                    holder.txt_noidung.setText(text);
 //                }
-//            if (list.get(position).getType() == 6) {
-//                String text = list.get(position).getAccount().getUsername() +" đã yêu cầu xóa quán "+ list.get(position).getStore().getName()+" của mình với lý do là "+list.get(position).getReason()+" và đang chờ phê duyệt";
+//            if (stores.get(position).getType() == 6) {
+//                String text = stores.get(position).getAccount().getUsername() +" đã yêu cầu xóa quán "+ stores.get(position).getStore().getName()+" của mình với lý do là "+stores.get(position).getReason()+" và đang chờ phê duyệt";
 //                holder.txt_noidung.setText(text);
 //            }
             /// POST
             }
-//            if (list.get(position).getType() == 7) {
-//                String text = list.get(position).getAccount().getUsername() +" đã sửa thông tin bài đăng "+ list.get(position).getPost().getTitle();
+//            if (stores.get(position).getType() == 7) {
+//                String text = stores.get(position).getAccount().getUsername() +" đã sửa thông tin bài đăng "+ stores.get(position).getPost().getTitle();
 //                holder.txt_noidung.setText(text);
 //            }
-//            if (list.get(position).getType() == 8) {
-//                String text = list.get(position).getAccount().getUsername() +" đã report bài đăng "+ list.get(position).getPost().getTitle()+" với lý do là "+list.get(position).getReason()+" và đang chờ phê duyệt";
+//            if (stores.get(position).getType() == 8) {
+//                String text = stores.get(position).getAccount().getUsername() +" đã report bài đăng "+ stores.get(position).getPost().getTitle()+" với lý do là "+stores.get(position).getReason()+" và đang chờ phê duyệt";
 //                holder.txt_noidung.setText(text);
 //            }
-//            if (list.get(position).getType() == 9) {
-//                String text = list.get(position).getAccount().getUsername() +" đã yêu cầu xóa bài đăng "+ list.get(position).getPost().getTitle()+" của mình với lý do là "+list.get(position).getReason()+" và đang chờ phê duyệt";
+//            if (stores.get(position).getType() == 9) {
+//                String text = stores.get(position).getAccount().getUsername() +" đã yêu cầu xóa bài đăng "+ stores.get(position).getPost().getTitle()+" của mình với lý do là "+stores.get(position).getReason()+" và đang chờ phê duyệt";
 //                holder.txt_noidung.setText(text);
 //            }
-//            if (list.get(position).getType() ==10 ){
-//                String text = list.get(position).getAccount().getUsername() +" đã report bài đăng "+ list.get(position).getPost().getTitle()+" với lý do là "+list.get(position).getReason()+" và đang chờ phê duyệt";
+//            if (stores.get(position).getType() ==10 ){
+//                String text = stores.get(position).getAccount().getUsername() +" đã report bài đăng "+ stores.get(position).getPost().getTitle()+" với lý do là "+stores.get(position).getReason()+" và đang chờ phê duyệt";
 //                holder.txt_noidung.setText(text);
 //            }
         //Food
-//        if (list.get(position).getType() ==11 ){
-//            String text = list.get(position).getAccount().getUsername() +" đã sửa thông tin món ăn "+ list.get(position).getFood().getName();
+//        if (stores.get(position).getType() ==11 ){
+//            String text = stores.get(position).getAccount().getUsername() +" đã sửa thông tin món ăn "+ stores.get(position).getFood().getName();
 //            holder.txt_noidung.setText(text);
 //        }
 
@@ -137,7 +137,7 @@ public class Notification_rcycler_adapter_admin extends RecyclerView.Adapter<Not
             AnimationUtils.animateItemRcylerV(holder, false);
 
         }
-        //if(list.get(position).getIndex().equals("user")) {
+        //if(stores.get(position).getIndex().equals("user")) {
         holder.ll_notification.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,22 +158,22 @@ public class Notification_rcycler_adapter_admin extends RecyclerView.Adapter<Not
                     intent.putExtra(activity.getResources().getString(R.string.fragment_CODE),
                             activity.getResources().getString(R.string.frg_viewpost_CODE));
                     EditPost.getInstance().setPost(list.get(position).getPost());
-//                    ChoosePost.getInstance().setPostID(list.get(position).getPost().getPostID());
-//                    ChoosePost.getInstance().setType(list.get(position).getPost().getType());
-//                    ChoosePost.getInstance().setUserID(list.get(position).getPost().getUserId());
-//                    if(list.get(position).getType()==1)
-//                        ChoosePost.getInstance().setFoodID(list.get(position).getFood().getFoodID());
+//                    ChoosePost.getInstance().setPostID(stores.get(position).getPost().getPostID());
+//                    ChoosePost.getInstance().setType(stores.get(position).getPost().getType());
+//                    ChoosePost.getInstance().setUserID(stores.get(position).getPost().getUserId());
+//                    if(stores.get(position).getType()==1)
+//                        ChoosePost.getInstance().setFoodID(stores.get(position).getFood().getFoodID());
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     activity.startActivity(intent);
                 }
-//                if(list.get(position).getType() ==1) {
+//                if(stores.get(position).getType() ==1) {
 //                    Intent intent=new Intent(activity,AdapterActivity.class);
 //                    intent.putExtra(activity.getString(R.string.fragment_CODE),activity.getString(R.string.frg_viewfood_CODE));
-//                    ChooseFood.getInstance().setFood(list.get(position).getFood());
-//                    ChooseFood.getInstance().setLocation(list.get(position).getLocation());
+//                    ChooseFood.getInstance().setFood(stores.get(position).getFood());
+//                    ChooseFood.getInstance().setLocation(stores.get(position).getLocation());
 //                    activity.startActivity(intent);
 //                }
-//                if (!list.get(position).getReaded()) {
+//                if (!stores.get(position).getReaded()) {
 //                    holder.txt_date.setTypeface(null, Typeface.NORMAL);
 //                    holder.txt_time.setTypeface(null, Typeface.NORMAL);
 //                    holder.txt_noidung.setTypeface(null, Typeface.NORMAL);
@@ -186,7 +186,7 @@ public class Notification_rcycler_adapter_admin extends RecyclerView.Adapter<Not
 //            @Override
 //            public void onClick(View v) {
 //                PopupMenu popup = new PopupMenu(activity.getApplicationContext(), v);
-//                if (list.get(position).getType() == 4) {
+//                if (stores.get(position).getType() == 4) {
 //
 //
 //                    /** Adding menu items to the popumenu */
@@ -210,11 +210,11 @@ public class Notification_rcycler_adapter_admin extends RecyclerView.Adapter<Not
 //                                break;
 //                            case R.id.menu_notification_dendiachi:
 //                                Toast.makeText(activity.getApplicationContext(),"den dia chi",Toast.LENGTH_SHORT).show();
-//                                //if(list.get(position).getType() == 5){
+//                                //if(stores.get(position).getType() == 5){
 //
 //                                }
 //                               // }
-//                                //if(list.get(position).getType()==2){
+//                                //if(stores.get(position).getType()==2){
 //
 //                               // }
 //

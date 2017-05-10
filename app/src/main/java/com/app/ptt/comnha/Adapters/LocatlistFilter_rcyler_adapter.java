@@ -56,9 +56,9 @@ public class LocatlistFilter_rcyler_adapter extends RecyclerView.Adapter<Locatli
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-//        holder.txtv_storename.setText(list.get(position).getName());
-//        holder.txtv_address.setText(list.get(position).getDiachi());
-//        holder.txt_diem.setText(String.valueOf(list.get(position).getTongAVG()));
+//        holder.txtv_storename.setText(stores.get(position).getName());
+//        holder.txtv_address.setText(stores.get(position).getDiachi());
+//        holder.txt_diem.setText(String.valueOf(stores.get(position).getTongAVG()));
         if (position > previuosPosition) {
             AnimationUtils.animateItemRcylerV(holder, false);
         } else {
@@ -66,7 +66,7 @@ public class LocatlistFilter_rcyler_adapter extends RecyclerView.Adapter<Locatli
         }
         previuosPosition = position;
 //        holder.txtv_distance.setText(
-//                list.get(position).getKhoangcach());
+//                stores.get(position).getKhoangcach());
 //        holder.imgV.setBackground();
     }
 

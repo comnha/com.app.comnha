@@ -241,7 +241,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 switch (tab.getPosition()) {
                     case 0:
                         cx = l;
-//                        AnimationUtils.getInstance().createCircularReveal(viewPager, duration,
+//                        AnimationUtils.getInstance().createOpenCR(viewPager, duration,
 //                                cx, cy);
                         scalefabX.start();
                         scalefabY.start();
@@ -253,7 +253,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     case 1:
                         cx = (l + r) / 2;
-//                        AnimationUtils.getInstance().createCircularReveal(viewPager, duration,
+//                        AnimationUtils.getInstance().createOpenCR(viewPager, duration,
 //                                cx, cy);
                         if (fab.getScaleX() == 0) {
                             fab.setVisibility(View.VISIBLE);
@@ -278,7 +278,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     case 2:
                         cx = r;
-//                        AnimationUtils.getInstance().createCircularReveal(viewPager, duration,
+//                        AnimationUtils.getInstance().createOpenCR(viewPager, duration,
 //                                cx, cy);
                         collapsefabX.start();
                         collapsefabY.start();

@@ -12,7 +12,7 @@
     <color name="colorservice">#189603</color>
     <color name="colorFabShadow">#53e6aaaa</color>
     <color name="colorFabRipple">#99FFFFFF</color>
-    <color name="colorGrayText">#808080</color>
+    <color name="colorGrayText">#7f999999</color>
     <color name="color1">#15ca2d</color>
     <color name="admin_color_selection_news">#edbb4c</color>
     <color name="color_selection_report">#da414a</color>

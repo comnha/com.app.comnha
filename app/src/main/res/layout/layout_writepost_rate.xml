@@ -4,35 +4,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="16dp"
-    android:paddingTop="16dp"
-    android:weightSum="3">
+    android:paddingTop="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:weightSum="2">
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/txtV_gia_ratedialog_writepost"
+            android:id="@+id/txtV_price_ratedialog"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_weight="1"
             android:gravity="center_vertical"
             android:textColor="@color/colorprice" />
 
         <SeekBar
-            android:id="@+id/seekbar_gia_ratedialog_writepost"
+            android:id="@+id/sb_price_ratedialog"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:layout_weight="1"
             android:max="9"
             android:progressTint="@color/colorprice"
             android:thumbTint="@color/colorprice" />
@@ -40,30 +33,24 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:weightSum="2">
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/txtV_vesinh_ratedialog_writepost"
+            android:id="@+id/txtV_health_ratedialog"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_weight="1"
             android:gravity="center_vertical"
-
             android:textColor="@color/colorhealthy" />
 
         <SeekBar
-            android:id="@+id/seekbar_vesinh_ratedialog_writepost"
+            android:id="@+id/sb_health_ratedialog"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:layout_weight="1"
             android:max="9"
             android:progressTint="@color/colorhealthy"
             android:thumbTint="@color/colorhealthy" />
@@ -71,31 +58,48 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
 
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:weightSum="2">
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/txtV_phucvu_ratedialog_writepost"
+            android:id="@+id/txtV_service_ratedialog"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_weight="1"
             android:gravity="center_vertical"
-
             android:textColor="@color/colorservice" />
 
         <SeekBar
-            android:id="@+id/seekbar_phucvu_ratedialog_writepost"
+            android:id="@+id/sb_service_ratedialog"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:max="9"
             android:progressTint="@color/colorservice"
             android:thumbTint="@color/colorservice" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cancel_ratedialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_cancel"
+            android:layout_weight="1"
+            android:theme="@style/BtnBorderlessGrey" />
+
+        <Button
+            android:id="@+id/btn_select_ratedialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/text_select"
+            android:theme="@style/BtnColoredRating" />
     </LinearLayout>
 </LinearLayout>

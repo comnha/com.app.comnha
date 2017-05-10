@@ -625,4 +625,7 @@
     <string name="txt_hideconfirm">Bạn có muốn ẩn?</string>
     <string name="txt_hide">Ẩn</string>
     <string name="txt_showstore">Hiện quán ăn</string>
+    <string name="txt_storedetail">Thông tin quán ăn</string>
+    <string name="text_cancel_selection">Hủy chọn</string>
+    <string name="text_close">Đóng</string>
 </resources>

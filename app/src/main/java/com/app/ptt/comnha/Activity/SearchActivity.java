@@ -71,7 +71,7 @@ public class SearchActivity extends AppCompatActivity {
                                     getResources()
                                             .getColor(R.color.color_notify_reportfood));
                             AnimationUtils.getInstance()
-                                    .createCircularReveal(reveal_linear, duration, cx, cy);
+                                    .createOpenCR(reveal_linear, duration, cx, cy);
                             getWindow().setStatusBarColor(
                                     getResources().getColor(R.color.color_notify_reportfood));
                             break;
@@ -84,7 +84,7 @@ public class SearchActivity extends AppCompatActivity {
                                     getResources()
                                             .getColor(R.color.admin_color_selection_news));
                             AnimationUtils.getInstance()
-                                    .createCircularReveal(reveal_linear, duration, cx, cy);
+                                    .createOpenCR(reveal_linear, duration, cx, cy);
                             getWindow().setStatusBarColor(
                                     getResources().getColor(R.color.admin_color_selection_news));
                             break;

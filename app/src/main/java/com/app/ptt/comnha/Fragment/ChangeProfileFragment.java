@@ -202,11 +202,11 @@ public class ChangeProfileFragment extends DialogFragment implements DatePickerD
 //                                            @Override
 //                                            public void onComplete(@NonNull Task<Void> task) {
 //                                                if (!task.isComplete()) {
-//                                                    mProgressDialog.dismiss();
+//                                                    plzw8Dialog.dismiss();
 //                                                    Toast.makeText(getContext(), task.getException().getMessage(),
 //                                                            Toast.LENGTH_SHORT).show();
 //                                                } else
-//                                                    mProgressDialog.dismiss();
+//                                                    plzw8Dialog.dismiss();
 //                                                dismiss();
 //                                            }
 //                                        });

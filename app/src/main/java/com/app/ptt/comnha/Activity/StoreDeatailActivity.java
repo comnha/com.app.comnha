@@ -37,11 +37,11 @@ import com.app.ptt.comnha.Utils.AppUtils;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -70,8 +70,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
 
     DatabaseReference dbRef;
     StorageReference stRef;
-    ChildEventListener postChildListener, photoChildListener,
-            foodChildListener;
+    ValueEventListener postValueListener, photoValueListener, foodValueListener;
 
     Store store = ChooseStore.getInstance().getStore();
     LinearLayout linear_progress;
@@ -151,7 +150,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         txtv_healthyrate = (TextView) include_view.findViewById(R.id.txtv_healthy_storedetail);
         txtv_servicerate = (TextView) include_view.findViewById(R.id.txtv_service_storedetail);
         toolbar = (Toolbar) findViewById(R.id.toolbar_storedetail);
-        toolbar.setTitle("");
+        toolbar.setTitle(getString(R.string.txt_storedetail));
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         ((AppCompatActivity) this).setSupportActionBar(toolbar);
@@ -174,7 +173,6 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         plzw8Dialog = AppUtils.SetupProgressDialog(StoreDeatailActivity.this,
                 getString(R.string.txt_plzwait), null, false, false,
                 ProgressDialog.STYLE_SPINNER, -1);
-
     }
 
     @Override
@@ -338,90 +336,66 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
             txtv_servicerate.setText("0");
             txtv_healthyrate.setText("0");
         }
+        getPostList();
+        getImageList();
+        getFoodList();
+    }
 
-        postChildListener = new ChildEventListener() {
+    private void getPostList() {
+        postValueListener = new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Post post = dataSnapshot.getValue(Post.class);
-                String key = dataSnapshot.getKey();
-                post.setPostID(key);
-                posts.add(post);
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
+                    Post post = dataItem.getValue(Post.class);
+                    String key = dataItem.getKey();
+                    post.setPostID(key);
+                    posts.add(post);
+                }
                 postAdapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         };
-        photoChildListener = new ChildEventListener() {
+    }
+
+    private void getImageList() {
+        photoValueListener = new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Image image = dataSnapshot.getValue(Image.class);
-                String key = dataSnapshot.getKey();
-                image.setImageID(key);
-                images.add(image);
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
+                    Image image = dataItem.getValue(Image.class);
+                    String key = dataItem.getKey();
+                    image.setImageID(key);
+                    images.add(image);
+                }
                 photoAdapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         };
-        foodChildListener = new ChildEventListener() {
+    }
+
+    private void getFoodList() {
+        foodValueListener = new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Food food = dataSnapshot.getValue(Food.class);
-                String key = dataSnapshot.getKey();
-                food.setFoodID(key);
-                foods.add(food);
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
+                    Food food = dataItem.getValue(Food.class);
+                    String key = dataItem.getKey();
+                    food.setFoodID(key);
+                    foods.add(food);
+                }
                 foodAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
+                dbRef.child(getString(R.string.food_CODE))
+                        .orderByChild("storeID")
+                        .equalTo(storeID)
+                        .removeEventListener(foodValueListener);
             }
 
             @Override
@@ -432,7 +406,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         dbRef.child(getString(R.string.food_CODE))
                 .orderByChild("storeID")
                 .equalTo(storeID)
-                .addChildEventListener(foodChildListener);
+                .addValueEventListener(foodValueListener);
     }
 
     @Override
@@ -471,8 +445,5 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onStop() {
         super.onStop();
-        dbRef.removeEventListener(foodChildListener);
-        dbRef.removeEventListener(photoChildListener);
-        dbRef.removeEventListener(postChildListener);
     }
 }

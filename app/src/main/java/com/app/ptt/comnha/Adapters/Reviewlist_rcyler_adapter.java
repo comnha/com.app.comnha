@@ -83,11 +83,11 @@ public class Reviewlist_rcyler_adapter extends RecyclerView.Adapter<Reviewlist_r
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         if(type==2){
-//            if (list.get(position).getType() == 1) {
+//            if (stores.get(position).getType() == 1) {
 //                holder.ratingBar.setNumStars(3);
 //                holder.ratingBar.setIsIndicator(true);
 //                holder.ratingBar.setStepSize(1);
-//                float a =  list.get(position).getFood().getDanhGia();
+//                float a =  stores.get(position).getFood().getDanhGia();
 //                holder.ratingBar.setRating(a);
 //                if (a < 1.5) {
 //                    holder.txt_ratingtext.setText("Dở tệ");
@@ -99,35 +99,35 @@ public class Reviewlist_rcyler_adapter extends RecyclerView.Adapter<Reviewlist_r
 //                    holder.txt_ratingtext.setText("Ngon tuyệt");
 //                }
 //            }
-//            holder.txt_tiltereview.setText(list.get(position).getTitle());
+//            holder.txt_tiltereview.setText(stores.get(position).getTitle());
 
         }else {
-//            if (list.get(position).getType() == 1) {
-//                holder.txt_tenmon.setText(list.get(position).getFood().getName());
-//                holder.txt_price.setText(list.get(position).getFood().getGia() + " đ");
+//            if (stores.get(position).getType() == 1) {
+//                holder.txt_tenmon.setText(stores.get(position).getFood().getName());
+//                holder.txt_price.setText(stores.get(position).getFood().getGia() + " đ");
 //            } else {
 //                holder.txt_tenmon.setText("");
 //                holder.txt_price.setText("");
 //            }
-//            if (list.get(position).getHinh() != null)
+//            if (stores.get(position).getHinh() != null)
 //                Picasso.with(activity)
-//                        .load(list.get(position).getHinh())
+//                        .load(stores.get(position).getHinh())
 //                        .into(holder.img_user);
 //
 //            if(type==3) {
-//                holder.txtv_storename.setText(list.get(position).getUserName());
-//                holder.txtv_address.setText(list.get(position).getTitle());
+//                holder.txtv_storename.setText(stores.get(position).getUserName());
+//                holder.txtv_address.setText(stores.get(position).getTitle());
 //            }else{
-//                holder.txtv_storename.setText(list.get(position).getLocaName());
-//                holder.txtv_address.setText(list.get(position).getDiachi());
+//                holder.txtv_storename.setText(stores.get(position).getLocaName());
+//                holder.txtv_address.setText(stores.get(position).getDiachi());
 //            }
 
         }
-//        holder.txt_postdate.setText(list.get(position).getDate());
-//        holder.txt_time.setText(list.get(position).getTime());
-//        holder.txt_un.setText(list.get(position).getUserName());
-//        holder.txt_likenumb.setText(String.valueOf(list.get(position).getLikeCount()) + " Likes");
-//        holder.txt_commentnumb.setText(String.valueOf(list.get(position).getCommentCount()) + " Comments");
+//        holder.txt_postdate.setText(stores.get(position).getDate());
+//        holder.txt_time.setText(stores.get(position).getTime());
+//        holder.txt_un.setText(stores.get(position).getUserName());
+//        holder.txt_likenumb.setText(String.valueOf(stores.get(position).getLikeCount()) + " Likes");
+//        holder.txt_commentnumb.setText(String.valueOf(stores.get(position).getCommentCount()) + " Comments");
 
         //MyService.setFinish(true);
         if (position > previuosPosition) {

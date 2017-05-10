@@ -1,6 +1,7 @@
 package com.app.ptt.comnha.Classes;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.os.Build;
@@ -27,9 +28,12 @@ public class AnimationUtils {
         return instance;
     }
 
-    public static void fadeAnimation(View view, long duration,long delay) {
+    public static void fadeAnimation(View view, long duration, long delay) {
         ObjectAnimator fade = ObjectAnimator.ofFloat(view, "alpha", 0, 1);
         fade.setDuration(duration);
+        if (delay > 0) {
+            fade.setStartDelay(delay);
+        }
         fade.start();
     }
 
@@ -223,7 +227,7 @@ public class AnimationUtils {
         rotate.start();
     }
 
-    public void createCircularReveal(View view, long duration, int cx, int cy) {
+    public static void createOpenCR(View view, long duration, int cx, int cy) {
         int w = view.getWidth(), h = view.getHeight();
         int endRadius = Math.max(w, h);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -231,7 +235,25 @@ public class AnimationUtils {
                     cx, cy, 0, endRadius);
             animator.setDuration(duration);
             animator.start();
+            view.setVisibility(View.VISIBLE);
+        }
+    }
 
+    public static void createCloseCR(final View view, long duration, int cx, int cy) {
+        int w = view.getWidth(), h = view.getHeight();
+        int initialRadius = w;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Animator animator = ViewAnimationUtils.createCircularReveal(view,
+                    cx, cy, initialRadius, 0);
+            animator.setDuration(duration);
+            animator.start();
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    view.setVisibility(View.GONE);
+                }
+            });
         }
     }
 

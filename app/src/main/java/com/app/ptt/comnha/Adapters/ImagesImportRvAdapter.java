@@ -67,9 +67,23 @@ public class ImagesImportRvAdapter extends RecyclerView.Adapter<ImagesImportRvAd
     }
 
     public ArrayList<SelectedImage> getSelectedImgs() {
-        return selectedImages;
+        ArrayList<SelectedImage> selected = new ArrayList<>();
+        for (SelectedImage i : selectedImages) {
+            if (i.isSelected()) {
+                selected.add(i);
+            }
+        }
+        return selected;
     }
 
+    public void cancelSelection() {
+        for (SelectedImage i : selectedImages) {
+            if (i.isSelected()) {
+                selectedImages.get(selectedImages.indexOf(i)).setSelected(false);
+            }
+        }
+        notifyDataSetChanged();
+    }
 
 
     @Override

@@ -35,7 +35,7 @@
 
     <style name="AppTheme.PopupMenu" parent="Widget.AppCompat.PopupMenu">
         <!--<item name="android:gravity">end|bottom</item>-->
-        <item name="android:popupElevation">3dp</item>
+        <item name="android:popupElevation">2.47dp</item>
         <item name="android:popupBackground">@android:color/white</item>
         <item name="android:textColor">@android:color/black</item>
     </style>
@@ -48,7 +48,7 @@
         <item name="android:colorButtonNormal">@android:color/holo_red_dark</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
-
+    <!--trong layout, dùng android:theme="@style/BtnColored" mới có tác dụng-->
     <style name="AppTheme.ButtonFB" parent="Widget.AppCompat.Button.Colored">
         <item name="android:colorButtonNormal">@android:color/holo_blue_dark</item>
         <item name="android:textColor">@android:color/white</item>
@@ -58,7 +58,14 @@
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
         <item name="android:textColor">#57d43d</item>
     </style>
-
+    <style name="BtnColoredAttachedImg" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/color_notify_reportimg</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+    <style name="BtnColoredRating" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/color_selection_report</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
     <style name="BtnBorderlessGreen" parent="Widget.AppCompat.Button.Borderless.Colored">
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
         <item name="android:textColor">@color/color_notify_reportfood</item>
