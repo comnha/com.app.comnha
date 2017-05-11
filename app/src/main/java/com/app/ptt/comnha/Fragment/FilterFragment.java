@@ -265,7 +265,7 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Food food=dataSnapshot.getValue(Food.class);
-//                food.setFoodID(dataSnapshot.getKey());
+//                selected_food.setFoodID(dataSnapshot.getKey());
                 packageFoods.add(food);
             }
 

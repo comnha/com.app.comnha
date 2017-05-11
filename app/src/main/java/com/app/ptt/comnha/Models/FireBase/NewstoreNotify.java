@@ -10,7 +10,7 @@ import java.util.Map;
  */
 
 public class NewstoreNotify {
-    String id, storeID, name, address, date, userID, un, district, provinve;
+    String id, storeID, name, address, date, userID, un;
     boolean readstate = false;
     String readState_pro_dist, district_province;
 
@@ -24,6 +24,7 @@ public class NewstoreNotify {
         this.address = address;
         this.userID = userID;
         this.un = un;
+        this.date = new Times().getDate();
         this.district_province = district + "_" + provinve;
     }
 
@@ -32,7 +33,7 @@ public class NewstoreNotify {
         result.put("storeID", storeID);
         result.put("name", name);
         result.put("address", address);
-        result.put("date", new Times().getDate());
+        result.put("date", date);
         result.put("userID", userID);
         result.put("un", un);
         result.put("readstate", readstate);

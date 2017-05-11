@@ -332,7 +332,7 @@ public class EditPostDialogFragment extends DialogFragment
     public void setData() {
         oldPost = EditPost.getInstance().getPost();
         albumList = EditPost.getInstance().getAlbumList();
-//        txt_address.setText(oldPost.getDiachi());
+//        txt_price.setText(oldPost.getDiachi());
 //        txt_name.setText(oldPost.getLocaName());
 //        Picasso.with(getContext()).load(oldPost.getHinh()).into(img_Daidien);
 //        if (oldPost.getType() == 1) {
@@ -869,7 +869,7 @@ public class EditPostDialogFragment extends DialogFragment
                 Log.i("uploadImg", "myFile=" + myFile.size());
                 for (File f : myFile) {
                     Uri uri = Uri.fromFile(f);
-                    fileKey = dbRef.child(getResources().getString(R.string.images_CODE1)).push().getKey();
+//                    fileKey = dbRef.child(getResources().getString(R.string.images_CODE1)).push().getKey();
                     ListID.add(fileKey);
                     newImage = new Image();
 //                    newImage.setName(uri.getLastPathSegment());

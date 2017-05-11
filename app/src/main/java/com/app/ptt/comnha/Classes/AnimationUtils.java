@@ -235,7 +235,6 @@ public class AnimationUtils {
                     cx, cy, 0, endRadius);
             animator.setDuration(duration);
             animator.start();
-            view.setVisibility(View.VISIBLE);
         }
     }
 

@@ -1,5 +1,7 @@
 package com.app.ptt.comnha.Models.FireBase;
 
+import com.app.ptt.comnha.Modules.Times;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,16 +18,28 @@ public class NewpostNotify {
     public NewpostNotify() {
     }
 
-    public NewpostNotify(String postID, String title, String date, String userID, String un,
-                         String district_province, boolean readstate, String readState_pro_dist) {
+    public NewpostNotify(String postID, String title, String userID, String un,
+                         String district_province) {
         this.postID = postID;
         this.title = title;
-        this.date = date;
+        this.date = new Times().getDate();
         this.userID = userID;
         this.un = un;
         this.district_province = district_province;
-        this.readstate = readstate;
-        this.readState_pro_dist = readState_pro_dist;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("postID", postID);
+        result.put("title", title);
+        result.put("date", date);
+        result.put("userID", userID);
+        result.put("un", un);
+        result.put("readstate", readstate);
+        result.put("district_province", district_province);
+        result.put("readState_pro_dist",  String.valueOf(readstate) + "_"
+                + district_province);
+        return result;
     }
 
     public String getId() {
@@ -100,16 +114,5 @@ public class NewpostNotify {
         this.readState_pro_dist = readState_pro_dist;
     }
 
-    public Map<String, Object> toMap() {
-        Map<String, Object> result = new HashMap<>();
-        result.put("postID", postID);
-        result.put("title", title);
-        result.put("date", date);
-        result.put("userID", userID);
-        result.put("un", un);
-        result.put("readstate", readstate);
-        result.put("district_province", district_province);
-        result.put("readState_pro_dist", readState_pro_dist);
-        return result;
-    }
+
 }

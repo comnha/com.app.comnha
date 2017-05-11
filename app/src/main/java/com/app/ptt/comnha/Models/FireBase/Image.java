@@ -2,6 +2,8 @@ package com.app.ptt.comnha.Models.FireBase;
 
 import android.net.Uri;
 
+import com.app.ptt.comnha.Utils.Times;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,11 +22,27 @@ public class Image {
     String userID;//tìm theo tài khoản
 
     //type of image
-    int type = 4;//banner of post, profile hoặc images of post (1:banner, 2:profile, 3:post's image, 4:normal image)
+    int type = 4;//banner of post, profile hoặc images of post
+    // (1:banner, 2:profile, 3:post's image, 4:normal image)
     String postID = "",//tìm theo post
             storeID = "";//tìm theo quán ăn
-    String type_imageID;//Phân loại theo banner, profile, images of post
+    String type_uID;//Phân loại theo banner, profile, images of post
     Uri path;
+
+    public Image() {
+    }
+
+    public Image(String name, String userID,
+                 int type, String postID, String storeID) {
+        this.name = name;
+        this.date = new Times().getDate();
+        this.time = new Times().getTime();
+        this.userID = userID;
+        this.type = type;
+        this.postID = postID;
+        this.storeID = storeID;
+        this.type_uID = this.type + "_" + userID;
+    }
 
     public Map<String, Object> toMap() {
         Map<String, Object> result = new HashMap<>();
@@ -36,7 +54,7 @@ public class Image {
         result.put("postID", postID);
         result.put("storeID", storeID);
         result.put("storeID", storeID);
-        result.put("type_imageID", type_imageID);
+        result.put("type_uID", type_uID);
         return result;
     }
 
@@ -112,12 +130,12 @@ public class Image {
         this.storeID = storeID;
     }
 
-    public String getType_imageID() {
-        return type_imageID;
+    public String getType_uID() {
+        return type_uID;
     }
 
-    public void setType_imageID(String type_imageID) {
-        this.type_imageID = type_imageID;
+    public void setType_uID(String type_uID) {
+        this.type_uID = type_uID;
     }
 
     public Uri getPath() {

@@ -210,7 +210,6 @@
     <string name="deleted_CODE">Deleted/</string>
     <string name="posts_CODE">Posts/</string>
     <string name="images_CODE">Images/</string>
-    <string name="images_CODE1">Images</string>
     <string name="locationpost_CODE">StorePost/</string>
     <string name="userpost_CODE">UserPost/</string>
     <string name="comments_CODE">Comments/</string>
@@ -628,4 +627,9 @@
     <string name="txt_storedetail">Thông tin quán ăn</string>
     <string name="text_cancel_selection">Hủy chọn</string>
     <string name="text_close">Đóng</string>
+    <string name="txt_toofuckingbad">Rất tệ</string>
+    <string name="txt_bad">Không ngon</string>
+    <string name="txt_fine">Bình thường</string>
+    <string name="txt_good">Ngon</string>
+    <string name="txt_fuckinggood">Tuyệt vời</string>
 </resources>

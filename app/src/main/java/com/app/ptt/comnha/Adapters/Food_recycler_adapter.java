@@ -60,7 +60,13 @@ public class Food_recycler_adapter extends RecyclerView.Adapter<Food_recycler_ad
                 .getColor(android.R.color.white));
         holder.txt_price.setText(foodList.get(position).getPrice() + "đ");
         holder.txt_name.setText(foodList.get(position).getName());
-        holder.ratingBar.setRating(Float.valueOf(foodList.get(position).getRating() + ""));
+        if (foodList.get(position).getTotal() == 0) {
+            holder.ratingBar.setRating(0);
+        } else {
+            holder.ratingBar.setRating(foodList.get(position).getRating() /
+                    foodList.get(position)
+                    .getTotal());
+        }
         holder.ratingBar.setIsIndicator(true);
         holder.cardv.setCardBackgroundColor(activity.getResources()
                 .getColor(R.color.color_notify_reportfood));

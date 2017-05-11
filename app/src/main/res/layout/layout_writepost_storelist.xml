@@ -12,6 +12,7 @@
         android:backgroundTint="@android:color/transparent"
         android:gravity="start|center_vertical"
         android:hint="@string/txt_search"
+        android:inputType="textAutoComplete|textFilter"
         android:paddingEnd="8dp"
         android:paddingStart="8dp" />
 

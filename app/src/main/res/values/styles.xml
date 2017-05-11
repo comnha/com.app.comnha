@@ -131,4 +131,8 @@
         <item name="colorControlNormal">#7fffffff</item>
         <item name="colorControlActivated">@color/admin_color_selection_news</item>
     </style>
+    <style name="RatingBarWritePost" parent="Theme.AppCompat">
+        <item name="colorControlNormal">#5a000000</item>
+        <item name="colorControlActivated">@color/admin_color_selection_news</item>
+    </style>
 </resources>

@@ -4,6 +4,17 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <AutoCompleteTextView
+        android:id="@+id/autocom_search_storeselection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/transparent"
+        android:gravity="start|center_vertical"
+        android:hint="@string/txt_search"
+        android:inputType="textAutoComplete|textFilter"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_foods_foodselection"
         android:layout_width="match_parent"

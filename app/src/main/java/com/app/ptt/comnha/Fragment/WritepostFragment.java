@@ -7,8 +7,10 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -33,15 +35,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.app.ptt.comnha.Adapters.Foodselection_rcyler_adapter;
 import com.app.ptt.comnha.Adapters.ImagesImportRvAdapter;
 import com.app.ptt.comnha.Adapters.Storeselection_rcyler_adapter;
 import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Classes.SelectedImage;
 import com.app.ptt.comnha.Models.FireBase.Food;
+import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.NewpostNotify;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.Store;
@@ -50,22 +56,31 @@ import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.SystemControl;
 import com.app.ptt.comnha.Utils.AppUtils;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class WritepostFragment extends Fragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
+public class WritepostFragment extends Fragment implements View.OnClickListener,
+        SeekBar.OnSeekBarChangeListener,
+        RatingBar.OnRatingBarChangeListener {
 
     public WritepostFragment() {
         // Required empty public constructor
@@ -75,13 +90,16 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
     EditText edt_content, edt_title;
     LinearLayout linear_more, linear_rate, linear_rate_dial, linear_pickfood_dial,
             linear_addimg_dial, linear_pickloca_dial,
-            linear_location, linear_importimg, linear_banner;
+            linear_location, linear_importimg, linear_banner, linear_foodrate;
     ImageView imgV_banner;
+    TextView txtv_foodprice, txtv_foodname, txtv_rateComment;
+    RatingBar rb_foodrating;
+    CircularImageView imgv_foodimg;
     BottomSheetDialog moreDialog, rateDialog, imgsDialog,
             storeDialog, foodDialog;
     DatabaseReference dbRef;
     StorageReference stRef;
-    ProgressDialog plzw8Dialog;
+    ProgressDialog plzw8Dialog, uploadImgDialog;
     TextView txtV_price_dial, txtV_health_dial, txtV_service_dial;
     SeekBar sb_price, sb_health, sb_service;
     int progress_price = 0, progress_health = 0, progress_service = 0;
@@ -94,6 +112,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
     ArrayList<Store> stores;
     Storeselection_rcyler_adapter storesAdater;
     ArrayList<Food> foods;
+    Foodselection_rcyler_adapter foodAdapter;
     TextView txtv_locaname, txtv_locaadd, txtv_banner, txtv_importimg,
             txtv_pricerate, txtv_healthrate, txtv_servicerate;
     int androidVer = Build.VERSION.SDK_INT;
@@ -108,12 +127,14 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
     String un = "", uID = "", avatar = "";
     User user = null;
     Store selected_store = null;
-    Food food = null;
+    Food selected_food = null;
     Post post;
-    NewpostNotify notify = null;
-    Map<String, Object> images = null;
+    NewpostNotify newpostNotify = null;
     String dist_prov = "Quận 9_HCM";
-    ValueEventListener storeValueListener, foodValueListener;
+    ValueEventListener storeValueListener, foodValueListener,
+            foodFromStoreValueListener;
+    float foodRate = 0;
+    UploadTask uploadTask;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -155,6 +176,50 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                         .equalTo(String.valueOf(false) + "_" + dist_prov)
                         .removeEventListener(storeValueListener);
                 storesAdater.notifyDataSetChanged();
+                plzw8Dialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        foodValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
+                    String key = dataItem.getKey();
+                    Food food = dataItem.getValue(Food.class);
+                    food.setStoreID(key);
+                    foods.add(food);
+                }
+                dbRef.child(getString(R.string.food_CODE))
+                        .orderByChild("dist_prov")
+                        .equalTo(dist_prov)
+                        .removeEventListener(foodValueListener);
+                foodAdapter.notifyDataSetChanged();
+                plzw8Dialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        foodFromStoreValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
+                    String key = dataItem.getKey();
+                    Food food = dataItem.getValue(Food.class);
+                    food.setStoreID(key);
+                    foods.add(food);
+                }
+                dbRef.child(getString(R.string.food_CODE))
+                        .orderByChild("storeID")
+                        .equalTo(selected_store.getStoreID())
+                        .removeEventListener(foodValueListener);
+                foodAdapter.notifyDataSetChanged();
                 plzw8Dialog.dismiss();
             }
 
@@ -259,6 +324,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 if (healthrate > 0 && servicerate > 0 && pricerate > 0) {
                     Log.d("rateDialonDismiss", "select");
                     x = linear_rate.getLeft();
+                    linear_rate.setVisibility(View.VISIBLE);
                     AnimationUtils.createOpenCR(linear_rate, duration, x, y);
                     txtv_pricerate.setText(pricerate + "");
                     txtv_servicerate.setText(servicerate + "");
@@ -321,9 +387,11 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         });
 
         imagesrv = (RecyclerView) imgsDialog.findViewById(R.id.rv_images_imgimporting);
-        imageslm = new GridLayoutManager(getContext(), 3, LinearLayoutManager.VERTICAL, false);
+        imageslm = new GridLayoutManager(getContext(), 3,
+                LinearLayoutManager.VERTICAL, false);
         imagesrv.setLayoutManager(imageslm);
-        imagesImportRvAdapter = new ImagesImportRvAdapter(getContext(), getContext().getContentResolver());
+        imagesImportRvAdapter = new ImagesImportRvAdapter(getContext(),
+                getContext().getContentResolver());
         imagesrv.setAdapter(imagesImportRvAdapter);
 
         btn_imgdial_select = (Button) imgsDialog.findViewById(R.id.btn_select_imgimporting);
@@ -355,6 +423,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         });
         ilayout_title = (TextInputLayout) view.findViewById(R.id.ilayout_title);
         ilayout_content = (TextInputLayout) view.findViewById(R.id.ilayout_content);
+
         storeDialog = new BottomSheetDialog(getContext());
         storeDialog.setContentView(R.layout.layout_writepost_storelist);
         storeDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -379,15 +448,87 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         stores = new ArrayList<>();
         storesAdater = new Storeselection_rcyler_adapter(getActivity(), stores, stRef);
         storesrv.setAdapter(storesAdater);
-        storesAdater.setOnItemClickLiestner(new Storeselection_rcyler_adapter.OnItemClickLiestner() {
+        storesAdater.setOnItemClickLiestner(new Storeselection_rcyler_adapter
+                .OnItemClickLiestner() {
             @Override
             public void onItemClick(Store store) {
+                if (selected_store != null) {
+                    if (!selected_store.getStoreID().equals(store.getStoreID())) {
+                        linear_foodrate.setVisibility(View.GONE);
+                        selected_food = null;
+                        foods.clear();
+                        foodAdapter.notifyDataSetChanged();
+                    }
+                } else {
+                    selected_food = null;
+                    linear_foodrate.setVisibility(View.GONE);
+                    foods.clear();
+                    foodAdapter.notifyDataSetChanged();
+                }
                 selected_store = store;
                 storeDialog.dismiss();
             }
         });
+
+        linear_foodrate = (LinearLayout) view.findViewById(R.id.linear_food_writepost);
+        linear_foodrate.setVisibility(View.GONE);
+        txtv_rateComment = (TextView) view.findViewById(R.id.txtv_rateComment_writepost);
+        imgv_foodimg = (CircularImageView) view.findViewById(R.id.imgv_foodimg_writepost);
+        txtv_foodprice = (TextView) view.findViewById(R.id.txtv_foodprice_writepost);
+        txtv_foodname = (TextView) view.findViewById(R.id.txtv_foodname_writepost);
+        rb_foodrating = (RatingBar) view.findViewById(R.id.rb_foodrating_writepost);
+        rb_foodrating.setOnRatingBarChangeListener(this);
+
         foodDialog = new BottomSheetDialog(getContext());
         foodDialog.setContentView(R.layout.layout_writepost_foodlist);
+        foodDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                if (selected_food != null) {
+                    if (linear_foodrate.getVisibility() == View.VISIBLE) {
+
+                    } else {
+                        linear_foodrate.setVisibility(View.VISIBLE);
+                    }
+                    txtv_foodname.setText(selected_food.getName());
+                    txtv_foodprice.setText(selected_food.getPrice() + "đ");
+                    imgv_foodimg.setImageBitmap(selected_food.getImgBitmap());
+                }
+            }
+        });
+        foodsrv = (RecyclerView) foodDialog.findViewById(R.id.rv_foods_foodselection);
+        foodslm = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
+                false);
+        foodsrv.setLayoutManager(foodslm);
+        foods = new ArrayList<>();
+        foodAdapter = new Foodselection_rcyler_adapter(getActivity(), foods, stRef);
+        foodsrv.setAdapter(foodAdapter);
+        foodAdapter.setOnItemClickLiestner(new Foodselection_rcyler_adapter
+                .OnItemClickLiestner() {
+            @Override
+            public void onItemClick(Food food) {
+//                if (stores.size() > 0) {
+//                    for (Store storeItem : stores) {
+//                        if (food.getStoreID().equals(storeItem.getStoreID())) {
+//                            selected_store = storeItem;
+//                        }
+//                    }
+//                } else {
+//                    dbRef.child(getString(R.string.food_CODE))
+//                    dbRef.child(getString(R.string.store_CODE)
+//                            + food.getStoreID()).addValueEventListener();
+//                }
+                selected_food = food;
+                foodDialog.dismiss();
+            }
+        });
+        uploadImgDialog = new ProgressDialog(getContext());
+        uploadImgDialog.setMessage(getString(R.string.txt_updloadimg));
+
+        uploadImgDialog.setMax(10);
+        uploadImgDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        uploadImgDialog.setCanceledOnTouchOutside(true);
+        uploadImgDialog.setCancelable(true);
     }
 
     @Override
@@ -402,10 +543,14 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
             case R.id.action_save_writepost:
                 if (AppUtils.checkEmptyEdt(edt_title)) {
                     edt_title.requestFocus();
+                    ilayout_title.setError(getString(R.string.txt_notitle));
                 } else if (AppUtils.checkEmptyEdt(edt_content)) {
                     edt_content.requestFocus();
-                } else
-                    return true;
+                    ilayout_content.setError(getString(R.string.txt_nocontent));
+                } else {
+                    uploadImgDialog.show();
+                }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -424,6 +569,29 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 break;
             case R.id.linear_foodrating_more_writepost_dialog:
                 moreDialog.dismiss();
+                if (foods.size() == 0) {
+                    plzw8Dialog.show();
+                    if (selected_store != null) {
+                        dbRef.child(getString(R.string.food_CODE))
+                                .orderByChild("storeID")
+                                .equalTo(selected_store.getStoreID())
+                                .addValueEventListener(foodFromStoreValueListener);
+                    } else {
+                        dbRef.child(getString(R.string.food_CODE))
+                                .orderByChild("dist_prov")
+                                .equalTo(dist_prov)
+                                .addValueEventListener(foodValueListener);
+                    }
+                    plzw8Dialog.setOnDismissListener(new DialogInterface.
+                            OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialogInterface) {
+                            foodDialog.show();
+                        }
+                    });
+                } else {
+                    foodDialog.show();
+                }
                 break;
             case R.id.linear_addimg_more_writepost_dialog:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -471,8 +639,8 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 imgsDialog.dismiss();
                 break;
             case R.id.btn_select_imgimporting:
-                selectedImages = imagesImportRvAdapter.getSelectedImgs();
                 imgsDialog.dismiss();
+                selectedImages = imagesImportRvAdapter.getSelectedImgs();
                 break;
             case R.id.btn_select_ratedialog:
                 healthrate = sb_health.getProgress() + 1;
@@ -520,10 +688,122 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
     private void savePost() {
         String pro_dist = selected_store.getPro_dist(),
                 storename = selected_store.getName(),
-                storeID = selected_store.getStoreID(), foodID = food.getFoodID();
+                storeID = selected_store.getStoreID(),
+                foodID = selected_food.getFoodID();
+
         post = new Post(title, content, un, uID, avatar, storeID, storename,
                 foodID, banner, pricerate, healthrate, servicerate,
                 pro_dist);
+        String postKey = dbRef.child(getString(R.string.store_CODE))
+                .push().getKey();
+        Map<String, Object> postValue = post.toMap();
+        Map<String, Object> childUpdate = new HashMap<>();
+        childUpdate.put(getString(R.string.store_CODE) + postKey,
+                postValue);
+        if (healthrate > 0 && servicerate > 0 && pricerate > 0) {
+            long priceSum = selected_store.getPriceSum() + pricerate,
+                    healthSum = selected_store.getHealthySum() + healthrate,
+                    serviceSum = selected_store.getServiceSum() + servicerate,
+                    sum = selected_store.getSize() + 1;
+            selected_store.setPriceSum(priceSum);
+            selected_store.setHealthySum(healthSum);
+            selected_store.setServiceSum(serviceSum);
+            selected_store.setSize(sum);
+            Map<String, Object> storeValue = selected_store.toMap();
+            childUpdate.put(getString(R.string.store_CODE) + storeID,
+                    storeValue);
+        }
+        if (selected_food != null
+                && !selected_food.getStoreID()
+                .equals(selected_store.getStoreID())) {
+            selected_food.setRating(selected_food.getRating() + (long) foodRate);
+            selected_food.setTotal(selected_food.getTotal() + 1);
+            Map<String, Object> foodValue = selected_food.toMap();
+            childUpdate.put(getString(R.string.food_CODE)
+                    + selected_food.getFoodID(), foodValue);
+        }
+        if (selectedImages.size() > 0) {
+            for (SelectedImage imgItem : selectedImages) {
+                Image image;
+                if (selectedImages.indexOf(imgItem) == 0) {
+                    image = new Image(imgItem.getUri().getLastPathSegment(),
+                            uID, 1, postKey, storeID);
+
+                } else {
+                    image = new Image(imgItem.getUri().getLastPathSegment(),
+                            uID, 3, postKey, storeID);
+                }
+                Map<String, Object> imgValue = image.toMap();
+                String imgKey = dbRef.child(getString(R.string.images_CODE))
+                        .push().getKey();
+                childUpdate.put(getString(R.string.images_CODE)
+                        + imgKey, imgValue);
+            }
+        }
+        newpostNotify = new NewpostNotify(postKey, title, uID, un,
+                dist_prov);
+        String notiKey = dbRef.child(getString(R.string.notify_newpost_CODE))
+                .push().getKey();
+        Map<String, Object> notifyValue = newpostNotify.toMap();
+        childUpdate.put(getString(R.string.notify_newpost_CODE) + notiKey, notifyValue);
+        if (selectedImages.size() > 0) {
+            for (SelectedImage imgItem : selectedImages) {
+                StorageReference mStorageReference = stRef.child(
+                        imgItem.getUri().getLastPathSegment());
+                uploadTask = mStorageReference.putFile(
+                        Uri.fromFile(new File(imgItem.getUri().toString())));
+
+                uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        int progress = (int) (taskSnapshot.getBytesTransferred() * 100
+                                / taskSnapshot.getTotalByteCount());
+//                    Log.d("getBytesTransferred", progress + "");
+                        uploadImgDialog.setProgress(progress);
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                        isUploadImgSuccess[0] = true;
+                        uploadImgDialog.dismiss();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        uploadImgDialog.dismiss();
+                        Toast.makeText(getContext(), getString(R.string.txt_failedUploadImg),
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
+    public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+        switch ((int) v) {
+            case 0:
+                ratingBar.setRating(1);
+                txtv_rateComment.setText(getString(R.string.txt_toofuckingbad));
+                break;
+            case 1:
+                txtv_rateComment.setText(getString(R.string.txt_toofuckingbad));
+                break;
+            case 2:
+                txtv_rateComment.setText(getString(R.string.txt_bad));
+                break;
+            case 3:
+                txtv_rateComment.setText(getString(R.string.txt_fine));
+                break;
+            case 4:
+                txtv_rateComment.setText(getString(R.string.txt_good));
+                break;
+            case 5:
+                txtv_rateComment.setText(getString(R.string.txt_fuckinggood));
+                break;
+        }
+        foodRate = v;
     }
     //    private static final String LOG = AddpostFragment.class.getSimpleName();
 //    Button btn_save, btn_mainImg, btnAddImg;
@@ -552,7 +832,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //    Post newPost;
 //    Map<String, Object> postValue;
 //    ArrayList<String> url;
-//    ArrayList<Image> images;
+//    ArrayList<Image> upLoadImages;
 //    Image newImage;
 //    Map<String, Object> childUpdates;
 //    int pc_Success = 0;
@@ -585,8 +865,8 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //                url.add(intent.getStringExtra("uriImg"));
 //                int pos = intent.getIntExtra("pos", 0);
 //                Log.i("POSSTTTTTTTTTTTTT", pos + "-----");
-//                images.get(pos).setImage(intent.getStringExtra("uriImg"));
-//                Map<String, Object> image = images.get(pos).toMap();
+//                upLoadImages.get(pos).setImage(intent.getStringExtra("uriImg"));
+//                Map<String, Object> image = upLoadImages.get(pos).toMap();
 //                childUpdates.put(getResources().getString(R.string.images_CODE)
 //                        + ListID.get(pos), image);
 //                if (pos == (myFile.size() - 1)) {
@@ -631,10 +911,10 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //                pickFoodFrg.setStoreID(DoPost.getInstance().getMyLocation().getStoreID());
 //                pickFoodFrg.setOnPickFoodListener(new PickFoodDialogFragment.OnPickFoodListener() {
 //                    @Override
-//                    public void onPickFood(Food food) {
-//                        frg_filter_txtmon.setText(food.getName());
-//                        mFood = food;
-//                        rb_danhGiaMon.setRating(food.getRating());
+//                    public void onPickFood(Food selected_food) {
+//                        frg_filter_txtmon.setText(selected_food.getName());
+//                        mFood = selected_food;
+//                        rb_danhGiaMon.setRating(selected_food.getRating());
 //                    }
 //                });
 //            }
@@ -921,7 +1201,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //
 //    private void addpost(String key, String locaID, MyLocation updateLoca) {
 //        url = new ArrayList<>();
-//        images = new ArrayList<>();
+//        upLoadImages = new ArrayList<>();
 //        uris = new ArrayList<>();
 //        childUpdates = new HashMap<String, Object>();
 //        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
@@ -1082,8 +1362,8 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //                newImage.setPostID(key);
 //                newImage.setUserID(MyService.getUserAccount().getId());
 //                newImage.setStoreID(locaID);
-//                images.add(newImage);
-//                Log.i("SSSSSSS", "images=" + images.size());
+//                upLoadImages.add(newImage);
+//                Log.i("SSSSSSS", "upLoadImages=" + upLoadImages.size());
 //                StorageReference myChildRef = stRef.child(
 //                        getResources().getString(R.string.images_CODE)
 //                                + uri.getLastPathSegment());
@@ -1093,7 +1373,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 //                        Uri uri = taskSnapshot.getDownloadUrl();
 //                        uris.add(uri);
-//                        if (uris.size() == images.size())
+//                        if (uris.size() == upLoadImages.size())
 //                            MyService.setUriImg(uris);
 //                        Log.i("ZOOOOOOO UploadImage", "isSuccess = true;" + uri.toString());
 //                    }

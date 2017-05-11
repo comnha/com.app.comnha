@@ -23,14 +23,16 @@ public class Food {
             rating = 0,
             total = 0,
             type = 0;//loại món ăn
-    boolean isHiden = false;
+    boolean isHidden = false;
     //creator
     String userID;
 
     //food of store
     String storeID;
     //phép kết
-    String dist_prov;//món ăn theo location
+    String dist_prov,
+            isHidden_dist_prov,
+            isHidden_storeID;//món ăn theo location
 
 
     private Bitmap imgBitmap = null;
@@ -40,16 +42,19 @@ public class Food {
         result.put("name", name);
         result.put("comment", comment);
         result.put("foodImg", foodImg);
-        result.put("time", new Times().getTime());
-        result.put("date", new Times().getDate());
+        result.put("time", time);
+        result.put("date", date);
         result.put("price", price);
         result.put("rating", rating);
         result.put("total", total);
         result.put("type", type);
-        result.put("isHiden", isHiden);
+        result.put("isHidden", isHidden);
         result.put("userID", userID);
         result.put("storeID", storeID);
+        result.put("isHidden_storeID", isHidden + "_" + storeID);
         result.put("dist_prov", district + "_" + province);
+        result.put("isHidden_dist_prov", isHidden + "_"
+                + district + "_" + province);
         return result;
     }
 
@@ -69,6 +74,8 @@ public class Food {
         this.district = district;
         this.province = province;
         this.foodImg = foodImg;
+        this.time = new Times().getTime();
+        this.date = new Times().getDate();
     }
 
     public String getFoodImg() {
@@ -159,12 +166,12 @@ public class Food {
         this.type = type;
     }
 
-    public boolean isHiden() {
-        return isHiden;
+    public boolean isHidden() {
+        return isHidden;
     }
 
-    public void setHiden(boolean hiden) {
-        isHiden = hiden;
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
     }
 
     public String getUserID() {

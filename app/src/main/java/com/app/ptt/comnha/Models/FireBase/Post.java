@@ -31,9 +31,12 @@ public class Post {
     long priceRate,
             healthyRate,
             serviceRate;
+    boolean isHidden = false;
+
     Map<String, Comment> comments = null;
     //phép kết
-    String userID_dist_prov,//tìm post theo uid_tỉnh_huyện
+    String userID_dist_prov,
+            isHeidden_dist_prov,//tìm post theo uid_tỉnh_huyện
             dist_pro;//tìm post theo tỉnh_huyện
 
     public Post() {
@@ -82,6 +85,9 @@ public class Post {
         result.put("comments", comments);
         result.put("userID_dist_prov", userID_dist_prov);
         result.put("dist_pro", dist_pro);
+        result.put("isHidden", isHidden);
+        result.put("isHeidden_dist_prov", String.valueOf(isHidden)
+                + "_" + dist_pro);
         return result;
     }
 
@@ -227,5 +233,21 @@ public class Post {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
+    }
+
+    public String getIsHeidden_dist_prov() {
+        return isHeidden_dist_prov;
+    }
+
+    public void setIsHeidden_dist_prov(String isHeidden_dist_prov) {
+        this.isHeidden_dist_prov = isHeidden_dist_prov;
     }
 }
