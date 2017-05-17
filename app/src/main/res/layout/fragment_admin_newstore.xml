@@ -7,7 +7,7 @@
     android:paddingTop="4dp"
     android:paddingStart="8dp"
     android:paddingEnd="8dp"
-    tools:context="com.app.ptt.comnha.Fragment.AdminNewStoreFragment">
+    tools:activity="com.app.ptt.comnha.Fragment.AdminNewStoreFragment">
 
     <ListView
         android:divider="@android:color/transparent"

@@ -113,14 +113,14 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<Store_recycler_
 
         public ViewHolder(View itemView) {
             super(itemView);
-            cardView = (CardView) itemView.findViewById(R.id.item_list_cardV);
-            txtv_address = (TextView) itemView.findViewById(R.id.item_list_txtvaddress);
-            txtv_storename = (TextView) itemView.findViewById(R.id.item_list_txtvstorename);
-            txtv_rate = (TextView) itemView.findViewById(R.id.item_list_txtvrate);
-            txtv_distance = (TextView) itemView.findViewById(R.id.item_list_txtvdistance);
-            txtv_opentime = (TextView) itemView.findViewById(R.id.item_list_txtvopentime);
-            txtv_phonenumb = (TextView) itemView.findViewById(R.id.item_list_txtvphonenumb);
-            imgv_avatar = (CircularImageView) itemView.findViewById(R.id.item_list_imgV);
+            cardView = (CardView) itemView.findViewById(R.id.cardv_storeitem);
+            txtv_address = (TextView) itemView.findViewById(R.id.txtv_address_storeitem);
+            txtv_storename = (TextView) itemView.findViewById(R.id.txtv_storename_storeitem);
+            txtv_rate = (TextView) itemView.findViewById(R.id.txtv_rate_storeitem);
+            txtv_distance = (TextView) itemView.findViewById(R.id.txtv_distance_storeitem);
+            txtv_opentime = (TextView) itemView.findViewById(R.id.txtv_opentime_storeitem);
+            txtv_phonenumb = (TextView) itemView.findViewById(R.id.txtv_phonenumb_storeitem);
+            imgv_avatar = (CircularImageView) itemView.findViewById(R.id.imgv_avatar_storeitem);
         }
     }
 

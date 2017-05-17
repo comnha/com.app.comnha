@@ -215,7 +215,7 @@ public class Store {
 
     public float getRateAVG() {
         if (size != 0) {
-            rateAVG = (float) (priceSum + healthySum + serviceSum) / (float) size;
+            rateAVG = (float) (priceSum + healthySum + serviceSum) / (float) (3 * size);
         } else
             rateAVG = 0;
         return rateAVG;

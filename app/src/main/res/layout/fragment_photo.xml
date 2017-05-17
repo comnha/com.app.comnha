@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:layout_margin="3dp"
-    tools:context="com.app.ptt.comnha.Fragment.PageFragment">
+    tools:activity="com.app.ptt.comnha.Fragment.PageFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/frg_photo_recyclerV"

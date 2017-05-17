@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="2"
-    tools:context="com.app.ptt.comnha.Activity.AdminActivity">
+    tools:activity="com.app.ptt.comnha.Activity.AdminActivity">
 
     <LinearLayout
         android:id="@+id/linear_selection_news_adminact"

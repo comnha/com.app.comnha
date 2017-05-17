@@ -22,11 +22,13 @@ import android.widget.Toast;
 import com.app.ptt.comnha.Activity.StoreDeatailActivity;
 import com.app.ptt.comnha.Adapters.notify_newstore_adapter;
 import com.app.ptt.comnha.Const.Const;
+import com.app.ptt.comnha.Dialog.BlockUserDialog;
 import com.app.ptt.comnha.Models.FireBase.NewstoreNotify;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
+import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -49,7 +51,7 @@ public class AdminNewStoreFragment extends Fragment {
     ArrayList<NewstoreNotify> items;
     DatabaseReference dbRef;
     ValueEventListener storeValueListener, userValueListener,
-            childEventListener;
+            notiEventListener;
     String dist_pro = "Quận 9_HCM";
     Store store = null;
     ProgressDialog plzwaitDialog;
@@ -74,11 +76,119 @@ public class AdminNewStoreFragment extends Fragment {
     }
 
     private void getdata() {
+        notiEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
+                    NewstoreNotify item = dataItem.getValue(NewstoreNotify.class);
+                    String key = dataItem.getKey();
+                    item.setId(key);
+                    items.add(item);
+                }
+                itemadapter.notifyDataSetChanged();
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
         dbRef.child(getString(R.string.notify_newstore_CODE))
                 .orderByChild("district_province")
                 .equalTo(dist_pro)
-                .addValueEventListener(childEventListener);
+                .addListenerForSingleValueEvent(notiEventListener);
+    }
+
+    private void getStoreInfo(NewstoreNotify notify) {
+        storeValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                store = dataSnapshot.getValue(Store.class);
+                String key = dataSnapshot.getKey();
+                store.setStoreID(key);
+                ChooseStore.getInstance().setStore(store);
+                Intent intent_openstore = new Intent(getActivity(),
+                        StoreDeatailActivity.class);
+                intent_openstore.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                plzwaitDialog.dismiss();
+                dbRef.child(getString(R.string.store_CODE)
+                        + key)
+                        .removeEventListener(storeValueListener);
+                startActivity(intent_openstore);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        dbRef.child(getString(R.string.store_CODE) +
+                notify.getStoreID())
+                .addValueEventListener(storeValueListener);
+    }
+
+    private void getUserInfo(NewstoreNotify notify) {
+        userValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                plzwaitDialog.cancel();
+                user = dataSnapshot.getValue(User.class);
+                String key = dataSnapshot.getKey();
+                user.setuID(key);
+                if (user.isAddstoreBlocked()) {
+                    Toast.makeText(getContext(), getString(R.string.txt_blockeduser)
+                            , Toast.LENGTH_LONG)
+                            .show();
+                } else {
+                    BlockUserDialog blockDialog = new BlockUserDialog();
+                    blockDialog.setStyle(DialogFragment.STYLE_NORMAL,
+                            R.style.AddfoodDialog);
+                    blockDialog.setBlock(user, Const.BLOCK_TYPE.BLOCK_ADDSTORE);
+                    blockDialog.setOnPosNegListener(new BlockUserDialog.OnPosNegListener() {
+                        @Override
+                        public void onPositive(boolean isClicked, Map<String,
+                                Object> childUpdate, final Dialog dialog) {
+                            if (isClicked) {
+                                dialog.dismiss();
+                                plzwaitDialog.show();
+                                dbRef.updateChildren(childUpdate)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                plzwaitDialog.dismiss();
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        dialog.show();
+                                        plzwaitDialog.dismiss();
+                                        Toast.makeText(getContext(), e.getMessage(),
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                });
+
+                            }
+                        }
+
+                        @Override
+                        public void onNegative(boolean isClicked, Dialog dialog) {
+                            if (isClicked) {
+                                dialog.dismiss();
+                            }
+                        }
+                    });
+                    blockDialog.show(getFragmentManager(), "frag_blockuser");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        dbRef.child(getString(R.string.users_CODE)
+                + notify.getUserID())
+                .addListenerForSingleValueEvent(userValueListener);
     }
 
     private void ref(View view) {
@@ -95,7 +205,6 @@ public class AdminNewStoreFragment extends Fragment {
                     String key = notify.getId();
                     NewstoreNotify childNotify = notify;
                     notify.setReadstate(true);
-                    childNotify.setId(null);
                     childNotify.setReadstate(true);
                     Log.d("district_province", childNotify.getDistrict_province());
                     childNotify.setReadState_pro_dist(
@@ -109,17 +218,12 @@ public class AdminNewStoreFragment extends Fragment {
                             new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    dbRef.child(getString(R.string.store_CODE) +
-                                            notify.getStoreID())
-                                            .addValueEventListener(storeValueListener);
+                                    getStoreInfo(notify);
                                 }
                             }
                     );
                 } else {
-
-                    dbRef.child(getString(R.string.store_CODE) +
-                            notify.getStoreID())
-                            .addValueEventListener(storeValueListener);
+                    getStoreInfo(notify);
                 }
 
             }
@@ -172,124 +276,21 @@ public class AdminNewStoreFragment extends Fragment {
                     @Override
                     public void onBlockUser(NewstoreNotify notify) {
                         plzwaitDialog.show();
-                        dbRef.child(getString(R.string.users_CODE)
-                                + notify.getUserID())
-                                .addValueEventListener(userValueListener);
+                        getUserInfo(notify);
+
                     }
                 });
-        plzwaitDialog = new ProgressDialog(getContext());
-        plzwaitDialog.setMessage(getString(R.string.txt_plzwait));
-        plzwaitDialog.setCanceledOnTouchOutside(false);
-        plzwaitDialog.setCancelable(false);
+        plzwaitDialog = AppUtils.SetupProgressDialog(getContext(),
+                getString(R.string.txt_plzwait), null, false, false,
+                ProgressDialog.STYLE_SPINNER, 0);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         Log.d("notifynewstore_onAttach", "attached");
-        childEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
-                    NewstoreNotify item = dataItem.getValue(NewstoreNotify.class);
-                    String key = dataItem.getKey();
-                    item.setId(key);
-                    items.add(item);
-                }
-                itemadapter.notifyDataSetChanged();
-                dbRef.child(getString(R.string.notify_newstore_CODE))
-                        .orderByChild("district_province")
-                        .equalTo(dist_pro).removeEventListener(childEventListener);
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
 
-            }
-        };
-        storeValueListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                store = dataSnapshot.getValue(Store.class);
-                String key = dataSnapshot.getKey();
-                store.setStoreID(key);
-                ChooseStore.getInstance().setStore(store);
-                Intent intent_openstore = new Intent(getActivity(),
-                        StoreDeatailActivity.class);
-                intent_openstore.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                plzwaitDialog.dismiss();
-                dbRef.child(getString(R.string.store_CODE)
-                        + key)
-                        .removeEventListener(storeValueListener);
-                startActivity(intent_openstore);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        userValueListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                plzwaitDialog.cancel();
-                user = dataSnapshot.getValue(User.class);
-                String key = dataSnapshot.getKey();
-                user.setuID(key);
-                dbRef.child(getString(R.string.users_CODE)
-                        + key)
-                        .removeEventListener(userValueListener);
-                if (user.isAddstoreBlocked()) {
-                    Toast.makeText(getContext(), getString(R.string.txt_blockeduser)
-                            , Toast.LENGTH_LONG)
-                            .show();
-                } else {
-                    BlockUserDialog blockDialog = new BlockUserDialog();
-                    blockDialog.setStyle(DialogFragment.STYLE_NORMAL,
-                            R.style.AddfoodDialog);
-                    blockDialog.setBlock(user, Const.BLOCK_TYPE.BLOCK_ADDSTORE);
-                    blockDialog.setOnPosNegListener(new BlockUserDialog.OnPosNegListener() {
-                        @Override
-                        public void onPositive(boolean isClicked, Map<String,
-                                Object> childUpdate, final Dialog dialog) {
-                            if (isClicked) {
-                                dialog.dismiss();
-                                plzwaitDialog.show();
-                                dbRef.updateChildren(childUpdate)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                plzwaitDialog.dismiss();
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        dialog.show();
-                                        plzwaitDialog.dismiss();
-                                        Toast.makeText(getContext(), e.getMessage(),
-                                                Toast.LENGTH_LONG).show();
-                                    }
-                                });
-
-                            }
-                        }
-
-                        @Override
-                        public void onNegative(boolean isClicked, Dialog dialog) {
-                            if (isClicked) {
-                                dialog.dismiss();
-                            }
-                        }
-                    });
-                    blockDialog.show(getFragmentManager(), "frag_blockuser");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
     }
 
     @Override
@@ -308,7 +309,5 @@ public class AdminNewStoreFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        dbRef.child(getString(R.string.notify_newstore_CODE))
-                .removeEventListener(childEventListener);
     }
 }

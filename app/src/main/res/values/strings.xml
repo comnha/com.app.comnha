@@ -79,7 +79,8 @@
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
-    <string name="txt_writecomment">Viết bình luận …</string>
+    <string name="hint_writecomment">Viết bình luận …</string>
+    <string name="txt_writecomment">Viết bình luận</string>
     <!--ERROR-->
     <string name="txt_needlogin">Bạn cần đăng nhập</string>
     <string name="txt_noemail">Bạn chưa nhập email</string>
@@ -177,7 +178,7 @@
     <string name="frag_map_CODE">map</string>
     <string name="frag_writepost_CODE">writepost</string>
     <string name="frag_menu_CODE">menu</string>
-    <string name="frg_viewpost_CODE">viewpost</string>
+    <string name="frg_postdetail_CODE">postdetail</string>
     <string name="frg_viewfood_CODE">viewfood</string>
     <string name="frg_signup_CODE">signup</string>
     <string name="frg_signin_CODE">signin</string>
@@ -631,5 +632,7 @@
     <string name="txt_bad">Không ngon</string>
     <string name="txt_fine">Bình thường</string>
     <string name="txt_good">Ngon</string>
-    <string name="txt_fuckinggood">Tuyệt vời</string>
+    <string name="txt_toofuckinggood">Tuyệt vời</string>
+    <string name="text_hidepost">Ẩn bài viết</string>
+    <string name="txt_showpost">Hiện bài viết</string>
 </resources>

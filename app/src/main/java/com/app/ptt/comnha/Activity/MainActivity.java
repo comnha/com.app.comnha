@@ -125,8 +125,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 user.setuID(key);
                 LoginSession.getInstance().setUser(user);
                 LoginSession.getInstance().setFirebUser(firebaseUser);
-                dbRef.child(getString(R.string.users_CODE)
-                        + key).removeEventListener(userValueListener);
                 mAuth.removeAuthStateListener(mAuthListener);
             }
 
@@ -136,7 +134,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         };
         dbRef.child(getString(R.string.users_CODE)
                 + firebaseUser.getUid())
-                .addValueEventListener(userValueListener);
+                .addListenerForSingleValueEvent(userValueListener);
     }
 
     private void ref() {
@@ -572,7 +570,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 //                            LoginSession.getInstance().setEmail(user.getEmail());
 //                            LoginSession.getInstance().setUsername(user.getDisplayName());
 //                            txt_email.setText(user.getEmail());
-//                            txt_un.setText(user.getDisplayName());
+//                            txtv_un.setText(user.getDisplayName());
 //                            getRole();
 //                        } else {
 //                            menuItem.setEnabled(false);
@@ -581,7 +579,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 ////                            menuItem3.setVisible(false);
 //                            menuItem4.setVisible(false);
 //                            txt_email.setText(getResources().getString(R.string.text_hello));
-//                            txt_un.setText(getResources().getString(R.string.text_user));
+//                            txtv_un.setText(getResources().getString(R.string.text_user));
 //                            userID = "";
 //                            LoginSession.getInstance().setUserID(null);
 //                            LoginSession.getInstance().setUsername(null);
@@ -589,7 +587,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 //                        }
 //                    } catch (NullPointerException mess) {
 //                        txt_email.setText(getResources().getString(R.string.text_hello));
-//                        txt_un.setText(getResources().getString(R.string.text_user));
+//                        txtv_un.setText(getResources().getString(R.string.text_user));
 //                        userID = "";
 //                        LoginSession.getInstance().setUserID(null);
 //                        LoginSession.getInstance().setUsername(null);
@@ -602,7 +600,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 ////                    menuItem3.setVisible(false);
 //                    menuItem4.setEnabled(false);
 //                    txt_email.setText(getResources().getString(R.string.text_hello));
-//                    txt_un.setText(getResources().getString(R.string.text_user));
+//                    txtv_un.setText(getResources().getString(R.string.text_user));
 //                    userID = "";
 //                    LoginSession.getInstance().setUserID(null);
 //                    LoginSession.getInstance().setUsername(null);

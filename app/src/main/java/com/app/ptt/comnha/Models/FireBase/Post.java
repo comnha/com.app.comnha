@@ -1,5 +1,7 @@
 package com.app.ptt.comnha.Models.FireBase;
 
+import android.graphics.Bitmap;
+
 import com.app.ptt.comnha.Utils.Times;
 
 import java.util.HashMap;
@@ -17,8 +19,7 @@ public class Post {
             postID;
     //creator
     String un,
-            userID,
-            avatar;
+            userID;
     //store
     String storeID;
     String storeName;
@@ -26,25 +27,28 @@ public class Post {
     //attachedfood
     String foodID = "";
     //attachedimage
-    String banner;//
+    String banner = "";//
     //rating
-    long priceRate,
-            healthyRate,
-            serviceRate;
+    long priceRate = 0,
+            healthyRate = 0,
+            serviceRate = 0;
     boolean isHidden = false;
 
     Map<String, Comment> comments = null;
     //phép kết
     String userID_dist_prov,
-            isHeidden_dist_prov,//tìm post theo uid_tỉnh_huyện
-            dist_pro;//tìm post theo tỉnh_huyện
+            isHidden_dist_prov,//tìm post theo uid_tỉnh_huyện
+            dist_pro,//tìm post theo tỉnh_huyện
+            isHidden_storeID,
+            isHidden_foodID;
+    Bitmap imgBitmap = null;
 
     public Post() {
 
     }
 
     public Post(String title, String content,
-                String un, String userID, String avatar, String storeID,
+                String un, String userID, String storeID,
                 String storeName, String foodID,
                 String banner, long priceRate, long healthyRate,
                 long serviceRate, String dist_pro) {
@@ -54,7 +58,6 @@ public class Post {
         this.time = new Times().getTime();
         this.un = un;
         this.userID = userID;
-        this.avatar = avatar;
         this.storeID = storeID;
         this.storeName = storeName;
         this.foodID = foodID;
@@ -73,7 +76,6 @@ public class Post {
         result.put("date", date);
         result.put("time", time);
         result.put("userID", userID);
-        result.put("avatar", avatar);
         result.put("un", un);
         result.put("storeID", storeID);
         result.put("storeName", storeName);
@@ -86,8 +88,12 @@ public class Post {
         result.put("userID_dist_prov", userID_dist_prov);
         result.put("dist_pro", dist_pro);
         result.put("isHidden", isHidden);
-        result.put("isHeidden_dist_prov", String.valueOf(isHidden)
+        result.put("isHidden_dist_prov", String.valueOf(isHidden)
                 + "_" + dist_pro);
+        result.put("isHidden_storeID", String.valueOf(isHidden)
+                + "_" + storeID);
+        result.put("isHidden_foodID", String.valueOf(isHidden)
+                + "_" + foodID);
         return result;
     }
 
@@ -227,14 +233,6 @@ public class Post {
         this.dist_pro = dist_pro;
     }
 
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
     public boolean isHidden() {
         return isHidden;
     }
@@ -243,11 +241,35 @@ public class Post {
         isHidden = hidden;
     }
 
-    public String getIsHeidden_dist_prov() {
-        return isHeidden_dist_prov;
+    public String getIsHidden_dist_prov() {
+        return isHidden_dist_prov;
     }
 
-    public void setIsHeidden_dist_prov(String isHeidden_dist_prov) {
-        this.isHeidden_dist_prov = isHeidden_dist_prov;
+    public void setIsHidden_dist_prov(String isHidden_dist_prov) {
+        this.isHidden_dist_prov = isHidden_dist_prov;
+    }
+
+    public String getIsHidden_storeID() {
+        return isHidden_storeID;
+    }
+
+    public void setIsHidden_storeID(String isHidden_storeID) {
+        this.isHidden_storeID = isHidden_storeID;
+    }
+
+    public String getIsHidden_foodID() {
+        return isHidden_foodID;
+    }
+
+    public void setIsHidden_foodID(String isHidden_foodID) {
+        this.isHidden_foodID = isHidden_foodID;
+    }
+
+    public Bitmap getImgBitmap() {
+        return imgBitmap;
+    }
+
+    public void setImgBitmap(Bitmap imgBitmap) {
+        this.imgBitmap = imgBitmap;
     }
 }

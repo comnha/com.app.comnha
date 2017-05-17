@@ -5,7 +5,7 @@
     android:id="@+id/frg_post"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context="com.app.ptt.comnha.Fragment.EditPostDialogFragment">
+    tools:activity="com.app.ptt.comnha.Fragment.EditPostDialogFragment">
 
     <ScrollView
         android:layout_width="match_parent"

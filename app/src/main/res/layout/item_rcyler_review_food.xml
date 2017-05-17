@@ -86,7 +86,7 @@
 
 
                 <TextView
-                    android:id="@+id/post_txtv_storename"
+                    android:id="@+id/txtv_storename"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Tên quán"
@@ -139,7 +139,7 @@
                         android:textStyle="bold"
                         android:textSize="12sp" />
                     <TextView
-                        android:id="@+id/post_txtv_postdate"
+                        android:id="@+id/txtv_postdate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"

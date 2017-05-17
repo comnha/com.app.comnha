@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.app.ptt.comnha.Fragment.WritepostFragment">
+    tools:activity="com.app.ptt.comnha.Fragment.WritepostFragment">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/tablayout_writepost"
@@ -88,16 +88,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_marginBottom="4dp"
                     android:id="@+id/linear_store_writepost"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -116,21 +116,26 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="start|center_vertical"
+                            android:lines="1"
+                            android:maxLines="1"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/txtV_storeaddress_writepost"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="start|center_vertical" />
+                            android:gravity="start|center_vertical"
+                            android:lines="1"
+                            android:maxLines="1" />
                     </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_marginTop="4dp"
                     android:id="@+id/linear_food_writepost"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
                     android:background="@android:color/white"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -178,6 +183,8 @@
                     android:id="@+id/linear_rate_writepost"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="4dp"
                     android:orientation="horizontal">
 
                     <android.support.v7.widget.CardView
@@ -284,28 +291,46 @@
                     android:id="@+id/linear_banner_writepost"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="4dp"
                     android:orientation="vertical"
-                    android:paddingBottom="8dp"
                     android:paddingTop="8dp">
 
                     <TextView
                         android:id="@+id/txtV_banner_writepost"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginStart="8dp"
                         android:gravity="center_vertical|start"
                         android:text="@string/txt_banner" />
 
-                    <ImageView
-                        android:id="@+id/imgV_banner_writepost"
+                    <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
-                        android:layout_height="170dp" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="4dp"
+                        app:cardCornerRadius="@dimen/cardv_cornerRadius"
+                        app:cardElevation="@dimen/cardv_elevation">
+
+                        <ImageView
+                            android:id="@+id/imgV_banner_writepost"
+                            android:layout_width="match_parent"
+                            android:layout_height="170dp" />
+                    </android.support.v7.widget.CardView>
+
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/linear_importimg_writepost"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -323,8 +348,8 @@
                         android:paddingStart="5dp" />
 
                 </LinearLayout>
+
                 <LinearLayout
-                    android:visibility="invisible"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -332,6 +357,7 @@
                     android:paddingEnd="4dp"
                     android:paddingStart="8dp"
                     android:paddingTop="8dp"
+                    android:visibility="invisible"
                     android:weightSum="10">
 
                     <TextView

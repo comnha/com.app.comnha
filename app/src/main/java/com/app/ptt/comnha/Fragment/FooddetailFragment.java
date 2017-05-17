@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -26,19 +27,21 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.ptt.comnha.Activity.PostdetailActivity;
 import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;
+import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
@@ -61,7 +64,7 @@ public class FooddetailFragment extends Fragment {
     ImageView imgv_photo;
     RatingBar ratingBar;
     ArrayList<Post> postlist;
-    ChildEventListener postChildListener;
+    ValueEventListener postEventListener;
     ActionBar actionBar;
     Toolbar toolbar;
     Food food = ChooseFood.getInstance().getFood();
@@ -117,13 +120,13 @@ public class FooddetailFragment extends Fragment {
         if (food != null) {
             storeID = food.getStoreID();
             foodID = food.getFoodID();
-            ref(view);
-            getData();
-            return view;
+
+        } else {
+            getActivity().onBackPressed();
         }
-
-
-        return null;
+        ref(view);
+        getData();
+        return view;
     }
 
     public void getData() {
@@ -146,28 +149,15 @@ public class FooddetailFragment extends Fragment {
 
         }
 
-        postChildListener = new ChildEventListener() {
+        postEventListener = new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Post post = dataSnapshot.getValue(Post.class);
-                post.setPostID(dataSnapshot.getKey());
-                postlist.add(post);
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
+                    Post post = dataItem.getValue(Post.class);
+                    post.setPostID(dataItem.getKey());
+                    postlist.add(post);
+                }
                 postAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
             }
 
             @Override
@@ -178,9 +168,9 @@ public class FooddetailFragment extends Fragment {
 
         dbRef.child(
                 getResources().getString(R.string.posts_CODE))
-                .orderByChild("foodID")
-                .equalTo(foodID)
-                .addChildEventListener(postChildListener);
+                .orderByChild("isHidden_foodID")
+                .equalTo(false + "_" + foodID)
+                .addListenerForSingleValueEvent(postEventListener);
 
     }
 
@@ -220,26 +210,23 @@ public class FooddetailFragment extends Fragment {
         postRecyclerView.setLayoutManager(postLayoutManager);
         postAdapter = new Post_recycler_adapter(postlist, getActivity(), stRef);
         postRecyclerView.setAdapter(postAdapter);
-
-
         postAdapter.setOnItemClickLiestner(new Post_recycler_adapter.OnItemClickLiestner() {
             @Override
-            public void onItemClick(Post post) {
-
+            public void onItemClick(Post post, View itemView) {
+                Intent intent_postdetail = new Intent(getContext(),
+                        PostdetailActivity.class);
+                intent_postdetail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                ActivityOptionsCompat option_postbanner
+                        = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        getActivity(), itemView.findViewById(R.id.imgv_banner_postitem),
+                        "postBanner");
+                ChoosePost.getInstance().setPost(post);
+//                Toast.makeText(getContext(),
+//                        selected_store.getName() + "", Toast.LENGTH_SHORT).show();
+                startActivity(intent_postdetail, option_postbanner.toBundle());
             }
         });
-//                    if (LoginSession.getInstance().getUserID() == null) {
-//                        Toast.makeText(getActivity(), getString(R.string.txt_needlogin),
-//                                Toast.LENGTH_SHORT).show();
-//                    } else {
-//        Intent intent = new Intent(getActivity(), AdapterActivity.class);
-//        intent.putExtra(getString(R.string.fragment_CODE), getString(R.string.frg_viewpost_CODE));
-////                    ChoosePost.getInstance().setPostID(postlist.get(position).getPostID());
-//        // ChoosePost.getInstance().setTinh(tinh);
-//        // ChoosePost.getInstance().setHuyen(huyen);
-//        startActivity(intent);
-//                    }
-//                } else Toast.makeText(getContext(), "You are offline", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override

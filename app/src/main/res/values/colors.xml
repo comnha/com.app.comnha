@@ -21,4 +21,6 @@
     <color name="color_notify_reportfood">#61ab6c</color>
     <color name="color_read">#7f000000</color>
     <color name="addlocal_color_opentime">#9303a7</color>
+    <color name="color_waiting">#26cecece</color>
+    <color name="color_postthumb">#2fE6E9ED</color>
 </resources>

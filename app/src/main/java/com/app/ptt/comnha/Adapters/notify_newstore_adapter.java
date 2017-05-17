@@ -37,12 +37,6 @@ public class notify_newstore_adapter extends BaseAdapter {
     public void setOnItemClickLiestner(OnItemClickLiestner liestner) {
         onItemClickLiestner = liestner;
     }
-
-    public notify_newstore_adapter(Activity activity, ArrayList<NewstoreNotify> items) {
-        this.activity = activity;
-        this.items = items;
-    }
-
     public interface OnOptionItemClickListener {
         void onDelNotify(NewstoreNotify notify);
 
@@ -52,6 +46,12 @@ public class notify_newstore_adapter extends BaseAdapter {
     public void setOnOptionItemClickListener(OnOptionItemClickListener onOptionItemClickListener) {
         this.onOptionItemClickListener = onOptionItemClickListener;
     }
+    public notify_newstore_adapter(Activity activity, ArrayList<NewstoreNotify> items) {
+        this.activity = activity;
+        this.items = items;
+    }
+
+
 
     @Override
     public int getCount() {

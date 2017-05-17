@@ -3,6 +3,7 @@
     package="com.app.ptt.comnha">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <uses-role android:name="android.role.ACCESS_COARSE_LOCATION" />
     <uses-role android:name="android.role.ACCESS_FINE_LOCATION" />
     <uses-role android:name="android.role.INTERNET" />
@@ -70,6 +71,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/SearchAtivity" />
         <activity android:name=".Activity.StoreDeatailActivity"></activity>
+        <activity android:name=".Activity.PostdetailActivity"></activity>
     </application>
 
 </manifest>

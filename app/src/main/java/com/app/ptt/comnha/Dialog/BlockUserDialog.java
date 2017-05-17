@@ -1,4 +1,4 @@
-package com.app.ptt.comnha.Fragment;
+package com.app.ptt.comnha.Dialog;
 
 import android.app.Dialog;
 import android.graphics.Point;

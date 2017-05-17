@@ -32,6 +32,7 @@ import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;
+import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.github.clans.fab.FloatingActionButton;
@@ -96,7 +97,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void ref() {
-        View include_view = findViewById(R.id.include_content);
+        View include_view = findViewById(R.id.include_storedetail_content);
         postRecycler = (RecyclerView) include_view.findViewById(R.id.recycler_post_storedetail);
         postLayoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, true);
@@ -104,16 +105,31 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         posts = new ArrayList<>();
         postAdapter = new Post_recycler_adapter(posts, this, stRef);
         postRecycler.setAdapter(postAdapter);
+        postAdapter.setOnItemClickLiestner(new Post_recycler_adapter.OnItemClickLiestner() {
+            @Override
+            public void onItemClick(Post post, View itemView) {
+                Intent intent_postdetail = new Intent(StoreDeatailActivity.this,
+                        PostdetailActivity.class);
+                ActivityOptionsCompat option_postbanner
+                        = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        StoreDeatailActivity.this, itemView.findViewById(R.id.imgv_banner_postitem),
+                        "postBanner");
+                ChoosePost.getInstance().setPost(post);
+//                Toast.makeText(getContext(),
+//                        selected_store.getName() + "", Toast.LENGTH_SHORT).show();
+                startActivity(intent_postdetail, option_postbanner.toBundle());
+            }
+        });
         photoRecycler = (RecyclerView) include_view.findViewById(R.id.recycler_photo_storedetail);
         photoLayoutManager = new LinearLayoutManager(this,
-                LinearLayoutManager.HORIZONTAL, true);
+                LinearLayoutManager.HORIZONTAL, false);
         photoRecycler.setLayoutManager(photoLayoutManager);
         images = new ArrayList<>();
         photoAdapter = new Photo_recycler_adapter(images, stRef, this);
         photoRecycler.setAdapter(photoAdapter);
         photoAdapter.setOnItemClickLiestner(new Photo_recycler_adapter.OnItemClickLiestner() {
             @Override
-            public void onItemClick(Image image, Activity activity) {
+            public void onItemClick(Image image, Activity activity, View itemView) {
                 Intent intent_openPhoto = new Intent(activity, ViewPhotoActivity.class);
                 intent_openPhoto.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent_openPhoto);
@@ -153,7 +169,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         toolbar.setTitle(getString(R.string.txt_storedetail));
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        ((AppCompatActivity) this).setSupportActionBar(toolbar);
+        this.setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -359,19 +375,27 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
 
             }
         };
+        dbRef.child(getString(R.string.posts_CODE))
+                .orderByChild("isHidden_storeID")
+                .equalTo(false + "_" + storeID)
+                .addListenerForSingleValueEvent(postValueListener);
     }
 
     private void getImageList() {
         photoValueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
-                    Image image = dataItem.getValue(Image.class);
-                    String key = dataItem.getKey();
+                for (DataSnapshot item : dataSnapshot.getChildren()) {
+                    Image image = item.getValue(Image.class);
+                    String key = item.getKey();
                     image.setImageID(key);
                     images.add(image);
                 }
                 photoAdapter.notifyDataSetChanged();
+                dbRef.child(getString(R.string.images_CODE))
+                        .orderByChild("isHidden_storeID")
+                        .equalTo(false + "_" + storeID)
+                        .removeEventListener(photoValueListener);
             }
 
             @Override
@@ -379,6 +403,10 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
 
             }
         };
+        dbRef.child(getString(R.string.images_CODE))
+                .orderByChild("isHidden_storeID")
+                .equalTo(false + "_" + storeID)
+                .addListenerForSingleValueEvent(photoValueListener);
     }
 
     private void getFoodList() {
@@ -393,8 +421,8 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 }
                 foodAdapter.notifyDataSetChanged();
                 dbRef.child(getString(R.string.food_CODE))
-                        .orderByChild("storeID")
-                        .equalTo(storeID)
+                        .orderByChild("isHidden_storeID")
+                        .equalTo(false + "_" + storeID)
                         .removeEventListener(foodValueListener);
             }
 
@@ -404,8 +432,8 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
             }
         };
         dbRef.child(getString(R.string.food_CODE))
-                .orderByChild("storeID")
-                .equalTo(storeID)
+                .orderByChild("isHidden_storeID")
+                .equalTo(false + "_" + storeID)
                 .addValueEventListener(foodValueListener);
     }
 

@@ -64,7 +64,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -162,6 +161,69 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+
+    }
+
+    private void getFoods() {
+        foodValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
+                    String key = dataItem.getKey();
+                    Food food = dataItem.getValue(Food.class);
+                    food.setFoodID(key);
+                    foods.add(food);
+                }
+                dbRef.child(getString(R.string.food_CODE))
+                        .orderByChild("dist_prov")
+                        .equalTo(dist_prov)
+                        .removeEventListener(foodValueListener);
+                foodAdapter.notifyDataSetChanged();
+                plzw8Dialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        dbRef.child(getString(R.string.food_CODE))
+                .orderByChild("dist_prov")
+                .equalTo(dist_prov)
+                .addValueEventListener(foodValueListener);
+    }
+
+    private void getFoodsFromStore() {
+        foodFromStoreValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
+                    String key = dataItem.getKey();
+                    Food food = dataItem.getValue(Food.class);
+                    food.setFoodID(key);
+                    foods.add(food);
+                }
+                foodAdapter.notifyDataSetChanged();
+                plzw8Dialog.dismiss();
+                dbRef.child(getString(R.string.food_CODE))
+                        .orderByChild("storeID")
+                        .equalTo(selected_store.getStoreID())
+                        .removeEventListener(foodFromStoreValueListener);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        dbRef.child(getString(R.string.food_CODE))
+                .orderByChild("storeID")
+                .equalTo(selected_store.getStoreID())
+                .addValueEventListener(foodFromStoreValueListener);
+    }
+
+    private void getStores() {
         storeValueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -184,50 +246,10 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 
             }
         };
-        foodValueListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
-                    String key = dataItem.getKey();
-                    Food food = dataItem.getValue(Food.class);
-                    food.setStoreID(key);
-                    foods.add(food);
-                }
-                dbRef.child(getString(R.string.food_CODE))
-                        .orderByChild("dist_prov")
-                        .equalTo(dist_prov)
-                        .removeEventListener(foodValueListener);
-                foodAdapter.notifyDataSetChanged();
-                plzw8Dialog.dismiss();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        foodFromStoreValueListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
-                    String key = dataItem.getKey();
-                    Food food = dataItem.getValue(Food.class);
-                    food.setStoreID(key);
-                    foods.add(food);
-                }
-                dbRef.child(getString(R.string.food_CODE))
-                        .orderByChild("storeID")
-                        .equalTo(selected_store.getStoreID())
-                        .removeEventListener(foodValueListener);
-                foodAdapter.notifyDataSetChanged();
-                plzw8Dialog.dismiss();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
+        dbRef.child(getString(R.string.store_CODE))
+                .orderByChild("isHidden_dis_pro")
+                .equalTo(String.valueOf(false) + "_" + dist_prov)
+                .addValueEventListener(storeValueListener);
     }
 
     private void ref(View view) {
@@ -256,7 +278,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 }
             }
         });
-        edt_content.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
+        edt_content.setFilters(new InputFilter[]{new InputFilter.LengthFilter(200)});
         edt_content.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -374,6 +396,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                     linear_banner.setVisibility(View.VISIBLE);
                     txtv_importimg.setText(selectedImages.size() + " ảnh đính kèm");
                     imgV_banner.setImageURI(selectedImages.get(0).getUri());
+                    banner = selectedImages.get(0).getUri().getLastPathSegment();
                     imgV_banner.setScaleType(ImageView.ScaleType.FIT_XY);
                 } else {
                     imagesImportRvAdapter.cancelSelection();
@@ -381,6 +404,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                     linear_importimg.setVisibility(View.GONE);
                     linear_banner.setVisibility(View.GONE);
                     imgV_banner.setImageURI(null);
+                    banner = "";
                 }
                 Log.d("imgDialogonDismiss", "onDismiss");
             }
@@ -524,9 +548,8 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         });
         uploadImgDialog = new ProgressDialog(getContext());
         uploadImgDialog.setMessage(getString(R.string.txt_updloadimg));
-
-        uploadImgDialog.setMax(10);
         uploadImgDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        uploadImgDialog.setProgress(0);
         uploadImgDialog.setCanceledOnTouchOutside(true);
         uploadImgDialog.setCancelable(true);
     }
@@ -549,6 +572,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                     ilayout_content.setError(getString(R.string.txt_nocontent));
                 } else {
                     uploadImgDialog.show();
+                    savePost();
                 }
                 return true;
             default:
@@ -572,15 +596,9 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 if (foods.size() == 0) {
                     plzw8Dialog.show();
                     if (selected_store != null) {
-                        dbRef.child(getString(R.string.food_CODE))
-                                .orderByChild("storeID")
-                                .equalTo(selected_store.getStoreID())
-                                .addValueEventListener(foodFromStoreValueListener);
+                        getFoodsFromStore();
                     } else {
-                        dbRef.child(getString(R.string.food_CODE))
-                                .orderByChild("dist_prov")
-                                .equalTo(dist_prov)
-                                .addValueEventListener(foodValueListener);
+                        getFoods();
                     }
                     plzw8Dialog.setOnDismissListener(new DialogInterface.
                             OnDismissListener() {
@@ -621,10 +639,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 moreDialog.dismiss();
                 if (stores.size() == 0) {
                     plzw8Dialog.show();
-                    dbRef.child(getString(R.string.store_CODE))
-                            .orderByChild("isHidden_dis_pro")
-                            .equalTo(String.valueOf(false) + "_" + dist_prov)
-                            .addValueEventListener(storeValueListener);
+                    getStores();
                     plzw8Dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialogInterface) {
@@ -689,16 +704,18 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         String pro_dist = selected_store.getPro_dist(),
                 storename = selected_store.getName(),
                 storeID = selected_store.getStoreID(),
-                foodID = selected_food.getFoodID();
-
-        post = new Post(title, content, un, uID, avatar, storeID, storename,
+                foodID = "";
+        if (selected_food != null) {
+            foodID = selected_food.getFoodID();
+        }
+        post = new Post(title, content, un, uID, storeID, storename,
                 foodID, banner, pricerate, healthrate, servicerate,
                 pro_dist);
         String postKey = dbRef.child(getString(R.string.store_CODE))
                 .push().getKey();
         Map<String, Object> postValue = post.toMap();
-        Map<String, Object> childUpdate = new HashMap<>();
-        childUpdate.put(getString(R.string.store_CODE) + postKey,
+        final Map<String, Object> childUpdate = new HashMap<>();
+        childUpdate.put(getString(R.string.posts_CODE) + postKey,
                 postValue);
         if (healthrate > 0 && servicerate > 0 && pricerate > 0) {
             long priceSum = selected_store.getPriceSum() + pricerate,
@@ -714,15 +731,18 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                     storeValue);
         }
         if (selected_food != null
-                && !selected_food.getStoreID()
+                && selected_food.getStoreID()
                 .equals(selected_store.getStoreID())) {
-            selected_food.setRating(selected_food.getRating() + (long) foodRate);
-            selected_food.setTotal(selected_food.getTotal() + 1);
+            long total = selected_food.getTotal() + 1;
+            long rat = selected_food.getRating() + (long) foodRate;
+            selected_food.setRating(rat);
+            selected_food.setTotal(total);
             Map<String, Object> foodValue = selected_food.toMap();
             childUpdate.put(getString(R.string.food_CODE)
                     + selected_food.getFoodID(), foodValue);
         }
         if (selectedImages.size() > 0) {
+            uploadImgDialog.setMax(selectedImages.size());
             for (SelectedImage imgItem : selectedImages) {
                 Image image;
                 if (selectedImages.indexOf(imgItem) == 0) {
@@ -753,30 +773,54 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 uploadTask = mStorageReference.putFile(
                         Uri.fromFile(new File(imgItem.getUri().toString())));
 
-                uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        int progress = (int) (taskSnapshot.getBytesTransferred() * 100
-                                / taskSnapshot.getTotalByteCount());
-//                    Log.d("getBytesTransferred", progress + "");
-                        uploadImgDialog.setProgress(progress);
-                    }
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                        isUploadImgSuccess[0] = true;
-                        uploadImgDialog.dismiss();
+                        uploadImgDialog.setProgress(uploadImgDialog.getProgress() + 1);
+                        if (uploadImgDialog.getProgress() == selectedImages.size()) {
+                            uploadImgDialog.dismiss();
+//                            plzw8Dialog.show();
+                            dbRef.updateChildren(childUpdate)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+//                                            plzw8Dialog.dismiss();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getContext(),
+                                            e.getMessage(), Toast.LENGTH_LONG).show();
+//                                    plzw8Dialog.dismiss();
+                                }
+                            });
+                        }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         uploadImgDialog.dismiss();
-                        Toast.makeText(getContext(), getString(R.string.txt_failedUploadImg),
+                        Toast.makeText(getContext(), e.getMessage(),
                                 Toast.LENGTH_SHORT)
                                 .show();
                     }
                 });
             }
+        } else {
+            dbRef.updateChildren(childUpdate)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+//                            plzw8Dialog.dismiss();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getContext(),
+                            e.getMessage(), Toast.LENGTH_LONG).show();
+//                    plzw8Dialog.dismiss();
+                }
+            });
         }
     }
 
@@ -800,7 +844,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 txtv_rateComment.setText(getString(R.string.txt_good));
                 break;
             case 5:
-                txtv_rateComment.setText(getString(R.string.txt_fuckinggood));
+                txtv_rateComment.setText(getString(R.string.txt_toofuckinggood));
                 break;
         }
         foodRate = v;

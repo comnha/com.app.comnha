@@ -18,7 +18,6 @@ import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseNoti;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
-import com.app.ptt.comnha.SingletonClasses.EditPost;
 
 import java.util.ArrayList;
 
@@ -154,17 +153,17 @@ public class Notification_rcycler_adapter_admin extends RecyclerView.Adapter<Not
                 }
                 //review
                 if(list.get(position).getType() ==3) {
-                    Intent intent = new Intent(activity, AdapterActivity.class);
-                    intent.putExtra(activity.getResources().getString(R.string.fragment_CODE),
-                            activity.getResources().getString(R.string.frg_viewpost_CODE));
-                    EditPost.getInstance().setPost(list.get(position).getPost());
-//                    ChoosePost.getInstance().setPostID(foods.get(position).getPost().getPostID());
-//                    ChoosePost.getInstance().setType(foods.get(position).getPost().getType());
-//                    ChoosePost.getInstance().setUserID(foods.get(position).getPost().getUserId());
-//                    if(foods.get(position).getType()==1)
-//                        ChoosePost.getInstance().setFoodID(foods.get(position).getFood().getFoodID());
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    activity.startActivity(intent);
+//                    Intent intent = new Intent(activity, AdapterActivity.class);
+//                    intent.putExtra(activity.getResources().getString(R.string.fragment_CODE),
+//                            activity.getResources().getString(R.string.frg_viewpost_CODE));
+//                    EditPost.getInstance().setPost(list.get(position).getPost());
+////                    ChoosePost.getInstance().setPostID(foods.get(position).getPost().getPostID());
+////                    ChoosePost.getInstance().setType(foods.get(position).getPost().getType());
+////                    ChoosePost.getInstance().setUserID(foods.get(position).getPost().getUserId());
+////                    if(foods.get(position).getType()==1)
+////                        ChoosePost.getInstance().setFoodID(foods.get(position).getFood().getFoodID());
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    activity.startActivity(intent);
                 }
 //                if(foods.get(position).getType() ==1) {
 //                    Intent intent=new Intent(activity,AdapterActivity.class);

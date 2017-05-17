@@ -63,50 +63,6 @@ public class MainStoreFragment extends Fragment {
     }
 
     private void getStoreList() {
-        dbRef.child(getString(R.string.store_CODE))
-                .orderByChild("isHidden_dis_pro")
-                .equalTo(String.valueOf(false) + "_" + pro_dist)
-                .addValueEventListener(childEventListener);
-    }
-
-    private void ref(final View view) {
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerV_storefrag);
-        layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mRecyclerView.setLayoutManager(layoutManager);
-        items = new ArrayList<>();
-        itemadapter = new Store_recycler_adapter(items, getContext());
-        itemadapter.setOnItemClickLiestner(new Store_recycler_adapter.OnItemClickLiestner() {
-            @Override
-            public void onItemClick(Store store, View itemView) {
-                Intent intent_storedetail = new Intent(getContext(),
-                        StoreDeatailActivity.class);
-                intent_storedetail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                ActivityOptionsCompat optionsCompat
-                        = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        getActivity(), itemView.findViewById(R.id.item_list_imgV),
-                        "avatarStore");
-                ChooseStore.getInstance().setStore(store);
-//                Toast.makeText(getContext(),
-//                        selected_store.getName() + "", Toast.LENGTH_SHORT).show();
-                startActivity(intent_storedetail, optionsCompat.toBundle());
-            }
-        });
-        mRecyclerView.setAdapter(itemadapter);
-        swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swipe_storefrag);
-        swipeRefresh.setColorSchemeResources(R.color.admin_color_selection_news,
-                R.color.color_selection_report);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                items.clear();
-                getStoreList();
-            }
-        });
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
         childEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -132,11 +88,55 @@ public class MainStoreFragment extends Fragment {
 
             }
         };
+        dbRef.child(getString(R.string.store_CODE))
+                .orderByChild("isHidden_dis_pro")
+                .equalTo(String.valueOf(false) + "_" + pro_dist)
+                .addValueEventListener(childEventListener);
+    }
+
+    private void ref(final View view) {
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerV_storefrag);
+        layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(layoutManager);
+        items = new ArrayList<>();
+        itemadapter = new Store_recycler_adapter(items, getContext());
+        itemadapter.setOnItemClickLiestner(new Store_recycler_adapter.OnItemClickLiestner() {
+            @Override
+            public void onItemClick(Store store, View itemView) {
+                Intent intent_storedetail = new Intent(getContext(),
+                        StoreDeatailActivity.class);
+                intent_storedetail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                ActivityOptionsCompat optionsCompat
+                        = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        getActivity(), itemView.findViewById(R.id.imgv_avatar_storeitem),
+                        "avatarStore");
+                ChooseStore.getInstance().setStore(store);
+//                Toast.makeText(getContext(),
+//                        selected_store.getName() + "", Toast.LENGTH_SHORT).show();
+                startActivity(intent_storedetail, optionsCompat.toBundle());
+            }
+        });
+        mRecyclerView.setAdapter(itemadapter);
+        swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swipe_storefrag);
+        swipeRefresh.setColorSchemeResources(R.color.admin_color_selection_news,
+                R.color.color_selection_report);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                items.clear();
+                getStoreList();
+            }
+        });
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        dbRef.removeEventListener(childEventListener);
     }
 }

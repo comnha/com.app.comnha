@@ -59,7 +59,7 @@ public class AdapterActivity extends AppCompatActivity {
 //                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, chooselocaFragment).commit();
                 }
             }
-        } else if (FRAGMENT_CODE.equals(getString(R.string.frg_viewpost_CODE))) {
+        } else if (FRAGMENT_CODE.equals(getString(R.string.frg_postdetail_CODE))) {
             if (findViewById(R.id.frame_adapter) != null) {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
 //                    ViewpostFragment viewpostFragment = new ViewpostFragment();

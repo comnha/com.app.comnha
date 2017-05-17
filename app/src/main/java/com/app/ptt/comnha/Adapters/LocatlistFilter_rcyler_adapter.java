@@ -33,11 +33,11 @@ public class LocatlistFilter_rcyler_adapter extends RecyclerView.Adapter<Locatli
 
         public ViewHolder(View itemView) {
             super(itemView);
-            imgV = (CircularImageView) itemView.findViewById(R.id.item_list_imgV);
-            txt_diachi = (TextView) itemView.findViewById(R.id.item_list_txtvaddress);
-            txt_tenquan = (TextView) itemView.findViewById(R.id.item_list_txtvstorename);
-            txt_km = (TextView) itemView.findViewById(R.id.item_list_txtvdistance);
-            txt_diem = (TextView) itemView.findViewById(R.id.item_list_txtvrate);
+            imgV = (CircularImageView) itemView.findViewById(R.id.imgv_avatar_storeitem);
+            txt_diachi = (TextView) itemView.findViewById(R.id.txtv_address_storeitem);
+            txt_tenquan = (TextView) itemView.findViewById(R.id.txtv_storename_storeitem);
+            txt_km = (TextView) itemView.findViewById(R.id.txtv_distance_storeitem);
+            txt_diem = (TextView) itemView.findViewById(R.id.txtv_rate_storeitem);
         }
     }
 
@@ -67,7 +67,7 @@ public class LocatlistFilter_rcyler_adapter extends RecyclerView.Adapter<Locatli
         previuosPosition = position;
 //        holder.txtv_distance.setText(
 //                foods.get(position).getKhoangcach());
-//        holder.imgV.setBackground();
+//        holder.imgv_avatar.setBackground();
     }
 
 

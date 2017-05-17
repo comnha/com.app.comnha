@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context="com.app.ptt.comnha.Activity.SearchActivity">
+    tools:activity="com.app.ptt.comnha.Activity.SearchActivity">
 
     <RelativeLayout
         android:id="@+id/relative_search"

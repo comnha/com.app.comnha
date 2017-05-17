@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
+    android:paddingTop="4dp"
     tools:context="com.app.ptt.comnha.Fragment.MainStoreFragment">
 
     <android.support.v4.widget.SwipeRefreshLayout
@@ -19,7 +20,7 @@
             android:layout_marginTop="4dp"
             android:descendantFocusability="blocksDescendants"
             android:scrollbarSize="0dp"
-            android:scrollbars="vertical"
+            android:scrollbars="none"
             app:stackFromEnd="false" />
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

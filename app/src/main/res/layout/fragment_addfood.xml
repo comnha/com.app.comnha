@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="com.app.ptt.comnha.Fragment.AddFoodFragment">
+    tools:activity="com.app.ptt.comnha.Fragment.AddFoodFragment">
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nested_addfood"

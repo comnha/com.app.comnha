@@ -1,13 +1,26 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="4dp"
     tools:context="com.app.ptt.comnha.Fragment.MainNotifyFragment">
-    <ListView
-        android:id="@+id/listV_notifyfrag"
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_notifyfrag"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@android:color/transparent"
-        android:scrollbars="none" />
+        android:layout_height="wrap_content">
+
+        <ListView
+            android:id="@+id/listV_notifyfrag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:descendantFocusability="blocksDescendants"
+            android:scrollbarSize="0dp"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbars="none"
+            app:stackFromEnd="false" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

@@ -17,8 +17,7 @@ public class Food {
             foodID,
             time, //giờ tạo
             date,
-            comment, foodImg,
-            district, province;//ngày tạo
+            comment, foodImg;
     long price = 0,
             rating = 0,
             total = 0,
@@ -52,9 +51,9 @@ public class Food {
         result.put("userID", userID);
         result.put("storeID", storeID);
         result.put("isHidden_storeID", isHidden + "_" + storeID);
-        result.put("dist_prov", district + "_" + province);
+        result.put("dist_prov", dist_prov);
         result.put("isHidden_dist_prov", isHidden + "_"
-                + district + "_" + province);
+                + dist_prov);
         return result;
     }
 
@@ -71,9 +70,10 @@ public class Food {
         this.type = type;
         this.userID = userID;
         this.storeID = storeID;
-        this.district = district;
-        this.province = province;
         this.foodImg = foodImg;
+        this.dist_prov = district + "_" + province;
+        this.isHidden_dist_prov = isHidden + "_" + district + "_" + province;
+        this.isHidden_storeID = isHidden + "_" + storeID;
         this.time = new Times().getTime();
         this.date = new Times().getDate();
     }
@@ -126,21 +126,6 @@ public class Food {
         this.comment = comment;
     }
 
-    public String getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(String district) {
-        this.district = district;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
 
     public long getPrice() {
         return price;

@@ -1,5 +1,6 @@
 package com.app.ptt.comnha.Models.FireBase;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 
 import com.app.ptt.comnha.Utils.Times;
@@ -26,8 +27,11 @@ public class Image {
     // (1:banner, 2:profile, 3:post's image, 4:normal image)
     String postID = "",//tìm theo post
             storeID = "";//tìm theo quán ăn
-    String type_uID;//Phân loại theo banner, profile, images of post
+    String type_uID;//Phân loại theo banner, profile, images of user
     Uri path;
+    boolean isHidden = false;
+    String isHidden_postID, isHidden_storeID, isHidden_uID;
+    Bitmap imgBitmap;
 
     public Image() {
     }
@@ -51,10 +55,16 @@ public class Image {
         result.put("date", date);
         result.put("time", time);
         result.put("type", type);
+        result.put("userID", userID);
         result.put("postID", postID);
         result.put("storeID", storeID);
         result.put("storeID", storeID);
         result.put("type_uID", type_uID);
+        result.put("isHidden", isHidden);
+        result.put("isHidden_postID", isHidden + "_" + postID);
+        result.put("isHidden_storeID", isHidden + "_" + storeID);
+        result.put("isHidden_uID", isHidden + "_" + userID);
+
         return result;
     }
 
@@ -144,5 +154,21 @@ public class Image {
 
     public void setPath(Uri path) {
         this.path = path;
+    }
+
+    public Bitmap getImgBitmap() {
+        return imgBitmap;
+    }
+
+    public void setImgBitmap(Bitmap imgBitmap) {
+        this.imgBitmap = imgBitmap;
+    }
+
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
     }
 }
