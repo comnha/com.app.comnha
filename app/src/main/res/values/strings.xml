@@ -606,7 +606,7 @@
     <string name="txt_storeaddby">Thêm bởi:&#160;</string>
     <string name="txt_createdate">Ngày tạo:&#160;</string>
     <string name="txt_postdate">Ngày đăng:&#160;</string>
-    <string name="txt_postby">Đăng bởi: </string>
+    <string name="txt_postby">Đăng bởi:&#160;</string>
     <string name="txt_comment">&#160;Bình luận</string>
     <string name="txt_like">&#160;Yêu thích</string>
     <string name="_ID">ID</string>

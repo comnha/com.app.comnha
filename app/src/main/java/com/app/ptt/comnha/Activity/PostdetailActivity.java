@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -67,7 +68,7 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
     private String postID;
     private static final String LOG = PostdetailActivity.class.getSimpleName();
     ImageView imgv_banner, imgv_sendcomment;
-    TextView txtv_un, txtv_date, txtv_content, txt_likenumb,
+    TextView txtv_un, txtv_date, txtv_content, txtv_title, txt_likenumb,
             txtv_comtNumb, txtv_pricerate, txtv_healthrate,
             txtv_servicerate, txtv_foodname, txtv_foodprice,
             txtv_rateComment, txtv_writecomt, txtv_storename;
@@ -118,6 +119,7 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         setContentView(R.layout.activity_post_detail);
         isConnected = MyService.returnIsNetworkConnected();
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
@@ -158,8 +160,8 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
 
         View view_include = findViewById(R.id.include_postdetail_content);
         plzw8Dialog = AppUtils.SetupProgressDialog(this,
-                getString(R.string.txt_plzwait), null, false, false, ProgressDialog.STYLE_SPINNER,
-                0);
+                getString(R.string.txt_plzwait), null, false, false,
+                ProgressDialog.STYLE_SPINNER, 0);
         imgv_banner = (ImageView) findViewById(R.id.imgv_banner_postdetail);
         toolbar = (Toolbar) findViewById(R.id.toolbar_postdetail);
         toolbar.setNavigationIcon(R.drawable.ic_chevron_left_white_24dp);
@@ -190,6 +192,7 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
         rb_foodrating = (RatingBar) view_include.findViewById(R.id.rb_foodrating_postdetail);
         rb_foodrating.setIsIndicator(true);
         txtv_content = (TextView) view_include.findViewById(R.id.txtv_content_postdetail);
+        txtv_title = (TextView) view_include.findViewById(R.id.txtv_title_postdetail);
         rv_imgs = (RecyclerView) view_include.findViewById(R.id.rv_album_postdetail);
         rv_imgs.setHasFixedSize(true);
         imgsLm = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,
@@ -284,6 +287,7 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
         getUserInfo();
         txtv_date.setText(post.getDate());
         txtv_content.setText(post.getContent());
+        txtv_title.setText(post.getTitle());
         txtv_storename.setText(post.getStoreName());
         if (post.getPriceRate() > 0 && post.getHealthyRate() > 0 && post.getServiceRate() > 0) {
             linear_rate.setVisibility(View.VISIBLE);

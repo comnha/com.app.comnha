@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -155,6 +157,31 @@ public class AppUtils {
             progressDialog.setMax(max);
         }
         return progressDialog;
+    }
+
+    public static int getStatusBarHeight(Activity activity) {
+        Rect rectangle = new Rect();
+        Window window = activity.getWindow();
+        window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
+        return rectangle.top;
+    }
+
+    public static void setStatusBarTranslucent(Activity activity) {
+//        View v = findViewById(R.id.bellow_actionbar);
+//        if (v != null) {
+//            int paddingTop = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ?
+//                    MyScreenUtils.getStatusBarHeight(activity) : 0;
+//            TypedValue tv = new TypedValue();
+//            getTheme().resolveAttribute(android.support.v7.appcompat.R.attr.actionBarSize, tv, true);
+//            paddingTop += TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+//            v.setPadding(0, makeTranslucent ? paddingTop : 0, 0, 0);
+//        }
+//
+//        if (makeTranslucent) {
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//        } else {
+//            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//        }
     }
 //    public  boolean showSettingGPSAlert() {
 //

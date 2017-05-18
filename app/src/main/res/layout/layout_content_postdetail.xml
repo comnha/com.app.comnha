@@ -11,31 +11,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@android:color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingBottom="8dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp">
-
-            <TextView
-                android:id="@+id/txtv_likenumb_postdetail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="start|center_vertical"
-                android:textAllCaps="false" />
-
-            <TextView
-                android:id="@+id/txtv_comtnumb_postdetail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="start|center_vertical"
-                android:textAllCaps="false" />
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -187,16 +162,54 @@
             </android.support.v7.widget.CardView>
         </LinearLayout>
 
+
+        <TextView
+            android:id="@+id/txtv_title_postdetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/white"
+            android:gravity="start|top"
+            android:padding="8dp"
+            android:textAllCaps="false"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/txtv_content_postdetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
             android:background="@android:color/white"
             android:gravity="start|top"
             android:padding="8dp"
             android:textAllCaps="false" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="8dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/txtv_likenumb_postdetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start|center_vertical"
+                android:textAllCaps="false" />
+
+            <TextView
+                android:id="@+id/txtv_comtnumb_postdetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start|center_vertical"
+                android:textAllCaps="false" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linear_food_postdetail"
