@@ -106,11 +106,11 @@ public class MainStoreFragment extends Fragment {
                 Intent intent_storedetail = new Intent(getContext(),
                         StoreDeatailActivity.class);
                 intent_storedetail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                ChooseStore.getInstance().setStore(store);
                 ActivityOptionsCompat optionsCompat
                         = ActivityOptionsCompat.makeSceneTransitionAnimation(
                         getActivity(), itemView.findViewById(R.id.imgv_avatar_storeitem),
                         "avatarStore");
-                ChooseStore.getInstance().setStore(store);
 //                Toast.makeText(getContext(),
 //                        selected_store.getName() + "", Toast.LENGTH_SHORT).show();
                 startActivity(intent_storedetail, optionsCompat.toBundle());

@@ -354,9 +354,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         // Handle navigation view item clicks here.
         switch (item.getItemId()) {
             case R.id.nav_profile:
-                Intent intent = new Intent(MainActivity.this, AdapterActivity.class);
-                intent.putExtra(getString(R.string.fragment_CODE),
-                        getString(R.string.frg_prodetail_CODE));
+                Intent intent = new Intent(MainActivity.this, ProfiledetailActivity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_about:

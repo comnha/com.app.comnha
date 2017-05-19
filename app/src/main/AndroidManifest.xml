@@ -72,6 +72,11 @@
             android:theme="@style/SearchAtivity" />
         <activity android:name=".Activity.StoreDeatailActivity"></activity>
         <activity android:name=".Activity.PostdetailActivity"></activity>
+        <activity android:name=".Activity.ProfiledetailActivity"></activity>
+        <activity android:name=".Activity.AlbumActivity"></activity>
+        <activity android:name=".Activity.AllPhotoActivity"></activity>
+        <activity android:name=".Activity.ProfilePhotoActivity"></activity>
+        <activity android:name=".Activity.BannerPhotoActivity"></activity>
     </application>
 
 </manifest>

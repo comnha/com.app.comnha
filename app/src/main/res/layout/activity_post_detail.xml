@@ -24,7 +24,7 @@
             <ImageView
                 android:id="@+id/imgv_banner_postdetail"
                 android:layout_width="match_parent"
-                android:layout_height="224dp"
+                android:layout_height="230dp"
                 android:scaleType="fitXY"
                 android:transitionName="postBanner"
                 app:layout_collapseMode="parallax" />

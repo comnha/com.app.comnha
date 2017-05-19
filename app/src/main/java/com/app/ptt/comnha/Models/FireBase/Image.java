@@ -30,7 +30,7 @@ public class Image {
     String type_uID;//Phân loại theo banner, profile, images of user
     Uri path;
     boolean isHidden = false;
-    String isHidden_postID, isHidden_storeID, isHidden_uID;
+    String isHidden_postID, isHidden_storeID, isHidden_uID, isHidden_type_userID;
     Bitmap imgBitmap;
 
     public Image() {
@@ -64,6 +64,7 @@ public class Image {
         result.put("isHidden_postID", isHidden + "_" + postID);
         result.put("isHidden_storeID", isHidden + "_" + storeID);
         result.put("isHidden_uID", isHidden + "_" + userID);
+        result.put("isHidden_type_userID", isHidden + "_" + type+"_"+userID);
 
         return result;
     }

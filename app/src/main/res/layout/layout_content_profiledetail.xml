@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtv_expandprofile_prodetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawableBottom="@drawable/ic_arrow_drop_up_50black_24dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:lines="1"
+            android:maxLines="1"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:text="@string/nav_profile"
+            android:textStyle="bold" />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardv_pro_prodetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:visibility="visible"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtv_name_prodetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:drawableStart="@drawable/ic_account_box_prodetail_36dp"
+                    android:gravity="center_vertical"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:paddingBottom="4dp"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:textAllCaps="false" />
+
+                <TextView
+                    android:id="@+id/txtv_birth_prodetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:drawableStart="@drawable/ic_today_prodetail_36dp"
+                    android:gravity="center_vertical"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:paddingBottom="4dp"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:textAllCaps="false" />
+
+                <TextView
+                    android:id="@+id/txtv_address_prodetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:drawableStart="@drawable/ic_location_on_prodetail_36dp"
+                    android:gravity="center_vertical"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:paddingBottom="4dp"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:textAllCaps="false" />
+
+                <TextView
+                    android:id="@+id/txtv_distpro_prodetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:paddingBottom="4dp"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:textAllCaps="false" />
+
+                <TextView
+                    android:id="@+id/txtv_work_prodetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:drawableStart="@drawable/ic_work_prodetail_36dp"
+                    android:gravity="center_vertical"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:paddingBottom="4dp"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:textAllCaps="false" />
+
+                <TextView
+                    android:id="@+id/txtv_phonenumb_prodetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:drawableStart="@drawable/ic_phone_prodetail_36dp"
+                    android:gravity="center_vertical"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:paddingBottom="4dp"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:textAllCaps="false" />
+
+                <TextView
+                    android:id="@+id/txtv_sex_prodetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:drawableStart="@drawable/ic_sex_prodetail_36dp"
+                    android:gravity="center_vertical"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:paddingBottom="4dp"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:textAllCaps="false" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtv_expandimg_prodetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawableBottom="@drawable/ic_arrow_drop_down_50black_24dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:lines="1"
+            android:maxLines="1"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:text="@string/txt_yourphoto"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/ln_img_prodetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_imgs_prodetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:scrollbarSize="0dp"
+                android:scrollbars="none" />
+
+            <TextView
+                android:id="@+id/txtv_openimggala_prodetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_chevron_right_50black_24dp"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:lines="1"
+                android:maxLines="1"
+                android:paddingBottom="16dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp"
+                android:text="@string/text_seemoreimg"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/txtv_openyouracti_prodetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:drawableEnd="@drawable/ic_chevron_right_50black_24dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:lines="1"
+        android:maxLines="1"
+        android:paddingBottom="16dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:text="@string/txt_youracti"
+        android:textStyle="bold" />
+</LinearLayout>

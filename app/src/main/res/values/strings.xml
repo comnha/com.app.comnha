@@ -40,7 +40,7 @@
     <string name="text_username">Tên tài khoản</string>
     <string name="text_password">Mật khẩu</string>
     <string name="text_confirmPass">Xác nhận mật khẩu</string>
-    <string name="text_hoten">Họ Tên</string>
+    <string name="text_hoten">Họ tên</string>
     <string name="text_ho">Họ</string>
     <string name="text_tenLot">Tên lót</string>
     <string name="text_ten">Tên</string>
@@ -635,4 +635,13 @@
     <string name="txt_toofuckinggood">Tuyệt vời</string>
     <string name="text_hidepost">Ẩn bài viết</string>
     <string name="txt_showpost">Hiện bài viết</string>
+    <string name="txt_yourphoto">Ảnh của bạn</string>
+    <string name="txt_youracti">Hoạt động của bạn</string>
+    <string name="txt_male">Nam</string>
+    <string name="txt_female">Nữ</string>
+    <string name="txt_dispro">Quận/Huyện</string>
+    <string name="txt_yourwork">Nghề nghiệp</string>
+    <string name="txt_sex">Giới tính</string>
+    <string name="txt_yourphone">Số điện thoại</string>
+    <string name="text_seemoreimg">Xem thêm ảnh</string>
 </resources>

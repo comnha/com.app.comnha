@@ -40,7 +40,7 @@ public class PhotoFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_photo, container, false);
+        View view = inflater.inflate(R.layout.activity_allphoto, container, false);
         database = FirebaseDatabase.getInstance();
         dbRef = database.getReferenceFromUrl(getResources().getString(R.string.firebase_path));
 
@@ -89,7 +89,7 @@ public class PhotoFragment extends Fragment {
 
     void anhxa(View view) {
         photoList = new ArrayList<>();
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.frg_photo_recyclerV);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_img_allphoto);
         gridLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(), 3);
         mRecyclerView.setLayoutManager(gridLayoutManager);
 //        mAdapter = new Photos_rcyler_adapter(photoList, getActivity());

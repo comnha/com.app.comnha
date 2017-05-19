@@ -12,6 +12,8 @@ import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
@@ -164,6 +166,11 @@ public class AppUtils {
         Window window = activity.getWindow();
         window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
         return rectangle.top;
+    }
+
+    public static float dipToPixels(Context context, float dipValue) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
     }
 
     public static void setStatusBarTranslucent(Activity activity) {

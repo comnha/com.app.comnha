@@ -9,7 +9,6 @@ import com.app.ptt.comnha.Fragment.AddFoodFragment;
 import com.app.ptt.comnha.Fragment.AddstoreFragment;
 import com.app.ptt.comnha.Fragment.FooddetailFragment;
 import com.app.ptt.comnha.Fragment.NotificationFragment;
-import com.app.ptt.comnha.Fragment.ProfiledetailFragment;
 import com.app.ptt.comnha.Fragment.SigninFragment;
 import com.app.ptt.comnha.Fragment.SignupFragment;
 import com.app.ptt.comnha.Fragment.WritepostFragment;
@@ -97,15 +96,7 @@ public class AdapterActivity extends AppCompatActivity {
                             fooddetailFragment).commit();
                 }
             }
-        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frg_prodetail_CODE))) {
-            if (findViewById(R.id.frame_adapter) != null) {
-                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
-                    ProfiledetailFragment proDetailFrag = new ProfiledetailFragment();
-                    proDetailFrag.setArguments(getIntent().getExtras());
-                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, proDetailFrag)
-                            .commit();
-                }
-            }
+
         } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frg_themmon_CODE))) {
             if (findViewById(R.id.frame_adapter) != null) {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {

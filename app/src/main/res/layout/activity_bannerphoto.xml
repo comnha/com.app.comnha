@@ -3,11 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:layout_margin="3dp"
-    tools:activity="com.app.ptt.comnha.Fragment.PageFragment">
+    android:padding="4dp"
+    tools:activity="com.app.ptt.comnha.Activity.BannerPhotoActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/frg_photo_recyclerV"
+        android:id="@+id/rv_img_bannerphoto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:scrollbarSize="0dp"
+        android:scrollbars="none" />
 </FrameLayout>

@@ -58,22 +58,27 @@
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
         <item name="android:textColor">#57d43d</item>
     </style>
+
     <style name="BtnColoredAttachedImg" parent="Widget.AppCompat.Button.Colored">
         <item name="colorButtonNormal">@color/color_notify_reportimg</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
+
     <style name="BtnColoredRating" parent="Widget.AppCompat.Button.Colored">
         <item name="colorButtonNormal">@color/color_selection_report</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
+
     <style name="BtnBorderlessGreen" parent="Widget.AppCompat.Button.Borderless.Colored">
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
         <item name="android:textColor">@color/color_notify_reportfood</item>
     </style>
+
     <style name="BtnBorderlessRed" parent="Widget.AppCompat.Button.Borderless.Colored">
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
         <item name="android:textColor">@color/color_selection_report</item>
     </style>
+
     <style name="BtnBorderlessGrey" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
         <item name="android:textColor">@android:color/darker_gray</item>
@@ -131,8 +136,18 @@
         <item name="colorControlNormal">#7fffffff</item>
         <item name="colorControlActivated">@color/admin_color_selection_news</item>
     </style>
+
     <style name="RatingBarWritePost" parent="Theme.AppCompat">
         <item name="colorControlNormal">#5a000000</item>
         <item name="colorControlActivated">@color/admin_color_selection_news</item>
+    </style>
+
+    <style name="AlbumViewPager" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">@android:color/transparent</item>
+    </style>
+
+    <style name="BtnAllbum" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorPrimary</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 </resources>

@@ -86,14 +86,13 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 .getReferenceFromUrl(getString(R.string.firebase_path));
         stRef = FirebaseStorage.getInstance()
                 .getReferenceFromUrl(getString(R.string.firebaseStorage_path));
-        ref();
-
         if (store == null) {
-            finish();
+            onBackPressed();
         } else {
             storeID = store.getStoreID();
-            createStoreInfo();
         }
+        ref();
+        createStoreInfo();
     }
 
     private void ref() {
@@ -320,7 +319,6 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void createStoreInfo() {
-
         txtv_storename.setText(store.getName());
         txtv_address.setText(store.getAddress());
         txtv_opentime.setText(store.getOpentime());
