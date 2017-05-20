@@ -55,7 +55,6 @@
                 android:id="@+id/txtv_storename_postitem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_location_on_50black_18dp"
                 android:gravity="start|center_vertical"
                 android:lines="1"
                 android:maxLines="1"

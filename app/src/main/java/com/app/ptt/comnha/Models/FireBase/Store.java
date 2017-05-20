@@ -32,7 +32,8 @@ public class Store {
     //phép kết
     String pro_dist,//tìm theo tỉnh_huyện
             userID_pro_dist,//tìm theo user_tỉnh_huyện
-            isHidden_dis_pro;
+            isHidden_dis_pro,
+            isHidden_uID;
 
     String distance;//khoảng cách hiển thị trên danh sách quán ăn
     Map<String, Comment> comments = null;//comment trong post
@@ -62,6 +63,8 @@ public class Store {
         result.put("isHidden", isHidden);
         result.put("isHidden_dis_pro", String.valueOf(isHidden)
                 + "_" + district + "_" + province);
+        result.put("isHidden_uID", String.valueOf(isHidden)
+                + "_" + userID);
         result.put("pro_dist", district + "_" + province);
         result.put("userID_pro_dist", userID + "_" + district + "_" + province);
         return result;

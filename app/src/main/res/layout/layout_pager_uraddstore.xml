@@ -1,34 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="250dp"
+    android:layout_height="400dp"
     android:layout_gravity="center"
-    app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="3dp"
+    android:layout_marginBottom="32dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="32dp"
+    app:cardCornerRadius="2.47dp"
     app:cardElevation="2dp">
 
     <LinearLayout
-        android:id="@+id/ln_pager_listen"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@android:color/white"
+        android:layout_margin="32dp"
         android:gravity="center"
-        android:orientation="vertical"
-        android:padding="32dp"
-        android:transitionName="lnprofileimg">
+        android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/imgv_profileimg_pager"
-            android:layout_width="match_parent"
+            android:id="@+id/imgv_uraddstore_pager"
+            android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_gravity="top|center_horizontal"
-            android:src="@drawable/ic_profileimg"
-            android:transitionName="imgvprofileimg" />
+            android:src="@drawable/ic_urstore"
+            android:transitionName="imgvuraddstore" />
 
         <TextView
-            android:id="@+id/tv_profileimg_pager"
+            android:id="@+id/tv_uraddstore_pager"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -37,7 +36,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/btn_openProfileimg_pager"
+            android:id="@+id/btn_openuraddstore_pager"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/txt_see"

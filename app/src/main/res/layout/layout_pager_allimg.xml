@@ -21,7 +21,7 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/imgv_bannerimg_pager"
+            android:id="@+id/imgv_allimg_pager"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/ic_album"
@@ -40,7 +40,7 @@
             android:id="@+id/btn_openallimg_pager"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="OPEN"
+            android:text="@string/txt_see"
             android:textAllCaps="true"
             android:theme="@style/BtnAllbum" />
     </LinearLayout>

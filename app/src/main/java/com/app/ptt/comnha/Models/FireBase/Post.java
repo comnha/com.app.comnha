@@ -40,7 +40,7 @@ public class Post {
             isHidden_dist_prov,//tìm post theo uid_tỉnh_huyện
             dist_pro,//tìm post theo tỉnh_huyện
             isHidden_storeID,
-            isHidden_foodID;
+            isHidden_foodID, isHidden_uID_postID;
     Bitmap imgBitmap = null;
 
     public Post() {
@@ -94,6 +94,8 @@ public class Post {
                 + "_" + storeID);
         result.put("isHidden_foodID", String.valueOf(isHidden)
                 + "_" + foodID);
+        result.put("isHidden_uID", String.valueOf(isHidden)
+                + "_" + userID);
         return result;
     }
 

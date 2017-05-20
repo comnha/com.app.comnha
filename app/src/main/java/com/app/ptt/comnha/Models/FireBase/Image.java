@@ -26,18 +26,20 @@ public class Image {
     int type = 4;//banner of post, profile hoặc images of post
     // (1:banner, 2:profile, 3:post's image, 4:normal image)
     String postID = "",//tìm theo post
-            storeID = "";//tìm theo quán ăn
+            storeID = "",
+            foodID = "";//tìm theo quán ăn
     String type_uID;//Phân loại theo banner, profile, images of user
     Uri path;
     boolean isHidden = false;
-    String isHidden_postID, isHidden_storeID, isHidden_uID, isHidden_type_userID;
+    String isHidden_postID, isHidden_storeID, isHidden_uID, isHidden_type_userID,
+            isHidden_foodID;
     Bitmap imgBitmap;
 
     public Image() {
     }
 
     public Image(String name, String userID,
-                 int type, String postID, String storeID) {
+                 int type, String postID, String storeID, String foodID) {
         this.name = name;
         this.date = new Times().getDate();
         this.time = new Times().getTime();
@@ -45,7 +47,7 @@ public class Image {
         this.type = type;
         this.postID = postID;
         this.storeID = storeID;
-        this.type_uID = this.type + "_" + userID;
+        this.foodID = foodID;
     }
 
     public Map<String, Object> toMap() {
@@ -58,13 +60,14 @@ public class Image {
         result.put("userID", userID);
         result.put("postID", postID);
         result.put("storeID", storeID);
-        result.put("storeID", storeID);
-        result.put("type_uID", type_uID);
+        result.put("foodID", foodID);
+        result.put("type_uID", type + "_" + userID);
         result.put("isHidden", isHidden);
         result.put("isHidden_postID", isHidden + "_" + postID);
         result.put("isHidden_storeID", isHidden + "_" + storeID);
         result.put("isHidden_uID", isHidden + "_" + userID);
-        result.put("isHidden_type_userID", isHidden + "_" + type+"_"+userID);
+        result.put("isHidden_foodID", isHidden + "_" + foodID);
+        result.put("isHidden_type_userID", isHidden + "_" + type + "_" + userID);
 
         return result;
     }

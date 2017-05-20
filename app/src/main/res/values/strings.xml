@@ -124,8 +124,9 @@
     <string name="txt_logginout">Đang đăng xuất &#8230;</string>
     <string name="txt_addinfoodcate">Đang thêm loại món ăn mới &#8230;</string>
     <string name="txt_choose">Chọn</string>
-    <string name="txt_chosefromloca">Bộ nhớ</string>
-    <string name="txt_chosefromuploaded">Ảnh đã đăng</string>
+    <string name="txt_chosefromloca">Chọn ảnh từ bộ nhớ</string>
+    <string name="txt_chosefromuploaded">Chọn ảnh đã đăng</string>
+    <string name="txt_viewprofilephoto">Xem ảnh cá nhân</string>
     <string name="txt_lastnews">Tin cuối</string>
     <string name="txt_mostcomment">Quan tâm</string>
     <string name="txt_mostlike">Yêu thích</string>
@@ -644,4 +645,11 @@
     <string name="txt_sex">Giới tính</string>
     <string name="txt_yourphone">Số điện thoại</string>
     <string name="text_seemoreimg">Xem thêm ảnh</string>
+    <string name="txt_allimg">tất cả hình ảnh</string>
+    <string name="txt_profileimg">ảnh cá nhân</string>
+    <string name="txt_bannerimg">ảnh banner</string>
+    <string name="txt_yourpost">bài viết đã đăng</string>
+    <string name="txt_uraddstore">quán ăn đã tạo</string>
+    <string name="txt_uraddfood">món ăn đã thêm</string>
+    <string name="txt_see">xem</string>
 </resources>

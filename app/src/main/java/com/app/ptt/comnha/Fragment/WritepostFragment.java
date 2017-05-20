@@ -747,11 +747,11 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 Image image;
                 if (selectedImages.indexOf(imgItem) == 0) {
                     image = new Image(imgItem.getUri().getLastPathSegment(),
-                            uID, 1, postKey, storeID);
+                            uID, 1, postKey, storeID,"");
 
                 } else {
                     image = new Image(imgItem.getUri().getLastPathSegment(),
-                            uID, 3, postKey, storeID);
+                            uID, 3, postKey, storeID,"");
                 }
                 Map<String, Object> imgValue = image.toMap();
                 String imgKey = dbRef.child(getString(R.string.images_CODE))

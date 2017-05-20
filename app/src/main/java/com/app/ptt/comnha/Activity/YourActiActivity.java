@@ -12,7 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.app.ptt.comnha.Adapters.AlbumCateVPAdapter;
+import com.app.ptt.comnha.Adapters.YourActiCateVPAdapter;
 import com.app.ptt.comnha.Models.Page;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Utils.AppUtils;
@@ -22,13 +22,13 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AlbumActivity extends AppCompatActivity {
-    AlbumCateVPAdapter pagerAdapter;
+public class YourActiActivity extends AppCompatActivity {
+    YourActiCateVPAdapter pagerAdapter;
     ViewPager viewPager;
     Toolbar toolbar;
     ArrayList<Page> pages;
 
-    public AlbumActivity() {
+    public YourActiActivity() {
         // Required empty public constructor
     }
 
@@ -36,7 +36,7 @@ public class AlbumActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_album);
+        setContentView(R.layout.activity_youracti);
         Ref();
     }
 
@@ -45,9 +45,9 @@ public class AlbumActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(
                     getResources().getColor(R.color.colorPrimary));
         }
-        toolbar = (Toolbar) findViewById(R.id.toolbar_album);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_youracti);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setTitle(getString(R.string.txt_yourphoto));
+        toolbar.setTitle(getString(R.string.txt_youracti));
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,9 +55,9 @@ public class AlbumActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        viewPager = (ViewPager) findViewById(R.id.viewpager_album);
+        viewPager = (ViewPager) findViewById(R.id.viewpager_youracti);
         getPage();
-        pagerAdapter = new AlbumCateVPAdapter(this, pages);
+        pagerAdapter = new YourActiCateVPAdapter(this, pages);
         viewPager.setAdapter(pagerAdapter);
         viewPager.setClipToPadding(false);
         viewPager.setPadding((int) AppUtils.dipToPixels(this, 32),
@@ -66,25 +66,24 @@ public class AlbumActivity extends AppCompatActivity {
                 (int) AppUtils.dipToPixels(this, 16));
         viewPager.setPageMargin((int) AppUtils.dipToPixels(this, 32));
         viewPager.setOffscreenPageLimit(pagerAdapter.getCount());
-        pagerAdapter.setOnBtnItemClickListener(new AlbumCateVPAdapter.OnBtnItemClickListener() {
+        pagerAdapter.setOnBtnItemClickListener(new YourActiCateVPAdapter.OnBtnItemClickListener() {
             @Override
             public void onClick(int position, ViewGroup viewGroup) {
                 switch (position) {
                     case 0:
-                        Intent open_allimg = new Intent(AlbumActivity.this,
-                                AllPhotoActivity.class);
-                        startActivity(open_allimg);
+                        Intent open_post = new Intent(YourActiActivity.this,
+                                YourPostActivity.class);
+                        startActivity(open_post);
                         break;
                     case 1:
-                        Intent open_profile = new Intent(AlbumActivity.this,
-                                ProfilePhotoActivity.class);
-                        startActivity(open_profile);
+                        Intent open_store = new Intent(YourActiActivity.this,
+                                YourAddStoreActivity.class);
+                        startActivity(open_store);
                         break;
                     case 2:
-                        Intent open_banner = new Intent(AlbumActivity.this,
-                                BannerPhotoActivity.class);
-
-                        startActivity(open_banner);
+                        Intent open_food = new Intent(YourActiActivity.this,
+                                YourAddFoodActivity.class);
+                        startActivity(open_food);
                         break;
 
                 }
@@ -100,11 +99,11 @@ public class AlbumActivity extends AppCompatActivity {
 
     private void getPage() {
         pages = new ArrayList<>();
-        pages.add(new Page(R.layout.layout_pager_allimg,
-                getString(R.string.txt_allimg)));
-        pages.add(new Page(R.layout.layout_pager_profileimg,
-                getString(R.string.txt_profileimg)));
-        pages.add(new Page(R.layout.layout_pager_bannerimg,
-                getString(R.string.txt_bannerimg)));
+        pages.add(new Page(R.layout.layout_pager_yourpost,
+                getString(R.string.txt_yourpost)));
+        pages.add(new Page(R.layout.layout_pager_uraddstore,
+                getString(R.string.txt_uraddstore)));
+        pages.add(new Page(R.layout.layout_pager_uraddfood,
+                getString(R.string.txt_uraddfood)));
     }
 }

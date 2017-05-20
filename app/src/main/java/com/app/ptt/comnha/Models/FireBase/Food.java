@@ -31,7 +31,8 @@ public class Food {
     //phép kết
     String dist_prov,
             isHidden_dist_prov,
-            isHidden_storeID;//món ăn theo location
+            isHidden_storeID,
+    isHidden_uID;//món ăn theo location
 
 
     private Bitmap imgBitmap = null;
@@ -51,6 +52,7 @@ public class Food {
         result.put("userID", userID);
         result.put("storeID", storeID);
         result.put("isHidden_storeID", isHidden + "_" + storeID);
+        result.put("isHidden_uID", isHidden + "_" + userID);
         result.put("dist_prov", dist_prov);
         result.put("isHidden_dist_prov", isHidden + "_"
                 + dist_prov);
@@ -72,8 +74,6 @@ public class Food {
         this.storeID = storeID;
         this.foodImg = foodImg;
         this.dist_prov = district + "_" + province;
-        this.isHidden_dist_prov = isHidden + "_" + district + "_" + province;
-        this.isHidden_storeID = isHidden + "_" + storeID;
         this.time = new Times().getTime();
         this.date = new Times().getDate();
     }

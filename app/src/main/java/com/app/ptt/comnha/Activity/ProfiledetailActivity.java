@@ -81,11 +81,11 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
         if (LoginSession.getInstance().getUser() != null) {
             user = LoginSession.getInstance().getUser();
             userID = LoginSession.getInstance().getUser().getuID();
+            ref();
+            setUserInfo();
         } else {
             onBackPressed();
         }
-        ref();
-        setUserInfo();
     }
 
     void ref() {
@@ -242,6 +242,8 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
                                 break;
                             case R.id.action_chosefromUploaded:
                                 break;
+                            case R.id.action_viewprofilephoto:
+                                break;
                         }
                         return true;
                     }
@@ -272,7 +274,7 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
                 }
                 break;
             case R.id.txtv_openyouracti_prodetail:
-                Intent intent_openacti = new Intent(this, AlbumActivity.class);
+                Intent intent_openacti = new Intent(this, YourActiActivity.class);
                 startActivity(intent_openacti);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;

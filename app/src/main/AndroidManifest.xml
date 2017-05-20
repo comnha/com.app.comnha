@@ -77,6 +77,10 @@
         <activity android:name=".Activity.AllPhotoActivity"></activity>
         <activity android:name=".Activity.ProfilePhotoActivity"></activity>
         <activity android:name=".Activity.BannerPhotoActivity"></activity>
+        <activity android:name=".Activity.YourActiActivity"></activity>
+        <activity android:name=".Activity.YourPostActivity"></activity>
+        <activity android:name=".Activity.YourAddStoreActivity"></activity>
+        <activity android:name=".Activity.YourAddFoodActivity"></activity>
     </application>
 
 </manifest>

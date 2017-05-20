@@ -17,13 +17,13 @@ import java.util.ArrayList;
  * Created by PTT on 5/13/2017.
  */
 
-public class AlbumCateVPAdapter extends PagerAdapter {
+public class YourActiCateVPAdapter extends PagerAdapter {
     Context context;
     OnBtnItemClickListener onBtnItemClickListener;
     ArrayList<Page> pages;
 
     public void setOnBtnItemClickListener(
-            AlbumCateVPAdapter.OnBtnItemClickListener onBtnItemClickListener) {
+            YourActiCateVPAdapter.OnBtnItemClickListener onBtnItemClickListener) {
         this.onBtnItemClickListener = onBtnItemClickListener;
     }
 
@@ -31,7 +31,7 @@ public class AlbumCateVPAdapter extends PagerAdapter {
         void onClick(int position, ViewGroup viewGroup);
     }
 
-    public AlbumCateVPAdapter(Context context, ArrayList<Page> pages) {
+    public YourActiCateVPAdapter(Context context, ArrayList<Page> pages) {
         this.context = context;
         this.pages = pages;
     }
@@ -52,8 +52,8 @@ public class AlbumCateVPAdapter extends PagerAdapter {
         Button btn_open;
         switch (position) {
             case 0:
-                text_des = (TextView) layout.findViewById(R.id.tv_allimg_pager);
-                btn_open = (Button) layout.findViewById(R.id.btn_openallimg_pager);
+                text_des = (TextView) layout.findViewById(R.id.tv_yourpost_pager);
+                btn_open = (Button) layout.findViewById(R.id.btn_openyourpost_pager);
                 btn_open.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -63,9 +63,9 @@ public class AlbumCateVPAdapter extends PagerAdapter {
                 text_des.setText(page.getTitle());
                 break;
             case 1:
-                text_des = (TextView) layout.findViewById(R.id.tv_profileimg_pager);
+                text_des = (TextView) layout.findViewById(R.id.tv_uraddstore_pager);
                 text_des.setText(page.getTitle());
-                btn_open = (Button) layout.findViewById(R.id.btn_openProfileimg_pager);
+                btn_open = (Button) layout.findViewById(R.id.btn_openuraddstore_pager);
                 btn_open.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -74,9 +74,9 @@ public class AlbumCateVPAdapter extends PagerAdapter {
                 });
                 break;
             case 2:
-                text_des = (TextView) layout.findViewById(R.id.tv_bannerimg_pager);
+                text_des = (TextView) layout.findViewById(R.id.tv_uraddfood_pager);
                 text_des.setText(page.getTitle());
-                btn_open = (Button) layout.findViewById(R.id.btn_openBanner_pager);
+                btn_open = (Button) layout.findViewById(R.id.btn_openuraddfood_pager);
                 btn_open.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -103,5 +103,6 @@ public class AlbumCateVPAdapter extends PagerAdapter {
     public float getPageWidth(int position) {
         return 0.85f;
     }
+
 
 }

@@ -7,4 +7,7 @@
     <item
         android:id="@+id/action_chosefromUploaded"
         android:title="@string/txt_chosefromuploaded" />
+    <item
+        android:id="@+id/action_viewprofilephoto"
+        android:title="@string/txt_viewprofilephoto" />
 </menu>

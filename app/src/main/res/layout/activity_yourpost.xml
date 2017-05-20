@@ -1,0 +1,15 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:padding="4dp"
+    tools:activity="com.app.ptt.comnha.Activity.YourPostActivity">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_img_yourpost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbarSize="0dp"
+        android:scrollbars="none" />
+</FrameLayout>

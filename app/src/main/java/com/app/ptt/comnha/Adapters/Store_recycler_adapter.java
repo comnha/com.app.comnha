@@ -49,6 +49,13 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<Store_recycler_
         this.context = context;
     }
 
+    public Store_recycler_adapter(ArrayList<Store> stores, Context context,
+                                  StorageReference stRef) {
+        this.stores = stores;
+        this.context = context;
+        this.stRef = stRef;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext())
