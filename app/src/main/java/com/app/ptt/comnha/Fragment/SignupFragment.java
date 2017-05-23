@@ -228,17 +228,15 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
-//                    addUser();
-                    closeDialog();
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra(Const.INTENT_KEY_EMAIL, AppUtils.getText(editText_email));
                     returnIntent.putExtra(Const.INTENT_KEY_PASSWORD, AppUtils.getText(editText_password));
                     getActivity().setResult(Activity.RESULT_OK, returnIntent);
                     getActivity().finish();
                 } else {
-                    closeDialog();
                     AppUtils.showSnackbarWithoutButton(getView(), getString(R.string.txt_tryagain));
                 }
+                closeDialog();
             }
         });
     }

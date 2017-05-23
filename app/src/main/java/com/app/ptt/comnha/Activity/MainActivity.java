@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -27,8 +28,12 @@ import com.app.ptt.comnha.Fragment.AboutBottomSheetDialogFragment;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
+import com.app.ptt.comnha.Utils.AppUtils;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -41,10 +46,12 @@ import com.google.firebase.storage.StorageReference;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
+import java.util.TimerTask;
+
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
-    private static final String LOG = MainActivity.class.getSimpleName();
+    private static final String TAG = MainActivity.class.getSimpleName();
     private Bundle savedInstanceState;
     FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -60,6 +67,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private TabLayout tabLayout;
     private MainFragPagerAdapter pagerAdapter;
     private FloatingActionButton fab;
+    private MenuItem itemProfile,itemAdmin,itemSignIn, itemSignOut,itemMap,itemSetting;
     NestedScrollView nestedScrollView;
     View guideView;
 
@@ -77,6 +85,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG,"onCreate");
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
         stRef = FirebaseStorage.getInstance().getReferenceFromUrl(
@@ -85,8 +94,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 .getReferenceFromUrl(getString(R.string.firebase_path));
         ref();
         startMyService();
+        initMenu();
     }
-
     private void getUser() {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -101,6 +110,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                             .placeholder(R.drawable.ic_logo)
                             .into(imgv_avatar);
                     getUserInfo(user);
+                    itemSignIn.setVisible(false);
+                    itemSignOut.setVisible(true);
+                    itemProfile.setVisible(true);
+                    itemAdmin.setVisible(false);
                     Log.d("onAuthStateChanged", "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
                     // User is signed out
@@ -109,6 +122,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     LoginSession.getInstance().setUser(null);
                     txt_email.setText(null);
                     txt_un.setText(null);
+                    itemSignIn.setVisible(true);
+                    itemSignOut.setVisible(false);
+                    itemProfile.setVisible(false);
+                    itemAdmin.setVisible(false);
                     imgv_avatar.setImageResource(R.drawable.ic_logo);
                 }
             }
@@ -123,6 +140,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 user = dataSnapshot.getValue(User.class);
                 String key = firebaseUser.getUid();
                 user.setuID(key);
+                if(user.getRole()==1){
+                    itemAdmin.setVisible(true);
+                }else{
+                    itemAdmin.setVisible(false);
+                }
                 LoginSession.getInstance().setUser(user);
                 LoginSession.getInstance().setFirebUser(firebaseUser);
                 mAuth.removeAuthStateListener(mAuthListener);
@@ -136,7 +158,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 + firebaseUser.getUid())
                 .addListenerForSingleValueEvent(userValueListener);
     }
-
     private void ref() {
 
         mtoolbar = (Toolbar) findViewById(R.id.toolbar_main);
@@ -332,12 +353,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.i(TAG,"onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i(TAG,"onOptionsItemSelected");
         switch (item.getItemId()) {
             case R.id.action_search_main:
                 Intent intent_openSearch = new Intent(this, SearchActivity.class);
@@ -350,7 +373,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(final MenuItem item) {
         // Handle navigation view item clicks here.
         switch (item.getItemId()) {
             case R.id.nav_profile:
@@ -375,30 +398,31 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 startActivity(intent1);
                 break;
             case R.id.nav_signout:
-//                if (isConnected) {
-//                    showLoading(getString(R.string.txt_plzwait), getString(R.string.txt_logginout));
-//                    mAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<AuthResult> task) {
-//                            hideLoading();
-//                            Log.d("signInAnonymously", "signInAnonymously:onComplete:" + task.isSuccessful());
-//                            // If sign in fails, display a message to the user. If sign in succeeds
-//                            // the auth state listener will be notified and logic to handle the
-//                            // signed in user can be handled in the listener.
-//                            if (!task.isSuccessful()) {
-//                                Log.w("signInAnonymouslyError", "signInAnonymously", task.getException());
-//                            } else {
-//                                LoginSession.getInstance().setTen(null);
-//                                LoginSession.getInstance().setHo(null);
-//                                LoginSession.getInstance().setTenlot(null);
-//                                LoginSession.getInstance().setNgaysinh(null);
-//                                LoginSession.getInstance().setPassword(null);
-//                            }
-//                        }
-//                    });
-//                } else {
-//                    Toast.makeText(getApplicationContext(), "You are offline", Toast.LENGTH_SHORT).show();
-//                }
+                showProgressDialog(getString(R.string.txt_plzwait), getString(R.string.txt_logginout));
+                CountDownTimer countDownTimer=new CountDownTimer(1000,1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        mAuth.signOut();
+                        txt_email.setText(null);
+                        txt_un.setText(null);
+                        itemSignIn.setVisible(true);
+                        itemSignOut.setVisible(false);
+                        itemProfile.setVisible(false);
+                        itemAdmin.setVisible(false);
+                        imgv_avatar.setImageResource(R.drawable.ic_logo);
+                        closeDialog();
+                        AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(),getString(R.string.text_signout_success));
+                    }
+                };
+                countDownTimer.start();
+
+
+
                 break;
             case R.id.nav_map:
                 Intent intent2 = new Intent(MainActivity.this, MapActivity.class);
@@ -541,72 +565,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 //        }
 //    }
 //
-//    public void initMenu() {
-//        final Menu menu = mnavigationView.getMenu();
-//        menuItem = menu.findItem(R.id.nav_profile);
-//        menuItem1 = menu.findItem(R.id.nav_signin);
-//        menuItem2 = menu.findItem(R.id.nav_signout);
-//        menuItem3 = menu.findItem(R.id.nav_admin);
-//        menuItem4 = menu.findItem(R.id.nav_notification);
-//        menuItem4.setVisible(false);
-//        mAuth = FirebaseAuth.getInstance();
-//        mAuthListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                user = firebaseAuth.getCurrentUser();
-//
-//                if (user != null) {
-//                    try {
-//                        if (user.getEmail() != null) {
-//                            userID = user.getUid();
-//                            menuItem.setEnabled(true);
-//                            menuItem1.setEnabled(false);
-//                            menuItem2.setEnabled(true);
-//                            menuItem4.setVisible(true);
-//                            Log.d("signed_in", "onAuthStateChanged:signed_in: " + user.getEmail());
-//                            LoginSession.getInstance().setUserID(userID);
-//                            LoginSession.getInstance().setEmail(user.getEmail());
-//                            LoginSession.getInstance().setUsername(user.getDisplayName());
-//                            txt_email.setText(user.getEmail());
-//                            txtv_un.setText(user.getDisplayName());
-//                            getRole();
-//                        } else {
-//                            menuItem.setEnabled(false);
-//                            menuItem2.setEnabled(false);
-//                            menuItem1.setEnabled(true);
-////                            menuItem3.setVisible(false);
-//                            menuItem4.setVisible(false);
-//                            txt_email.setText(getResources().getString(R.string.text_hello));
-//                            txtv_un.setText(getResources().getString(R.string.text_user));
-//                            userID = "";
-//                            LoginSession.getInstance().setUserID(null);
-//                            LoginSession.getInstance().setUsername(null);
-//                            LoginSession.getInstance().setEmail(null);
-//                        }
-//                    } catch (NullPointerException mess) {
-//                        txt_email.setText(getResources().getString(R.string.text_hello));
-//                        txtv_un.setText(getResources().getString(R.string.text_user));
-//                        userID = "";
-//                        LoginSession.getInstance().setUserID(null);
-//                        LoginSession.getInstance().setUsername(null);
-//                        LoginSession.getInstance().setEmail(null);
-//                    }
-//                } else {
-//                    menuItem.setEnabled(false);
-//                    menuItem2.setEnabled(false);
-//                    menuItem1.setEnabled(true);
-////                    menuItem3.setVisible(false);
-//                    menuItem4.setEnabled(false);
-//                    txt_email.setText(getResources().getString(R.string.text_hello));
-//                    txtv_un.setText(getResources().getString(R.string.text_user));
-//                    userID = "";
-//                    LoginSession.getInstance().setUserID(null);
-//                    LoginSession.getInstance().setUsername(null);
-//                    LoginSession.getInstance().setEmail(null);
-//                }
-//            }
-//        };
-//    }
+    public void initMenu() {
+        final Menu menu = mnavigationView.getMenu();
+    itemMap=menu.findItem(R.id.nav_map);
+    itemAdmin=menu.findItem(R.id.nav_admin);
+    itemProfile=menu.findItem(R.id.nav_profile);
+    itemSignIn=menu.findItem(R.id.nav_signin);
+    itemSignOut =menu.findItem(R.id.nav_signout);
+    itemSetting=menu.findItem(R.id.nav_setting);
+    }
 //
 //    public void getRole() {
 //        role = false;
@@ -828,44 +795,44 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onStart() {
         super.onStart();
-        getUser();
-        Log.i("mainact", "onStart");
+        Log.i(TAG,"onStart");
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i("mainact", "onPause");
+        Log.i(TAG,"onPause");
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        Log.i("mainact", "onResume");
+        getUser();
+        Log.i(TAG,"onResume");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i("mainact", "onStop");
+        Log.i(TAG,"onStop");
 //        if (mAuthListener != null) {
 //        }
     }
 //
-//    @Override
-//    protected void onDestroy() {
-//        Log.i(LOG, "onDestroy");
-//        super.onDestroy();
-//        if (mAuthListener != null) {
-//            mAuth.removeAuthStateListener(mAuthListener);
-//        }
-//        if (binded) {
-//            this.unbindService(serviceConnection);
-//            binded = false;
-//        }
-//    }
+    @Override
+    protected void onDestroy() {
+        Log.i(TAG, "onDestroy");
+        super.onDestroy();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+        if (binded) {
+            this.unbindService(serviceConnection);
+            binded = false;
+        }
+    }
 //
 //    @Override
 //    protected void onPause() {

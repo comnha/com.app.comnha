@@ -48,6 +48,10 @@
     <string name="text_signup">Đăng kí</string>
     <string name="text_havenoacc"><u>Bạn chưa có tài khoản?</u></string>
     <string name="text_signin">Đăng nhập</string>
+
+    <string name="text_signin_fail">Đăng nhập thất bại </string>
+    <string name="text_signout_fail">Đăng xuất thất bại</string>
+    <string name="text_signout_success">Đã đăng xuất</string>
     <string name="text_exit">Thoát</string>
     <string name="text_forgotPass"><u>Quên mật khẩu?</u></string>
     <string name="text_loginFB">Facebook</string>
