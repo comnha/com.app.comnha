@@ -159,7 +159,7 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
     private void Ref() {
 
         View view_include = findViewById(R.id.include_postdetail_content);
-        plzw8Dialog = AppUtils.SetupProgressDialog(this,
+        plzw8Dialog = AppUtils.setupProgressDialog(this,
                 getString(R.string.txt_plzwait), null, false, false,
                 ProgressDialog.STYLE_SPINNER, 0);
         imgv_banner = (ImageView) findViewById(R.id.imgv_banner_postdetail);

@@ -185,7 +185,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         imgv_viewlocation.setOnClickListener(this);
         fab.setOnClickListener(this);
         linear_progress = (LinearLayout) findViewById(R.id.linear_progress_storedetail);
-        plzw8Dialog = AppUtils.SetupProgressDialog(StoreDeatailActivity.this,
+        plzw8Dialog = AppUtils.setupProgressDialog(StoreDeatailActivity.this,
                 getString(R.string.txt_plzwait), null, false, false,
                 ProgressDialog.STYLE_SPINNER, -1);
     }

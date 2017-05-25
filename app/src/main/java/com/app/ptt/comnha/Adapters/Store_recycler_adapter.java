@@ -90,21 +90,23 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<Store_recycler_
         } else {
             holder.imgv_avatar.setImageResource(R.drawable.ic_item_store);
         }
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_avatar.getDrawable())
-                            .getBitmap();
-                    stores.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
-                    onItemClickLiestner.onItemClick(stores.get(holder.getAdapterPosition()),
-                            holder.itemView);
-                } catch (NullPointerException e) {
-                    onItemClickLiestner.onItemClick(stores.get(holder.getAdapterPosition()),
-                            holder.itemView);
+        if (onItemClickLiestner != null) {
+            holder.cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_avatar.getDrawable())
+                                .getBitmap();
+                        stores.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
+                        onItemClickLiestner.onItemClick(stores.get(holder.getAdapterPosition()),
+                                holder.itemView);
+                    } catch (NullPointerException e) {
+                        onItemClickLiestner.onItemClick(stores.get(holder.getAdapterPosition()),
+                                holder.itemView);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override

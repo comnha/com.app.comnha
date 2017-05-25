@@ -141,7 +141,7 @@ public class AppUtils {
         return menu;
     }
 
-    public static ProgressDialog SetupProgressDialog(Context context, String message,
+    public static ProgressDialog setupProgressDialog(Context context, String message,
                                                      String title, boolean cancelable,
                                                      boolean ontouchoutside,
                                                      int progressstyle, int max) {

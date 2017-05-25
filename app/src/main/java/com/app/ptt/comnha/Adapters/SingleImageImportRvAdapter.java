@@ -79,7 +79,9 @@ public class SingleImageImportRvAdapter extends RecyclerView.Adapter<SingleImage
                     }
                     firstPosition = position;
                 }
-                onSingleClickListener.onClick(true);
+                if (onSingleClickListener != null) {
+                    onSingleClickListener.onClick(true);
+                }
 
             }
         });

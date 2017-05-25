@@ -332,7 +332,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         linear_addimg_dial.setOnClickListener(this);
         linear_pickloca_dial.setOnClickListener(this);
 
-        plzw8Dialog = AppUtils.SetupProgressDialog(getActivity(),
+        plzw8Dialog = AppUtils.setupProgressDialog(getActivity(),
                 getString(R.string.txt_plzwait), null, true, true, ProgressDialog.STYLE_SPINNER,
                 0);
         rateDialog = new BottomSheetDialog(getContext());

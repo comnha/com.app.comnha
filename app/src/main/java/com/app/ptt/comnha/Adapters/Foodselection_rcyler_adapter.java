@@ -96,21 +96,23 @@ public class Foodselection_rcyler_adapter extends RecyclerView.Adapter<Foodselec
         } else {
             holder.imgV.setImageResource(R.drawable.ic_item_store);
         }
-        holder.relative_parent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    Bitmap imgBitmap = ((BitmapDrawable) holder.imgV.getDrawable())
-                            .getBitmap();
-                    foods.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
-                    onItemClickLiestner.onItemClick(
-                            foods.get(holder.getAdapterPosition()));
-                } catch (NullPointerException e) {
-                    onItemClickLiestner.onItemClick(
-                            foods.get(holder.getAdapterPosition()));
+        if (onItemClickLiestner != null) {
+            holder.relative_parent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        Bitmap imgBitmap = ((BitmapDrawable) holder.imgV.getDrawable())
+                                .getBitmap();
+                        foods.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
+                        onItemClickLiestner.onItemClick(
+                                foods.get(holder.getAdapterPosition()));
+                    } catch (NullPointerException e) {
+                        onItemClickLiestner.onItemClick(
+                                foods.get(holder.getAdapterPosition()));
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override

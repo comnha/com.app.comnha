@@ -652,4 +652,6 @@
     <string name="txt_uraddstore">quán ăn đã tạo</string>
     <string name="txt_uraddfood">món ăn đã thêm</string>
     <string name="txt_see">xem</string>
+    <string name="text_updateavatar_succ">Cập nhật ảnh đại diện thành công</string>
+    <string name="txt_updateavatar">Cập nhật ảnh đại diện</string>
 </resources>

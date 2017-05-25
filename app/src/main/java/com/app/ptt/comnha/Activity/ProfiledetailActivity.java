@@ -2,44 +2,64 @@ package com.app.ptt.comnha.Activity;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.ptt.comnha.Adapters.Photo_recycler_adapter;
+import com.app.ptt.comnha.Adapters.SingleImageImportRvAdapter;
+import com.app.ptt.comnha.Classes.SelectedImage;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
+import com.app.ptt.comnha.Utils.AppUtils;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -63,6 +83,15 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
     ValueEventListener imgEventListener;
     CardView card_profile;
     LinearLayout ln_img;
+    SingleImageImportRvAdapter singleImageImportRvAdapter;
+    RecyclerView imagesrv;
+    GridLayoutManager imageslm;
+    SelectedImage selectedImage;
+    BottomSheetDialog imgsDialog;
+    String avatarimg = "";
+    Button btn_localimgdialog_close, btn_localimgdialog_select;
+    UploadTask uploadTask;
+    ProgressDialog uploadImgDialog, mProgressDialog;
 
     public ProfiledetailActivity() {
         // Required empty public constructor
@@ -134,6 +163,149 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
         ln_img = (LinearLayout) include_view.findViewById(R.id.ln_img_prodetail);
         txtv_seemoreimg = (TextView) include_view.findViewById(R.id.txtv_openimggala_prodetail);
         txtv_seemoreimg.setOnClickListener(this);
+        imgsDialog = new BottomSheetDialog(this);
+        imgsDialog.setCanceledOnTouchOutside(false);
+        imgsDialog.setCancelable(false);
+        imgsDialog.setContentView(R.layout.layout_writepost_imgimporting);
+        imgsDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                if (selectedImage != null) {
+                    avatarimg = selectedImage.getUri().getLastPathSegment();
+//                    imgv_avatar.setImageURI(selectedImage.getUri());
+                    uploadImgDialog.show();
+                    final StorageReference avaRef = stRef.child(avatarimg);
+                    final boolean[] isUploadImgSuccess = {false};
+                    Image image = new Image(avatarimg,
+                            userID, 2, "", "", "");
+                    Map<String, Object> imgValue = image.toMap();
+                    String imgKey = dbRef.child(getString(R.string.images_CODE))
+                            .push().getKey();
+                    User user=LoginSession.getInstance().getUser();
+                    user.setAvatar(avatarimg);
+                    Map<String, Object> userValue = user.toMap();
+                    final Map<String, Object> childUpdate = new HashMap<>();
+                    childUpdate.put(getString(R.string.images_CODE)
+                            + imgKey, imgValue);
+                    childUpdate.put(getString(R.string.users_CODE)
+                            + userID, userValue);
+
+                    uploadTask = avaRef.putFile(
+                            Uri.fromFile(new File(selectedImage.getUri().toString())));
+
+                    uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            int progress = (int) (taskSnapshot.getBytesTransferred() * 100
+                                    / taskSnapshot.getTotalByteCount());
+//                    Log.d("getBytesTransferred", progress + "");
+                            uploadImgDialog.setProgress(progress);
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setPhotoUri(taskSnapshot.getDownloadUrl())
+                                    .build();
+                            user.updateProfile(profileUpdates)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                isUploadImgSuccess[0] = true;
+                                                uploadImgDialog.dismiss();
+//                                                Log.d(TAG, "User profile updated.");
+                                            }
+                                        }
+                                    });
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            uploadImgDialog.dismiss();
+                            Toast.makeText(ProfiledetailActivity.this
+                                    , getString(R.string.txt_failedUploadImg),
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    });
+                    uploadImgDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialogInterface) {
+                            if (isUploadImgSuccess[0]) {
+                                mProgressDialog.show();
+                                dbRef.updateChildren(childUpdate)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                mProgressDialog.dismiss();
+                                                Toast.makeText(ProfiledetailActivity.this,
+                                                        getString(R.string.text_updateavatar_succ)
+                                                        , Toast.LENGTH_LONG).show();
+
+                                                avaRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                    @Override
+                                                    public void onSuccess(Uri uri) {
+                                                        Picasso.with(ProfiledetailActivity.this)
+                                                                .load(uri)
+                                                                .placeholder(R.drawable.ic_account_circle_white_48dp)
+                                                                .into(imgv_profile);
+                                                    }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+
+                                                    }
+                                                });
+                                                selectedImage = null;
+                                                isUploadImgSuccess[0] = false;
+                                                avatarimg = "";
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        mProgressDialog.dismiss();
+                                        Toast.makeText(ProfiledetailActivity.this,
+                                                e.getMessage()
+                                                , Toast.LENGTH_LONG).show();
+                                    }
+                                });
+
+                            } else {
+
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        btn_localimgdialog_select = (Button) imgsDialog.findViewById(R.id.btn_select_imgimporting);
+        btn_localimgdialog_close = (Button) imgsDialog.findViewById(R.id.btn_close_imgimporting);
+        btn_localimgdialog_select.setOnClickListener(this);
+        btn_localimgdialog_close.setOnClickListener(this);
+        imagesrv = (RecyclerView) imgsDialog.findViewById(R.id.rv_images_imgimporting);
+        imageslm = new GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL, false);
+        imagesrv.setLayoutManager(imageslm);
+        singleImageImportRvAdapter = new SingleImageImportRvAdapter(this,
+                this.getContentResolver());
+        imagesrv.setAdapter(singleImageImportRvAdapter);
+        singleImageImportRvAdapter.setOnSingleClickListener(new SingleImageImportRvAdapter.OnSingleClickListener() {
+            @Override
+            public void onClick(boolean isDismiss) {
+//                if (isDismiss) {
+//                    imgsDialog.dismiss();
+//                }
+            }
+        });
+        uploadImgDialog = AppUtils.setupProgressDialog(this,
+                getString(R.string.txt_updloadimg), null, true, false,
+                ProgressDialog.STYLE_HORIZONTAL, 100);
+        mProgressDialog = AppUtils.setupProgressDialog(this,
+                getString(R.string.txt_updateavatar), null, true, false,
+                ProgressDialog.STYLE_SPINNER, 0);
     }
 
     private void getImages() {
@@ -162,7 +334,7 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
 
     private void setUserInfo() {
         if (user.getAvatar().equals("")) {
-
+            imgv_profile.setImageResource(R.drawable.ic_account_circle_white_48dp);
         } else {
             StorageReference avaRef = stRef.child(user.getAvatar());
             avaRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -170,6 +342,7 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
                 public void onSuccess(Uri uri) {
                     Picasso.with(ProfiledetailActivity.this)
                             .load(uri)
+                            .placeholder(R.drawable.ic_account_circle_white_48dp)
                             .into(imgv_profile);
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -239,6 +412,9 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_chosefromloca:
+                                singleImageImportRvAdapter.readthentranstoarray();
+                                imagesrv.scrollToPosition(0);
+                                imgsDialog.show();
                                 break;
                             case R.id.action_chosefromUploaded:
                                 break;
@@ -282,6 +458,13 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
                 Intent intent_moreimg = new Intent(this, AlbumActivity.class);
                 startActivity(intent_moreimg);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                break;
+            case R.id.btn_close_imgimporting:
+                imgsDialog.dismiss();
+                break;
+            case R.id.btn_select_imgimporting:
+                selectedImage = singleImageImportRvAdapter.getSelectedImage();
+                imgsDialog.dismiss();
                 break;
         }
     }

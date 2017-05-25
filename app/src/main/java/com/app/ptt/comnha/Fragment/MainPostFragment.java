@@ -70,10 +70,6 @@ public class MainPostFragment extends Fragment {
                 }
                 postadapter.notifyDataSetChanged();
                 swipeRefresh.setRefreshing(false);
-                dbRef.child(getString(R.string.posts_CODE))
-                        .orderByChild("isHidden_dist_prov")
-                        .equalTo(false + "_" + dist_pro)
-                        .removeEventListener(postsEventListener);
             }
 
             @Override
@@ -84,7 +80,7 @@ public class MainPostFragment extends Fragment {
         dbRef.child(getString(R.string.posts_CODE))
                 .orderByChild("isHidden_dist_prov")
                 .equalTo(false + "_" + dist_pro)
-                .addValueEventListener(postsEventListener);
+                .addListenerForSingleValueEvent(postsEventListener);
     }
 
     private void ref(View view) {
@@ -125,6 +121,5 @@ public class MainPostFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
     }
 }

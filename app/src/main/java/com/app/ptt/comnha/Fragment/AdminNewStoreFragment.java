@@ -280,7 +280,7 @@ public class AdminNewStoreFragment extends Fragment {
 
                     }
                 });
-        plzwaitDialog = AppUtils.SetupProgressDialog(getContext(),
+        plzwaitDialog = AppUtils.setupProgressDialog(getContext(),
                 getString(R.string.txt_plzwait), null, false, false,
                 ProgressDialog.STYLE_SPINNER, 0);
     }

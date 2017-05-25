@@ -57,7 +57,9 @@ public class AlbumCateVPAdapter extends PagerAdapter {
                 btn_open.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        onBtnItemClickListener.onClick(position, layout);
+                        if (onBtnItemClickListener != null) {
+                            onBtnItemClickListener.onClick(position, layout);
+                        }
                     }
                 });
                 text_des.setText(page.getTitle());
@@ -69,7 +71,9 @@ public class AlbumCateVPAdapter extends PagerAdapter {
                 btn_open.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        onBtnItemClickListener.onClick(position, layout);
+                        if (onBtnItemClickListener != null) {
+                            onBtnItemClickListener.onClick(position, layout);
+                        }
                     }
                 });
                 break;
@@ -80,7 +84,9 @@ public class AlbumCateVPAdapter extends PagerAdapter {
                 btn_open.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        onBtnItemClickListener.onClick(position, layout);
+                        if (onBtnItemClickListener != null) {
+                            onBtnItemClickListener.onClick(position, layout);
+                        }
                     }
                 });
                 break;

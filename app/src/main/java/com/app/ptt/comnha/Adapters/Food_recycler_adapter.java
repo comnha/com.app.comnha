@@ -65,7 +65,7 @@ public class Food_recycler_adapter extends RecyclerView.Adapter<Food_recycler_ad
         } else {
             holder.ratingBar.setRating(foodList.get(position).getRating() /
                     foodList.get(position)
-                    .getTotal());
+                            .getTotal());
         }
         holder.ratingBar.setIsIndicator(true);
         holder.cardv.setCardBackgroundColor(activity.getResources()
@@ -80,24 +80,25 @@ public class Food_recycler_adapter extends RecyclerView.Adapter<Food_recycler_ad
 
             }
         });
-
-        holder.cardv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_photo.getDrawable())
-                            .getBitmap();
-                    foodList.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
-                    onItemClickLiestner.onItemClick(
-                            foodList.get(holder.getAdapterPosition()),
-                            activity, holder.itemView);
-                } catch (NullPointerException e) {
-                    onItemClickLiestner.onItemClick(
-                            foodList.get(holder.getAdapterPosition()),
-                            activity, holder.itemView);
+        if (onItemClickLiestner != null) {
+            holder.cardv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_photo.getDrawable())
+                                .getBitmap();
+                        foodList.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
+                        onItemClickLiestner.onItemClick(
+                                foodList.get(holder.getAdapterPosition()),
+                                activity, holder.itemView);
+                    } catch (NullPointerException e) {
+                        onItemClickLiestner.onItemClick(
+                                foodList.get(holder.getAdapterPosition()),
+                                activity, holder.itemView);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
