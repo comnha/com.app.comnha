@@ -1,6 +1,7 @@
 package com.app.ptt.comnha.Activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -218,7 +219,40 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 ReportDialog reportDialog = new ReportDialog();
                 reportDialog.setType(REPORT_STORE);
                 reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
-                reportDialog.show(getSupportFragmentManager(),"report_store");
+                reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
+                    @Override
+                    public void onPositive(boolean isClicked, Map<String,
+                            Object> childUpdate, final Dialog dialog) {
+                        if (isClicked) {
+                            dialog.dismiss();
+                            plzw8Dialog.show();
+                            dbRef.updateChildren(childUpdate)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            plzw8Dialog.dismiss();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    dialog.show();
+                                    plzw8Dialog.dismiss();
+                                    Toast.makeText(StoreDeatailActivity.this, e.getMessage(),
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+                        }
+                    }
+
+                    @Override
+                    public void onNegative(boolean isClicked, Dialog dialog) {
+                        if (isClicked) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                reportDialog.show(getSupportFragmentManager(), "report_store");
                 return true;
             case 1:
                 return true;

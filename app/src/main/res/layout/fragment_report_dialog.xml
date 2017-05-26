@@ -19,6 +19,7 @@
                 android:id="@+id/rv_content_report"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:dividerHeight="0dp"
                 android:scrollbarSize="0dp"
                 android:scrollbarStyle="insideOverlay"
@@ -28,8 +29,9 @@
                 android:id="@+id/ilayout_other_report"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginBottom="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
                 app:counterEnabled="true"
                 app:counterMaxLength="200"
@@ -48,6 +50,30 @@
                     android:textColor="@android:color/black"
                     android:textColorHint="#7f000000" />
             </android.support.design.widget.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="24dp"
+                android:background="@android:color/white"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_negative_report"
+                    style="@style/BtnBorderlessGrey"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_no" />
+
+                <Button
+                    android:id="@+id/btn_positive_report"
+                    style="@style/BtnBorderlessRed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/txt_report" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

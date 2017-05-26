@@ -665,4 +665,15 @@
     <string name="txt_report_wrongtimeopen">Sai thời gian mở cửa</string>
     <string name="txt_report_wrongphonenumb">Sai số điện thoại</string>
     <string name="txt_report_wrongaddress">Sai địa chỉ</string>
+    <string name="txt_reportStore">Báo cáo quán ăn?</string>
+    <string name="txt_report_spam">Spam</string>
+    <string name="txt_report_impolite">Lời lẽ thô tục</string>
+    <string name="txt_report_nude">Hình ảnh khiêu dâm</string>
+    <string name="txt_report_vilence">Hình ảnh bạo lực</string>
+    <string name="txt_report_wronfoodname">Sai tên món ăn</string>
+    <string name="txt_report_wrongfoodprice">Sai giá tiền</string>
+    <string name="txt_report_samefoodname">Trùng tên món ăn</string>
+    <string name="txt_reportFood">Báo cáo món ăn</string>
+    <string name="txt_reportImg">Báo cáo hình ảnh</string>
+    <string name="txt_reportPost">Báo cáo bài viết</string>
 </resources>
