@@ -110,7 +110,7 @@ public class Reviewlist_rcyler_adapter extends RecyclerView.Adapter<Reviewlist_r
 //                holder.txt_price.setText("");
 //            }
 //            if (foods.get(position).getHinh() != null)
-//                Picasso.with(activity)
+//                Picasso.with(context)
 //                        .load(foods.get(position).getHinh())
 //                        .into(holder.img_user);
 //

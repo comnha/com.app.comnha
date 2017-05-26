@@ -658,4 +658,11 @@
     <string name="txt_see">xem</string>
     <string name="text_updateavatar_succ">Cập nhật ảnh đại diện thành công</string>
     <string name="txt_updateavatar">Cập nhật ảnh đại diện</string>
+    <string name="text_other">Khác</string>
+    <string name="txt_report_wrongstorename">Sai tên quán</string>
+    <string name="txt_report_samestore">Trùng địa điểm</string>
+    <string name="txt_report_samestorename">Trùng tên quán</string>
+    <string name="txt_report_wrongtimeopen">Sai thời gian mở cửa</string>
+    <string name="txt_report_wrongphonenumb">Sai số điện thoại</string>
+    <string name="txt_report_wrongaddress">Sai địa chỉ</string>
 </resources>

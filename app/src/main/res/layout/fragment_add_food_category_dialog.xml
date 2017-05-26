@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:activity="com.app.ptt.comnha.AddFoodCategoryDialogFragment">
+    tools:context="com.app.ptt.comnha.AddFoodCategoryDialogFragment">
 
     <LinearLayout
         android:layout_width="wrap_content"

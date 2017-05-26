@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.app.ptt.comnha.Adapters.Food_recycler_adapter;
 import com.app.ptt.comnha.Adapters.Photo_recycler_adapter;
 import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
+import com.app.ptt.comnha.Dialog.ReportDialog;
 import com.app.ptt.comnha.Fragment.AddFoodFragment;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
@@ -51,6 +52,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_STORE;
 
 public class StoreDeatailActivity extends AppCompatActivity implements View.OnClickListener {
     RecyclerView postRecycler, photoRecycler, foodRecycler;
@@ -212,6 +215,10 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case 0:
+                ReportDialog reportDialog = new ReportDialog();
+                reportDialog.setType(REPORT_STORE);
+                reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
+                reportDialog.show(getSupportFragmentManager(),"report_store");
                 return true;
             case 1:
                 return true;

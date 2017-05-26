@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    tools:activity="com.app.ptt.comnha.Activity.AdapterActivity">
+    tools:context="com.app.ptt.comnha.Activity.AdapterActivity">
 
     <FrameLayout
         android:id="@+id/frame_adapter"

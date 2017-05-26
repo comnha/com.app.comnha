@@ -6,7 +6,7 @@
     android:paddingTop="4dp"
     android:paddingStart="8dp"
     android:paddingEnd="8dp"
-    tools:activity="com.app.ptt.comnha.Fragment.AdminReportPostFragment">
+    tools:context="com.app.ptt.comnha.Fragment.AdminReportPostFragment">
     <ListView
         android:divider="@android:color/transparent"
         android:id="@+id/listview_reportpost_frag"

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     app:theme="@style/AppTheme.NotifyReportsAdminActivity"
-    tools:activity="com.app.ptt.comnha.Activity.ReportsNotifyAdminActivity">
+    tools:context="com.app.ptt.comnha.Activity.ReportsNotifyAdminActivity">
 
 
     <LinearLayout

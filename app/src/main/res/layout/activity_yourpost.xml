@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:padding="4dp"
-    tools:activity="com.app.ptt.comnha.Activity.YourPostActivity">
+    tools:context="com.app.ptt.comnha.Activity.YourPostActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_img_yourpost"
