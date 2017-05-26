@@ -131,7 +131,8 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
         }
     }
 
-    void doSignin(View view) {
+    void doSignin(final View view) {
+        showProgressDialog(getActivity(),getString(R.string.text_signin),getString(R.string.txt_plzwait));
         if(checkInput(view)){
                 auth.signInWithEmailAndPassword(edt_email.getText().toString(),
                         edt_pass.getText().toString())
@@ -141,12 +142,12 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
                                 Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
                                 if (!task.isSuccessful()) {
                                     Log.w(TAG, "signInWithEmail:onComplete", task.getException());
-                                    Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-//                                    Toast.makeText(getActivity(), "failed login with: " + edt_email.getText().toString(),
-//                                            Toast.LENGTH_SHORT).show();
+                                    AppUtils.showSnackbarWithoutButton(view,getString(R.string.text_signin_fail));
                                 } else {
                                     getActivity().finish();
                                 }
+                                closeDialog();
+
                             }
                         });
             }
