@@ -1,5 +1,7 @@
 package com.app.ptt.comnha.Models.FireBase;
 
+import com.app.ptt.comnha.Modules.Times;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,28 +11,37 @@ import java.util.Map;
 
 public class ReportimgNotify {
     String id, imgID, name, date, time, userID, un,
-            contents, district_province;
+            contents;
     boolean readstate = false;
     //phép kết
-    String readState_pro_dist;
 
     public ReportimgNotify() {
     }
 
-    public ReportimgNotify(String imgID, String name, String date, String time, String userID, String un,
-                           String contents, String district_province, boolean readstate, String readState_pro_dist) {
+    public ReportimgNotify(String imgID, String name,
+                           String userID, String un,
+                           String contents) {
         this.imgID = imgID;
         this.name = name;
-        this.date = date;
-        this.time = time;
+        this.date = new Times().getDate();
+        this.time = new Times().getTimeNoSecond();
         this.userID = userID;
         this.un = un;
         this.contents = contents;
-        this.district_province = district_province;
-        this.readstate = readstate;
-        this.readState_pro_dist = readState_pro_dist;
     }
 
+    public Map<String, Object> toMap() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("imgID", imgID);
+        result.put("name", name);
+        result.put("date", date);
+        result.put("time", time);
+        result.put("userID", userID);
+        result.put("un", un);
+        result.put("contents", contents);
+        result.put("readstate", readstate);
+        return result;
+    }
     public String getImgID() {
         return imgID;
     }
@@ -87,42 +98,11 @@ public class ReportimgNotify {
         this.contents = contents;
     }
 
-    public String getDistrict_province() {
-        return district_province;
-    }
-
-    public void setDistrict_province(String district_province) {
-        this.district_province = district_province;
-    }
-
     public boolean isReadstate() {
         return readstate;
     }
 
     public void setReadstate(boolean readstate) {
         this.readstate = readstate;
-    }
-
-    public String getReadState_pro_dist() {
-        return readState_pro_dist;
-    }
-
-    public void setReadState_pro_dist(String readState_pro_dist) {
-        this.readState_pro_dist = readState_pro_dist;
-    }
-
-    public Map<String, Object> toMap() {
-        Map<String, Object> result = new HashMap<>();
-        result.put("imgID", imgID);
-        result.put("name", name);
-        result.put("date", date);
-        result.put("time", time);
-        result.put("userID", userID);
-        result.put("un", un);
-        result.put("contents", contents);
-        result.put("readstate", readstate);
-        result.put("district_province", district_province);
-        result.put("readState_pro_dist", readState_pro_dist);
-        return result;
     }
 }
