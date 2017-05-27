@@ -207,7 +207,7 @@
     <string name="reportStore_CODE">StoreReports/</string>
     <string name="reportFood_CODE">FoodReports/</string>
     <string name="reportPost_CODE">PostReports/</string>
-    <string name="reportimg_CODE">ImgReports/</string>
+    <string name="reportImg_CODE">ImgReports/</string>
     <string name="food_CODE">Foods/</string>
     <string name="notify_newstore_CODE">NotifyNewStore/</string>
     <string name="notify_newpost_CODE">NotifyNewPost/</string>
@@ -676,4 +676,5 @@
     <string name="txt_reportFood">Báo cáo món ăn</string>
     <string name="txt_reportImg">Báo cáo hình ảnh</string>
     <string name="txt_reportPost">Báo cáo bài viết</string>
+    <string name="txt_reportnocontent">Bạn chưa có nội dung cho báo cáo</string>
 </resources>
