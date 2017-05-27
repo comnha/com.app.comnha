@@ -80,7 +80,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     Store store = ChooseStore.getInstance().getStore();
     LinearLayout linear_progress;
     String storeID = null;
-    ProgressDialog plzw8Dialog;
+    ProgressDialog plzw8Dialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,7 +217,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         switch (item.getItemId()) {
             case 0:
                 ReportDialog reportDialog = new ReportDialog();
-                reportDialog.setType(REPORT_STORE);
+                reportDialog.setReport(REPORT_STORE, store);
                 reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
                 reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
                     @Override

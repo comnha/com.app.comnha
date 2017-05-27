@@ -140,7 +140,6 @@ public class BlockUserDialog extends DialogFragment {
                 String key = user.getuID();
 //                Toast.makeText(getContext(), key, Toast.LENGTH_LONG).show();
                 User childUser = user;
-                childUser.setuID(null);
                 Map<String, Object> userValue = childUser.toMap();
                 Map<String, Object> childUpdate = new HashMap<>();
                 childUpdate.put(getString(R.string.users_CODE)

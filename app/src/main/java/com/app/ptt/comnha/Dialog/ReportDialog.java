@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,19 +23,27 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.app.ptt.comnha.Adapters.Reports_recycler_adapter;
 import com.app.ptt.comnha.Classes.Report;
 import com.app.ptt.comnha.Const.Const;
+import com.app.ptt.comnha.Models.FireBase.Food;
+import com.app.ptt.comnha.Models.FireBase.Image;
+import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.ReportfoodNotify;
 import com.app.ptt.comnha.Models.FireBase.ReportimgNotify;
 import com.app.ptt.comnha.Models.FireBase.ReportpostNotify;
 import com.app.ptt.comnha.Models.FireBase.ReportstoreNotify;
+import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
+import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -48,16 +57,14 @@ public class ReportDialog extends DialogFragment {
     String content = "";
     RecyclerView.LayoutManager reportLm;
     ArrayList<Report> reports;
-    Reports_recycler_adapter reportAdapter;
+    Reports_recycler_adapter reportAdapter = null;
     Const.REPORTS type;
+    Object report = null;
     DatabaseReference dbRef;
 
-    ReportfoodNotify foodRp = null;
-    ReportimgNotify imgRp = null;
-    ReportstoreNotify storeRp = null;
-    ReportpostNotify postRp = null;
     OnPosNegListener onPosNegListener;
     Button btn_neg, btn_pos;
+    Map<String, Object> childUpdate = null;
 
     public interface OnPosNegListener {
         void onPositive(boolean isClicked, Map<String, Object> childUpdate, Dialog dialog);
@@ -70,7 +77,8 @@ public class ReportDialog extends DialogFragment {
         this.onPosNegListener = onPosNegListener;
     }
 
-    public void setType(Const.REPORTS type) {
+    public void setReport(Const.REPORTS type, Object report) {
+        this.report = report;
         this.type = type;
     }
 
@@ -92,6 +100,7 @@ public class ReportDialog extends DialogFragment {
     private void init(View view) {
         edt_content = (EditText) view.findViewById(R.id.edt_content_report);
         edt_content.setFilters(new InputFilter[]{new InputFilter.LengthFilter(200)});
+        edt_content.setEnabled(false);
         ilayout_content = (TextInputLayout) view.findViewById(R.id.ilayout_other_report);
         edt_content.addTextChangedListener(new TextWatcher() {
             @Override
@@ -120,8 +129,22 @@ public class ReportDialog extends DialogFragment {
         getReports();
         reportAdapter = new Reports_recycler_adapter(reports, getContext());
         rv_content_report.setAdapter(reportAdapter);
-        btn_neg = (Button) view.findViewById(R.id.btn_negative_blockuser);
-        btn_pos = (Button) view.findViewById(R.id.btn_positive_blockuser);
+        reportAdapter.setOnItemCheckedListener(new Reports_recycler_adapter.OnItemCheckedListener() {
+            @Override
+            public void onCheck(ArrayList<Report> reports, int position) {
+                if (position == reports.size() - 1) {
+                    if (!reports.get(reports.size() - 1).isChecked()) {
+                        edt_content.setEnabled(false);
+                    } else {
+                        edt_content.setEnabled(true);
+                    }
+                }
+//                Log.i("reportDialog_checked",
+//                        ReportDialog.this.reports.get(position).isChecked() + "");
+            }
+        });
+        btn_neg = (Button) view.findViewById(R.id.btn_negative_report);
+        btn_pos = (Button) view.findViewById(R.id.btn_positive_report);
         btn_neg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,10 +157,148 @@ public class ReportDialog extends DialogFragment {
             @Override
             public void onClick(View view) {
                 if (onPosNegListener != null) {
-//                    onPosNegListener.onPositive(true, childUpdate, getDialog());
+                    if (edt_content.isEnabled()) {
+                        content = AppUtils.getText(edt_content);
+                    } else {
+                        content = reportAdapter.getContent();
+                    }
+                    if (content.equals("")) {
+                        Toast.makeText(getContext(),
+                                getString(R.string.txt_reportnocontent),
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    } else {
+                        switch (type) {
+                            case REPORT_STORE:
+                                childUpdate = setStoreReport();
+                                break;
+                            case REPORT_IMG:
+                                childUpdate = setImgReport();
+                                break;
+                            case REPORT_FOOD:
+                                childUpdate = setFoodReport();
+                                break;
+                            case REPORT_POST:
+                                childUpdate = setPostReport();
+                                break;
+                        }
+                        if (childUpdate != null) {
+
+                            onPosNegListener.onPositive(true, childUpdate, getDialog());
+                        }
+                    }
                 }
             }
         });
+    }
+
+    Map<String, Object> setStoreReport() {
+        try {
+            String key = dbRef
+                    .child(getString(R.string.reportStore_CODE))
+                    .push()
+                    .getKey();
+            Store store = (Store) report;
+            ReportstoreNotify storeReport = new ReportstoreNotify(
+                    store.getStoreID(), store.getName(),
+                    store.getAddress(),
+                    LoginSession.getInstance().getUser().getuID(),
+                    LoginSession.getInstance().getUser().getUn(),
+                    content, store.getPro_dist());
+            Map<String, Object> rpValue = storeReport.toMap();
+            Map<String, Object> childupdate = new HashMap<>();
+            childupdate.put(getString(R.string.reportStore_CODE)
+                    + key, rpValue);
+            Log.d("reportDialog_key", store.getStoreID());
+            return childupdate;
+        } catch (NullPointerException mess) {
+            Toast.makeText(getContext(),
+                    mess.getMessage(),
+                    Toast.LENGTH_LONG)
+                    .show();
+        }
+        return null;
+    }
+
+    Map<String, Object> setPostReport() {
+        try {
+            String key = dbRef
+                    .child(getString(R.string.reportPost_CODE))
+                    .push()
+                    .getKey();
+            Post post = (Post) report;
+            ReportpostNotify postReport = new ReportpostNotify(
+                    post.getPostID(), post.getTitle(),
+                    LoginSession.getInstance().getUser().getuID(),
+                    LoginSession.getInstance().getUser().getUn(),
+                    content, post.getDist_pro());
+            Map<String, Object> rpValue = postReport.toMap();
+            Map<String, Object> childupdate = new HashMap<>();
+            childupdate.put(getString(R.string.reportPost_CODE)
+                    + key, rpValue);
+            Log.d("reportDialog_key", post.getPostID());
+            return childupdate;
+        } catch (NullPointerException mess) {
+            Toast.makeText(getContext(),
+                    mess.getMessage(),
+                    Toast.LENGTH_LONG)
+                    .show();
+        }
+        return null;
+    }
+
+    Map<String, Object> setFoodReport() {
+        try {
+            String key = dbRef
+                    .child(getString(R.string.reportFood_CODE))
+                    .push()
+                    .getKey();
+            Food food = (Food) report;
+            ReportfoodNotify foodReport = new ReportfoodNotify(
+                    food.getName(), food.getFoodID(),
+                    LoginSession.getInstance().getUser().getuID(),
+                    LoginSession.getInstance().getUser().getUn(),
+                    content, food.getDist_prov());
+            Map<String, Object> rpValue = foodReport.toMap();
+            Map<String, Object> childupdate = new HashMap<>();
+            childupdate.put(getString(R.string.reportFood_CODE)
+                    + key, rpValue);
+            Log.d("reportDialog_key", food.getStoreID());
+            return childupdate;
+        } catch (NullPointerException mess) {
+            Toast.makeText(getContext(),
+                    mess.getMessage(),
+                    Toast.LENGTH_LONG)
+                    .show();
+        }
+        return null;
+    }
+
+    Map<String, Object> setImgReport() {
+        try {
+            String key = dbRef
+                    .child(getString(R.string.reportImg_CODE))
+                    .push()
+                    .getKey();
+            Image image = (Image) report;
+            ReportimgNotify storeReport = new ReportimgNotify(
+                    image.getImageID(), image.getName(),
+                    LoginSession.getInstance().getUser().getuID(),
+                    LoginSession.getInstance().getUser().getUn(),
+                    content);
+            Map<String, Object> rpValue = storeReport.toMap();
+            Map<String, Object> childupdate = new HashMap<>();
+            childupdate.put(getString(R.string.reportImg_CODE)
+                    + key, rpValue);
+            Log.d("reportDialog_key", image.getImageID());
+            return childupdate;
+        } catch (NullPointerException mess) {
+            Toast.makeText(getContext(),
+                    mess.getMessage(),
+                    Toast.LENGTH_LONG)
+                    .show();
+        }
+        return null;
     }
 
     private void getReports() {
@@ -161,6 +322,7 @@ public class ReportDialog extends DialogFragment {
     private void getPostReports() {
         reports.add(new Report(getString(R.string.txt_report_spam)));
         reports.add(new Report(getString(R.string.txt_report_impolite)));
+        reports.add(new Report(getString(R.string.text_other)));
     }
 
     private void getFoodReports() {
@@ -168,12 +330,15 @@ public class ReportDialog extends DialogFragment {
         reports.add(new Report(getString(R.string.txt_report_wrongfoodprice)));
         reports.add(new Report(getString(R.string.txt_report_samefoodname)));
         reports.add(new Report(getString(R.string.txt_report_spam)));
+        reports.add(new Report(getString(R.string.text_other)));
+
     }
 
     private void getImgReports() {
         reports.add(new Report(getString(R.string.txt_report_nude)));
         reports.add(new Report(getString(R.string.txt_report_vilence)));
         reports.add(new Report(getString(R.string.txt_report_spam)));
+        reports.add(new Report(getString(R.string.text_other)));
     }
 
     private void getStoreReports() {
@@ -182,8 +347,9 @@ public class ReportDialog extends DialogFragment {
         reports.add(new Report(getString(R.string.txt_report_wrongphonenumb)));
         reports.add(new Report(getString(R.string.txt_report_wrongtimeopen)));
         reports.add(new Report(getString(R.string.txt_report_samestorename)));
-        reports.add(new Report(getString(R.string.txt_report_spam)));
         reports.add(new Report(getString(R.string.txt_report_samestore)));
+        reports.add(new Report(getString(R.string.txt_report_spam)));
+        reports.add(new Report(getString(R.string.text_other)));
     }
 
     @Override

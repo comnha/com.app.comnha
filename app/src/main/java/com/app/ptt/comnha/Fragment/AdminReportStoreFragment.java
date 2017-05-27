@@ -1,6 +1,7 @@
 package com.app.ptt.comnha.Fragment;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,6 +11,8 @@ import android.widget.ListView;
 
 import com.app.ptt.comnha.Adapters.notify_reportstore_adapter;
 import com.app.ptt.comnha.Models.FireBase.ReportstoreNotify;
+import com.app.ptt.comnha.Models.FireBase.Store;
+import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -29,7 +32,10 @@ public class AdminReportStoreFragment extends Fragment {
     ArrayList<ReportstoreNotify> items;
     DatabaseReference dbRef;
     ChildEventListener childEventListener;
-    String dist_pro = "";
+    String dist_pro = "Quận 9_HCM";
+    Store store = null;
+    ProgressDialog plzwaitDialog;
+    User user;
 
     public AdminReportStoreFragment() {
         // Required empty public constructor

@@ -62,11 +62,9 @@ public class notify_reportfood_adapter extends BaseAdapter {
             holder.more = (ImageView) convertView.findViewById(R.id.imgV_option_item_notify_reportfood);
             convertView.setTag(holder);
         } else {
-
             holder = (ViewHolder) convertView.getTag();
         }
         holder.name.setText(items.get(i).getName());
-        holder.name.setText(items.get(i).getStoreName());
         holder.date.setText("Ngày: " + items.get(i).getDate());
         holder.time.setText("Giờ: " + items.get(i).getTime());
         holder.un.setText("Từ: " + items.get(i).getUn());

@@ -22,13 +22,12 @@ public class Reports_recycler_adapter extends RecyclerView.Adapter<Reports_recyc
     Context context;
     OnItemCheckedListener onItemCheckedListener;
 
-
     public void setOnItemCheckedListener(OnItemCheckedListener onItemCheckedListener) {
         this.onItemCheckedListener = onItemCheckedListener;
     }
 
     public interface OnItemCheckedListener {
-        void onCheck(Report report);
+        void onCheck(ArrayList<Report> reports, int position);
     }
 
     public Reports_recycler_adapter(ArrayList<Report> reports, Context context) {
@@ -44,18 +43,32 @@ public class Reports_recycler_adapter extends RecyclerView.Adapter<Reports_recyc
     }
 
     @Override
-    public void onBindViewHolder(ViewHoler holder, final int position) {
+    public void onBindViewHolder(final ViewHoler holder, int position) {
         holder.cb_report.setText(reports.get(position).getContent());
         if (reports.get(position).isChecked()) {
             holder.cb_report.setChecked(true);
         } else {
             holder.cb_report.setChecked(false);
         }
+        if (reports.get(reports.size() - 1).isChecked()) {
+            if (reports.size() - 1 == position) {
+                holder.cb_report.setEnabled(true);
+            } else {
+                holder.cb_report.setEnabled(false);
+            }
+        } else {
+            holder.cb_report.setEnabled(true);
+        }
         holder.cb_report.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (onItemCheckedListener != null) {
-                    onItemCheckedListener.onCheck(reports.get(position));
+                    reports.get(holder.getAdapterPosition()).setChecked(isChecked);
+                    onItemCheckedListener.onCheck(reports,
+                            holder.getAdapterPosition());
+                    if (holder.getAdapterPosition() == reports.size() - 1) {
+                        notifyDataSetChanged();
+                    }
                 }
             }
         });
@@ -73,5 +86,25 @@ public class Reports_recycler_adapter extends RecyclerView.Adapter<Reports_recyc
             super(itemView);
             cb_report = (CheckBox) itemView.findViewById(R.id.item_report_cb);
         }
+    }
+
+    public String getContent() {
+        String content = "";
+        ArrayList<Report> rps = new ArrayList<>();
+        for (Report item : reports) {
+            if (reports.indexOf(item) != reports.size() - 1) {
+                if (item.isChecked()) {
+                    rps.add(item);
+                }
+            }
+        }
+        for (Report item : rps) {
+            if (rps.indexOf(item) < rps.size() - 1) {
+                content += item.getContent() + ", ";
+            } else {
+                content += item.getContent();
+            }
+        }
+        return content;
     }
 }
