@@ -303,6 +303,7 @@ public class AdminNewStoreFragment extends Fragment {
         super.onDetach();
     }
 
+    
     @Override
     public void onStop() {
         super.onStop();
