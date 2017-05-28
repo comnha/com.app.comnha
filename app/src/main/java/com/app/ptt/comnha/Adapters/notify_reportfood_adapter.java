@@ -1,8 +1,8 @@
 package com.app.ptt.comnha.Adapters;
 
-import android.content.Context;
+import android.app.Activity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.app.ptt.comnha.Models.FireBase.ReportfoodNotify;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.Utils.AppUtils;
 
 import java.util.ArrayList;
 
@@ -23,11 +24,31 @@ import java.util.ArrayList;
  */
 
 public class notify_reportfood_adapter extends BaseAdapter {
-    Context context;
+    Activity activity;
     ArrayList<ReportfoodNotify> items;
+    private OnItemClickLiestner onItemClickLiestner;
+    private OnOptionItemClickListener onOptionItemClickListener;
 
-    public notify_reportfood_adapter(Context context, ArrayList<ReportfoodNotify> items) {
-        this.context = context;
+    public interface OnItemClickLiestner {
+        void onItemClick(ReportfoodNotify notify, Activity activity);
+    }
+
+    public void setOnItemClickLiestner(OnItemClickLiestner liestner) {
+        onItemClickLiestner = liestner;
+    }
+
+    public interface OnOptionItemClickListener {
+        void onDelNotify(ReportfoodNotify notify);
+
+        void onBlockUser(ReportfoodNotify notify);
+    }
+
+    public void setOnOptionItemClickListener(OnOptionItemClickListener onOptionItemClickListener) {
+        this.onOptionItemClickListener = onOptionItemClickListener;
+    }
+
+    public notify_reportfood_adapter(Activity activity, ArrayList<ReportfoodNotify> items) {
+        this.activity = activity;
         this.items = items;
     }
 
@@ -47,11 +68,11 @@ public class notify_reportfood_adapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int i, View convertView, ViewGroup viewGroup) {
+    public View getView(final int position, View convertView, ViewGroup viewGroup) {
         final ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_listv_notify_reportfood, null);
+            convertView = LayoutInflater.from(activity).inflate(R.layout.item_listv_notify_reportfood, null);
             holder.name = (TextView) convertView.findViewById(R.id.textV_foodname_item_notify_reportfood);
             holder.storename = (TextView) convertView.findViewById(R.id.textV_storename_item_notify_reportfood);
             holder.un = (TextView) convertView.findViewById(R.id.textV_un_item_notify_reportfood);
@@ -60,42 +81,63 @@ public class notify_reportfood_adapter extends BaseAdapter {
             holder.content = (TextView) convertView.findViewById(R.id.textV_content_item_notify_reportfood);
             holder.readestate = (TextView) convertView.findViewById(R.id.textV_readstate_item_notify_reportfood);
             holder.more = (ImageView) convertView.findViewById(R.id.imgV_option_item_notify_reportfood);
+            holder.cardv = (CardView) convertView.findViewById(R.id.cardv_item_notify_reportfood);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.name.setText(items.get(i).getName());
-        holder.date.setText("Ngày: " + items.get(i).getDate());
-        holder.time.setText("Giờ: " + items.get(i).getTime());
-        holder.un.setText("Từ: " + items.get(i).getUn());
-        holder.content.setText("Nội dung: " + items.get(i).getContents());
-        if (items.get(i).isReadstate()) {
-            holder.readestate.setText("Chưa đọc");
-            holder.readestate.setTextColor(context.getResources().getColor(R.color.color_notify_reportfood));
+        holder.name.setText("Tên: " + items.get(position).getName());
+        holder.date.setText("Ngày: " + items.get(position).getDate());
+        holder.time.setText("Giờ: " + items.get(position).getTime());
+        holder.un.setText("Từ: " + items.get(position).getUn());
+        holder.content.setText(items.get(position).getContents());
+        if (!items.get(position).isReadstate()) {
+            holder.readestate.setText(activity.getString(R.string.txt_notread));
+            holder.readestate.setTextColor(activity.getResources()
+                    .getColor(R.color.admin_color_selection_news));
         } else {
-            holder.readestate.setText("Đã đọc");
-            holder.readestate.setTextColor(context.getResources().getColor(R.color.color_read));
+            holder.readestate.setText(activity.getString(R.string.txt_read));
+            holder.readestate.setTextColor(activity.getResources()
+                    .getColor(android.R.color.darker_gray));
         }
+        holder.cardv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onItemClickLiestner != null) {
+                    if (!items.get(position).isReadstate()) {
+                        holder.readestate.setText(activity.getString(R.string.txt_read));
+                        holder.readestate.setTextColor(activity.getResources()
+                                .getColor(android.R.color.darker_gray));
+                    }
+                    onItemClickLiestner.onItemClick(items.get(position),
+                            activity);
+                }
+            }
+        });
         holder.more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupMenu menu = new PopupMenu(context, holder.more, Gravity.TOP);
-                menu.inflate(R.menu.menu_item_notify);
-                menu.getMenu().add(Menu.NONE, 0, 0, context.getResources().getString(R.string.text_delnotify));
-                menu.getMenu().add(Menu.NONE, 1, 1, context.getResources().getString(R.string.text_block_reportfood));
-                menu.getMenu().add(Menu.NONE, 2, 2, context.getResources().getString(R.string.text_delnotify));
-                menu.show();
-                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                PopupMenu popupMenu = new PopupMenu(activity, holder.more, Gravity.TOP);
+                Menu menu = popupMenu.getMenu();
+                menu = AppUtils.createMenu(menu, new String[]{
+                        activity.getResources().getString(R.string.text_delnotify),
+                        activity.getResources().getString(R.string.text_block_reportpost)});
+                popupMenu.show();
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case 0:
-                                Log.d("setOnMenuItemClick", "item " + 0);
+                                if (onOptionItemClickListener != null) {
+                                    onOptionItemClickListener.onDelNotify(
+                                            items.get(position));
+                                }
                                 break;
                             case 1:
-                                break;
-                            case 2:
-                                break;
+                                if (onOptionItemClickListener != null) {
+                                    onOptionItemClickListener.onBlockUser(
+                                            items.get(position));
+                                }
                         }
                         return true;
                     }
@@ -108,5 +150,6 @@ public class notify_reportfood_adapter extends BaseAdapter {
     class ViewHolder {
         TextView name, storename, content, date, time, readestate, un;
         ImageView more;
+        CardView cardv;
     }
 }
