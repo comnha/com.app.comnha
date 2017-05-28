@@ -598,7 +598,6 @@
     <string name="text_block_reportfood">Chặn \"Report Món ăn\"</string>
     <string name="text_block_reportimg">Chặn \"Report Ảnh\"</string>
     <string name="text_block_reportpost">Chặn \"Report Review\"</string>
-    <string name="notify_reportstore_CODE">StoreReport</string>
     <string name="txt_nointernet">"Không có kết nối internet", "Kết nối"</string>
     <string name="txt_passtooshort">Mật khẩu quá ngắn</string>
     <string name="txt_notmatchpassword">Mật khẩu xác nhận không đúng</string>
