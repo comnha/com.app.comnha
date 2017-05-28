@@ -1,25 +1,25 @@
 package com.app.ptt.comnha.SingletonClasses;
 
-import com.app.ptt.comnha.Models.FireBase.Food;
+import com.app.ptt.comnha.Models.FireBase.Image;
 
 /**
  * Created by PTT on 10/5/2016.
  */
-public class ChooseFood {
-    private static ChooseFood ourInstance;
-    private Food food;
+public class ChooseImg {
+    private static ChooseImg ourInstance;
+    private Image image;
 
-    public Food getFood() {
-        return food;
+    public Image getImage() {
+        return image;
     }
 
-    public void setFood(Food food) {
-        this.food = food;
+    public void setImage(Image image) {
+        this.image = image;
     }
 
-    public static ChooseFood getInstance() {
+    public static ChooseImg getInstance() {
         if (ourInstance == null) {
-            ourInstance = new ChooseFood();
+            ourInstance = new ChooseImg();
         }
         return ourInstance;
     }
