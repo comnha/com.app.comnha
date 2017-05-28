@@ -105,4 +105,12 @@ public class ReportimgNotify {
     public void setReadstate(boolean readstate) {
         this.readstate = readstate;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }
