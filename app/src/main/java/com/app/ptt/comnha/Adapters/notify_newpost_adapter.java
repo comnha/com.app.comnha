@@ -26,6 +26,7 @@ import java.util.ArrayList;
 public class notify_newpost_adapter extends BaseAdapter {
     Activity activity;
     ArrayList<NewpostNotify> items;
+
     private OnItemClickLiestner onItemClickLiestner;
     private OnOptionItemClickListener onOptionItemClickListener;
 
@@ -100,13 +101,15 @@ public class notify_newpost_adapter extends BaseAdapter {
         holder.cardv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!items.get(position).isReadstate()) {
-                    holder.readestate.setText(activity.getString(R.string.txt_read));
-                    holder.readestate.setTextColor(activity.getResources()
-                            .getColor(android.R.color.darker_gray));
+                if (onItemClickLiestner != null) {
+                    if (!items.get(position).isReadstate()) {
+                        holder.readestate.setText(activity.getString(R.string.txt_read));
+                        holder.readestate.setTextColor(activity.getResources()
+                                .getColor(android.R.color.darker_gray));
+                    }
+                    onItemClickLiestner.onItemClick(items.get(position),
+                            activity);
                 }
-                onItemClickLiestner.onItemClick(items.get(position),
-                        activity);
             }
         });
         holder.more.setOnClickListener(new View.OnClickListener() {
@@ -124,12 +127,16 @@ public class notify_newpost_adapter extends BaseAdapter {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case 0:
-                                onOptionItemClickListener.onDelNotify(
-                                        items.get(position));
+                                if (onOptionItemClickListener != null) {
+                                    onOptionItemClickListener.onDelNotify(
+                                            items.get(position));
+                                }
                                 break;
                             case 1:
-                                onOptionItemClickListener.onBlockUser(
-                                        items.get(position));
+                                if (onOptionItemClickListener != null) {
+                                    onOptionItemClickListener.onBlockUser(
+                                            items.get(position));
+                                }
                                 break;
                         }
                         return true;
