@@ -533,14 +533,14 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
             public void onItemClick(Food food) {
 //                if (stores.size() > 0) {
 //                    for (Store storeItem : stores) {
-//                        if (food.getStoreID().equals(storeItem.getStoreID())) {
+//                        if (image.getStoreID().equals(storeItem.getStoreID())) {
 //                            selected_store = storeItem;
 //                        }
 //                    }
 //                } else {
 //                    dbRef.child(getString(R.string.food_CODE))
 //                    dbRef.child(getString(R.string.store_CODE)
-//                            + food.getStoreID()).addValueEventListener();
+//                            + image.getStoreID()).addValueEventListener();
 //                }
                 selected_food = food;
                 foodDialog.dismiss();
@@ -1265,7 +1265,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //                                + mFood.getFoodID(), mFood);
 //                pc_Success++;
 //                Log.i("SSSSSSS", "pc_Success1=" + pc_Success);
-//                newPost.setFood(tempFood);
+//                newPost.setImage(tempFood);
 //            }
 //        } else {
 //            newPost.setType(2);

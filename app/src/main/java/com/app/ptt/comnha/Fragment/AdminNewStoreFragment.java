@@ -50,11 +50,11 @@ public class AdminNewStoreFragment extends Fragment {
     notify_newstore_adapter itemadapter;
     ArrayList<NewstoreNotify> items;
     DatabaseReference dbRef;
-    ValueEventListener storeValueListener, userValueListener,
+    ValueEventListener storeEventListener, userValueListener,
             notiEventListener;
     String dist_pro = "Quận 9_HCM";
     Store store = null;
-    ProgressDialog plzwaitDialog;
+    ProgressDialog plzwaitDialog=null;
     User user;
 
     public AdminNewStoreFragment() {
@@ -69,7 +69,7 @@ public class AdminNewStoreFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_admin_newstore, container, false);
         dbRef = FirebaseDatabase.getInstance()
                 .getReferenceFromUrl(getString(R.string.firebase_path));
-        ref(view);
+        init(view);
         getdata();
         Log.d("notinewstore_createView", "createview");
         return view;
@@ -100,7 +100,7 @@ public class AdminNewStoreFragment extends Fragment {
     }
 
     private void getStoreInfo(NewstoreNotify notify) {
-        storeValueListener = new ValueEventListener() {
+        storeEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 store = dataSnapshot.getValue(Store.class);
@@ -111,9 +111,6 @@ public class AdminNewStoreFragment extends Fragment {
                         StoreDeatailActivity.class);
                 intent_openstore.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 plzwaitDialog.dismiss();
-                dbRef.child(getString(R.string.store_CODE)
-                        + key)
-                        .removeEventListener(storeValueListener);
                 startActivity(intent_openstore);
             }
 
@@ -124,7 +121,7 @@ public class AdminNewStoreFragment extends Fragment {
         };
         dbRef.child(getString(R.string.store_CODE) +
                 notify.getStoreID())
-                .addValueEventListener(storeValueListener);
+                .addListenerForSingleValueEvent(storeEventListener);
     }
 
     private void getUserInfo(NewstoreNotify notify) {
@@ -191,7 +188,7 @@ public class AdminNewStoreFragment extends Fragment {
                 .addListenerForSingleValueEvent(userValueListener);
     }
 
-    private void ref(View view) {
+    private void init(View view) {
         listView = (ListView) view.findViewById(R.id.listview_newstore_frag);
         items = new ArrayList<>();
         itemadapter = new notify_newstore_adapter(getActivity(), items);

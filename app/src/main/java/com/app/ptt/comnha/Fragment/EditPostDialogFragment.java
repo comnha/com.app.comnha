@@ -213,11 +213,11 @@ public class EditPostDialogFragment extends DialogFragment
 //                pickFoodFrg.setLocaID(oldPost.getLocaID());
 //                pickFoodFrg.setOnPickFoodListener(new PickFoodDialogFragment.OnPickFoodListener() {
 //                    @Override
-//                    public void onPickFood(Food food) {
-//                        frg_filter_txtmon.setText(food.getName());
-//                        mFood = food;
+//                    public void onPickFood(Food image) {
+//                        frg_filter_txtmon.setText(image.getName());
+//                        mFood = image;
 //                        newFood=true;
-//                        rb_danhGiaMon.setRating(food.getRating());
+//                        rb_danhGiaMon.setRating(image.getRating());
 //                    }
 //                });
             }
@@ -287,7 +287,7 @@ public class EditPostDialogFragment extends DialogFragment
                 }
                 frg_filter_txtmon.setText("Chọn món");
 //                if(oldPost.getType()==1)
-//                    rb_danhGiaMon.setRating(oldPost.getFood().getRating());
+//                    rb_danhGiaMon.setRating(oldPost.getImage().getRating());
             }
         });
         btnAddImg.setOnClickListener(this);
@@ -337,12 +337,12 @@ public class EditPostDialogFragment extends DialogFragment
 //        Picasso.with(getContext()).load(oldPost.getHinh()).into(img_Daidien);
 //        if (oldPost.getType() == 1) {
 //            cb_monAn.setChecked(true);
-//            rb_danhGiaMon.setRating(oldPost.getFood().getRating());
+//            rb_danhGiaMon.setRating(oldPost.getImage().getRating());
 //            frg_filter_txtmon.setVisibility(View.VISIBLE);
-//            frg_filter_txtmon.setText(oldPost.getFood().getName());
+//            frg_filter_txtmon.setText(oldPost.getImage().getName());
 //            rb_danhGiaMon.setVisibility(View.VISIBLE);
-//            mRating = oldPost.getFood().getRating();
-//            mFood = oldPost.getFood();
+//            mRating = oldPost.getImage().getRating();
+//            mFood = oldPost.getImage();
 //        } else {
 //            cb_monAn.setChecked(false);
 //            frg_filter_txtmon.setVisibility(View.INVISIBLE);
@@ -590,30 +590,30 @@ public class EditPostDialogFragment extends DialogFragment
 //        Toast.makeText(getContext(),"POS TYPE="+oldPost.getType()+"---"+cb_monAn.isChecked(), Toast.LENGTH_SHORT).show();
 //        if(cb_monAn.isChecked()&&oldPost.getType()==2){
 //            Log.d("Chưa có món","");
-//            Food food=mFood;
-//            food.setRating(mRating);
+//            Food image=mFood;
+//            image.setRating(mRating);
 //            float d = (int) ((mFood.getRating() + mRating) / 2);
 //            newPost.setType(1);
-//            newPost.setFood(food);
-//            Log.d("Đã thêm .có món"+ food.getName()+"-d:"+d,"");
-//            food.setRating(d);
-//            Map<String, Object> updateFood = food.toMap();
+//            newPost.setImage(image);
+//            Log.d("Đã thêm .có món"+ image.getName()+"-d:"+d,"");
+//            image.setRating(d);
+//            Map<String, Object> updateFood = image.toMap();
 //            childUpdates.put(
 //                    getResources().getString(R.string.thucdon_CODE)
-//                            + food.getFoodID(), updateFood);
+//                            + image.getFoodID(), updateFood);
 //            pc_Success++;
-//            Toast.makeText(getContext(),"Đã thêm .có món"+ food.getName()+"-d:"+d, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(),"Đã thêm .có món"+ image.getName()+"-d:"+d, Toast.LENGTH_SHORT).show();
 //        }else{
 //            if(cb_monAn.isChecked()&&oldPost.getType()==1){
-                //Toast.makeText(getContext(),mFood.getFoodID()+"-"+oldPost.getFood().getFoodID(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(),mFood.getFoodID()+"-"+oldPost.getImage().getFoodID(), Toast.LENGTH_SHORT).show();
 //                Log.i("Đã có món","");
 //                if(newFood){
-//                    if(mFood.getFoodID().equals(oldPost.getFood().getFoodID())){
+//                    if(mFood.getFoodID().equals(oldPost.getImage().getFoodID())){
 //                        Log.i("Món cũ","");
-//                        if(mRating==oldPost.getFood().getRating()){
+//                        if(mRating==oldPost.getImage().getRating()){
 //                            Log.i("Đánh giá cũ","");
 //                        }else{
-//                            float a=oldPost.getFood().getRating();
+//                            float a=oldPost.getImage().getRating();
 //                            float b= (2 *mFood.getRating()-a);
 //                            float d =((b + mRating) / 2);
 //                            mFood.setRating(d);
@@ -624,10 +624,10 @@ public class EditPostDialogFragment extends DialogFragment
 //                            Log.i("Đánh giá mới","a="+a+"-b="+b+"-d="+d);
 //                        }
 //                    }else{
-//                        float a=oldPost.getFood().getRating();
+//                        float a=oldPost.getImage().getRating();
 //                        float b= (2 *EditPost.getInstance().getDanhgia()-a);
 //                        Log.i("Hủy đánh giá cũ a="+a+"-"+EditPost.getInstance().getDanhgia(),"Đánh giá mới b="+b);
-//                        Food oldFood=oldPost.getFood();
+//                        Food oldFood=oldPost.getImage();
 //                        oldFood.setRating(b);
 //                        Map<String, Object> updateFood = oldFood.toMap();
 //                        childUpdates.put(
@@ -647,21 +647,21 @@ public class EditPostDialogFragment extends DialogFragment
 //
 //                        Log.i("","Lưu món mới và đánh giá vào");
 //                        newFood.setRating(mRating);
-//                        newPost.setFood(newFood);
+//                        newPost.setImage(newFood);
 //                        Log.i("","Lưu món vào newPost");
-//                        Toast.makeText(getContext(),"Update bai post:"+newPost.getFood().getName()+"-"+newPost.getFood().getRating(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(),"Update bai post:"+newPost.getImage().getName()+"-"+newPost.getImage().getRating(), Toast.LENGTH_SHORT).show();
 
 //                    }
 //                }else{
-//                        if(mRating==oldPost.getFood().getRating()){
+//                        if(mRating==oldPost.getImage().getRating()){
 //                            Log.i("Đánh giá cũ","");
 //                        }else{
-//                            float a=oldPost.getFood().getRating();
+//                            float a=oldPost.getImage().getRating();
 //                            Food temp=mFood;
 //                            temp.setRating(mRating);
 //                            float b= (2 *mFood.getRating()-a);
 //                            float d =((b + mRating) / 2);
-//                            newPost.setFood(temp);
+//                            newPost.setImage(temp);
 //                            mFood.setRating(d);
 //                            Map<String, Object> updateFood = mFood.toMap();
 //                            childUpdates.put(
@@ -681,14 +681,14 @@ public class EditPostDialogFragment extends DialogFragment
 
 //        if (cb_monAn.isChecked()) {
 //                float b =EditPost.getInstance().getDanhgia();
-//                Food food=mFood;
-//                food.setRating(mRating);
+//                Food image=mFood;
+//                image.setRating(mRating);
 //
 //            Toast.makeText(getContext(), "old:"+oldPost.getType()+"---- new:"+newPost.getType(), Toast.LENGTH_SHORT).show();
 //                if(oldPost.getType()==1){
 //                    Log.i("B1","oldpost_type=1");
 //                    float a = EditPost.getInstance().getDanhgia();
-//                    b= (2 * a - EditPost.getInstance().getPost().getFood().getRating());
+//                    b= (2 * a - EditPost.getInstance().getPost().getImage().getRating());
 //                    Log.i("B2","a="+a+"-b="+b);
 //                }
 //                if (mFood != null) {
@@ -703,7 +703,7 @@ public class EditPostDialogFragment extends DialogFragment
 //                }
 //                newPost.setType(1);
 //                pc_Success++;
-//                newPost.setFood(food);
+//                newPost.setImage(image);
 //                Log.i("SSSSSSS","pc_Success1.1="+pc_Success);
 //        } else {
 //            newPost.setType(2);
