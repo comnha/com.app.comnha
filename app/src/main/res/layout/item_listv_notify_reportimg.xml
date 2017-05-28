@@ -81,13 +81,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <TextView
-                    android:id="@+id/textV_content_item_notify_reportimg"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:gravity="end|center_vertical"
-                    android:textAllCaps="false" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nội dung: " />
+
+                    <TextView
+                        android:id="@+id/textV_content_item_notify_reportimg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:gravity="end|center_vertical"
+                        android:textAllCaps="false" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/textV_readstate_item_notify_reportimg"
