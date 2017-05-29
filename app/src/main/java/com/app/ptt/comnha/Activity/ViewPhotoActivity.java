@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -11,6 +12,7 @@ import com.app.ptt.comnha.Adapters.ViewPhotoVPadapter;
 import com.app.ptt.comnha.Classes.ZoomOutPageTransformer;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -25,6 +27,7 @@ public class ViewPhotoActivity extends AppCompatActivity {
     ArrayList<Image> images;
     StorageReference stRef;
     ViewPhotoVPadapter photoAdapter;
+    int position = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,6 +36,10 @@ public class ViewPhotoActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_viewphoto);
+        if (savedInstanceState != null) {
+            position = savedInstanceState.getInt("imgPostion");
+        }
+        Log.i("ViewPhoto_pos", position + "");
         stRef = FirebaseStorage.getInstance().getReferenceFromUrl(getString(R.string.firebaseStorage_path));
         init();
     }
@@ -40,8 +47,10 @@ public class ViewPhotoActivity extends AppCompatActivity {
     private void init() {
         vp_viewphoto = (ViewPager) findViewById(R.id.viewpager_viewphoto);
         images = new ArrayList<>();
+        images = ChoosePhotoList.getInstance().getImage();
         photoAdapter = new ViewPhotoVPadapter(images, this, stRef);
         vp_viewphoto.setAdapter(photoAdapter);
         vp_viewphoto.setPageTransformer(true, new ZoomOutPageTransformer());
+        vp_viewphoto.setCurrentItem(position);
     }
 }

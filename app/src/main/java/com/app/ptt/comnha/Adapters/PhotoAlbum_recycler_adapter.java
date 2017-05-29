@@ -29,7 +29,7 @@ public class PhotoAlbum_recycler_adapter extends RecyclerView.Adapter<PhotoAlbum
     private OnItemClickLiestner onItemClickLiestner;
 
     public interface OnItemClickLiestner {
-        void onItemClick(Image image, Activity activity, View itemView);
+        void onItemClick(int position, Image image, Activity activity, View itemView);
     }
 
     public void setOnItemClickLiestner(OnItemClickLiestner liestner) {
@@ -64,10 +64,10 @@ public class PhotoAlbum_recycler_adapter extends RecyclerView.Adapter<PhotoAlbum
                         Bitmap imgBitmap = ((BitmapDrawable) holder.imgv.getDrawable())
                                 .getBitmap();
                         photos.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
-                        onItemClickLiestner.onItemClick(photos.get(holder.getAdapterPosition()),
+                        onItemClickLiestner.onItemClick(holder.getAdapterPosition(), photos.get(holder.getAdapterPosition()),
                                 activity, holder.itemView);
                     } catch (NullPointerException e) {
-                        onItemClickLiestner.onItemClick(photos.get(holder.getAdapterPosition()),
+                        onItemClickLiestner.onItemClick(holder.getAdapterPosition(), photos.get(holder.getAdapterPosition()),
                                 activity, holder.itemView);
                     }
                 }

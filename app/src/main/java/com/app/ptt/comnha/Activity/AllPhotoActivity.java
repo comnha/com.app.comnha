@@ -2,8 +2,10 @@ package com.app.ptt.comnha.Activity;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,6 +17,7 @@ import com.app.ptt.comnha.Adapters.PhotoAlbum_recycler_adapter;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -64,8 +67,13 @@ public class AllPhotoActivity extends AppCompatActivity {
         rv_img.setAdapter(imgAdapter);
         imgAdapter.setOnItemClickLiestner(new PhotoAlbum_recycler_adapter.OnItemClickLiestner() {
             @Override
-            public void onItemClick(Image image, Activity activity, View itemView) {
-
+            public void onItemClick(int position, Image image, Activity activity, View itemView) {
+                Intent intent_openViewPhoto = new Intent(activity, ViewPhotoActivity.class);
+                ActivityOptionsCompat option_img = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
+                        itemView.findViewById(R.id.imgv_rv_photalbum), "viewphoto");
+                Bundle bundle = option_img.toBundle();
+                bundle.putInt("imgPostion", position);
+                startActivity(intent_openViewPhoto, bundle);
             }
         });
     }
@@ -78,8 +86,9 @@ public class AllPhotoActivity extends AppCompatActivity {
                     Image image = item.getValue(Image.class);
                     image.setImageID(item.getKey());
                     images.add(image);
-                    imgAdapter.notifyDataSetChanged();
                 }
+                ChoosePhotoList.getInstance().setImage(images);
+                imgAdapter.notifyDataSetChanged();
             }
 
             @Override

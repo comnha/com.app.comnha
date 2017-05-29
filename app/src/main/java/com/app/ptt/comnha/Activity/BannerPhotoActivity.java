@@ -64,7 +64,7 @@ public class BannerPhotoActivity extends AppCompatActivity {
         rv_img.setAdapter(imgAdapter);
         imgAdapter.setOnItemClickLiestner(new PhotoAlbum_recycler_adapter.OnItemClickLiestner() {
             @Override
-            public void onItemClick(Image image, Activity activity, View itemView) {
+            public void onItemClick(int position, Image image, Activity activity, View itemView) {
 
             }
         });
