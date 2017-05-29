@@ -20,6 +20,7 @@ public class Const {
             Manifest.permission.INTERNET,
             Manifest.permission.ACCESS_FINE_LOCATION};
     public static final String SNACKBAR_GO_ONLINE = "SNACKBAR_GO_ONLINE";
+    public static final String SNACKBAR_TURN_ON_GPS= "SNACKBAR_TURN_ON_GPS";
 
     public static final boolean CONNECTED = true;
     public static final boolean NOTCONNECTED = false;
@@ -27,6 +28,8 @@ public class Const {
     public static final int INTENT_KEY_SIGN_UP = 1000;
     public static final String INTENT_KEY_EMAIL = "EMAIL";
     public static final String INTENT_KEY_PASSWORD = "PASSWORD";
+    public static final String PREF_FIRST_LAUNCH = "PREF_FIRST_LAUNCH";
+    public static final String PREF_MY_LOCATION = "PREF_MY_LOCATION";
     //
     public static final int PERMISSION_LOCATION_FLAG = 2;
 

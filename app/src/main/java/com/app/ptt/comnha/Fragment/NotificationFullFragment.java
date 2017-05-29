@@ -59,10 +59,7 @@ public class NotificationFullFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(mBroadcastSendAddress)) {
                 Log.i(LOG+".onReceive form Service","isConnected= "+ intent.getBooleanExtra("isConnected", false));
-                if (intent.getBooleanExtra("isConnected", false)) {
-                    isConnected = true;
-                } else
-                    isConnected = false;
+                isConnected = intent.getBooleanExtra("isConnected", false);
                 if(intent.getIntExtra("pos",0)!=-1){
                     listReaded.add(listNoti.get(intent.getIntExtra("pos",0)));
                     listNoti.get(intent.getIntExtra("pos",0)).setReaded(true);

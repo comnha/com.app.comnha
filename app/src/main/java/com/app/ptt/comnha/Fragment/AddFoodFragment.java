@@ -98,10 +98,7 @@ public class AddFoodFragment extends DialogFragment implements View.OnClickListe
             if (intent.getAction().equals(mBroadcastSendAddress)) {
                 Log.i(LOG + ".onReceive form Service", "isConnected= "
                         + intent.getBooleanExtra("isConnected", false));
-                if (intent.getBooleanExtra("isConnected", false)) {
-                    isConnected = true;
-                } else
-                    isConnected = false;
+                isConnected = intent.getBooleanExtra("isConnected", false);
             }
         }
     };

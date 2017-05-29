@@ -32,19 +32,23 @@ import java.util.List;
 
 public class AppUtils {
     //show snack bar have a button and title to do some thing
-    public static void showSnackbar(final Context c, View view, final String title, final String actionTitle, final String type) {
-        final Snackbar snackbar = Snackbar.make(view, title, Snackbar.LENGTH_LONG);
+    public static void showSnackbar(final Context c, View view, final String title, String actionTitle, final String type, final int showTime) {
+        final Snackbar snackbar = Snackbar.make(view, title, showTime);
         snackbar.setAction(actionTitle, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent snackBarIntent = new Intent();
-                snackBarIntent.setAction(Const.SNACKBAR_GO_ONLINE);
-                snackBarIntent.putExtra(Const.SNACKBAR_GO_ONLINE, type);
+                snackBarIntent.setAction(type);
+                snackBarIntent.putExtra(type, type);
                 c.sendBroadcast(snackBarIntent);
+                if(showTime==Snackbar.LENGTH_INDEFINITE){
+                    snackbar.dismiss();
+                }
             }
         });
         snackbar.show();
     }
+
 
     public static void showSnackbarWithoutButton(View view, final String title) {
 
@@ -89,11 +93,7 @@ public class AppUtils {
         try {
             LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
             boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            if (!isGPSEnabled) {
-                return false;
-            } else {
-                return true;
-            }
+            return isGPSEnabled;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -104,19 +104,13 @@ public class AppUtils {
     public static boolean isMobileNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mNetworkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        if (mNetworkInfo.isConnected()) {
-            return true;
-        }
-        return false;
+        return mNetworkInfo.isConnected();
     }
 
     public static boolean isWifiAvailable(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mNetworkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (mNetworkInfo.isConnected()) {
-            return true;
-        }
-        return false;
+        return mNetworkInfo.isConnected();
     }
 
     public static void showToast(Context c, String text, int type) {
@@ -127,10 +121,7 @@ public class AppUtils {
     }
 
     public static boolean checkEmptyEdt(EditText edt) {
-        if (edt.getText().toString().trim().equals("") || edt.getText().toString().isEmpty()) {
-            return true;
-        }
-        return false;
+        return edt.getText().toString().trim().equals("") || edt.getText().toString().isEmpty();
     }
 
     public static Menu createMenu(Menu menu,

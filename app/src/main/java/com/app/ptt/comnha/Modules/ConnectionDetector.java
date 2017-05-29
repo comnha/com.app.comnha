@@ -17,19 +17,13 @@ public class ConnectionDetector {
     public static boolean isMobileNetworkAvailable(Context mContext) {
         ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mNetworkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        if (mNetworkInfo.isConnected()) {
-            return true;
-        }
-        return false;
+        return mNetworkInfo.isConnected();
     }
 
     public static boolean isWifiAvailable(Context mContext) {
         ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mNetworkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (mNetworkInfo.isConnected()) {
-            return true;
-        }
-        return false;
+        return mNetworkInfo.isConnected();
     }
 
 
@@ -41,11 +35,7 @@ public class ConnectionDetector {
         try {
             LocationManager locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
             boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            if (!isGPSEnabled) {
-                return false;
-            } else {
-                return true;
-            }
+            return isGPSEnabled;
         } catch (Exception e) {
             e.printStackTrace();
             return false;

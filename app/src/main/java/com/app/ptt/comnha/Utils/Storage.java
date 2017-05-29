@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by cuong on 11/7/2016.
@@ -141,7 +142,7 @@ public class Storage {
     }
 
 
-    public static String  parseMyLocationToJson(ArrayList<Store>locations) {
+    public static String  parseMyLocationToJson(List<Store> locations) {
         Gson gson=new Gson();
         String json1=gson.toJson(locations);
         //Log.i("json string:",json1);

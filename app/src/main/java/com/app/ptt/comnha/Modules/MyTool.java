@@ -19,6 +19,7 @@ import android.util.Log;
 
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.Store;
+import com.app.ptt.comnha.Utils.Storage;
 import com.firebase.client.Firebase;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -183,7 +184,6 @@ public class MyTool implements GoogleApiClient.ConnectionCallbacks,
             this.doInBackGroundOK = doInBackGroundOK;
         }
 
-        ;
         DoInBackGroundOK doInBackGroundOK;
 
         @Override
@@ -358,19 +358,18 @@ public class MyTool implements GoogleApiClient.ConnectionCallbacks,
                         else
                             e += ", " + c;
 
-//                        store.setQuanhuyen(c);
+                        store.setDistrict(c);
                     }
                     if (d != null) {
                         if (a == null && b == null && c == null)
                             e += d;
                         else
                             e += ", " + d;
-//                        store.setTinhtp(d);
+                        store.setProvince(d);
                     }
-//                    store.setDiachi(e);
-//                    store.setLat(lat);
-//                    store.setLng(lon);
-//                    Log.i(LOG + ".returnLocationByLatLng", "Location can tim" + store.getDiachi());
+                    store.setAddress(e);
+                    store.setLat(lat);
+                    store.setLng(lon);
                     return store;
                 }
                 return null;

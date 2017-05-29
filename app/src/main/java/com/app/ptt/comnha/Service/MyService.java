@@ -18,6 +18,8 @@ import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.Notification;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.FireBase.User;
+import com.app.ptt.comnha.SingletonClasses.CoreManager;
+import com.app.ptt.comnha.Utils.LocationController;
 import com.app.ptt.comnha.Utils.MyTool;
 import com.app.ptt.comnha.Utils.Storage;
 
@@ -28,8 +30,6 @@ public class MyService extends Service {
     private final IBinder binder = new MyServiceBinder();
     NetworkChangeReceiver mBroadcastReceiver;
     private IntentFilter mIntentFilter;
-    private Dialog dialogLocationSetting;
-    String className1 = null;
     static Context staticContext;
     int a = 0;
     static boolean finish = false;
@@ -204,7 +204,6 @@ public class MyService extends Service {
     public IBinder onBind(Intent intent) {
         mIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         mIntentFilter.addAction(Const.BROADCAST_PROVIDER_CHANGED);
-
         //mIntentFilter.addAction(Const.BROADCAST_CONNECTIVITY_CHANGE);
         mIntentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         mIntentFilter.addAction(Const.BROADCAST_SEND_INFO);
@@ -212,6 +211,8 @@ public class MyService extends Service {
         broadcastIntent = new Intent();
         registerReceiver(mBroadcastReceiver, mIntentFilter);
         staticContext = getApplicationContext();
+
+        myTool=new MyTool(this);
         // TODO: Return the communication channel to the service.
         return this.binder;
     }
@@ -242,27 +243,18 @@ public class MyService extends Service {
     class NetworkChangeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Const.BROADCAST_SEND_INFO) && intent.getIntExtra("STT", 0) == 2) {
-                if (myTool.getYourLocation() != null) {
-                    try {
-                        Storage.deleteFile(getApplicationContext(), "myLocation");
-                        ArrayList<Store> list = new ArrayList<>();
-                        list.add(myTool.getYourLocation());
-                        Storage.writeFile(getApplicationContext(), Storage.parseMyLocationToJson(list).toString(), "myLocation");
-                    } catch (Exception e) {
-
-                    }
-                    broadcastIntent.setAction(Const.BROADCAST_SEND_STATUS_GET_LOCATION);
-                    broadcastIntent.putExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION, Const.CONNECTED);
-                    context.sendBroadcast(broadcastIntent);
-                }
-            }
             if (intent.getAction().equals(Const.BROADCAST_CONNECTIVITY_CHANGE)) {
+                broadcastIntent=new Intent();
                 if (isNetworkAvailable(context)) {
                     isNetworkConnected = true;
                     isNetworkConnectedStatic = true;
                     broadcastIntent.setAction(Const.BROADCAST_SEND_STATUS_INTERNET);
                     broadcastIntent.putExtra(Const.BROADCAST_SEND_STATUS_INTERNET, Const.CONNECTED);
+                        if(!canGetLocation(context)){
+                            broadcastIntent.putExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION, Const.NOTCONNECTED);
+                        }else{
+                            broadcastIntent.putExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION, Const.CONNECTED);
+                        }
                 } else {
                     isNetworkConnected = false;
                     isNetworkConnectedStatic = false;
@@ -273,49 +265,51 @@ public class MyService extends Service {
                 context.sendBroadcast(broadcastIntent);
             }
             if (intent.getAction().equals(Const.BROADCAST_PROVIDER_CHANGED)) {
+                broadcastIntent=new Intent();
                 if (canGetLocation(context)) {
-                    myTool = new MyTool(context);
-                } else {
-                    isLocationConnected = false;
                     isLocationConnectedStatic = false;
                     broadcastIntent.setAction(Const.BROADCAST_SEND_STATUS_GET_LOCATION);
-                    broadcastIntent.putExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION, Const.NOTCONNECTED);
+                    broadcastIntent.putExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION, Const.CONNECTED);
+                } else {
+                        isLocationConnected = false;
+                        isLocationConnectedStatic = false;
+                        broadcastIntent.setAction(Const.BROADCAST_SEND_STATUS_GET_LOCATION);
+                        broadcastIntent.putExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION, Const.NOTCONNECTED);
+
                 }
             }
-
+            context.sendBroadcast(broadcastIntent);
         }
 
-        private boolean canGetLocation(Context mContext) {
 
-            int a = 0;
-            try {
-                a = Settings.Secure.getInt(mContext.getContentResolver(), Settings.Secure.LOCATION_MODE);
-            } catch (Settings.SettingNotFoundException e) {
-                e.printStackTrace();
-            }
-            if (a >= 2) return true;
-            return false;
+    }
+    public static boolean canGetLocation(Context mContext) {
+
+        int a = 0;
+        try {
+            a = Settings.Secure.getInt(mContext.getContentResolver(), Settings.Secure.LOCATION_MODE);
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
         }
+        return a >= 2;
+    }
 
-        private boolean isNetworkAvailable(Context context) {
-            boolean flag = false;
-            ConnectivityManager connectivity = (ConnectivityManager)
-                    context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            if (connectivity != null) {
-                NetworkInfo[] info = connectivity.getAllNetworkInfo();
-
-                if (info != null) {
-                    for (int i = 0; i < info.length; i++) {
-                        if (info[i].getState() == NetworkInfo.State.CONNECTED) {
-                            flag = true;
-                            break;
-                        }
+    public static boolean isNetworkAvailable(Context context) {
+        boolean flag = false;
+        ConnectivityManager connectivity = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null) {
+                for (int i = 0; i < info.length; i++) {
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+                        flag = true;
+                        break;
                     }
                 }
             }
-
-            return flag;
         }
+        return flag;
     }
 
 }

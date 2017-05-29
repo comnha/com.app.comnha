@@ -65,7 +65,7 @@ public class Reviewlist_rcyler_adapter extends RecyclerView.Adapter<Reviewlist_r
         this.list = list;
         this.activity = activity;
         bitmapList=new ArrayList<>();
-        this.type=type;
+        Reviewlist_rcyler_adapter.type =type;
 
 
     }
