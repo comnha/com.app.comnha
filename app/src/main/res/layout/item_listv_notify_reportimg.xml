@@ -89,15 +89,18 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nội dung: " />
+                        android:text="Nội dung: "
+                        android:textColor="@android:color/black" />
 
                     <TextView
                         android:id="@+id/textV_content_item_notify_reportimg"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
-                        android:gravity="end|center_vertical"
-                        android:textAllCaps="false" />
+                        android:gravity="start|center_vertical"
+                        android:textColor="@android:color/black"
+                        android:textAllCaps="false"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <TextView

@@ -57,7 +57,8 @@
                     android:gravity="center_vertical"
                     android:lines="1"
                     android:textAllCaps="false"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/black"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/textV_un_item_notify_reportfood"
@@ -105,8 +106,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
-                        android:gravity="end|center_vertical"
-                        android:textAllCaps="false" />
+                        android:gravity="start|center_vertical"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <TextView
