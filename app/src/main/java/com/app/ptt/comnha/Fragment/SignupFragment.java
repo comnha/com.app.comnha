@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -121,7 +122,7 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
                 if (isNetworkConnected) {
                     validateInput(view);
                 } else
-                    showSnackbar(getActivity(), getView(), "Không có kết nối internet", "Kết nối", Const.SNACKBAR_GO_ONLINE);
+                    showSnackbar(getActivity(), getView(), getString(R.string.text_not_internet), getString(R.string.text_connect), Const.SNACKBAR_GO_ONLINE, Snackbar.LENGTH_SHORT);
                 break;
             case R.id.editText_birth_signup:
                 dpd.show(getActivity().getFragmentManager(), "Datepickerdialog");

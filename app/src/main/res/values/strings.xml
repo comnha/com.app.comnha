@@ -48,7 +48,8 @@
     <string name="text_signup">Đăng kí</string>
     <string name="text_havenoacc"><u>Bạn chưa có tài khoản?</u></string>
     <string name="text_signin">Đăng nhập</string>
-
+    <string name="text_not_internet">Không có kết nối internet</string>
+    <string name="text_connect">Kết nối</string>
     <string name="text_signin_fail">Đăng nhập thất bại </string>
     <string name="text_signout_fail">Đăng xuất thất bại</string>
     <string name="text_signout_success">Đã đăng xuất</string>

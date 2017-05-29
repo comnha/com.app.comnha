@@ -103,10 +103,7 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(mBroadcastSendAddress)) {
                 Log.i(LOG + ".onReceive form Service", "isConnected= " + intent.getBooleanExtra("isConnected", false));
-                if (intent.getBooleanExtra("isConnected", false)) {
-                    isConnected = true;
-                } else
-                    isConnected = false;
+                isConnected = intent.getBooleanExtra("isConnected", false);
             }
         }
     };

@@ -3,6 +3,7 @@ package com.app.ptt.comnha.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -17,8 +18,11 @@ import android.view.ViewGroup;
 import com.app.ptt.comnha.Activity.StoreDeatailActivity;
 import com.app.ptt.comnha.Adapters.Store_recycler_adapter;
 import com.app.ptt.comnha.Models.FireBase.Store;
+import com.app.ptt.comnha.Modules.MyTool;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
+import com.app.ptt.comnha.SingletonClasses.CoreManager;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,7 +46,7 @@ public class MainStoreFragment extends Fragment {
     String pro_dist = "Quận 9_HCM";
     StorageReference stRef;
     SwipeRefreshLayout swipeRefresh;
-
+    MyTool myTool;
     public MainStoreFragment() {
         // Required empty public constructor
     }
@@ -59,7 +63,35 @@ public class MainStoreFragment extends Fragment {
                 getString(R.string.firebaseStorage_path));
         ref(view);
         getStoreList();
+        myTool=new MyTool(getActivity());
+
         return view;
+    }
+    public class calculateDistance extends AsyncTask<Void,Void,Void>{
+        @Override
+        protected Void doInBackground(Void... params) {
+            for (Store store:items) {double distance=0;
+
+                try {
+                    distance= myTool.getDistance(new LatLng(store.getLat(), store.getLng()),
+                            new LatLng(CoreManager.getInstance().getMyLocation().getLat(), CoreManager.getInstance().getMyLocation().getLng()));
+                    int c = (int) Math.round(distance);
+                                int d = c / 1000;
+                                int e = c % 1000;
+                                int f = e / 100;
+                    store.setDistance(d + "," + f);
+                }catch (Exception e){
+
+                }
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            itemadapter.notifyDataSetChanged();
+        }
     }
 
     private void getStoreList() {
@@ -69,6 +101,7 @@ public class MainStoreFragment extends Fragment {
                 for (DataSnapshot item : dataSnapshot.getChildren()) {
                     Store store = item.getValue(Store.class);
                     store.setStoreID(item.getKey());
+
                     items.add(store);
                     itemadapter.setStorageRef(
                             FirebaseStorage.getInstance().getReferenceFromUrl(
@@ -92,6 +125,18 @@ public class MainStoreFragment extends Fragment {
                 .orderByChild("isHidden_dis_pro")
                 .equalTo(String.valueOf(false) + "_" + pro_dist)
                 .addValueEventListener(childEventListener);
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                new calculateDistance().execute();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     private void ref(final View view) {

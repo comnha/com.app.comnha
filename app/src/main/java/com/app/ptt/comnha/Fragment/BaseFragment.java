@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,9 +56,7 @@ public class BaseFragment extends Fragment {
         return m.matches();
     }
     public boolean passWordLenght(String pass){
-        if(pass.length()<8)
-            return false;
-        return true;
+        return pass.length() >= 8;
     }
 
     @Override
@@ -87,13 +86,25 @@ public class BaseFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getContext().registerReceiver(broadcastReceiver, mIntentFilter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getContext().unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         isNetworkConnected = MyService.returnIsNetworkConnected();
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Const.BROADCAST_SEND_STATUS_INTERNET);
         mIntentFilter.addAction(Const.SNACKBAR_GO_ONLINE);
-        getContext().registerReceiver(broadcastReceiver, mIntentFilter);
+
         auth=FirebaseAuth.getInstance();
         Firebase.setAndroidContext(getContext());
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getString(R.string.firebase_path));
@@ -101,7 +112,7 @@ public class BaseFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        getContext().unregisterReceiver(broadcastReceiver);
+
     }
     protected void handleProgressDialog(final String alertText) {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
@@ -130,7 +141,7 @@ public class BaseFragment extends Fragment {
                     }
                     if (!intent.getBooleanExtra(Const.BROADCAST_SEND_STATUS_INTERNET, false)) {
                         isNetworkConnected = false;
-                        showSnackbar(getActivity(), getView(), "Không có kết nối internet", "Kết nối", Const.SNACKBAR_GO_ONLINE);
+                        showSnackbar(getActivity(), getView(), getString(R.string.text_not_internet), getString(R.string.text_connect), Const.SNACKBAR_GO_ONLINE, Snackbar.LENGTH_SHORT);
 
                     }
                 }
@@ -140,7 +151,7 @@ public class BaseFragment extends Fragment {
                     }
                     if (!intent.getBooleanExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION, false)) {
                         isLocationConnected = false;
-                        //showSnackbar(getActivity(), getView(), "Không có kết nối internet", "Kết nối", Const.SNACKBAR_GO_ONLINE);
+
 
                     }
                 }

@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
@@ -14,6 +16,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,15 +27,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.ptt.comnha.Adapters.SingleImageImportRvAdapter;
 import com.app.ptt.comnha.Classes.SelectedImage;
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.NewstoreNotify;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Modules.LocationFinderListener;
@@ -49,6 +57,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -61,43 +70,43 @@ import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.io.File;
+import java.io.IOException;
+import java.security.Permission;
+import java.security.Permissions;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Scanner;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class AddstoreFragment extends Fragment implements View.OnClickListener, TimePickerDialog.OnTimeSetListener,
-        DialogInterface.OnDismissListener, DialogInterface.OnCancelListener, LocationFinderListener, PlaceSelectionListener {
+        DialogInterface.OnDismissListener, DialogInterface.OnCancelListener, LocationFinderListener {
     FloatingActionButton fab_save;
     public static final String LOG = AddstoreFragment.class.getSimpleName();
     ArrayList<PlaceAttribute> mPlaceAttribute;
-    EditText edt_storeName, edt_phoneNumb, edt_address;
-    PlaceAutocompleteFragment _autocompleteFragment;
+    EditText edt_storeName, edt_phoneNumb ;
+    List<String> addressList;
+    AutoCompleteTextView edt_address;
     Button btn_opentime, btn_closetime;
     ProgressDialog mProgressDialog, uploadImgDialog;
     DatabaseReference dbRef;
     StorageReference stRef;
     UploadTask uploadTask;
     Calendar now;
-    String tinh, huyen, diachi;
     TimePickerDialog tpd;
     int edtID, pos = -1;
     Store newLocation;
     int hour, min;
     String key;
-    Geocoder gc;
     PlaceAPI placeAPI;
-    AutoCompleteTextView autoCompleteText;
-    String a = "";
-    MyTool myTool;
     boolean isConnected = true;
     IntentFilter mIntentFilter;
-    String mString;
     Toolbar toolbar;
     private TextView txtv_avatar, txtv_save;
     ImageView imgv_avatar;
@@ -106,10 +115,10 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
     private GridLayoutManager imageslm;
     private SelectedImage selectedImage;
     private BottomSheetDialog imgsDialog;
-
-    String storename, address = "89 Man Thiện, Hiệp Phú", phonenumb, opentime,
-            province = "HCM", district = "Quận 9", storeimg = "";
-    double lat = 35464, lng = 56488949;
+    private MyTool myTool;
+    String storename, address, phonenumb, opentime,
+            province, district , storeimg = "";
+    double lat, lng;
     String userID;//người tạo
     Store store;
     String un;
@@ -121,10 +130,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(mBroadcastSendAddress)) {
                 Log.i(LOG + ".onReceive form Service", "isConnected= " + intent.getBooleanExtra("isConnected", false));
-                if (intent.getBooleanExtra("isConnected", false)) {
-                    isConnected = true;
-                } else
-                    isConnected = false;
+                isConnected = intent.getBooleanExtra("isConnected", false);
             }
         }
     };
@@ -158,7 +164,6 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         View view = inflater.inflate(R.layout.fragment_addstore, container, false);
         isConnected = MyService.returnIsNetworkConnected();
         now = Calendar.getInstance();
-        gc = new Geocoder(getContext(), Locale.getDefault());
         if (LoginSession.getInstance().getFirebUser() != null) {
             userID = LoginSession.getInstance().getFirebUser().getUid();
             un = LoginSession.getInstance().getFirebUser().getDisplayName();
@@ -172,10 +177,83 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
         FirebaseStorage storage = FirebaseStorage.getInstance();
         stRef = storage.getReferenceFromUrl(getString(R.string.firebaseStorage_path));
+
         return view;
     }
 
+    private void setupAutoCompleteTextView(){
+        myTool=new MyTool(getActivity());
+        addressList=new ArrayList<>();
+        edt_address.setAdapter(new PlacesAutoCompleteAdapter(getContext(), R.layout.autocomplete_list_item));
+        edt_address.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                pos = position;
+            }
+        });
+    }
+        class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
+        ArrayList<String> resultList;
+        Context mContext;
+        int mResource;
 
+        public PlacesAutoCompleteAdapter(Context context, int resource) {
+            super(context, resource);
+            mContext = context;
+            mPlaceAttribute = new ArrayList<>();
+            mResource = resource;
+        }
+
+        @Override
+        public int getCount() {
+            if (resultList != null) {
+                return resultList.size();
+            } else return 0;
+        }
+
+
+        @Override
+        public String getItem(int position) {
+            return resultList.get(position);
+        }
+
+        @NonNull
+        @Override
+        public Filter getFilter() {
+            final Filter filter = new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
+                    FilterResults filterResults = new FilterResults();
+                    if (constraint != null) {
+                        mPlaceAttribute = new ArrayList<>();
+                        mPlaceAttribute = myTool.returnPlaceAttributeByName(constraint.toString());
+                        if (mPlaceAttribute != null) {
+                            resultList = new ArrayList<>();
+                            for (PlaceAttribute placeAttribute : mPlaceAttribute)
+                                resultList.add(placeAttribute.getFullname());
+                            filterResults.values = resultList;
+                            filterResults.count = resultList.size();
+                        } else {
+                            PlaceAttribute a1 =new PlaceAttribute();
+                            a1.setFullname(constraint.toString());
+                            mPlaceAttribute.add(a1);
+                        }
+                    }
+                    return filterResults;
+                }
+
+                @Override
+                protected void publishResults(CharSequence constraint, FilterResults results) {
+                    if (results != null && results.count > 0) {
+                        notifyDataSetChanged();
+                    } else {
+                        notifyDataSetInvalidated();
+                    }
+                }
+            };
+            return filter;
+        }
+    }
     void anhXa(View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().getWindow().setStatusBarColor(getResources()
@@ -183,6 +261,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         }
         toolbar = (Toolbar) view.findViewById(R.id.toolbar_addloca);
         toolbar.setTitle(getString(R.string.text_addloca));
+
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         toolbar.setNavigationIcon(R.drawable.ic_close_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -193,8 +272,6 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         });
         toolbar.setBackgroundColor(getResources()
                 .getColor(R.color.color_selection_report));
-
-
         edt_storeName = (EditText) view.findViewById(R.id.frg_addloction_edt_storename);
         edt_storeName.addTextChangedListener(new TextWatcher() {
             @Override
@@ -212,8 +289,8 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
 
             }
         });
-        edt_address = (EditText) view.findViewById(R.id.frg_addloction_edt_address);
-
+        edt_address = (AutoCompleteTextView) view.findViewById(R.id.frg_addloction_edt_address);
+        setupAutoCompleteTextView();
         edt_phoneNumb = (EditText) view.findViewById(R.id.frg_addloction_edt_phonenumb);
         edt_phoneNumb.addTextChangedListener(new TextWatcher() {
             @Override
@@ -245,11 +322,6 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         btn_closetime.setText(new Times().getTimeNoSecond());
         opentime = new Times().getTimeNoSecond() + " - "
                 + new Times().getTimeNoSecond();
-//        _autocompleteFragment = (PlaceAutocompleteFragment)
-//                getActivity()
-//                        .getFragmentManager()
-//                        .findFragmentById(R.id.place_autocomplete_fragment);
-//        _autocompleteFragment.setOnPlaceSelectedListener(this);
         txtv_avatar = (TextView) view.findViewById(R.id.frg_addloction_txtv_avatar);
         txtv_avatar.setOnClickListener(this);
 
@@ -317,7 +389,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
                 } else if (AppUtils.checkEmptyEdt(edt_phoneNumb)) {
                     edt_phoneNumb.setError(getText(R.string.txt_nophonenumb));
                 } else {
-                    savestore();
+                    new PlaceAPI(mPlaceAttribute.get(pos).getFullname(),this);
                 }
                 break;
             case R.id.frg_addloction_btn_opentime:
@@ -329,9 +401,31 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
                 tpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
                 break;
             case R.id.frg_addloction_imgv_avatar:
-                singleImageImportRvAdapter.readthentranstoarray();
-                imagesrv.scrollToPosition(0);
-                imgsDialog.show();
+                String[] permissons=new String[1];
+                permissons[0]=Const.mListPermissions[0];
+                List<String> results=AppUtils.checkPermissions(getActivity(),permissons);
+                if (results.size()>0){
+                    AppUtils.requestPermission(getActivity(),results,Const.PERMISSION_LOCATION_FLAG);
+                } else{
+                    singleImageImportRvAdapter.readthentranstoarray();
+                    imagesrv.scrollToPosition(0);
+                    imgsDialog.show();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case Const.PERMISSION_LOCATION_FLAG:
+                if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
+                    singleImageImportRvAdapter.readthentranstoarray();
+                    imagesrv.scrollToPosition(0);
+                    imgsDialog.show();
+                }else{
+
+                }
                 break;
         }
     }
@@ -341,6 +435,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         String key = dbRef.child(getString(R.string.store_CODE)).push().getKey(),
                 notifyKey = dbRef.child(getString(R.string.notify_newstore_CODE))
                         .push().getKey();
+
         store = new Store(storename, address, phonenumb, opentime,
                 province, district, lat, lng, userID, storeimg);
         notify = new NewstoreNotify(key, storename, address,
@@ -474,17 +569,6 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
     }
 
     @Override
-    public void onPlaceSelected(Place place) {
-        diachi = place.getAddress().toString();
-        _autocompleteFragment.setText(place.getAddress());
-    }
-
-    @Override
-    public void onError(Status status) {
-
-    }
-
-    @Override
     public void onDetach() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().getWindow().setStatusBarColor(getResources()
@@ -494,141 +578,43 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
 
     }
 
-    public String returnFullname() {
-        String a = mPlaceAttribute.get(pos).getAddressNum();
-        String b = mPlaceAttribute.get(pos).getLocality();
-        String c = mPlaceAttribute.get(pos).getDistrict();
-        String d = mPlaceAttribute.get(pos).getState();
-        String e = "";
-        if (a != null)
-            e += a;
-        if (b != null)
-            if (a == null)
-                e += b;
-            else
-                e += ", " + b;
-
-        if (c != null)
-            if (a == null && b == null)
-                e += c;
-            else
-                e += ", " + c;
-        if (d != null)
-            if (a == null && b == null && c == null)
-                e += d;
-            else
-                e += ", " + d;
-        return e;
-    }
-
-
     @Override
     public void onLocationFinderStart() {
 
     }
 
     @Override
-    public void onLocationFinderSuccess(PlaceAttribute placeAttribute) {
-////        if (placeAttribute != null) {
-////            final PlaceAttribute myPlaceAttribute = placeAttribute;
-////            newLocation.setDiachi(placeAttribute.getFullname());
-////            Log.i(LOG + ".onLocationFinder", placeAttribute.getState() + "-" + placeAttribute.getDistrict());
-////            final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-////            builder.setMessage("Địa chỉ: " + placeAttribute.getFullname()).setTitle("Xác nhận")
-////                    .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-////                        @Override
-////                        public void onClick(DialogInterface dialog, int which) {
-////                            dialog.dismiss();
-////                            plzw8Dialog = ProgressDialog.show(getActivity(),
-////                                    getResources().getString(R.string.txt_plzwait),
-////                                    getResources().getString(R.string.txt_addinloca), true, true);
-////                            newLocation.setLat(myPlaceAttribute.getPlaceLatLng().latitude);
-////                            newLocation.setLng(myPlaceAttribute.getPlaceLatLng().longitude);
-////                            newLocation.setTinhtp(myPlaceAttribute.getState());
-////                            newLocation.setQuanhuyen(myPlaceAttribute.getDistrict());
-////                            newLocation.setTime(new Times().getTime());
-////                            newLocation.setDate(new Times().getDate());
-////                            newLocation.setIndex(myPlaceAttribute.getState()+"_"+myPlaceAttribute.getDistrict());
-////                            newLocation.setPvAVG(5);
-////                            newLocation.setVsAVG(5);
-////                            newLocation.setGiaAVG(5);
-////                            newLocation.setTongAVG(5);
-////                            newLocation.setSize(1);
-////                            newLocation.setPvTong(5);
-////                            newLocation.setVsTong(5);
-////                            newLocation.setGiaTong(5);
-////                            //if(MyService.getUserAccount().getRole())
-////                                newLocation.setVisible(true);
-//////                            else
-//////                                newLocation.setVisible(false);
-////                            newLocation.setUserId(MyService.getUserAccount().getId());
-////                            Log.i(LOG + ".onLocation", tinh + " va " + huyen);
-////                            key = dbRef.child(getResources().getString(R.string.locations_CODE)).push().getKey();
-////                            Map<String, Object> newLocaValue = newLocation.toMap();
-////                            Map<String, Object> childUpdates = new HashMap<>();
-////                            childUpdates.put(getResources().getString(R.string.locations_CODE)
-////                                    + key, newLocaValue);
-////                            newLocation.setStoreID(key);
-////                            dbRef.updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
-////                                @Override
-////                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-////                                    if (databaseError != null) {
-////                                        plzw8Dialog.dismiss();
-////                                        Toast.makeText(getActivity(), "Lỗi: " + databaseError.getMessage(), Toast.LENGTH_LONG).show();
-////                                    } else {
-////                                            Map<String, Object> childUpdates = new HashMap<>();
-////                                            Notification notification = new Notification();
-////                                            String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + "admin").push().getKey();
-////                                            notification.setAccount(MyService.getUserAccount());
-////                                            notification.setDate(new Times().getDate());
-////                                            notification.setTime(new Times().getTime());
-////                                            notification.setType(2);
-////
-////                                            notification.setStore(newLocation);
-////                                            notification.setReaded(false);
-////                                            notification.setTo("admin");
-////                                            Map<String, Object> notificationValue = notification.toMap();
-////                                            childUpdates.put(getResources().getString(R.string.notification_CODE) + "admin/" + key, notificationValue);
-////                                            dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-////                                                @Override
-////                                                public void onComplete(@NonNull Task<Void> task) {
-////                                                    if (task.isComplete()) {
-////                                                        plzw8Dialog.dismiss();
-////                                                        Toast.makeText(getActivity(),
-////                                                                getResources().getString(R.string.text_noti_addloca_succes)
-////                                                                , Toast.LENGTH_SHORT).show();
-////                                                        getActivity().finish();
-////                                                    } else {
-////                                                        plzw8Dialog.dismiss();
-////                                                        Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-////                                                    }
-////                                                }
-////                                            });
-////
-////
-////
-////                                    }
-////                                }
-////
-////                            });
-////
-////
-////                        }
-////                    })
-////                    .setNegativeButton("Thử lại", new DialogInterface.OnClickListener() {
-////                        @Override
-////                        public void onClick(DialogInterface dialog, int which) {
-////                            dialog.dismiss();
-////                        }
-////                    });
-////            AlertDialog dialog = builder.create();
-////            dialog.show();
-//            //builder.create();
-//        } else {
-//            //plzw8Dialog.dismiss();
-//            Toast.makeText(getActivity(), "Lỗi! Kiểm tra dữ liệu nhập vàp ", Toast.LENGTH_LONG).show();
-//        }
-//        pos=-1;
+    public void onLocationFinderSuccess(final PlaceAttribute placeAttribute) {
+        if (placeAttribute != null) {
+            final PlaceAttribute myPlaceAttribute = placeAttribute;
+
+            Log.i(LOG + ".onLocationFinder", placeAttribute.getState() + "-" + placeAttribute.getDistrict());
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setMessage("Địa chỉ: " + placeAttribute.getFullname()).setTitle("Xác nhận")
+                    .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            address=placeAttribute.getFullname();
+                            lat=placeAttribute.getPlaceLatLng().latitude;
+                            lng=placeAttribute.getPlaceLatLng().longitude;
+                            district=placeAttribute.getDistrict();
+                            province=placeAttribute.getState();
+                            savestore();
+                        }
+                    })
+                    .setNegativeButton("Thử lại", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } else {
+
+            Toast.makeText(getActivity(), "Lỗi! Kiểm tra dữ liệu nhập vàp ", Toast.LENGTH_LONG).show();
+        }
+        pos=-1;
     }
 
     @Override

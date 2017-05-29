@@ -59,8 +59,9 @@ public class MyTool implements
         this.mContext = context;
         listLocation = new ArrayList<>();
         broadcastIntent = new Intent();
+        Locale locale = new Locale("vi","VN");
+        Locale.setDefault(locale);
         geocoder = new Geocoder(mContext, Locale.getDefault());
-
     }
 
 
@@ -115,12 +116,11 @@ public class MyTool implements
             this.doInBackGroundOK = doInBackGroundOK;
         }
 
-        ;
         DoInBackGroundOK doInBackGroundOK;
 
         @Override
         protected Void doInBackground(Void... params) {
-            store = returnLocationByLatLng(location.getLatitude(), location.getLongitude());
+            store = returnLocationByLatLng(geocoder,location.getLatitude(), location.getLongitude());
             return null;
         }
 
@@ -132,45 +132,6 @@ public class MyTool implements
             }
         }
     }
-
-//    @Override
-//    public void onLocationChanged(Location location) {
-//        Log.i(LOG + ".onLocationChanged", "Giam sat su thay doi vi tri. lat=" + location.getLatitude() + " - lng=" + location.getLongitude());
-//        if (getLocationFail) {
-//            Log.i(LOG + ".onLocationChanged", "Get location fail");
-//            if (mGoogleApiClient.isConnected()) {
-//                if (location != null) {
-//                    Log.i(LOG + ".onLocationChanged", "location!=null");
-//                    ParseToLocation parseToLocation = new ParseToLocation(location, this);
-//                    parseToLocation.execute();
-//                }
-//            } else {
-//                Log.i(LOG + ".onLocationChanged", "location==null");
-//                flag = -4;
-//                startGoogleApi();
-//            }
-//        }
-//        if (latitude == null && longtitude == null) {
-//            this.latitude = location.getLatitude();
-//            this.longtitude = location.getLongitude();
-//            Store store;
-//            store = returnLocationByLatLng(location.getLatitude(), location.getLongitude());
-//            flag = 2;
-////            placeAPI = new PlaceAPI(store.getDiachi(), this);
-////        }
-//            if (location != null) {
-//                if (location.getLatitude() != this.latitude && location.getLongitude() != this.longtitude &&
-//                        getDistance(new LatLng(location.getLatitude(), location.getLongitude()), new LatLng(this.latitude, this.longtitude)) > 2000) {
-//                    Log.i(LOG + ".onLocationChanged", "Vi tri cua ban bi thay doi: " + getDistance(new LatLng(location.getLatitude(), location.getLongitude()), new LatLng(this.latitude, this.longtitude)) + "m");
-//                    this.latitude = location.getLatitude();
-//                    this.longtitude = location.getLongitude();
-//                    flag = 2;
-//                    ParseToLocation parseToLocation = new ParseToLocation(location, this);
-//                    parseToLocation.execute();
-//                }
-//            }
-//        }
-//    }
 
     public void sendBroadcast(String a) {
         broadcastIntent = new Intent();
@@ -186,20 +147,6 @@ public class MyTool implements
         }
     }
 
-    private void initLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(5000);
-        mLocationRequest.setFastestInterval(5000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    }
-
-    public boolean isGoogleApiConnected() {
-        if (mGoogleApiClient != null)
-            return mGoogleApiClient.isConnected();
-        else return false;
-    }
-
-
     public Store getYourLocation() {
         Log.i(LOG + ".returnLocation", "Lay vi tri cua ban");
         if (yourLocation != null)
@@ -208,9 +155,8 @@ public class MyTool implements
             return null;
     }
 
-    public Store returnLocationByLatLng(Double latitude, Double longitude) {
+    public Store returnLocationByLatLng(Geocoder geocoder,Double latitude, Double longitude) {
         Store store = new Store();
-
         List<Address> addresses;
         Double lat = latitude;
         Double lon = longitude;
@@ -252,19 +198,18 @@ public class MyTool implements
                         else
                             e += ", " + c;
 
-//                        store.setQuanhuyen(c);
+                        store.setProvince(c);
                     }
                     if (d != null) {
                         if (a == null && b == null && c == null)
                             e += d;
                         else
                             e += ", " + d;
-//                        store.setTinhtp(d);
+                        store.setDistrict(d);
                     }
-//                    store.setDiachi(e);
-//                    store.setLat(lat);
-//                    store.setLng(lon);
-//                    Log.i(LOG + ".returnLocationByLatLng", "Location can tim" + store.getDiachi());
+                    store.setAddress(e);
+                    store.setLat(lat);
+                    store.setLng(lon);
                     return store;
                 }
                 return null;
@@ -341,11 +286,6 @@ public class MyTool implements
                 }
                 placeAttribute.setFullname(e);
                 placeAttribute.setPlaceLatLng(new LatLng(address.getLatitude(), address.getLongitude()));
-                Log.i(LOG + ".addtoPlaceAttribute", "Full name: " + placeAttribute.getFullname());
-                Log.i(LOG + ".addtoPlaceAttribute", "Address Number:" + placeAttribute.getAddressNum());
-                Log.i(LOG + ".addtoPlaceAttribute", "Locality: " + placeAttribute.getLocality());
-                Log.i(LOG + ".addtoPlaceAttribute", "District: " + placeAttribute.getDistrict());
-                Log.i(LOG + ".addtoPlaceAttribute", "State: " + placeAttribute.getState());
                 listPlaceAttribute.add(placeAttribute);
             }
             if (listPlaceAttribute.size() > 0)
