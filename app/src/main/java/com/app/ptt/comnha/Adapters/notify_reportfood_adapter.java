@@ -86,10 +86,10 @@ public class notify_reportfood_adapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.name.setText("Tên: " + items.get(position).getName());
-        holder.date.setText("Ngày: " + items.get(position).getDate());
-        holder.time.setText("Giờ: " + items.get(position).getTime());
-        holder.un.setText("Từ: " + items.get(position).getUn());
+        holder.name.setText(activity.getString(R.string.text_foodname) + ": " + items.get(position).getName());
+        holder.date.setText(activity.getString(R.string.txt_date) + ": " + items.get(position).getDate());
+        holder.time.setText(activity.getString(R.string.txt_time) + ": " + items.get(position).getTime());
+        holder.un.setText(activity.getString(R.string.txt_from) + ": " + items.get(position).getUn());
         holder.content.setText(items.get(position).getContents());
         if (!items.get(position).isReadstate()) {
             holder.readestate.setText(activity.getString(R.string.txt_notread));

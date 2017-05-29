@@ -87,11 +87,11 @@ public class notify_reportpost_adapter extends BaseAdapter {
 
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.title.setText(items.get(position).getTitle());
-        holder.date.setText("Ngày: " + items.get(position).getDate());
-        holder.time.setText("Giờ: " + items.get(position).getTime());
-        holder.un.setText("Từ: " + items.get(position).getUn());
-        holder.content.setText("Nội dung: " + items.get(position).getContents());
+        holder.title.setText(activity.getString(R.string.text_title) + ": " + items.get(position).getTitle());
+        holder.date.setText(activity.getString(R.string.txt_date) + ": " + items.get(position).getDate());
+        holder.time.setText(activity.getString(R.string.txt_time) + ": " + items.get(position).getTime());
+        holder.un.setText(activity.getString(R.string.txt_from) + ": " + items.get(position).getUn());
+        holder.content.setText(items.get(position).getContents());
         if (!items.get(position).isReadstate()) {
             holder.readestate.setText(activity.getString(R.string.txt_notread));
             holder.readestate.setTextColor(activity.getResources()

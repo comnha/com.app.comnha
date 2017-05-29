@@ -46,6 +46,7 @@ public class notify_reportstore_adapter extends BaseAdapter {
     public void setOnOptionItemClickListener(OnOptionItemClickListener onOptionItemClickListener) {
         this.onOptionItemClickListener = onOptionItemClickListener;
     }
+
     public notify_reportstore_adapter(Activity activity, ArrayList<ReportstoreNotify> items) {
         this.activity = activity;
         this.items = items;
@@ -86,11 +87,11 @@ public class notify_reportstore_adapter extends BaseAdapter {
 
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.name.setText("Tên quán: "+items.get(position).getStoreName());
-        holder.address.setText("Địa chỉ: "+items.get(position).getAddress());
-        holder.date.setText("Ngày: " + items.get(position).getDate());
-        holder.time.setText("Giờ: " + items.get(position).getTime());
-        holder.un.setText("Từ: " + items.get(position).getUn());
+        holder.name.setText(activity.getString(R.string.txt_storename) + ": " + items.get(position).getStoreName());
+        holder.address.setText(activity.getString(R.string.text_address) + ": " + items.get(position).getAddress());
+        holder.date.setText(activity.getString(R.string.txt_date) + ": " + items.get(position).getDate());
+        holder.time.setText(activity.getString(R.string.txt_time) + ": " + items.get(position).getTime());
+        holder.un.setText(activity.getString(R.string.txt_from) + ": " + items.get(position).getUn());
         holder.content.setText(items.get(position).getContents());
         if (!items.get(position).isReadstate()) {
             holder.readestate.setText(activity.getString(R.string.txt_notread));
@@ -149,7 +150,7 @@ public class notify_reportstore_adapter extends BaseAdapter {
     }
 
     class ViewHolder {
-        TextView name,address, content, date, time, readestate, un;
+        TextView name, address, content, date, time, readestate, un;
         ImageView more;
         CardView cardv;
     }

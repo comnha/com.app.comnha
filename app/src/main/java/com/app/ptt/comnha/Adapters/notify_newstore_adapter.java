@@ -37,6 +37,7 @@ public class notify_newstore_adapter extends BaseAdapter {
     public void setOnItemClickLiestner(OnItemClickLiestner liestner) {
         onItemClickLiestner = liestner;
     }
+
     public interface OnOptionItemClickListener {
         void onDelNotify(NewstoreNotify notify);
 
@@ -46,11 +47,11 @@ public class notify_newstore_adapter extends BaseAdapter {
     public void setOnOptionItemClickListener(OnOptionItemClickListener onOptionItemClickListener) {
         this.onOptionItemClickListener = onOptionItemClickListener;
     }
+
     public notify_newstore_adapter(Activity activity, ArrayList<NewstoreNotify> items) {
         this.activity = activity;
         this.items = items;
     }
-
 
 
     @Override
@@ -93,8 +94,8 @@ public class notify_newstore_adapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.name.setText(items.get(position).getName());
-        holder.address.setText(items.get(position).getAddress());
+        holder.name.setText(activity.getString(R.string.txt_storename) + ": " + items.get(position).getName());
+        holder.address.setText(activity.getString(R.string.text_address) + ": " + items.get(position).getAddress());
         holder.date.setText(activity.getString(R.string.txt_createdate) + items.get(position).getDate());
         holder.createby.setText(activity.getString(R.string.txt_storeaddby) + items.get(position).getUn());
         if (!items.get(position).isReadstate()) {

@@ -86,11 +86,11 @@ public class notify_reportimg_adapter extends BaseAdapter {
 
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.name.setText("Tên: " + items.get(position).getName());
-        holder.date.setText("Ngày: " + items.get(position).getDate());
-        holder.time.setText("Giờ: " + items.get(position).getTime());
-        holder.un.setText("Từ: " + items.get(position).getUn());
-        holder.content.setText("Nội dung: " + items.get(position).getContents());
+        holder.name.setText(activity.getString(R.string.txt_imgname) + ": " + items.get(position).getName());
+        holder.date.setText(activity.getString(R.string.txt_date) + ": " + items.get(position).getDate());
+        holder.time.setText(activity.getString(R.string.txt_time) + ": " + items.get(position).getTime());
+        holder.un.setText(activity.getString(R.string.txt_from) + ": " + items.get(position).getUn());
+        holder.content.setText(activity.getString(R.string.text_content) + ": " + items.get(position).getContents());
         if (!items.get(position).isReadstate()) {
             holder.readestate.setText(activity.getString(R.string.txt_notread));
             holder.readestate.setTextColor(activity.getResources()

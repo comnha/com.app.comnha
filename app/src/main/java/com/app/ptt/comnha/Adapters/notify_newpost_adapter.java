@@ -86,7 +86,7 @@ public class notify_newpost_adapter extends BaseAdapter {
 
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.title.setText(items.get(position).getTitle());
+        holder.title.setText(activity.getString(R.string.text_title) + ": " + items.get(position).getTitle());
         holder.date.setText(activity.getString(R.string.txt_postdate) + items.get(position).getDate());
         holder.createby.setText(activity.getString(R.string.txt_postby) + items.get(position).getUn());
         if (!items.get(position).isReadstate()) {
