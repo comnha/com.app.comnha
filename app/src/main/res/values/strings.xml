@@ -676,4 +676,9 @@
     <string name="txt_reportImg">Báo cáo hình ảnh</string>
     <string name="txt_reportPost">Báo cáo bài viết</string>
     <string name="txt_reportnocontent">Bạn chưa có nội dung cho báo cáo</string>
+    <string name="txt_time">Giờ</string>
+    <string name="txt_date">Ngày</string>
+    <string name="txt_from">Từ</string>
+    <string name="txt_storename">Tên quán</string>
+    <string name="txt_imgname">Tên hình</string>
 </resources>
