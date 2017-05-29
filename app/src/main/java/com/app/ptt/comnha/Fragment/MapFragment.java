@@ -64,7 +64,6 @@ public class MapFragment extends Fragment implements View.OnClickListener,
         PickLocationBottomSheetDialogFragment.onPickListener,
         PlaceSelectionListener {
     public static final String mBroadcastSendAddress = "mBroadcastSendAddress";
-    public static final String mBroadcastChangeLocation = "mBroadcastChangeLocation";
     private IntentFilter mIntentFilter;
     private static final String LOG = MapFragment.class.getSimpleName();
     private SupportMapFragment supportMapFragment;
@@ -855,11 +854,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
         public void onReceive(final Context context, final Intent intent) {
             if(intent.getAction().equals(mBroadcastSendAddress)) {
                 Log.i(LOG+".onReceive form Service","isConnected= "+ intent.getBooleanExtra("isConnected", false));
-                if (intent.getBooleanExtra("isConnected", false)) {
-                    isConnected = true;
-
-                } else
-                    isConnected = false;
+                isConnected = intent.getBooleanExtra("isConnected", false);
                 ArrayList<Store> locations;
                 String a = Storage.readFile(getContext(), "myLocation");
                 if (a != null) {

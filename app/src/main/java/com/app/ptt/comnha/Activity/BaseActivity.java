@@ -39,7 +39,7 @@ public class BaseActivity extends AppCompatActivity {
     MyService myService;
     boolean isConnected = false;
     Store store;
-    MyTool myTool;
+
 
 
     @Override
@@ -156,6 +156,7 @@ public class BaseActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             myService = new MyService();
+
             MyService.MyServiceBinder binder = (MyService.MyServiceBinder) service;
             binder.getService();
             binded = true;

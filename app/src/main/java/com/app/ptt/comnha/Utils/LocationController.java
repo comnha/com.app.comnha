@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.app.ptt.comnha.Const.Const;
+import com.app.ptt.comnha.Fragment.PickLocationBottomSheetDialogFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -32,9 +33,9 @@ public class LocationController implements GoogleApiClient.ConnectionCallbacks,
     private static final String TAG = "LocationController";
 
     public interface LocationControllerListener {
-        public void onFail();
-
-        public void onLocationChanged(Location location);
+        void onFail();
+        void requestPermisson(List<String> strings);
+        void onLocationChanged(Location location);
     }
 
     private LocationControllerListener locationControllerListener;
@@ -98,19 +99,17 @@ public class LocationController implements GoogleApiClient.ConnectionCallbacks,
 
         }
     }
-
     private void callPermissionUI() {
         String[] locationPermissions=new String[2];
         locationPermissions[0]=Const.mListPermissions[2];
         locationPermissions[1]=Const.mListPermissions[4];
         List<String> results=AppUtils.checkPermissions(context,locationPermissions);
         if (results.size()>0){
-           AppUtils.requestPermission(context,results,Const.PERMISSION_LOCATION_FLAG);
+            locationControllerListener.requestPermisson(results);
         } else{
             loadLocationService();
         }
     }
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.v(TAG, "onConnected ");

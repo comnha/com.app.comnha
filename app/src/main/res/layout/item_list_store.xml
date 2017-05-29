@@ -54,7 +54,8 @@
                     android:id="@+id/txtv_address_storeitem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:lines="1" />
+                    android:maxLines="2"
+                    android:ellipsize="end"/>
 
                 <TextView
                     android:id="@+id/txtv_opentime_storeitem"

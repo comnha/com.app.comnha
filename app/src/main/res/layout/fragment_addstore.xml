@@ -51,8 +51,7 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/frg_addloction_edt_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

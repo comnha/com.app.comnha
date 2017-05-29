@@ -2,12 +2,19 @@ package com.app.ptt.comnha.Activity;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -24,16 +31,21 @@ import android.widget.TextView;
 
 import com.app.ptt.comnha.Adapters.MainFragPagerAdapter;
 import com.app.ptt.comnha.Classes.AnimationUtils;
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Fragment.AboutBottomSheetDialogFragment;
+import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.FireBase.User;
+import com.app.ptt.comnha.Modules.ConnectionDetector;
+import com.app.ptt.comnha.Modules.MyTool;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.Service.MyService;
+import com.app.ptt.comnha.SingletonClasses.CoreManager;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
+import com.app.ptt.comnha.Utils.LocationController;
+import com.app.ptt.comnha.Utils.Storage;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -46,13 +58,14 @@ import com.google.firebase.storage.StorageReference;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
-import java.util.TimerTask;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.app.ptt.comnha.Utils.AppUtils.showSnackbar;
 
 
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
-
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, LocationController.LocationControllerListener {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private Bundle savedInstanceState;
     FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private String tinh = "", huyen = "";
@@ -67,8 +80,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private TabLayout tabLayout;
     private MainFragPagerAdapter pagerAdapter;
     private FloatingActionButton fab;
+    private int connectionStatus=-1;
+    private Snackbar snackbar;
     private MenuItem itemProfile,itemAdmin,itemSignIn, itemSignOut,itemMap,itemSetting;
     NestedScrollView nestedScrollView;
+    private MyTool myTool;
     View guideView;
 
     private View posttabview,
@@ -81,7 +97,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private DatabaseReference dbRef;
     private ValueEventListener userValueListener;
     private User user;
-
+    private  LocationController locationController;
+    private NetworkChangeReceiver mBroadcastReceiver;
+    private IntentFilter mIntentFilter;
+    private Intent broadcastIntent;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,10 +111,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 getString(R.string.firebaseStorage_path));
         dbRef = FirebaseDatabase.getInstance()
                 .getReferenceFromUrl(getString(R.string.firebase_path));
+        CoreManager.getInstance().initData(this);
+        myTool=new MyTool(this);
         ref();
         startMyService();
         initMenu();
+
     }
+
+
     private void getUser() {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -425,10 +449,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
                 break;
             case R.id.nav_map:
-                Intent intent2 = new Intent(MainActivity.this, MapActivity.class);
-                intent2.putExtra(getString(R.string.fragment_CODE),
-                        getString(R.string.frag_map_CODE));
-                startActivity(intent2);
+                if(!MyService.canGetLocation(this)){
+                    AppUtils.showSnackbar(this,getWindow().getDecorView(),"Bật GPS để sử dụng chức năng này","Bật GPS",Const.SNACKBAR_TURN_ON_GPS,Snackbar.LENGTH_SHORT);
+                }else{
+                    Intent intent2 = new Intent(MainActivity.this, MapActivity.class);
+                    intent2.putExtra(getString(R.string.fragment_CODE),
+                            getString(R.string.frag_map_CODE));
+                    startActivity(intent2);
+                }
+
                 break;
         }
         mdrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -508,7 +537,19 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         super.onBackPressed();
     }
 
-    //
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode){
+            case Const.PERMISSION_LOCATION_FLAG:
+                for (int i=0;i<grantResults.length;i++){
+                    if(grantResults[i]!= PackageManager.PERMISSION_GRANTED){
+                        break;
+                    }
+                    locationController.loadLocationService();
+                }
+                break;
+        }
+    }
 //
 //    private ChangeLocationBottomSheetDialogFragment changeLccaBtmSheet;
 //
@@ -803,7 +844,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onPause() {
         super.onPause();
         Log.i(TAG,"onPause");
-
+        if(mBroadcastReceiver!=null) {
+            unregisterReceiver(mBroadcastReceiver);
+        }
     }
 
     @Override
@@ -811,6 +854,17 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         super.onResume();
         getUser();
         Log.i(TAG,"onResume");
+        mIntentFilter=new IntentFilter(Const.BROADCAST_SEND_STATUS_INTERNET);
+        mIntentFilter.addAction(Const.BROADCAST_SEND_STATUS_GET_LOCATION);
+        mIntentFilter.addAction(Const.SNACKBAR_GO_ONLINE);
+        mIntentFilter.addAction(Const.SNACKBAR_TURN_ON_GPS);
+        broadcastIntent=new Intent();
+        mBroadcastReceiver=new NetworkChangeReceiver();
+        registerReceiver(mBroadcastReceiver,mIntentFilter);
+        if(!MyService.isNetworkAvailable(this)){
+            connectionStatus=-2;
+            showSnackbar(MainActivity.this, getWindow().getDecorView(), getString(R.string.text_not_internet), getString(R.string.text_connect), Const.SNACKBAR_GO_ONLINE,Snackbar.LENGTH_INDEFINITE,false);
+        }
     }
 
     @Override
@@ -833,42 +887,105 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             binded = false;
         }
     }
-//
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        Log.i(LOG, "Pause");
-//    }
-//
-//    public class NetworkChangeReceiver extends BroadcastReceiver {
-//        @Override
-//        public void onReceive(final Context context, final Intent intent) {
-//            // Log.i(LOG + ".NetworkChangeReceiver", "isConnected splash " + temp);
-//            if (intent.getAction().equals(Const.BROADCAST_SEND_STATUS_GET_LOCATION)) {
-//                if (intent.getBooleanExtra("isConnected", false)) {
-//                    isConnected = true;
-//                    if (intent.getSerializableExtra("myLocation") != null) {
-//                        myLocation = (MyLocation) intent.getSerializableExtra("myLocation");
-//                        initUI();
-//                    }
-//                } else {
-//                    isConnected = false;
-//                    if (intent.getIntExtra("checkCodition", 0) == 1) {
-//                        ConnectionDetector.showSettingNetworkAlert(getApplicationContext());
-//                    }
-//                    if (intent.getIntExtra("checkCondition", 0) == 2) {
-//                        ConnectionDetector.showSettingGPSAlert(getApplicationContext());
-//                    }
-//                    if (intent.getIntExtra("checkCondition", 0) == 3) {
-//                        ConnectionDetector.showSettingNetworkAlert(getApplicationContext());
-//                        ConnectionDetector.showSettingGPSAlert(getApplicationContext());
-//                    }
-//
-//                }
-//            }
-//
-//        }
-//    }
+
+    @Override
+    public void onFail() {
+
+    }
+
+    @Override
+    public void requestPermisson(List<String> strings) {
+        AppUtils.requestPermission(this,strings,Const.PERMISSION_LOCATION_FLAG);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.i(TAG,"Location:"+location.getLatitude()+"-long:"+location.getLongitude());
+        Store savedLocation=CoreManager.getInstance().getMyLocation();
+        if(savedLocation!=null) {
+            if (savedLocation.getLat() != location.getLatitude()
+                    && savedLocation.getLng() != location.getLongitude()) {
+                Store myLocation = myTool.returnLocationByLatLng(location.getLatitude(), location.getLongitude());
+                List<Store> listLocation=new ArrayList<>();
+                listLocation.add(myLocation);
+                CoreManager.getInstance().setMyLocation(this,Storage.parseMyLocationToJson(listLocation));
+            }
+        }else{
+            Store myLocation = myTool.returnLocationByLatLng(location.getLatitude(), location.getLongitude());
+            List<Store> listLocation=new ArrayList<>();
+            listLocation.add(myLocation);
+            CoreManager.getInstance().setMyLocation(this,Storage.parseMyLocationToJson(listLocation));
+        }
+        locationController.disconnect();
+    }
+
+    public class NetworkChangeReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            switch (intent.getAction()){
+                case Const.BROADCAST_SEND_STATUS_INTERNET:
+                    if (intent.getBooleanExtra(Const.BROADCAST_SEND_STATUS_INTERNET, false)) {
+                        if(intent.getBooleanExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION,false)){
+                            startGetLocation();
+                        }
+                        if(connectionStatus==-2 ||connectionStatus==0){
+                            showSnackbar(MainActivity.this, getWindow().getDecorView(), getString(R.string.text_not_internet), getString(R.string.text_connect), Const.SNACKBAR_GO_ONLINE,Snackbar.LENGTH_INDEFINITE,true);
+                        }
+                        connectionStatus=1;
+                    } else {
+                        if(connectionStatus!=-2) {
+                            showSnackbar(MainActivity.this, getWindow().getDecorView(), getString(R.string.text_not_internet), getString(R.string.text_connect), Const.SNACKBAR_GO_ONLINE, Snackbar.LENGTH_INDEFINITE, false);
+                        }
+                            connectionStatus=0;
+                    }
+                    break;
+                case Const.BROADCAST_SEND_STATUS_GET_LOCATION:
+                    if (intent.getBooleanExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION, false)) {
+                        startGetLocation();
+                    } else {
+
+                    }
+                    break;
+                case  Const.SNACKBAR_GO_ONLINE:
+                    connectionStatus=2;
+                    Intent intentSetting = new Intent(Settings.ACTION_SETTINGS);
+                    startActivity(intentSetting);
+                case  Const.SNACKBAR_TURN_ON_GPS:
+                    connectionStatus=3;
+                    Intent intentGpsSetting = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(intentGpsSetting);
+                break;
+            }
+
+        }
+    }
+    public void showSnackbar(final Context c, View view, final String title, final String actionTitle, final String type, final int showTime,boolean action) {
+        if(action){
+            snackbar.dismiss();
+        }else {
+            snackbar = Snackbar.make(view, title, showTime);
+            snackbar.setAction(actionTitle, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent snackBarIntent = new Intent();
+                    snackBarIntent.setAction(Const.SNACKBAR_GO_ONLINE);
+                    snackBarIntent.putExtra(Const.SNACKBAR_GO_ONLINE, type);
+                    c.sendBroadcast(snackBarIntent);
+                    if (showTime == Snackbar.LENGTH_INDEFINITE) {
+                        snackbar.dismiss();
+                    }
+                }
+            });
+
+            snackbar.show();
+        }
+    }
+    public void startGetLocation(){
+        locationController=new LocationController(this);
+        locationController.initController();
+        locationController.setLocationListener(this);
+        locationController.connect();
+    }
 //
 //    @Override
 //    public void onBackPressed() {
@@ -893,8 +1010,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 //        }
 //    }
 //
-
-    //
+//
+//
 //    @Override
 //    public void onClick(View view) {
 //        switch (view.getId()) {
@@ -1007,6 +1124,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 //
 //        }
 //    }
-//
+
 
 }
