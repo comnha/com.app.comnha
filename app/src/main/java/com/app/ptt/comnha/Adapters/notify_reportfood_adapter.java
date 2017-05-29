@@ -94,7 +94,7 @@ public class notify_reportfood_adapter extends BaseAdapter {
         if (!items.get(position).isReadstate()) {
             holder.readestate.setText(activity.getString(R.string.txt_notread));
             holder.readestate.setTextColor(activity.getResources()
-                    .getColor(R.color.admin_color_selection_news));
+                    .getColor(R.color.color_notify_reportfood));
         } else {
             holder.readestate.setText(activity.getString(R.string.txt_read));
             holder.readestate.setTextColor(activity.getResources()

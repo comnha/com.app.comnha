@@ -108,7 +108,7 @@
                         android:layout_gravity="bottom"
                         android:gravity="start|center_vertical"
                         android:textAllCaps="false"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/color_selection_report"
                         android:textStyle="bold" />
                 </LinearLayout>
 

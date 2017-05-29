@@ -98,8 +98,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
                         android:gravity="start|center_vertical"
-                        android:textColor="@android:color/black"
                         android:textAllCaps="false"
+                        android:textColor="@color/color_notify_reportfood"
                         android:textStyle="bold" />
                 </LinearLayout>
 
