@@ -19,7 +19,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +34,7 @@ import com.app.ptt.comnha.Classes.SelectedImage;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -156,7 +156,9 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
         imgAdapter.setOnItemClickLiestner(new Photo_recycler_adapter.OnItemClickLiestner() {
             @Override
             public void onItemClick(Image image, Activity activity, View itemView) {
-
+                Intent intent_openViewPhoto = new Intent(activity, ViewPhotosActivity.class);
+                intent_openViewPhoto.putExtra("imgPosition", images.indexOf(image));
+                startActivity(intent_openViewPhoto);
             }
         });
         card_profile = (CardView) include_view.findViewById(R.id.cardv_pro_prodetail);
@@ -181,7 +183,7 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
                     Map<String, Object> imgValue = image.toMap();
                     String imgKey = dbRef.child(getString(R.string.images_CODE))
                             .push().getKey();
-                    User user=LoginSession.getInstance().getUser();
+                    User user = LoginSession.getInstance().getUser();
                     user.setAvatar(avatarimg);
                     Map<String, Object> userValue = user.toMap();
                     final Map<String, Object> childUpdate = new HashMap<>();
@@ -318,6 +320,7 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
                     image.setImageID(key);
                     images.add(image);
                 }
+                ChoosePhotoList.getInstance().setImage(images);
                 imgAdapter.notifyDataSetChanged();
             }
 

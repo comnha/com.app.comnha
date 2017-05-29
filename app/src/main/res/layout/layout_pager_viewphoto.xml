@@ -3,12 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
+    android:id="@+id/linear_viewphoto"
     android:orientation="vertical">
 
     <ImageView
-        android:transitionName="viewphoto"
         android:id="@+id/imgv_viewphoto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:transitionName="viewphoto"
         android:layout_gravity="center" />
 </LinearLayout>

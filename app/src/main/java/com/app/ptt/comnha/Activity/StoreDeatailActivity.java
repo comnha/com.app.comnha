@@ -34,6 +34,7 @@ import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;
+import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.Utils.AppUtils;
@@ -61,7 +62,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     RecyclerView.LayoutManager postLayoutManager, photoLayoutManager,
             foodLayoutManager;
     Post_recycler_adapter postAdapter;
-    Photo_recycler_adapter photoAdapter;
+    Photo_recycler_adapter photoAdapter = null;
     Food_recycler_adapter foodAdapter;
     ArrayList<Post> posts;
     ArrayList<Image> images;
@@ -133,9 +134,9 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         photoAdapter.setOnItemClickLiestner(new Photo_recycler_adapter.OnItemClickLiestner() {
             @Override
             public void onItemClick(Image image, Activity activity, View itemView) {
-                Intent intent_openPhoto = new Intent(activity, ViewPhotoActivity.class);
-                intent_openPhoto.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent_openPhoto);
+                Intent intent_openViewPhoto = new Intent(activity, ViewPhotosActivity.class);
+                intent_openViewPhoto.putExtra("imgPosition", images.indexOf(image));
+                startActivity(intent_openViewPhoto);
             }
         });
         foodRecycler = (RecyclerView) include_view.findViewById(R.id.recycler_foods_storedetail);
@@ -189,7 +190,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         imgv_viewlocation.setOnClickListener(this);
         fab.setOnClickListener(this);
         linear_progress = (LinearLayout) findViewById(R.id.linear_progress_storedetail);
-        plzw8Dialog = AppUtils.setupProgressDialog(StoreDeatailActivity.this,
+        plzw8Dialog = AppUtils.setupProgressDialog(this,
                 getString(R.string.txt_plzwait), null, false, false,
                 ProgressDialog.STYLE_SPINNER, -1);
     }
@@ -430,11 +431,8 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     image.setImageID(key);
                     images.add(image);
                 }
+                ChoosePhotoList.getInstance().setImage(images);
                 photoAdapter.notifyDataSetChanged();
-                dbRef.child(getString(R.string.images_CODE))
-                        .orderByChild("isHidden_storeID")
-                        .equalTo(false + "_" + storeID)
-                        .removeEventListener(photoValueListener);
             }
 
             @Override

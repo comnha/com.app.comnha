@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.R;
@@ -24,6 +25,15 @@ public class ViewPhotoVPadapter extends PagerAdapter {
     ArrayList<Image> images;
     Activity activity;
     StorageReference stRef;
+    OnImageClick onImageClick;
+
+    public interface OnImageClick {
+        void onClick();
+    }
+
+    public void setOnImageClick(OnImageClick onImageClick) {
+        this.onImageClick = onImageClick;
+    }
 
     public ViewPhotoVPadapter(ArrayList<Image> images, Activity activity, StorageReference stRef) {
         this.images = images;
@@ -49,6 +59,15 @@ public class ViewPhotoVPadapter extends PagerAdapter {
                 Picasso.with(activity)
                         .load(uri)
                         .into(imgv);
+            }
+        });
+        LinearLayout linear = (LinearLayout) layout.findViewById(R.id.linear_viewphoto);
+        linear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onImageClick != null) {
+                    onImageClick.onClick();
+                }
             }
         });
         return layout;

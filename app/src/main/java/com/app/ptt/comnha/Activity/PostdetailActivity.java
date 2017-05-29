@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,6 +44,7 @@ import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
+import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
@@ -85,7 +85,7 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
     RecyclerView rv_imgs, rv_comments;
     RecyclerView.LayoutManager imgsLm, comtLm;
     ArrayList<Image> images;
-    Photo_recycler_adapter imgsAdapter;
+    Photo_recycler_adapter imgsAdapter = null;
     ArrayList<Comment> comments;
     Comment_rcyler_adapter comtAdapter;
     DatabaseReference dbRef;
@@ -169,7 +169,7 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
                 ProgressDialog.STYLE_SPINNER, 0);
         imgv_banner = (ImageView) findViewById(R.id.imgv_banner_postdetail);
         toolbar = (Toolbar) findViewById(R.id.toolbar_postdetail);
-        toolbar.setNavigationIcon(R.drawable.ic_chevron_left_white_24dp);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         this.setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,12 +209,9 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
         imgsAdapter.setOnItemClickLiestner(new Photo_recycler_adapter.OnItemClickLiestner() {
             @Override
             public void onItemClick(Image image, Activity activity, View itemView) {
-                Intent open_viewphoto = new Intent(activity, ViewPhotoActivity.class);
-                ActivityOptionsCompat option_viewphoto =
-                        ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
-                                itemView.findViewById(R.id.item_rv_imgv),
-                                "postBanner");
-                startActivity(open_viewphoto, option_viewphoto.toBundle());
+                Intent intent_openViewPhoto = new Intent(activity, ViewPhotosActivity.class);
+                intent_openViewPhoto.putExtra("imgPosition", images.indexOf(image));
+                startActivity(intent_openViewPhoto);
             }
         });
 
@@ -445,11 +442,8 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
                     image.setImageID(key);
                     images.add(image);
                 }
+                ChoosePhotoList.getInstance().setImage(images);
                 imgsAdapter.notifyDataSetChanged();
-                dbRef.child(getString(R.string.images_CODE))
-                        .orderByChild("isHidden_postID")
-                        .equalTo(false + "_" + postID)
-                        .removeEventListener(imagesEventListener);
             }
 
             @Override
@@ -460,7 +454,7 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
         dbRef.child(getString(R.string.images_CODE))
                 .orderByChild("isHidden_postID")
                 .equalTo(false + "_" + postID)
-                .addValueEventListener(imagesEventListener);
+                .addListenerForSingleValueEvent(imagesEventListener);
     }
 
     @Override

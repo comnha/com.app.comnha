@@ -2,6 +2,7 @@ package com.app.ptt.comnha.Activity;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import com.app.ptt.comnha.Adapters.PhotoAlbum_recycler_adapter;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -64,8 +66,10 @@ public class ProfilePhotoActivity extends AppCompatActivity {
         rv_img.setAdapter(imgAdapter);
         imgAdapter.setOnItemClickLiestner(new PhotoAlbum_recycler_adapter.OnItemClickLiestner() {
             @Override
-            public void onItemClick(int position,Image image, Activity activity, View itemView) {
-
+            public void onItemClick( Image image, Activity activity, View itemView) {
+                Intent intent_openViewPhoto = new Intent(activity, ViewPhotosActivity.class);
+                intent_openViewPhoto.putExtra("imgPosition", images.indexOf(image));
+                startActivity(intent_openViewPhoto);
             }
         });
     }
@@ -78,8 +82,9 @@ public class ProfilePhotoActivity extends AppCompatActivity {
                     Image image = item.getValue(Image.class);
                     image.setImageID(item.getKey());
                     images.add(image);
-                    imgAdapter.notifyDataSetChanged();
                 }
+                ChoosePhotoList.getInstance().setImage(images);
+                imgAdapter.notifyDataSetChanged();
             }
 
             @Override

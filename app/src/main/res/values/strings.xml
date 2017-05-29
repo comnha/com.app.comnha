@@ -681,4 +681,6 @@
     <string name="txt_from">Từ</string>
     <string name="txt_storename">Tên quán</string>
     <string name="txt_imgname">Tên hình</string>
+    <string name="txt_imgdetail">Thông tin ảnh</string>
+    <string name="txt_hideimg">Ẩn hình ảnh</string>
 </resources>

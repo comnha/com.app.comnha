@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -67,13 +66,10 @@ public class AllPhotoActivity extends AppCompatActivity {
         rv_img.setAdapter(imgAdapter);
         imgAdapter.setOnItemClickLiestner(new PhotoAlbum_recycler_adapter.OnItemClickLiestner() {
             @Override
-            public void onItemClick(int position, Image image, Activity activity, View itemView) {
-                Intent intent_openViewPhoto = new Intent(activity, ViewPhotoActivity.class);
-                ActivityOptionsCompat option_img = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
-                        itemView.findViewById(R.id.imgv_rv_photalbum), "viewphoto");
-                Bundle bundle = option_img.toBundle();
-                bundle.putInt("imgPostion", position);
-                startActivity(intent_openViewPhoto, bundle);
+            public void onItemClick( Image image, Activity activity, View itemView) {
+                Intent intent_openViewPhoto = new Intent(activity, ViewPhotosActivity.class);
+                intent_openViewPhoto.putExtra("imgPosition", images.indexOf(image));
+                startActivity(intent_openViewPhoto);
             }
         });
     }

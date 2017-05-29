@@ -1,15 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black"
-    tools:context="com.app.ptt.comnha.Activity.ViewPhotoActivity">
+    tools:context="com.app.ptt.comnha.Activity.ViewPhotosActivity">
+
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager_viewphoto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:theme="@style/AlbumViewPager" />
-</LinearLayout>
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:id="@+id/applayout_viewphoto"
+        android:layout_height="wrap_content"
+        app:elevation="0dp"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.v7.widget.Toolbar
+            android:background="@android:color/transparent"
+            android:id="@+id/toolbar_viewphoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+    </android.support.design.widget.AppBarLayout>
+</RelativeLayout>
