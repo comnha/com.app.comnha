@@ -1,6 +1,9 @@
 package com.app.ptt.comnha.Fragment;
 
 
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +11,7 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -29,6 +33,7 @@ import android.widget.Toast;
 
 import com.app.ptt.comnha.Activity.PostdetailActivity;
 import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
+import com.app.ptt.comnha.Dialog.ReportDialog;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.R;
@@ -36,6 +41,7 @@ import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.Utils.AppUtils;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,6 +53,9 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Map;
+
+import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_FOOD;
 
 
 /**
@@ -86,6 +95,7 @@ public class FooddetailFragment extends Fragment {
             }
         }
     };
+    ProgressDialog plzw8Dialog;
 
     public FooddetailFragment() {
         // Required empty public constructor
@@ -226,7 +236,9 @@ public class FooddetailFragment extends Fragment {
                 startActivity(intent_postdetail, option_postbanner.toBundle());
             }
         });
-
+        plzw8Dialog = AppUtils.setupProgressDialog(getActivity(),
+                getString(R.string.txt_plzwait), null, false, false,
+                ProgressDialog.STYLE_SPINNER, 0);
     }
 
     @Override
@@ -242,6 +254,43 @@ public class FooddetailFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case 0:
+                ReportDialog reportDialog = new ReportDialog();
+                reportDialog.setReport(REPORT_FOOD, food);
+                reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
+                reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
+                    @Override
+                    public void onPositive(boolean isClicked, Map<String,
+                            Object> childUpdate, final Dialog dialog) {
+                        if (isClicked) {
+                            dialog.dismiss();
+                            plzw8Dialog.show();
+                            dbRef.updateChildren(childUpdate)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            plzw8Dialog.dismiss();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    dialog.show();
+                                    plzw8Dialog.dismiss();
+                                    Toast.makeText(getActivity(), e.getMessage(),
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+                        }
+                    }
+
+                    @Override
+                    public void onNegative(boolean isClicked, Dialog dialog) {
+                        if (isClicked) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                reportDialog.show(getActivity().getSupportFragmentManager(), "report_food");
                 return true;
             case 1:
                 return true;

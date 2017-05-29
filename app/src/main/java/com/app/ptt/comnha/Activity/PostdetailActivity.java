@@ -2,6 +2,8 @@ package com.app.ptt.comnha.Activity;
 
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -35,6 +37,7 @@ import android.widget.Toast;
 
 import com.app.ptt.comnha.Adapters.Comment_rcyler_adapter;
 import com.app.ptt.comnha.Adapters.Photo_recycler_adapter;
+import com.app.ptt.comnha.Dialog.ReportDialog;
 import com.app.ptt.comnha.Models.FireBase.Comment;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
@@ -60,6 +63,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_POST;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -478,6 +483,43 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case 0:
+                ReportDialog reportDialog = new ReportDialog();
+                reportDialog.setReport(REPORT_POST, post);
+                reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
+                reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
+                    @Override
+                    public void onPositive(boolean isClicked, Map<String,
+                            Object> childUpdate, final Dialog dialog) {
+                        if (isClicked) {
+                            dialog.dismiss();
+                            plzw8Dialog.show();
+                            dbRef.updateChildren(childUpdate)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            plzw8Dialog.dismiss();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    dialog.show();
+                                    plzw8Dialog.dismiss();
+                                    Toast.makeText(PostdetailActivity.this, e.getMessage(),
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+                        }
+                    }
+
+                    @Override
+                    public void onNegative(boolean isClicked, Dialog dialog) {
+                        if (isClicked) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                reportDialog.show(getSupportFragmentManager(), "report_post");
                 return true;
             case 1:
                 return true;
