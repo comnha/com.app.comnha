@@ -35,7 +35,7 @@ public class Store {
             isHidden_dis_pro,
             isHidden_uID;
 
-    String distance;//khoảng cách hiển thị trên danh sách quán ăn
+    String distance = null;//khoảng cách hiển thị trên danh sách quán ăn
     Map<String, Comment> comments = null;//comment trong post
     Bitmap imgBitmap = null;
 

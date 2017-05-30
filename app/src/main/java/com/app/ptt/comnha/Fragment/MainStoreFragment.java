@@ -42,11 +42,12 @@ public class MainStoreFragment extends Fragment {
     Store_recycler_adapter itemadapter;
     ArrayList<Store> items;
     DatabaseReference dbRef;
-    ValueEventListener childEventListener;
+    ValueEventListener storesEventListener;
     String pro_dist = "Quận 9_HCM";
     StorageReference stRef;
     SwipeRefreshLayout swipeRefresh;
     MyTool myTool;
+
     public MainStoreFragment() {
         // Required empty public constructor
     }
@@ -63,24 +64,25 @@ public class MainStoreFragment extends Fragment {
                 getString(R.string.firebaseStorage_path));
         ref(view);
         getStoreList();
-        myTool=new MyTool(getActivity());
+        myTool = new MyTool(getActivity());
 
         return view;
     }
-    public class calculateDistance extends AsyncTask<Void,Void,Void>{
+
+    public class calculateDistance extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            for (Store store:items) {double distance=0;
-
+            for (Store store : items) {
+                double distance = 0;
                 try {
-                    distance= myTool.getDistance(new LatLng(store.getLat(), store.getLng()),
+                    distance = myTool.getDistance(new LatLng(store.getLat(), store.getLng()),
                             new LatLng(CoreManager.getInstance().getMyLocation().getLat(), CoreManager.getInstance().getMyLocation().getLng()));
                     int c = (int) Math.round(distance);
-                                int d = c / 1000;
-                                int e = c % 1000;
-                                int f = e / 100;
+                    int d = c / 1000;
+                    int e = c % 1000;
+                    int f = e / 100;
                     store.setDistance(d + "," + f);
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
 
@@ -95,7 +97,10 @@ public class MainStoreFragment extends Fragment {
     }
 
     private void getStoreList() {
-        childEventListener = new ValueEventListener() {
+        itemadapter.setStorageRef(
+                FirebaseStorage.getInstance().getReferenceFromUrl(
+                        getString(R.string.firebaseStorage_path)));
+        storesEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot item : dataSnapshot.getChildren()) {
@@ -103,17 +108,12 @@ public class MainStoreFragment extends Fragment {
                     store.setStoreID(item.getKey());
 
                     items.add(store);
-                    itemadapter.setStorageRef(
-                            FirebaseStorage.getInstance().getReferenceFromUrl(
-                                    getString(R.string.firebaseStorage_path)));
+
                     Log.d("added", "added");
                 }
                 itemadapter.notifyDataSetChanged();
+                new calculateDistance().execute();
                 swipeRefresh.setRefreshing(false);
-                dbRef.child(getString(R.string.store_CODE))
-                        .orderByChild("isHidden_dis_pro")
-                        .equalTo(String.valueOf(false) + "_" + pro_dist)
-                        .removeEventListener(childEventListener);
             }
 
             @Override
@@ -124,11 +124,10 @@ public class MainStoreFragment extends Fragment {
         dbRef.child(getString(R.string.store_CODE))
                 .orderByChild("isHidden_dis_pro")
                 .equalTo(String.valueOf(false) + "_" + pro_dist)
-                .addValueEventListener(childEventListener);
+                .addListenerForSingleValueEvent(storesEventListener);
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                new calculateDistance().execute();
             }
 
             @Override
