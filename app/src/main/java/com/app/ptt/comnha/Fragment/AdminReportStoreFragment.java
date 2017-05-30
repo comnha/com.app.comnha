@@ -95,20 +95,13 @@ public class AdminReportStoreFragment extends Fragment {
                             new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    if (store != null) {
-                                        getStoreInfo(notify, false);
-                                    } else {
-                                        getStoreInfo(notify, true);
-                                    }
+                                    getStoreInfo(notify);
+
                                 }
                             }
                     );
                 } else {
-                    if (store != null) {
-                        getStoreInfo(notify, false);
-                    } else {
-                        getStoreInfo(notify, false);
-                    }
+                    getStoreInfo(notify);
                 }
 
             }
@@ -160,13 +153,7 @@ public class AdminReportStoreFragment extends Fragment {
 
                     @Override
                     public void onBlockUser(ReportstoreNotify notify) {
-                        if (user != null) {
-                            getUserInfo(notify, false);
-                        } else {
-                            plzwaitDialog.show();
-                            getUserInfo(notify, true);
-                        }
-
+                        getUserInfo(notify);
                     }
                 });
         plzwaitDialog = AppUtils.setupProgressDialog(getContext(),
@@ -174,63 +161,50 @@ public class AdminReportStoreFragment extends Fragment {
                 ProgressDialog.STYLE_SPINNER, 0);
     }
 
-    private void getUserInfo(ReportstoreNotify notify, boolean isNull) {
-        if (isNull) {
-            userEventListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    plzwaitDialog.cancel();
-                    user = dataSnapshot.getValue(User.class);
-                    String key = dataSnapshot.getKey();
-                    user.setuID(key);
-                    blockUser(user);
-                }
+    private void getUserInfo(ReportstoreNotify notify) {
+        userEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                plzwaitDialog.cancel();
+                user = dataSnapshot.getValue(User.class);
+                String key = dataSnapshot.getKey();
+                user.setuID(key);
+                blockUser(user);
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                }
-            };
-            dbRef.child(getString(R.string.users_CODE)
-                    + notify.getUserID())
-                    .addListenerForSingleValueEvent(userEventListener);
-        } else {
-            blockUser(user);
-        }
+            }
+        };
+        dbRef.child(getString(R.string.users_CODE)
+                + notify.getUserID())
+                .addListenerForSingleValueEvent(userEventListener);
     }
 
-    private void getStoreInfo(ReportstoreNotify notify, boolean isNull) {
-        if (isNull) {
-            storeEventListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    store = dataSnapshot.getValue(Store.class);
-                    String key = dataSnapshot.getKey();
-                    store.setStoreID(key);
-                    ChooseStore.getInstance().setStore(store);
-                    Intent intent_openstore = new Intent(getActivity(),
-                            StoreDeatailActivity.class);
-                    intent_openstore.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    plzwaitDialog.dismiss();
-                    startActivity(intent_openstore);
-                }
+    private void getStoreInfo(ReportstoreNotify notify) {
+        storeEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                store = dataSnapshot.getValue(Store.class);
+                String key = dataSnapshot.getKey();
+                store.setStoreID(key);
+                ChooseStore.getInstance().setStore(store);
+                Intent intent_openstore = new Intent(getActivity(),
+                        StoreDeatailActivity.class);
+                intent_openstore.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                plzwaitDialog.dismiss();
+                startActivity(intent_openstore);
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                }
-            };
-            dbRef.child(getString(R.string.store_CODE) +
-                    notify.getStoreID())
-                    .addListenerForSingleValueEvent(storeEventListener);
-        } else {
-            ChooseStore.getInstance().setStore(store);
-            Intent intent_openstore = new Intent(getActivity(),
-                    StoreDeatailActivity.class);
-            intent_openstore.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            plzwaitDialog.dismiss();
-            startActivity(intent_openstore);
-        }
+            }
+        };
+        dbRef.child(getString(R.string.store_CODE) +
+                notify.getStoreID())
+                .addListenerForSingleValueEvent(storeEventListener);
     }
 
     private void getStoreReport() {

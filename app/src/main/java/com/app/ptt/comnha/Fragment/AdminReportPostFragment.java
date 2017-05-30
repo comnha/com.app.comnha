@@ -95,20 +95,12 @@ public class AdminReportPostFragment extends Fragment {
                             new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    if (post != null) {
-                                        getPostInfo(notify, false);
-                                    } else {
-                                        getPostInfo(notify, true);
-                                    }
+                                    getPostInfo(notify);
                                 }
                             }
                     );
                 } else {
-                    if (post != null) {
-                        getPostInfo(notify, false);
-                    } else {
-                        getPostInfo(notify, true);
-                    }
+                    getPostInfo(notify);
                 }
 
             }
@@ -160,12 +152,7 @@ public class AdminReportPostFragment extends Fragment {
 
                     @Override
                     public void onBlockUser(ReportpostNotify notify) {
-                        if (user != null) {
-                            getUserInfo(notify, false);
-                        } else {
-                            plzwaitDialog.show();
-                            getUserInfo(notify, true);
-                        }
+                        getUserInfo(notify);
                     }
                 });
         plzwaitDialog = AppUtils.setupProgressDialog(getContext(),
@@ -173,8 +160,7 @@ public class AdminReportPostFragment extends Fragment {
                 ProgressDialog.STYLE_SPINNER, 0);
     }
 
-    private void getPostInfo(ReportpostNotify notify, boolean isNull) {
-        if (isNull) {
+    private void getPostInfo(ReportpostNotify notify) {
             postEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -197,14 +183,6 @@ public class AdminReportPostFragment extends Fragment {
             dbRef.child(getString(R.string.posts_CODE) +
                     notify.getPostID())
                     .addListenerForSingleValueEvent(postEventListener);
-        } else {
-            plzwaitDialog.dismiss();
-            ChoosePost.getInstance().setPost(post);
-            Intent intent_openpost = new Intent(getActivity(),
-                    PostdetailActivity.class);
-            intent_openpost.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent_openpost);
-        }
     }
 
     private void getPostReport() {
@@ -231,8 +209,7 @@ public class AdminReportPostFragment extends Fragment {
                 .addListenerForSingleValueEvent(postEventListener);
     }
 
-    private void getUserInfo(ReportpostNotify notify, boolean isNull) {
-        if (isNull) {
+    private void getUserInfo(ReportpostNotify notify) {
             userEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -251,9 +228,6 @@ public class AdminReportPostFragment extends Fragment {
             dbRef.child(getString(R.string.users_CODE)
                     + notify.getUserID())
                     .addListenerForSingleValueEvent(userEventListener);
-        } else {
-            blockUser(user);
-        }
     }
 
 

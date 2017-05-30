@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.app.ptt.comnha.Activity.ViewPhotosActivity;
 import com.app.ptt.comnha.Adapters.notify_reportimg_adapter;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Dialog.BlockUserDialog;
@@ -23,7 +25,7 @@ import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.ReportimgNotify;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
-import com.app.ptt.comnha.SingletonClasses.ChooseImg;
+import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -89,20 +91,12 @@ public class AdminReportImgFragment extends Fragment {
                             new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    if (image != null) {
-                                        getImgInfo(notify, false);
-                                    } else {
-                                        getImgInfo(notify, true);
-                                    }
+                                    getImgInfo(notify);
                                 }
                             }
                     );
                 } else {
-                    if (image != null) {
-                        getImgInfo(notify, false);
-                    } else {
-                        getImgInfo(notify, false);
-                    }
+                    getImgInfo(notify);
                 }
 
             }
@@ -155,13 +149,7 @@ public class AdminReportImgFragment extends Fragment {
 
                     @Override
                     public void onBlockUser(ReportimgNotify notify) {
-                        if (user != null) {
-                            getUserInfo(notify, false);
-                        } else {
-                            plzwaitDialog.show();
-                            getUserInfo(notify, true);
-                        }
-
+                        getUserInfo(notify);
                     }
                 });
         plzwaitDialog = AppUtils.setupProgressDialog(getContext(),
@@ -169,8 +157,7 @@ public class AdminReportImgFragment extends Fragment {
                 ProgressDialog.STYLE_SPINNER, 0);
     }
 
-    private void getUserInfo(ReportimgNotify notify, boolean isNull) {
-        if (isNull) {
+    private void getUserInfo(ReportimgNotify notify) {
             userEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -189,27 +176,25 @@ public class AdminReportImgFragment extends Fragment {
             dbRef.child(getString(R.string.users_CODE)
                     + notify.getUserID())
                     .addListenerForSingleValueEvent(userEventListener);
-        } else {
-            blockUser(user);
-        }
     }
 
-    private void getImgInfo(ReportimgNotify notify, boolean isNull) {
-        if (isNull) {
+    private void getImgInfo(ReportimgNotify notify) {
             imgEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     image = dataSnapshot.getValue(Image.class);
                     String key = dataSnapshot.getKey();
                     image.setImageID(key);
-                    ChooseImg.getInstance().setImage(image);
-//                    Intent intent_openFood = new Intent(getActivity(),
-//                            AdapterActivity.class);
-//                    intent_openFood.putExtra(getString(R.string.fragment_CODE)
-//                            , getString(R.string.frag_foodetail_CODE));
-//                    intent_openFood.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    ChooseImg.getInstance().setImage(image);
+                    Intent intent_openViewPhoto = new Intent(getActivity(),
+                            ViewPhotosActivity.class);
+                    ArrayList<Image> images = new ArrayList<>();
+                    images.add(image);
+                    ChoosePhotoList.getInstance().setImage(images);
+                    intent_openViewPhoto.putExtra("imgPosition", images.indexOf(image));
+                    intent_openViewPhoto.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     plzwaitDialog.dismiss();
-//                    startActivity(intent_openFood);
+                    startActivity(intent_openViewPhoto);
                 }
 
                 @Override
@@ -217,18 +202,8 @@ public class AdminReportImgFragment extends Fragment {
 
                 }
             };
-            dbRef.child(getString(R.string.images_CODE))
+            dbRef.child(getString(R.string.images_CODE) + notify.getImgID())
                     .addListenerForSingleValueEvent(imgEventListener);
-        } else {
-            ChooseImg.getInstance().setImage(image);
-//            Intent intent_openImg = new Intent(getActivity(),
-//                    AdapterActivity.class);
-//            intent_openImg.putExtra(getString(R.string.fragment_CODE)
-//                    , getString(R.string.frag_foodetail_CODE));
-//            intent_openImg.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            plzwaitDialog.dismiss();
-//            startActivity(intent_openImg);
-        }
     }
 
     private void blockUser(User user) {

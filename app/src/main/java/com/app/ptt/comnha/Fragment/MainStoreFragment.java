@@ -76,7 +76,8 @@ public class MainStoreFragment extends Fragment {
                 double distance = 0;
                 try {
                     distance = myTool.getDistance(new LatLng(store.getLat(), store.getLng()),
-                            new LatLng(CoreManager.getInstance().getMyLocation().getLat(), CoreManager.getInstance().getMyLocation().getLng()));
+                            new LatLng(CoreManager.getInstance().getMyLocation().getLat(),
+                                    CoreManager.getInstance().getMyLocation().getLng()));
                     int c = (int) Math.round(distance);
                     int d = c / 1000;
                     int e = c % 1000;

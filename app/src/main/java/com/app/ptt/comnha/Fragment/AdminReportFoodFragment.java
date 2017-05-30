@@ -93,20 +93,11 @@ public class AdminReportFoodFragment extends Fragment {
                             new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    if (food != null) {
-                                        getFoodInfo(notify, false);
-                                    } else {
-                                        getFoodInfo(notify, true);
-                                    }
                                 }
                             }
                     );
                 } else {
-                    if (food != null) {
-                        getFoodInfo(notify, false);
-                    } else {
-                        getFoodInfo(notify, false);
-                    }
+                    getFoodInfo(notify);
                 }
 
             }
@@ -159,13 +150,7 @@ public class AdminReportFoodFragment extends Fragment {
 
                     @Override
                     public void onBlockUser(ReportfoodNotify notify) {
-                        if (user != null) {
-                            getUserInfo(notify, false);
-                        } else {
-                            plzwaitDialog.show();
-                            getUserInfo(notify, true);
-                        }
-
+                        getUserInfo(notify);
                     }
                 });
         plzwaitDialog = AppUtils.setupProgressDialog(getContext(),
@@ -173,8 +158,7 @@ public class AdminReportFoodFragment extends Fragment {
                 ProgressDialog.STYLE_SPINNER, 0);
     }
 
-    private void getUserInfo(ReportfoodNotify notify, boolean isNull) {
-        if (isNull) {
+    private void getUserInfo(ReportfoodNotify notify) {
             userEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -193,13 +177,9 @@ public class AdminReportFoodFragment extends Fragment {
             dbRef.child(getString(R.string.users_CODE)
                     + notify.getUserID())
                     .addListenerForSingleValueEvent(userEventListener);
-        } else {
-            blockUser(user);
-        }
     }
 
-    private void getFoodInfo(ReportfoodNotify notify, boolean isNull) {
-        if (isNull) {
+    private void getFoodInfo(ReportfoodNotify notify) {
             foodEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -224,16 +204,6 @@ public class AdminReportFoodFragment extends Fragment {
             dbRef.child(getString(R.string.food_CODE) +
                     notify.getFoodID())
                     .addListenerForSingleValueEvent(foodEventListener);
-        } else {
-            ChooseFood.getInstance().setFood(food);
-            Intent intent_openFood = new Intent(getActivity(),
-                    AdapterActivity.class);
-            intent_openFood.putExtra(getString(R.string.fragment_CODE)
-                    , getString(R.string.frag_foodetail_CODE));
-            intent_openFood.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            plzwaitDialog.dismiss();
-            startActivity(intent_openFood);
-        }
     }
 
     private void blockUser(User user) {
