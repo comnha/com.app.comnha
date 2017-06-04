@@ -3,6 +3,7 @@ package com.app.ptt.comnha.Adapters;
 import android.app.Activity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Utils.AppUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by PTT on 4/7/2017.
@@ -119,21 +121,26 @@ public class notify_reportfood_adapter extends BaseAdapter {
             public void onClick(View view) {
                 PopupMenu popupMenu = new PopupMenu(activity, holder.more, Gravity.TOP);
                 Menu menu = popupMenu.getMenu();
-                menu = AppUtils.createMenu(menu, new String[]{
-                        activity.getResources().getString(R.string.text_delnotify),
-                        activity.getResources().getString(R.string.text_block_reportpost)});
+                List<Pair<Integer, String>> contents = new ArrayList<>();
+                contents.add(new Pair<Integer, String>
+                        (R.string.text_delnotify,
+                                activity.getString(R.string.text_delnotify)));
+                contents.add(new Pair<Integer, String>
+                        (R.string.text_block_reportfood,
+                                activity.getString(R.string.text_block_reportfood)));
+                menu = AppUtils.createMenu(menu, contents);
                 popupMenu.show();
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
-                            case 0:
+                            case R.string.text_delnotify:
                                 if (onOptionItemClickListener != null) {
                                     onOptionItemClickListener.onDelNotify(
                                             items.get(position));
                                 }
                                 break;
-                            case 1:
+                            case R.string.text_block_reportfood:
                                 if (onOptionItemClickListener != null) {
                                     onOptionItemClickListener.onBlockUser(
                                             items.get(position));
