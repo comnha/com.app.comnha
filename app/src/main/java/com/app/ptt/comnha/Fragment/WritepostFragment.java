@@ -458,7 +458,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 
                     } else {
                         linear_location.setVisibility(View.VISIBLE);
-                        AnimationUtils.fadeAnimation(linear_location, 300, 0);
+                        AnimationUtils.fadeAnimation(linear_location, 300, true, 0);
                     }
                     txtv_locaadd.setText(selected_store.getAddress());
                     txtv_locaname.setText(selected_store.getName());
@@ -747,11 +747,11 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 Image image;
                 if (selectedImages.indexOf(imgItem) == 0) {
                     image = new Image(imgItem.getUri().getLastPathSegment(),
-                            uID, 1, postKey, storeID,"");
+                            uID, 1, postKey, storeID, "");
 
                 } else {
                     image = new Image(imgItem.getUri().getLastPathSegment(),
-                            uID, 3, postKey, storeID,"");
+                            uID, 3, postKey, storeID, "");
                 }
                 Map<String, Object> imgValue = image.toMap();
                 String imgKey = dbRef.child(getString(R.string.images_CODE))

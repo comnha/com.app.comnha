@@ -23,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,6 +63,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_POST;
@@ -132,7 +134,7 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
         } else {
             onBackPressed();
         }
-        Ref();
+        init();
         createPostView();
         getAllImgs();
         getAllComts();
@@ -158,7 +160,7 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
         super.onDestroy();
     }
 
-    private void Ref() {
+    private void init() {
 
         View view_include = findViewById(R.id.include_postdetail_content);
         plzw8Dialog = AppUtils.setupProgressDialog(this,
@@ -456,24 +458,38 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (post.isHidden()) {
-            menu = AppUtils.createMenu(menu, new String[]{
-                    getString(R.string.txt_report),
-                    getString(R.string.txt_showpost),
-                    getString(R.string.txt_changeinfo)});
+        int role = LoginSession.getInstance().getUser().getRole();
+        String uID = LoginSession.getInstance().getUser().getuID();
+        List<Pair<Integer, String>> contents = new ArrayList<>();
+        if (role == 1) {
+            contents.add(new Pair<Integer, String>
+                    (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
+            if (post.isHidden()) {
+                contents.add(new Pair<Integer, String>
+                        (R.string.txt_showpost, getString(R.string.txt_showpost)));
+            } else {
+                contents.add(new Pair<Integer, String>
+                        (R.string.text_hidepost, getString(R.string.text_hidepost)));
+            }
         } else {
-            menu = AppUtils.createMenu(menu, new String[]{
-                    getString(R.string.txt_report),
-                    getString(R.string.text_hidepost),
-                    getString(R.string.txt_changeinfo)});
+            if (post.isHidden()) {
+                contents.add(new Pair<Integer, String>
+                        (R.string.txt_showpost, getString(R.string.txt_showpost)));
+            } else {
+                contents.add(new Pair<Integer, String>
+                        (R.string.text_hidepost, getString(R.string.text_hidepost)));
+            }
+            contents.add(new Pair<Integer, String>
+                    (R.string.txt_report, getString(R.string.txt_report)));
         }
+        menu = AppUtils.createMenu(menu, contents);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case 0:
+            case R.string.txt_report:
                 ReportDialog reportDialog = new ReportDialog();
                 reportDialog.setReport(REPORT_POST, post);
                 reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
@@ -512,21 +528,28 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
                 });
                 reportDialog.show(getSupportFragmentManager(), "report_post");
                 return true;
-            case 1:
-                return true;
-            case 2:
-                if (post.isHidden()) {
-//                    showStore(item);
-                } else {
-//                    hideStore(item);
+            case R.string.text_hidepost:
+                 if (!post.isHidden()){
+                    hidePost(item);
                 }
                 return true;
-            case 3:
-
+            case R.string.txt_showpost:
+                if (post.isHidden()) {
+                    showPost(item);
+                }
+                return true;
+            case R.string.txt_changeinfo:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void showPost(final MenuItem item) {
+    }
+
+    private void hidePost(final MenuItem item) {
+
     }
 
     @Override

@@ -52,6 +52,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.HashMap;
@@ -87,9 +88,16 @@ public class AddFoodFragment extends DialogFragment implements View.OnClickListe
     private SelectedImage selectedImage;
     private BottomSheetDialog imgsDialog;
     UploadTask uploadTask;
+    boolean isEditFood = false;
+    Food oldfood;
 
     public void setStore(Store store) {
         this.store = store;
+    }
+
+    public void setEditFoood(boolean isEditFood, Food oldfood) {
+        this.isEditFood = isEditFood;
+        this.oldfood = oldfood;
     }
 
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -117,7 +125,7 @@ public class AddFoodFragment extends DialogFragment implements View.OnClickListe
         stRef = FirebaseStorage.getInstance().getReferenceFromUrl(
                 getResources().getString(R.string.firebaseStorage_path));
         View view = inflater.inflate(R.layout.fragment_addfood, container, false);
-        ref(view);
+        init(view);
         return view;
     }
 
@@ -129,7 +137,7 @@ public class AddFoodFragment extends DialogFragment implements View.OnClickListe
         return dialog;
     }
 
-    private void ref(View view) {
+    private void init(View view) {
         dialogFm = getActivity().getSupportFragmentManager();
         edt_price = (EditText) view.findViewById(R.id.edt_price_addfood);
         edt_price.addTextChangedListener(new TextWatcher() {
@@ -257,7 +265,28 @@ public class AddFoodFragment extends DialogFragment implements View.OnClickListe
         mProgressDialog.setMessage(getResources().getString(R.string.txt_addinmon));
         mProgressDialog.setCancelable(true);
         mProgressDialog.setCanceledOnTouchOutside(true);
-
+        if (isEditFood) {
+            if (oldfood.getImgBitmap() == null) {
+                StorageReference imgRef = stRef.child(oldfood.getFoodImg());
+                imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.with(getContext())
+                                .load(uri)
+                                .into(imgv_photo);
+                    }
+                });
+            } else {
+                imgv_photo.setImageBitmap(oldfood.getImgBitmap());
+            }
+            edt_name.setText(oldfood.getName());
+            name = oldfood.getName();
+            edt_price.setText(oldfood.getPrice() + "");
+            price = String.valueOf(oldfood.getPrice());
+            edt_comment.setText(oldfood.getComment());
+            comment = oldfood.getComment();
+            avatarname = oldfood.getFoodImg();
+        }
     }
 
     @Override
@@ -270,11 +299,15 @@ public class AddFoodFragment extends DialogFragment implements View.OnClickListe
                     edt_price.requestFocus();
                 } else if (AppUtils.checkEmptyEdt(edt_comment)) {
                     edt_comment.requestFocus();
-                } else if (selectedImage == null) {
-                    Toast.makeText(getContext(), getString(R.string.txt_nophoto),
-                            Toast.LENGTH_SHORT).show();
+                } else if (!isEditFood) {
+                    if (selectedImage == null) {
+                        Toast.makeText(getContext(), getString(R.string.txt_nophoto),
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        saveFood();
+                    }
                 } else {
-                    savefood();
+                    updateFood();
                 }
                 break;
             case R.id.btn_cancel_addfood:
@@ -285,6 +318,79 @@ public class AddFoodFragment extends DialogFragment implements View.OnClickListe
                 imagesrv.scrollToPosition(0);
                 imgsDialog.show();
                 break;
+        }
+    }
+
+    private void updateFood() {
+        mProgressDialog = AppUtils.setupProgressDialog(getContext(),
+                getString(R.string.txt_updatinfood), null, false, false,
+                ProgressDialog.STYLE_SPINNER, 0);
+        mProgressDialog.show();
+        Food childfood = oldfood;
+        childfood.setName(name);
+        childfood.setPrice(Long.parseLong(price));
+        childfood.setComment(comment);
+        childfood.setFoodImg(avatarname);
+        Map<String, Object> foodValue = childfood.toMap();
+        final Map<String, Object> childUpdate = new HashMap<>();
+        childUpdate.put(getString(R.string.food_CODE) + childfood.getFoodID(), foodValue);
+        if (!avatarname.equals(oldfood.getFoodImg())) {
+            StorageReference imgRef = stRef.child(avatarname);
+            uploadTask = imgRef.putFile(
+                    Uri.fromFile(new File(selectedImage.getUri().toString())));
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    dbRef.updateChildren(childUpdate).addOnSuccessListener(
+                            new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    mProgressDialog.dismiss();
+                                    getDialog().dismiss();
+                                    Toast.makeText(getContext(),
+                                            getString(R.string.text_updatefood_succ),
+                                            Toast.LENGTH_SHORT)
+                                            .show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            mProgressDialog.cancel();
+                            Toast.makeText(getContext(),
+                                    getString(R.string.text_updatefood_failed),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    mProgressDialog.cancel();
+                    Toast.makeText(getContext(), getString(R.string.txt_failedUploadImg)
+                            , Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            dbRef.updateChildren(childUpdate).addOnSuccessListener(
+                    new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            mProgressDialog.dismiss();
+                            getDialog().dismiss();
+                            Toast.makeText(getContext(),
+                                    getString(R.string.text_updatefood_succ),
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    mProgressDialog.cancel();
+                    Toast.makeText(getContext(),
+                            getString(R.string.text_updatefood_failed),
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
@@ -301,7 +407,7 @@ public class AddFoodFragment extends DialogFragment implements View.OnClickListe
         window.setGravity(Gravity.CENTER);
     }
 
-    private void savefood() {
+    private void saveFood() {
         mProgressDialog.show();
         newFood = new Food(name, comment, Long.valueOf(price),
                 0, LoginSession.getInstance().getFirebUser().getUid(),

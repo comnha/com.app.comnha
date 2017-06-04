@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +38,7 @@ import com.app.ptt.comnha.SingletonClasses.ChooseFood;
 import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -53,6 +55,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_STORE;
@@ -197,74 +200,60 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (store.isHidden()) {
-            menu = AppUtils.createMenu(menu, new String[]{
-                    getString(R.string.txt_report),
-                    getString(R.string.txt_followStore),
-                    getString(R.string.txt_showstore),
-                    getString(R.string.txt_changeinfo)});
+        int role = LoginSession.getInstance().getUser().getRole();
+        String uID = LoginSession.getInstance().getUser().getuID();
+        List<Pair<Integer, String>> contents = new ArrayList<>();
+        if (role == 1) {
+            contents.add(new Pair<Integer, String>
+                    (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
+            contents.add(new Pair<Integer, String>
+                    (R.string.txt_delstore, getString(R.string.txt_delstore)));
+            if (store.isHidden()) {
+                contents.add(new Pair<Integer, String>
+                        (R.string.txt_showstore, getString(R.string.txt_showstore)));
+            } else {
+                contents.add(new Pair<Integer, String>
+                        (R.string.text_hidestore, getString(R.string.text_hidestore)));
+            }
         } else {
-            menu = AppUtils.createMenu(menu, new String[]{
-                    getString(R.string.txt_report),
-                    getString(R.string.txt_followStore),
-                    getString(R.string.text_hidestore),
-                    getString(R.string.txt_changeinfo)});
+            contents.add(new Pair<Integer, String>
+                    (R.string.txt_report, getString(R.string.txt_report)));
+            contents.add(new Pair<Integer, String>
+                    (R.string.txt_followStore, getString(R.string.txt_followStore)));
+            if (storeID.equals(uID)) {
+                contents.add(new Pair<Integer, String>
+                        (R.string.text_hidestore, getString(R.string.text_hidestore)));
+            } else {
+
+            }
         }
+        menu = AppUtils.createMenu(menu, contents);
         return super.onCreateOptionsMenu(menu);
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case 0:
-                ReportDialog reportDialog = new ReportDialog();
-                reportDialog.setReport(REPORT_STORE, store);
-                reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
-                reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
-                    @Override
-                    public void onPositive(boolean isClicked, Map<String,
-                            Object> childUpdate, final Dialog dialog) {
-                        if (isClicked) {
-                            dialog.dismiss();
-                            plzw8Dialog.show();
-                            dbRef.updateChildren(childUpdate)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            plzw8Dialog.dismiss();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    dialog.show();
-                                    plzw8Dialog.dismiss();
-                                    Toast.makeText(StoreDeatailActivity.this, e.getMessage(),
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            });
-
-                        }
-                    }
-
-                    @Override
-                    public void onNegative(boolean isClicked, Dialog dialog) {
-                        if (isClicked) {
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                reportDialog.show(getSupportFragmentManager(), "report_store");
+            case R.string.txt_report:
+                reportStore();
                 return true;
-            case 1:
+            case R.string.txt_followStore:
                 return true;
-            case 2:
+            case R.string.text_hidestore:
                 if (store.isHidden()) {
                     showStore(item);
-                } else {
+                }
+                return true;
+            case R.string.txt_showstore:
+                if (!store.isHidden()) {
                     hideStore(item);
                 }
                 return true;
-            case 3:
+            case R.string.txt_delstore:
+
+                return true;
+            case R.string.txt_changeinfo:
 
                 return true;
             default:
@@ -505,6 +494,46 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
             default:
                 return;
         }
+    }
+
+    private void reportStore() {
+        ReportDialog reportDialog = new ReportDialog();
+        reportDialog.setReport(REPORT_STORE, store);
+        reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
+        reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
+            @Override
+            public void onPositive(boolean isClicked, Map<String,
+                    Object> childUpdate, final Dialog dialog) {
+                if (isClicked) {
+                    dialog.dismiss();
+                    plzw8Dialog.show();
+                    dbRef.updateChildren(childUpdate)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    plzw8Dialog.dismiss();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            dialog.show();
+                            plzw8Dialog.dismiss();
+                            Toast.makeText(StoreDeatailActivity.this, e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onNegative(boolean isClicked, Dialog dialog) {
+                if (isClicked) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        reportDialog.show(getSupportFragmentManager(), "report_store");
     }
 
     @Override

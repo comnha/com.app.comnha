@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingTop="4dp"
+    android:paddingBottom="4dp"
     tools:context="com.app.ptt.comnha.Fragment.MainPostFragment">
 
     <android.support.v4.widget.SwipeRefreshLayout
@@ -16,8 +17,6 @@
             android:id="@+id/recyclerV_postfrag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
             android:descendantFocusability="blocksDescendants"
             android:scrollbarSize="0dp"
             android:scrollbars="none"

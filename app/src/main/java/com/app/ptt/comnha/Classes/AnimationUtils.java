@@ -28,8 +28,14 @@ public class AnimationUtils {
         return instance;
     }
 
-    public static void fadeAnimation(View view, long duration, long delay) {
-        ObjectAnimator fade = ObjectAnimator.ofFloat(view, "alpha", 0, 1);
+    public static void fadeAnimation(View view, long duration, boolean isFadeIn,
+                                     long delay) {
+        ObjectAnimator fade = null;
+        if (isFadeIn) {
+            fade = ObjectAnimator.ofFloat(view, "alpha", 0, 1);
+        } else {
+            fade = ObjectAnimator.ofFloat(view, "alpha", 1, 0);
+        }
         fade.setDuration(duration);
         if (delay > 0) {
             fade.setStartDelay(delay);
