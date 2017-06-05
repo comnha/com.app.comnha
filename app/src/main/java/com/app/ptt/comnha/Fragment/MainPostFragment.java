@@ -18,6 +18,7 @@ import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -59,28 +60,54 @@ public class MainPostFragment extends Fragment {
     }
 
     private void getPostList() {
-        postsEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot item : dataSnapshot.getChildren()) {
-                    String key = item.getKey();
-                    Post post = item.getValue(Post.class);
-                    post.setPostID(key);
-                    posts.add(post);
+        int role = LoginSession.getInstance().getUser().getRole();
+        if (role == 1) {
+            postsEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot item : dataSnapshot.getChildren()) {
+                        String key = item.getKey();
+                        Post post = item.getValue(Post.class);
+                        post.setPostID(key);
+                        posts.add(post);
+                    }
+                    postadapter.notifyDataSetChanged();
+                    swipeRefresh.setRefreshing(false);
                 }
-                postadapter.notifyDataSetChanged();
-                swipeRefresh.setRefreshing(false);
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        };
-        dbRef.child(getString(R.string.posts_CODE))
-                .orderByChild("isHidden_dist_prov")
-                .equalTo(false + "_" + dist_pro)
-                .addListenerForSingleValueEvent(postsEventListener);
+                }
+            };
+            dbRef.child(getString(R.string.posts_CODE))
+                    .orderByChild("pro_dist")
+                    .equalTo(dist_pro)
+                    .addListenerForSingleValueEvent(postsEventListener);
+        } else {
+            postsEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot item : dataSnapshot.getChildren()) {
+                        String key = item.getKey();
+                        Post post = item.getValue(Post.class);
+                        post.setPostID(key);
+                        posts.add(post);
+                    }
+                    postadapter.notifyDataSetChanged();
+                    swipeRefresh.setRefreshing(false);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            dbRef.child(getString(R.string.posts_CODE))
+                    .orderByChild("isHidden_dist_prov")
+                    .equalTo(false + "_" + dist_pro)
+                    .addListenerForSingleValueEvent(postsEventListener);
+        }
     }
 
     private void ref(View view) {

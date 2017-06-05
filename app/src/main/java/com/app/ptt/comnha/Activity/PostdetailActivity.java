@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -95,13 +96,14 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
     ValueEventListener commentEventListener, imagesEventListener, foodsEventListener,
             userEventListener;
     LinearLayout linear_rate, linear_food;
-    ProgressDialog plzw8Dialog;
+    ProgressDialog plzw8Dialog = null;
     Post post;
     BottomSheetDialog commentDialog;
     EditText edt_comment;
     String comtContent;
     Comment comment = null;
     User user = null;
+    Menu pubMenu = null;
     boolean isConnected = true;
     IntentFilter mIntentFilter;
     public static final String mBroadcastSendAddress = "mBroadcastSendAddress";
@@ -458,6 +460,12 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        menu = AppUtils.createMenu(menu, returnContenMenuItems());
+        pubMenu = menu;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private List<Pair<Integer, String>> returnContenMenuItems() {
         int role = LoginSession.getInstance().getUser().getRole();
         String uID = LoginSession.getInstance().getUser().getuID();
         List<Pair<Integer, String>> contents = new ArrayList<>();
@@ -472,18 +480,19 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
                         (R.string.text_hidepost, getString(R.string.text_hidepost)));
             }
         } else {
-            if (post.isHidden()) {
-                contents.add(new Pair<Integer, String>
-                        (R.string.txt_showpost, getString(R.string.txt_showpost)));
-            } else {
-                contents.add(new Pair<Integer, String>
-                        (R.string.text_hidepost, getString(R.string.text_hidepost)));
+            if (uID.equals(post.getUserID())) {
+                if (post.isHidden()) {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.txt_showpost, getString(R.string.txt_showpost)));
+                } else {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.text_hidepost, getString(R.string.text_hidepost)));
+                }
             }
             contents.add(new Pair<Integer, String>
                     (R.string.txt_report, getString(R.string.txt_report)));
         }
-        menu = AppUtils.createMenu(menu, contents);
-        return super.onCreateOptionsMenu(menu);
+        return contents;
     }
 
     @Override
@@ -529,13 +538,13 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
                 reportDialog.show(getSupportFragmentManager(), "report_post");
                 return true;
             case R.string.text_hidepost:
-                 if (!post.isHidden()){
-                    hidePost(item);
+                if (!post.isHidden()) {
+                    hidePost();
                 }
                 return true;
             case R.string.txt_showpost:
                 if (post.isHidden()) {
-                    showPost(item);
+                    showPost();
                 }
                 return true;
             case R.string.txt_changeinfo:
@@ -545,11 +554,89 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    private void showPost(final MenuItem item) {
+    private void showPost() {
+        plzw8Dialog.show();
+        post.setHidden(false);
+        String key = post.getPostID();
+//        Toast.makeText(StoreDeatailActivity.this,
+//                key, Toast.LENGTH_SHORT).show();
+        Post childPost = post;
+        Map<String, Object> postValue = childPost.toMap();
+        Map<String, Object> childUpdate = new HashMap<>();
+        childUpdate.put(getString(R.string.posts_CODE)
+                + key, postValue);
+        dbRef.updateChildren(childUpdate)
+                .addOnSuccessListener(
+                        new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+//                                item.setTitle(getString(R.string.text_hidestore));
+                                pubMenu.clear();
+                                PostdetailActivity.this.onCreateOptionsMenu(pubMenu);
+                                plzw8Dialog.cancel();
+                            }
+                        }).addOnFailureListener(
+                new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        plzw8Dialog.cancel();
+                        Toast.makeText(getApplicationContext(),
+                                e.getMessage(), Toast.LENGTH_LONG)
+                                .show();
+                    }
+                });
     }
 
-    private void hidePost(final MenuItem item) {
-
+    private void hidePost() {
+        new AlertDialog.Builder(this)
+                .setCancelable(true)
+                .setMessage(getString(R.string.txt_hideconfirm))
+                .setPositiveButton(getString(R.string.txt_hide),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(
+                                    final DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                                plzw8Dialog.show();
+                                post.setHidden(true);
+                                String key = post.getPostID();
+//                                Toast.makeText(StoreDeatailActivity.this,
+//                                        key, Toast.LENGTH_SHORT).show();
+                                Post childPost = post;
+                                Map<String, Object> postValue = childPost.toMap();
+                                Map<String, Object> childUpdate = new HashMap<>();
+                                childUpdate.put(getString(R.string.posts_CODE)
+                                        + key, postValue);
+                                dbRef.updateChildren(childUpdate)
+                                        .addOnSuccessListener(
+                                                new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        pubMenu.clear();
+                                                        PostdetailActivity.this.onCreateOptionsMenu(pubMenu);
+                                                        plzw8Dialog.cancel();
+                                                    }
+                                                }).addOnFailureListener(
+                                        new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                plzw8Dialog.cancel();
+                                                Toast.makeText(getApplicationContext(),
+                                                        e.getMessage(), Toast.LENGTH_LONG)
+                                                        .show();
+                                            }
+                                        });
+                            }
+                        })
+                .setNegativeButton(getString(R.string.text_no),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(
+                                    DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        })
+                .show();
     }
 
     @Override
