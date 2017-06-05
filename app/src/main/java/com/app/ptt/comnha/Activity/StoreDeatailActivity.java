@@ -85,6 +85,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     LinearLayout linear_progress;
     String storeID = null;
     ProgressDialog plzw8Dialog = null;
+    Menu pubMenu = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,6 +201,14 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        List<Pair<Integer, String>> contents = returnContentMenuItems();
+        menu = AppUtils.createMenu(menu, contents);
+        pubMenu = menu;
+        return super.onCreateOptionsMenu(menu);
+
+    }
+
+    private List<Pair<Integer, String>> returnContentMenuItems() {
         int role = LoginSession.getInstance().getUser().getRole();
         String uID = LoginSession.getInstance().getUser().getuID();
         List<Pair<Integer, String>> contents = new ArrayList<>();
@@ -220,16 +229,17 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     (R.string.txt_report, getString(R.string.txt_report)));
             contents.add(new Pair<Integer, String>
                     (R.string.txt_followStore, getString(R.string.txt_followStore)));
-            if (storeID.equals(uID)) {
-                contents.add(new Pair<Integer, String>
-                        (R.string.text_hidestore, getString(R.string.text_hidestore)));
-            } else {
-
+            if (store.getUserID().equals(uID)) {
+                if (store.isHidden()) {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.txt_showstore, getString(R.string.txt_showstore)));
+                } else {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.text_hidestore, getString(R.string.text_hidestore)));
+                }
             }
         }
-        menu = AppUtils.createMenu(menu, contents);
-        return super.onCreateOptionsMenu(menu);
-
+        return contents;
     }
 
     @Override
@@ -241,13 +251,13 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
             case R.string.txt_followStore:
                 return true;
             case R.string.text_hidestore:
-                if (store.isHidden()) {
-                    showStore(item);
+                if (!store.isHidden()) {
+                    hideStore();
                 }
                 return true;
             case R.string.txt_showstore:
-                if (!store.isHidden()) {
-                    hideStore(item);
+                if (store.isHidden()) {
+                    showStore();
                 }
                 return true;
             case R.string.txt_delstore:
@@ -261,7 +271,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    private void showStore(final MenuItem item) {
+    private void showStore() {
         plzw8Dialog.show();
         store.setHidden(false);
         String key = store.getStoreID();
@@ -277,7 +287,9 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                         new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                item.setTitle(getString(R.string.text_hidestore));
+//                                item.setTitle(getString(R.string.text_hidestore));
+                                pubMenu.clear();
+                                StoreDeatailActivity.this.onCreateOptionsMenu(pubMenu);
                                 plzw8Dialog.cancel();
                             }
                         }).addOnFailureListener(
@@ -292,7 +304,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 });
     }
 
-    private void hideStore(final MenuItem item) {
+    private void hideStore() {
         new AlertDialog.Builder(this)
                 .setCancelable(true)
                 .setMessage(getString(R.string.txt_hideconfirm))
@@ -317,7 +329,8 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                                                 new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
-                                                        item.setTitle(getString(R.string.txt_showstore));
+                                                        pubMenu.clear();
+                                                        StoreDeatailActivity.this.onCreateOptionsMenu(pubMenu);
                                                         plzw8Dialog.cancel();
                                                     }
                                                 }).addOnFailureListener(
@@ -436,31 +449,52 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void getFoodList() {
-        foodValueListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
-                    Food food = dataItem.getValue(Food.class);
-                    String key = dataItem.getKey();
-                    food.setFoodID(key);
-                    foods.add(food);
+        int role = LoginSession.getInstance().getUser().getRole();
+        if (role == 1) {
+            foodValueListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
+                        Food food = dataItem.getValue(Food.class);
+                        String key = dataItem.getKey();
+                        food.setFoodID(key);
+                        foods.add(food);
+                    }
+                    foodAdapter.notifyDataSetChanged();
                 }
-                foodAdapter.notifyDataSetChanged();
-                dbRef.child(getString(R.string.food_CODE))
-                        .orderByChild("isHidden_storeID")
-                        .equalTo(false + "_" + storeID)
-                        .removeEventListener(foodValueListener);
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        };
-        dbRef.child(getString(R.string.food_CODE))
-                .orderByChild("isHidden_storeID")
-                .equalTo(false + "_" + storeID)
-                .addValueEventListener(foodValueListener);
+                }
+            };
+            dbRef.child(getString(R.string.food_CODE))
+                    .orderByChild("storeID")
+                    .equalTo(storeID)
+                    .addListenerForSingleValueEvent(foodValueListener);
+        } else {
+            foodValueListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
+                        Food food = dataItem.getValue(Food.class);
+                        String key = dataItem.getKey();
+                        food.setFoodID(key);
+                        foods.add(food);
+                    }
+                    foodAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            dbRef.child(getString(R.string.food_CODE))
+                    .orderByChild("isHidden_storeID")
+                    .equalTo(false + "_" + storeID)
+                    .addListenerForSingleValueEvent(foodValueListener);
+        }
     }
 
     @Override

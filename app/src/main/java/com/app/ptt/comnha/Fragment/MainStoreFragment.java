@@ -22,6 +22,7 @@ import com.app.ptt.comnha.Modules.MyTool;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.SingletonClasses.CoreManager;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -101,42 +102,60 @@ public class MainStoreFragment extends Fragment {
         itemadapter.setStorageRef(
                 FirebaseStorage.getInstance().getReferenceFromUrl(
                         getString(R.string.firebaseStorage_path)));
-        storesEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot item : dataSnapshot.getChildren()) {
-                    Store store = item.getValue(Store.class);
-                    store.setStoreID(item.getKey());
+        int role = LoginSession.getInstance().getUser().getRole();
+        if (role == 1) {
+            storesEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot item : dataSnapshot.getChildren()) {
+                        Store store = item.getValue(Store.class);
+                        store.setStoreID(item.getKey());
 
-                    items.add(store);
+                        items.add(store);
 
-                    Log.d("added", "added");
+                        Log.d("added", "added");
+                    }
+                    itemadapter.notifyDataSetChanged();
+                    new calculateDistance().execute();
+                    swipeRefresh.setRefreshing(false);
                 }
-                itemadapter.notifyDataSetChanged();
-                new calculateDistance().execute();
-                swipeRefresh.setRefreshing(false);
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        };
-        dbRef.child(getString(R.string.store_CODE))
-                .orderByChild("isHidden_dis_pro")
-                .equalTo(String.valueOf(false) + "_" + pro_dist)
-                .addListenerForSingleValueEvent(storesEventListener);
-        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-            }
+                }
+            };
+            dbRef.child(getString(R.string.store_CODE))
+                    .orderByChild("pro_dist")
+                    .equalTo(pro_dist)
+                    .addListenerForSingleValueEvent(storesEventListener);
+        } else {
+            storesEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot item : dataSnapshot.getChildren()) {
+                        Store store = item.getValue(Store.class);
+                        store.setStoreID(item.getKey());
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                        items.add(store);
 
-            }
-        });
+                        Log.d("added", "added");
+                    }
+                    itemadapter.notifyDataSetChanged();
+                    new calculateDistance().execute();
+                    swipeRefresh.setRefreshing(false);
+                }
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            dbRef.child(getString(R.string.store_CODE))
+                    .orderByChild("isHidden_dis_pro")
+                    .equalTo(String.valueOf(false) + "_" + pro_dist)
+                    .addListenerForSingleValueEvent(storesEventListener);
+        }
     }
 
     private void ref(final View view) {
