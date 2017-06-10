@@ -111,7 +111,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 .getReferenceFromUrl(getString(R.string.firebase_path));
         CoreManager.getInstance().initData(this);
         myTool = new MyTool(this);
-        ref();
+        init();
         startMyService();
         initMenu();
 
@@ -119,40 +119,55 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 
     private void getUser() {
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    txt_email.setText(user.getEmail());
-                    txt_un.setText(user.getDisplayName());
-                    Picasso.with(getApplicationContext())
-                            .load(user.getPhotoUrl())
-                            .placeholder(R.drawable.ic_logo)
-                            .into(imgv_avatar);
-                    getUserInfo(user);
-                    itemSignIn.setVisible(false);
-                    itemSignOut.setVisible(true);
-                    itemProfile.setVisible(true);
-                    itemAdmin.setVisible(false);
-                    Log.d("onAuthStateChanged", "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d("onAuthStateChanged", "onAuthStateChanged:signed_out");
-                    LoginSession.getInstance().setFirebUser(null);
-                    LoginSession.getInstance().setUser(null);
-                    txt_email.setText(null);
-                    txt_un.setText(null);
-                    itemSignIn.setVisible(true);
-                    itemSignOut.setVisible(false);
-                    itemProfile.setVisible(false);
-                    itemAdmin.setVisible(false);
-                    imgv_avatar.setImageResource(R.drawable.ic_logo);
+        if (LoginSession.getInstance().getUser() != null
+                && LoginSession.getInstance().getFirebUser() != null) {
+            FirebaseUser firebaseUser=LoginSession.getInstance().getFirebUser();
+            txt_email.setText(firebaseUser.getEmail());
+            txt_un.setText(firebaseUser.getDisplayName());
+            Picasso.with(getApplicationContext())
+                    .load(firebaseUser.getPhotoUrl())
+                    .placeholder(R.drawable.ic_logo)
+                    .into(imgv_avatar);
+            itemSignIn.setVisible(false);
+            itemSignOut.setVisible(true);
+            itemProfile.setVisible(true);
+            itemAdmin.setVisible(false);
+        } else {
+            mAuthListener = new FirebaseAuth.AuthStateListener() {
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    if (user != null) {
+                        // User is signed in
+                        txt_email.setText(user.getEmail());
+                        txt_un.setText(user.getDisplayName());
+                        Picasso.with(getApplicationContext())
+                                .load(user.getPhotoUrl())
+                                .placeholder(R.drawable.ic_logo)
+                                .into(imgv_avatar);
+                        getUserInfo(user);
+                        itemSignIn.setVisible(false);
+                        itemSignOut.setVisible(true);
+                        itemProfile.setVisible(true);
+                        itemAdmin.setVisible(false);
+                        Log.d("onAuthStateChanged", "onAuthStateChanged:signed_in:" + user.getUid());
+                    } else {
+                        // User is signed out
+                        Log.d("onAuthStateChanged", "onAuthStateChanged:signed_out");
+                        LoginSession.getInstance().setFirebUser(null);
+                        LoginSession.getInstance().setUser(null);
+                        txt_email.setText(null);
+                        txt_un.setText(null);
+                        itemSignIn.setVisible(true);
+                        itemSignOut.setVisible(false);
+                        itemProfile.setVisible(false);
+                        itemAdmin.setVisible(false);
+                        imgv_avatar.setImageResource(R.drawable.ic_logo);
+                    }
                 }
-            }
-        };
-        mAuth.addAuthStateListener(mAuthListener);
+            };
+            mAuth.addAuthStateListener(mAuthListener);
+        }
     }
 
     private void getUserInfo(final FirebaseUser firebaseUser) {
@@ -181,7 +196,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 .addListenerForSingleValueEvent(userValueListener);
     }
 
-    private void ref() {
+    private void init() {
 
         mtoolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(mtoolbar);
@@ -199,7 +214,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         txt_email = (TextView) header.findViewById(R.id.txtv_email_nav_head);
         txt_un = (TextView) header.findViewById(R.id.txtv_un_nav_head);
         imgv_avatar = (CircularImageView) header.findViewById(R.id.imgv_avatar_nav_head);
-
         pagerAdapter = new MainFragPagerAdapter(getSupportFragmentManager());
         viewPager = (ViewPager) findViewById(R.id.viewpager_main);
         viewPager.setAdapter(pagerAdapter);
@@ -619,14 +633,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     //
-//    public void getRole() {
+//    public void getExistUser() {
 //        role = false;
 //        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
 //        profileValueEventListener = new ValueEventListener() {
 //            @Override
 //            public void onDataChange(DataSnapshot dataSnapshot) {
 //                Account account = dataSnapshot.getValue(Account.class);
-//                role = account.getRole();
+//                role = account.getExistUser();
 //                account.setId(dataSnapshot.getKey());
 //                account.setUsername(user.getDisplayName());
 //                LoginSession.getInstance().setRole(role);
@@ -648,7 +662,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 //    }
 //
 //
-//    void ref() {
+//    void init() {
 //    }
 //
 //    public void bottomBarEvent() {

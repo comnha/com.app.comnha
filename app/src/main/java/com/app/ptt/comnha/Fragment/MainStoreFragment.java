@@ -102,7 +102,10 @@ public class MainStoreFragment extends Fragment {
         itemadapter.setStorageRef(
                 FirebaseStorage.getInstance().getReferenceFromUrl(
                         getString(R.string.firebaseStorage_path)));
-        int role = LoginSession.getInstance().getUser().getRole();
+        int role =0;
+        if (LoginSession.getInstance().getUser()!=null){
+            role = LoginSession.getInstance().getUser().getRole();
+        }
         if (role == 1) {
             storesEventListener = new ValueEventListener() {
                 @Override

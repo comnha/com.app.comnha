@@ -2,7 +2,6 @@ package com.app.ptt.comnha.Fragment;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,11 +16,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.app.ptt.comnha.Activity.AdapterActivity;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -146,6 +145,8 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
                                     Log.w(TAG, "signInWithEmail:onComplete", task.getException());
                                     AppUtils.showSnackbarWithoutButton(view,getString(R.string.text_signin_fail));
                                 } else {
+                                    LoginSession.getInstance().setUser(null);
+                                    LoginSession.getInstance().setFirebUser(null);
                                     getActivity().finish();
                                 }
                                 closeDialog();
