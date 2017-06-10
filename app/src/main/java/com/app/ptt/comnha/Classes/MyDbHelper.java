@@ -57,25 +57,58 @@ public class MyDbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public int getRole() {
+    private User getExistUser() {
         SQLiteDatabase db = this.getReadableDatabase();
         String[] columns = new String[]{ID, EMAIL, ROLE};
+        String where = ID + "=?";
         Cursor cursor = db.query(TABLE_NAME, columns, null, null, null, null, null);
-        int role;
+        User user = new User();
         if (cursor != null) {
             cursor.moveToFirst();
-            role = cursor.getInt(3);
+            user.setRole(cursor.getInt(3));
+            user.setuID(cursor.getString(1));
+            user.setEmail(cursor.getString(2));
         } else {
-            return 0;
+            return null;
         }
         cursor.close();
         db.close();
-        return role;
+        return user;
     }
 
-    public void updateUser(User newuser) {
+    private int updateUser(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-//        values.put(ID,);
+        values.put(ID, user.getuID());
+        values.put(EMAIL, user.getEmail());
+        values.put(ROLE, user.getRole());
+        return db.update(TABLE_NAME, values, ID + "=?", new String[]{String.valueOf(user.getuID())});
+    }
+
+    public void setSignedInUser(User user) {
+        if (getExistUser() == null) {//if no user
+            saveUser(user);//save new user
+        } else {
+            User existUser = getExistUser();
+            if (existUser.getuID().equals(user.getuID())) {//olduser
+                if (!existUser.getuID().equals(user.getuID())) {//if changes
+                    updateUser(user);//just update role
+                }
+            } else {
+                if (delUser(existUser) == 1) {
+                    saveUser(user);
+                }
+            }
+        }
+    }
+
+    private int delUser(User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = 0;
+        if (user.getuID().equals("")) {
+            rows = db.delete(TABLE_NAME, ID + "=?", new String[]{user.getuID()});
+        }
+        db.close();
+        return rows;
     }
 }

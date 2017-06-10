@@ -175,10 +175,6 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                     food.setFoodID(key);
                     foods.add(food);
                 }
-                dbRef.child(getString(R.string.food_CODE))
-                        .orderByChild("dist_prov")
-                        .equalTo(dist_prov)
-                        .removeEventListener(foodValueListener);
                 foodAdapter.notifyDataSetChanged();
                 plzw8Dialog.dismiss();
             }
@@ -191,7 +187,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         dbRef.child(getString(R.string.food_CODE))
                 .orderByChild("dist_prov")
                 .equalTo(dist_prov)
-                .addValueEventListener(foodValueListener);
+                .addListenerForSingleValueEvent(foodValueListener);
     }
 
     private void getFoodsFromStore() {
@@ -223,33 +219,56 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 .addValueEventListener(foodFromStoreValueListener);
     }
 
-    private void getStores() {
-        storeValueListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
-                    String key = dataItem.getKey();
-                    Store store = dataItem.getValue(Store.class);
+    private void getStores(String storeID) {
+        if (!storeID.equals("")) {
+            plzw8Dialog.show();
+            storeValueListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String key = dataSnapshot.getKey();
+                    Store store = dataSnapshot.getValue(Store.class);
                     store.setStoreID(key);
-                    stores.add(store);
+                    selected_store = store;
+
+                    linear_location.setVisibility(View.VISIBLE);
+                    AnimationUtils.fadeAnimation(linear_location, 300, true, 0);
+                    txtv_locaadd.setText(selected_store.getAddress());
+                    txtv_locaname.setText(selected_store.getName());
+
+                    plzw8Dialog.dismiss();
                 }
-                dbRef.child(getString(R.string.store_CODE))
-                        .orderByChild("isHidden_dis_pro")
-                        .equalTo(String.valueOf(false) + "_" + dist_prov)
-                        .removeEventListener(storeValueListener);
-                storesAdater.notifyDataSetChanged();
-                plzw8Dialog.dismiss();
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        };
-        dbRef.child(getString(R.string.store_CODE))
-                .orderByChild("isHidden_dis_pro")
-                .equalTo(String.valueOf(false) + "_" + dist_prov)
-                .addValueEventListener(storeValueListener);
+                }
+            };
+            dbRef.child(getString(R.string.store_CODE) + storeID)
+                    .addListenerForSingleValueEvent(storeValueListener);
+        } else {
+            storeValueListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
+                        String key = dataItem.getKey();
+                        Store store = dataItem.getValue(Store.class);
+                        store.setStoreID(key);
+                        stores.add(store);
+                    }
+                    storesAdater.notifyDataSetChanged();
+                    plzw8Dialog.dismiss();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            dbRef.child(getString(R.string.store_CODE))
+                    .orderByChild("isHidden_dis_pro")
+                    .equalTo(String.valueOf(false) + "_" + dist_prov)
+                    .addListenerForSingleValueEvent(storeValueListener);
+        }
     }
 
     private void ref(View view) {
@@ -543,6 +562,9 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //                            + image.getStoreID()).addValueEventListener();
 //                }
                 selected_food = food;
+                if (selected_store == null) {
+                    getStores(selected_food.getStoreID());
+                }
                 foodDialog.dismiss();
             }
         });
@@ -605,6 +627,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                         @Override
                         public void onDismiss(DialogInterface dialogInterface) {
                             foodDialog.show();
+                            plzw8Dialog.setOnDismissListener(null);
                         }
                     });
                 } else {
@@ -639,7 +662,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 moreDialog.dismiss();
                 if (stores.size() == 0) {
                     plzw8Dialog.show();
-                    getStores();
+                    getStores("");
                     plzw8Dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialogInterface) {
@@ -1308,7 +1331,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //        newPost.setDate(new Times().getTime());
 //        newPost.setTime(new Times().getDate());
 //        newPost.setStoreID(locaID);
-//        //     if(MyService.getUserAccount().getRole()){
+//        //     if(MyService.getUserAccount().getExistUser()){
 //        newPost.setVisible(true);
 ////        }else
 ////            newPost.setVisible(false);
@@ -1352,7 +1375,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //                    plzw8Dialog.dismiss();
 //                    Toast.makeText(getActivity(), "Đăng bài bị lỗi" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
 //                } else {
-//                    if (!MyService.getUserAccount().getRole()) {
+//                    if (!MyService.getUserAccount().getExistUser()) {
 //                        Notification notification = new Notification();
 //                        String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + "admin").push().getKey();
 //                        notification.setAccount(MyService.getUserAccount());

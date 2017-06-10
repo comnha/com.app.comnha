@@ -8,8 +8,8 @@ import com.google.firebase.auth.FirebaseUser;
  */
 public class LoginSession {
     private static LoginSession ourInstance;
-    private User user;
-    private FirebaseUser firebUser;
+    private User user = null;
+    private FirebaseUser firebUser = null;
 
     public FirebaseUser getFirebUser() {
         return firebUser;

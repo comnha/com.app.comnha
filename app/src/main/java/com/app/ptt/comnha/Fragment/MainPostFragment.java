@@ -60,7 +60,10 @@ public class MainPostFragment extends Fragment {
     }
 
     private void getPostList() {
-        int role = LoginSession.getInstance().getUser().getRole();
+        int role =0;
+        if (LoginSession.getInstance().getUser()!=null){
+            role = LoginSession.getInstance().getUser().getRole();
+        }
         if (role == 1) {
             postsEventListener = new ValueEventListener() {
                 @Override
@@ -81,7 +84,7 @@ public class MainPostFragment extends Fragment {
                 }
             };
             dbRef.child(getString(R.string.posts_CODE))
-                    .orderByChild("pro_dist")
+                    .orderByChild("dist_pro")
                     .equalTo(dist_pro)
                     .addListenerForSingleValueEvent(postsEventListener);
         } else {
