@@ -8,5 +8,5 @@
     <item
         android:id="@+id/popup_locafilter_choseloca"
         android:orderInCategory="2"
-        android:title="@string/txt_choseloca" />
+        android:title="@string/txt_chooseloca" />
 </menu>

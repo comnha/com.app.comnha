@@ -99,6 +99,7 @@ public class ViewPhotosActivity extends AppCompatActivity {
                 User user = dataSnapshot.getValue(User.class);
                 user.setuID(dataSnapshot.getKey());
                 temp_user = user;
+                tv_un.setText(user.getUn());
                 if (!user.getAvatar().equals("")) {
                     StorageReference avatarRef = stRef.child(user.getAvatar());
                     avatarRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -135,7 +136,7 @@ public class ViewPhotosActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar_viewphoto);
         toolbar.setNavigationIcon(R.drawable.ic_close_white_24dp);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
+        getSupportActionBar().setTitle(getString(R.string.txt_imgdetail));
         applayout = (AppBarLayout) findViewById(R.id.applayout_viewphoto);
         applayout.setBackgroundDrawable(new ColorDrawable(getResources()
                 .getColor(android.R.color.transparent)));
@@ -143,6 +144,8 @@ public class ViewPhotosActivity extends AppCompatActivity {
         images = new ArrayList<>();
         images = ChoosePhotoList.getInstance().getImage();
         image = images.get(position);
+        tv_datetime.setText(image.getDate() + " - " + image.getTime());
+        getProfile(image.getUserID());
         photoAdapter = new ViewPhotoVPadapter(images, this, stRef);
         vp_viewphoto.setAdapter(photoAdapter);
         vp_viewphoto.setPageTransformer(true, new ZoomOutPageTransformer());
@@ -178,7 +181,9 @@ public class ViewPhotosActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 image = images.get(position);
-                if (!image.getUserID().equals(temp_user.getuID())) {
+                tv_datetime.setText(image.getDate() + " - " + image.getTime());
+                if (!image.getUserID().equals(temp_user.getuID())
+                        && temp_user != null) {
                     getProfile(image.getUserID());
                 }
             }

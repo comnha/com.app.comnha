@@ -121,7 +121,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private void getUser() {
         if (LoginSession.getInstance().getUser() != null
                 && LoginSession.getInstance().getFirebUser() != null) {
-            FirebaseUser firebaseUser=LoginSession.getInstance().getFirebUser();
+            FirebaseUser firebaseUser = LoginSession.getInstance().getFirebUser();
+            user=LoginSession.getInstance().getUser();
             txt_email.setText(firebaseUser.getEmail());
             txt_un.setText(firebaseUser.getDisplayName());
             Picasso.with(getApplicationContext())
@@ -132,6 +133,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             itemSignOut.setVisible(true);
             itemProfile.setVisible(true);
             itemAdmin.setVisible(false);
+            if (user.getRole() == 1) {
+                itemAdmin.setVisible(true);
+            } else {
+                itemAdmin.setVisible(false);
+            }
         } else {
             mAuthListener = new FirebaseAuth.AuthStateListener() {
                 @Override
