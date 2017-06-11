@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
@@ -479,9 +480,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         ilayout_title = (TextInputLayout) view.findViewById(R.id.ilayout_title);
         ilayout_content = (TextInputLayout) view.findViewById(R.id.ilayout_content);
 
-        storeDialog = new
-
-                BottomSheetDialog(getContext());
+        storeDialog = new BottomSheetDialog(getContext());
         storeDialog.setContentView(R.layout.layout_writepost_storelist);
         storeDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
@@ -624,6 +623,28 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 } else if (AppUtils.checkEmptyEdt(edt_content)) {
                     edt_content.requestFocus();
                     ilayout_content.setError(getString(R.string.txt_nocontent));
+                } else if (selected_store == null) {
+                    Snackbar sbar_noselectstore = Snackbar.make(getView(),
+                            getString(R.string.txt_nochoseloca),
+                            Snackbar.LENGTH_INDEFINITE);
+                    sbar_noselectstore.setAction(getString(R.string.txt_chooseloca), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (stores.size() == 0) {
+                                plzw8Dialog.show();
+                                getStores("");
+                                plzw8Dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                    @Override
+                                    public void onDismiss(DialogInterface dialogInterface) {
+                                        storeDialog.show();
+                                        plzw8Dialog.setOnDismissListener(null);
+                                    }
+                                });
+                            } else {
+                                storeDialog.show();
+                            }
+                        }
+                    }).show();
                 } else {
                     savePost();
                 }
