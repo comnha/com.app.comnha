@@ -234,7 +234,6 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                     AnimationUtils.fadeAnimation(linear_location, 300, true, 0);
                     txtv_locaadd.setText(selected_store.getAddress());
                     txtv_locaname.setText(selected_store.getName());
-
                     plzw8Dialog.dismiss();
                 }
 
