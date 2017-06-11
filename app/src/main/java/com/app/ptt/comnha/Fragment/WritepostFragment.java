@@ -414,10 +414,14 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                     linear_importimg.setVisibility(View.VISIBLE);
                     linear_banner.setVisibility(View.VISIBLE);
                     txtv_importimg.setText(selectedImages.size() + " ảnh đính kèm");
-                    imgV_banner.setImageURI(selectedImages.get(0).getUri());
-                    banner = selectedImages.get(0).getUri().getLastPathSegment();
+                    if (selected_food == null) {
+                        imgV_banner.setImageURI(selectedImages.get(0).getUri());
+                        banner = selectedImages.get(0).getUri().getLastPathSegment();
+                    }
                     imgV_banner.setScaleType(ImageView.ScaleType.FIT_XY);
-                } else {
+                } else
+
+                {
                     imagesImportRvAdapter.cancelSelection();
                     selectedImages.clear();
                     linear_importimg.setVisibility(View.GONE);
@@ -430,11 +434,18 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         });
 
         imagesrv = (RecyclerView) imgsDialog.findViewById(R.id.rv_images_imgimporting);
-        imageslm = new GridLayoutManager(getContext(), 3,
+        imageslm = new
+
+                GridLayoutManager(getContext(), 3,
                 LinearLayoutManager.VERTICAL, false);
         imagesrv.setLayoutManager(imageslm);
-        imagesImportRvAdapter = new ImagesImportRvAdapter(getContext(),
-                getContext().getContentResolver());
+        imagesImportRvAdapter = new
+
+                ImagesImportRvAdapter(getContext(),
+
+                getContext().
+
+                        getContentResolver());
         imagesrv.setAdapter(imagesImportRvAdapter);
 
         btn_imgdial_select = (Button) imgsDialog.findViewById(R.id.btn_select_imgimporting);
@@ -458,7 +469,9 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         linear_rate.setVisibility(View.GONE);
 
         nested_touchoutside = (NestedScrollView) view.findViewById(R.id.nested_writepost);
-        nested_touchoutside.setOnClickListener(new View.OnClickListener() {
+        nested_touchoutside.setOnClickListener(new View.OnClickListener()
+
+        {
             @Override
             public void onClick(View view) {
                 SystemControl.hideSoftKeyboard(getActivity());
@@ -467,15 +480,15 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         ilayout_title = (TextInputLayout) view.findViewById(R.id.ilayout_title);
         ilayout_content = (TextInputLayout) view.findViewById(R.id.ilayout_content);
 
-        storeDialog = new BottomSheetDialog(getContext());
+        storeDialog = new
+
+                BottomSheetDialog(getContext());
         storeDialog.setContentView(R.layout.layout_writepost_storelist);
         storeDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
                 if (selected_store != null) {
-                    if (linear_location.getVisibility() == View.VISIBLE) {
-
-                    } else {
+                    if (linear_location.getVisibility() != View.VISIBLE) {
                         linear_location.setVisibility(View.VISIBLE);
                         AnimationUtils.fadeAnimation(linear_location, 300, true, 0);
                     }
@@ -485,11 +498,16 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
             }
         });
         storesrv = (RecyclerView) storeDialog.findViewById(R.id.rv_stores_storeselection);
-        storeslm = new LinearLayoutManager(getContext(),
+        storeslm = new
+
+                LinearLayoutManager(getContext(),
+
                 LinearLayoutManager.VERTICAL, false);
         storesrv.setLayoutManager(storeslm);
         stores = new ArrayList<>();
-        storesAdater = new Storeselection_rcyler_adapter(getActivity(), stores, stRef);
+        storesAdater = new
+
+                Storeselection_rcyler_adapter(getActivity(), stores, stRef);
         storesrv.setAdapter(storesAdater);
         storesAdater.setOnItemClickLiestner(new Storeselection_rcyler_adapter
                 .OnItemClickLiestner() {
@@ -499,11 +517,15 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                     if (!selected_store.getStoreID().equals(store.getStoreID())) {
                         linear_foodrate.setVisibility(View.GONE);
                         selected_food = null;
+                        banner = "";
+                        imgV_banner.setImageBitmap(null);
                         foods.clear();
                         foodAdapter.notifyDataSetChanged();
                     }
                 } else {
                     selected_food = null;
+                    banner = "";
+                    imgV_banner.setImageBitmap(null);
                     linear_foodrate.setVisibility(View.GONE);
                     foods.clear();
                     foodAdapter.notifyDataSetChanged();
@@ -522,29 +544,36 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         rb_foodrating = (RatingBar) view.findViewById(R.id.rb_foodrating_writepost);
         rb_foodrating.setOnRatingBarChangeListener(this);
 
-        foodDialog = new BottomSheetDialog(getContext());
+        foodDialog = new
+
+                BottomSheetDialog(getContext());
         foodDialog.setContentView(R.layout.layout_writepost_foodlist);
         foodDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
                 if (selected_food != null) {
-                    if (linear_foodrate.getVisibility() == View.VISIBLE) {
-
-                    } else {
+                    if (linear_foodrate.getVisibility() != View.VISIBLE) {
                         linear_foodrate.setVisibility(View.VISIBLE);
                     }
                     txtv_foodname.setText(selected_food.getName());
                     txtv_foodprice.setText(selected_food.getPrice() + "đ");
+                    banner = selected_food.getFoodImg();
+                    linear_banner.setVisibility(View.VISIBLE);
                     imgv_foodimg.setImageBitmap(selected_food.getImgBitmap());
+                    imgV_banner.setImageBitmap(selected_food.getImgBitmap());
                 }
             }
         });
         foodsrv = (RecyclerView) foodDialog.findViewById(R.id.rv_foods_foodselection);
-        foodslm = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
+        foodslm = new
+
+                LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
                 false);
         foodsrv.setLayoutManager(foodslm);
         foods = new ArrayList<>();
-        foodAdapter = new Foodselection_rcyler_adapter(getActivity(), foods, stRef);
+        foodAdapter = new
+
+                Foodselection_rcyler_adapter(getActivity(), foods, stRef);
         foodsrv.setAdapter(foodAdapter);
         foodAdapter.setOnItemClickLiestner(new Foodselection_rcyler_adapter
                 .OnItemClickLiestner() {
@@ -568,8 +597,12 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 foodDialog.dismiss();
             }
         });
-        uploadImgDialog = new ProgressDialog(getContext());
-        uploadImgDialog.setMessage(getString(R.string.txt_updloadimg));
+        uploadImgDialog = new
+
+                ProgressDialog(getContext());
+        uploadImgDialog.setMessage(
+
+                getString(R.string.txt_updloadimg));
         uploadImgDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         uploadImgDialog.setProgress(0);
         uploadImgDialog.setCanceledOnTouchOutside(true);
@@ -593,7 +626,6 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                     edt_content.requestFocus();
                     ilayout_content.setError(getString(R.string.txt_nocontent));
                 } else {
-                    uploadImgDialog.show();
                     savePost();
                 }
                 return true;
@@ -667,6 +699,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                         @Override
                         public void onDismiss(DialogInterface dialogInterface) {
                             storeDialog.show();
+                            plzw8Dialog.setOnDismissListener(null);
                         }
                     });
                 } else {
@@ -732,7 +765,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
             foodID = selected_food.getFoodID();
         }
         post = new Post(title, content, un, uID, storeID, storename,
-                foodID, banner, pricerate, healthrate, servicerate,
+                foodID, (long) foodRate, banner, pricerate, healthrate, servicerate,
                 pro_dist);
         String postKey = dbRef.child(getString(R.string.store_CODE))
                 .push().getKey();
@@ -790,31 +823,32 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         Map<String, Object> notifyValue = newpostNotify.toMap();
         childUpdate.put(getString(R.string.notify_newpost_CODE) + notiKey, notifyValue);
         if (selectedImages.size() > 0) {
+            uploadImgDialog.show();
             for (SelectedImage imgItem : selectedImages) {
                 StorageReference mStorageReference = stRef.child(
                         imgItem.getUri().getLastPathSegment());
                 uploadTask = mStorageReference.putFile(
                         Uri.fromFile(new File(imgItem.getUri().toString())));
-
                 uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         uploadImgDialog.setProgress(uploadImgDialog.getProgress() + 1);
                         if (uploadImgDialog.getProgress() == selectedImages.size()) {
                             uploadImgDialog.dismiss();
-//                            plzw8Dialog.show();
+                            plzw8Dialog.show();
                             dbRef.updateChildren(childUpdate)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-//                                            plzw8Dialog.dismiss();
+                                            plzw8Dialog.dismiss();
+                                            getActivity().finish();
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     Toast.makeText(getContext(),
                                             e.getMessage(), Toast.LENGTH_LONG).show();
-//                                    plzw8Dialog.dismiss();
+                                    plzw8Dialog.dismiss();
                                 }
                             });
                         }
@@ -830,18 +864,20 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 });
             }
         } else {
+            plzw8Dialog.show();
             dbRef.updateChildren(childUpdate)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-//                            plzw8Dialog.dismiss();
+                            plzw8Dialog.dismiss();
+                            getActivity().finish();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Toast.makeText(getContext(),
                             e.getMessage(), Toast.LENGTH_LONG).show();
-//                    plzw8Dialog.dismiss();
+                    plzw8Dialog.dismiss();
                 }
             });
         }

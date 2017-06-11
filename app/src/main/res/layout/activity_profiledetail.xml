@@ -37,8 +37,10 @@
             app:collapsedTitleGravity="start"
             app:contentScrim="@color/color_notify_reportimg"
             app:expandedTitleGravity="bottom|center_horizontal"
+            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:titleEnabled="false">
+            app:title="@string/nav_profile"
+            app:titleEnabled="true">
 
             <ImageView
                 android:layout_width="match_parent"

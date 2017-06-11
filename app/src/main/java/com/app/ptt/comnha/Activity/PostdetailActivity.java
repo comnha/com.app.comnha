@@ -372,9 +372,10 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
                 txtv_foodprice.setBackgroundColor(getResources().getColor(android.R.color.transparent));
                 txtv_rateComment.setBackgroundColor(getResources().getColor(android.R.color.transparent));
                 txtv_foodname.setText(food.getName());
-                txtv_foodprice.setText(food.getPrice() + "");
+                txtv_foodprice.setText(post.getFoodRate() + "");
                 rb_foodrating.setRating(food.getRating());
-                int rat = (int) food.getRating() / (int) food.getTotal();
+//                int rat = (int) food.getRating() / (int) food.getTotal();
+                int rat = (int) post.getFoodRate();
                 switch (rat) {
                     case 1:
                         txtv_rateComment.setText(getString(R.string.txt_toofuckingbad));

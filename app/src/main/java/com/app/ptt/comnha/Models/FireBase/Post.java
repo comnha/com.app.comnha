@@ -26,6 +26,7 @@ public class Post {
 
     //attachedfood
     String foodID = "";
+    long foodRate;
     //attachedimage
     String banner = "";//
     //rating
@@ -49,7 +50,7 @@ public class Post {
 
     public Post(String title, String content,
                 String un, String userID, String storeID,
-                String storeName, String foodID,
+                String storeName, String foodID, long foodRate,
                 String banner, long priceRate, long healthyRate,
                 long serviceRate, String dist_pro) {
         this.title = title;
@@ -61,6 +62,7 @@ public class Post {
         this.storeID = storeID;
         this.storeName = storeName;
         this.foodID = foodID;
+        this.foodRate = foodRate;
         this.banner = banner;
         this.priceRate = priceRate;
         this.healthyRate = healthyRate;
@@ -80,6 +82,7 @@ public class Post {
         result.put("storeID", storeID);
         result.put("storeName", storeName);
         result.put("foodID", foodID);
+        result.put("foodRate", foodRate);
         result.put("banner", banner);
         result.put("priceRate", priceRate);
         result.put("healthyRate", healthyRate);
@@ -273,5 +276,13 @@ public class Post {
 
     public void setImgBitmap(Bitmap imgBitmap) {
         this.imgBitmap = imgBitmap;
+    }
+
+    public long getFoodRate() {
+        return foodRate;
+    }
+
+    public void setFoodRate(long foodRate) {
+        this.foodRate = foodRate;
     }
 }

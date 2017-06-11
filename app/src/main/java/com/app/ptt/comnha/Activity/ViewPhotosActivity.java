@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +20,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.ptt.comnha.Adapters.ViewPhotoVPadapter;
@@ -26,16 +29,22 @@ import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Classes.ZoomOutPageTransformer;
 import com.app.ptt.comnha.Dialog.ReportDialog;
 import com.app.ptt.comnha.Models.FireBase.Image;
+import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +59,6 @@ import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_IMG;
 public class ViewPhotosActivity extends AppCompatActivity {
     ViewPager vp_viewphoto;
     ArrayList<Image> images;
-    ;
     StorageReference stRef;
     ViewPhotoVPadapter photoAdapter;
     int position = 0;
@@ -59,6 +67,11 @@ public class ViewPhotosActivity extends AppCompatActivity {
     DatabaseReference dbRef;
     Image image = null;
     AppBarLayout applayout;
+    LinearLayout linear_profile;
+    CircularImageView imgv_avatar;
+    TextView tv_un, tv_datetime;
+    ValueEventListener userEventListener;
+    User temp_user = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,7 +92,46 @@ public class ViewPhotosActivity extends AppCompatActivity {
         init();
     }
 
+    private void getProfile(String uID) {
+        userEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                user.setuID(dataSnapshot.getKey());
+                temp_user = user;
+                if (!user.getAvatar().equals("")) {
+                    StorageReference avatarRef = stRef.child(user.getAvatar());
+                    avatarRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Picasso.with(ViewPhotosActivity.this)
+                                    .load(uri)
+                                    .into(imgv_avatar);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        dbRef.child(getString(R.string.users_CODE) + uID)
+                .addListenerForSingleValueEvent(userEventListener);
+    }
+
     private void init() {
+        linear_profile = (LinearLayout) findViewById(R.id.linear_profile_viewphoto);
+        imgv_avatar = (CircularImageView) findViewById(R.id.igmv_avatar_viewphoto);
+        tv_un = (TextView) findViewById(R.id.tv_username_viewphoto);
+        tv_datetime = (TextView) findViewById(R.id.tv_datetime_viewphoto);
+
         toolbar = (Toolbar) findViewById(R.id.toolbar_viewphoto);
         toolbar.setNavigationIcon(R.drawable.ic_close_white_24dp);
         setSupportActionBar(toolbar);
@@ -98,13 +150,18 @@ public class ViewPhotosActivity extends AppCompatActivity {
         photoAdapter.setOnImageClick(new ViewPhotoVPadapter.OnImageClick() {
             @Override
             public void onClick() {
-                if (applayout.getVisibility() == View.INVISIBLE) {
+                if (applayout.getVisibility() == View.INVISIBLE
+                        && linear_profile.getVisibility() == View.INVISIBLE) {
                     applayout.setVisibility(View.VISIBLE);
+                    linear_profile.setVisibility(View.VISIBLE);
                     AnimationUtils.fadeAnimation(applayout, 200, true, 0);
+                    AnimationUtils.fadeAnimation(linear_profile, 200, true, 0);
                     Log.d("viewphoto_clickimg", "vis");
                 } else {
                     AnimationUtils.fadeAnimation(applayout, 200, false, 0);
+                    AnimationUtils.fadeAnimation(linear_profile, 200, false, 0);
                     applayout.setVisibility(View.INVISIBLE);
+                    linear_profile.setVisibility(View.INVISIBLE);
                     Log.d("viewphoto_clickimg", "invi");
                 }
             }
@@ -121,6 +178,9 @@ public class ViewPhotosActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 image = images.get(position);
+                if (!image.getUserID().equals(temp_user.getuID())) {
+                    getProfile(image.getUserID());
+                }
             }
 
             @Override
@@ -140,19 +200,13 @@ public class ViewPhotosActivity extends AppCompatActivity {
                 contents.add(new Pair<Integer, String>
                         (R.string.txt_report, getString(R.string.txt_report)));
                 contents.add(new Pair<Integer, String>
-                        (R.string.txt_imgdetail, getString(R.string.txt_imgdetail)));
-                contents.add(new Pair<Integer, String>
                         (R.string.txt_hideimg, getString(R.string.txt_hideimg)));
             } else {
                 contents.add(new Pair<Integer, String>
                         (R.string.txt_report, getString(R.string.txt_report)));
-                contents.add(new Pair<Integer, String>
-                        (R.string.txt_imgdetail, getString(R.string.txt_imgdetail)));
             }
         }
         if (role == 1) {
-            contents.add(new Pair<Integer, String>
-                    (R.string.txt_imgdetail, getString(R.string.txt_imgdetail)));
             contents.add(new Pair<Integer, String>
                     (R.string.txt_hideimg, getString(R.string.txt_hideimg)));
             contents.add(new Pair<Integer, String>
@@ -207,8 +261,6 @@ public class ViewPhotosActivity extends AppCompatActivity {
                     }
                 });
                 reportDialog.show(getSupportFragmentManager(), "report_store");
-                return true;
-            case R.string.txt_imgdetail:
                 return true;
             case R.string.txt_hideimg:
                 return true;
