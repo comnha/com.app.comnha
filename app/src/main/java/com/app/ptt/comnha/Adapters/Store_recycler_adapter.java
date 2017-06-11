@@ -93,6 +93,13 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<Store_recycler_
         } else {
             holder.txtv_distance.setText(String.format("%s km", stores.get(position).getDistance()));
         }
+        if (stores.get(position).isHidden()){
+            holder.cardView.setBackgroundColor(
+                    context.getResources().getColor(R.color.colorFabRipple));
+        }else {
+            holder.cardView.setBackgroundColor(
+                    context.getResources().getColor(android.R.color.white));
+        }
         if (onItemClickLiestner != null) {
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override

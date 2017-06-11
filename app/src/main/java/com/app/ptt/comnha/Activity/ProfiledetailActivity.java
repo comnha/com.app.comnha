@@ -127,7 +127,7 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
         mToolbar = (Toolbar) findViewById(R.id.toolbar_prodetail);
         this.setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
+        getSupportActionBar().setTitle(getString(R.string.nav_profile));
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setShowHideAnimationEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
