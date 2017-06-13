@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="bottom|center"
-    tools:activity="com.app.ptt.comnha.Fragment.PickLocationBottomSheetDialogFragment">
+    tools:context="com.app.ptt.comnha.Fragment.PickLocationBottomSheetDialogFragment">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/frg_pickLoca_bottomsheet_appbarlayout"

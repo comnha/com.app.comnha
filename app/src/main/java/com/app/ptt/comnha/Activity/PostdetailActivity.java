@@ -2,6 +2,8 @@ package com.app.ptt.comnha.Activity;
 
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,7 +15,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,6 +36,7 @@ import android.widget.Toast;
 
 import com.app.ptt.comnha.Adapters.Comment_rcyler_adapter;
 import com.app.ptt.comnha.Adapters.Photo_recycler_adapter;
+import com.app.ptt.comnha.Dialog.ReportDialog;
 import com.app.ptt.comnha.Models.FireBase.Comment;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
@@ -42,6 +44,7 @@ import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
+import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
@@ -60,6 +63,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_POST;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -80,7 +85,7 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
     RecyclerView rv_imgs, rv_comments;
     RecyclerView.LayoutManager imgsLm, comtLm;
     ArrayList<Image> images;
-    Photo_recycler_adapter imgsAdapter;
+    Photo_recycler_adapter imgsAdapter = null;
     ArrayList<Comment> comments;
     Comment_rcyler_adapter comtAdapter;
     DatabaseReference dbRef;
@@ -156,12 +161,12 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
     private void Ref() {
 
         View view_include = findViewById(R.id.include_postdetail_content);
-        plzw8Dialog = AppUtils.SetupProgressDialog(this,
+        plzw8Dialog = AppUtils.setupProgressDialog(this,
                 getString(R.string.txt_plzwait), null, false, false,
                 ProgressDialog.STYLE_SPINNER, 0);
         imgv_banner = (ImageView) findViewById(R.id.imgv_banner_postdetail);
         toolbar = (Toolbar) findViewById(R.id.toolbar_postdetail);
-        toolbar.setNavigationIcon(R.drawable.ic_chevron_left_white_24dp);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         this.setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,12 +206,9 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
         imgsAdapter.setOnItemClickLiestner(new Photo_recycler_adapter.OnItemClickLiestner() {
             @Override
             public void onItemClick(Image image, Activity activity, View itemView) {
-                Intent open_viewphoto = new Intent(activity, ViewPhotoActivity.class);
-                ActivityOptionsCompat option_viewphoto =
-                        ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
-                                itemView.findViewById(R.id.item_rv_imgv),
-                                "postBanner");
-                startActivity(open_viewphoto, option_viewphoto.toBundle());
+                Intent intent_openViewPhoto = new Intent(activity, ViewPhotosActivity.class);
+                intent_openViewPhoto.putExtra("imgPosition", images.indexOf(image));
+                startActivity(intent_openViewPhoto);
             }
         });
 
@@ -437,11 +439,8 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
                     image.setImageID(key);
                     images.add(image);
                 }
+                ChoosePhotoList.getInstance().setImage(images);
                 imgsAdapter.notifyDataSetChanged();
-                dbRef.child(getString(R.string.images_CODE))
-                        .orderByChild("isHidden_postID")
-                        .equalTo(false + "_" + postID)
-                        .removeEventListener(imagesEventListener);
             }
 
             @Override
@@ -452,7 +451,7 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
         dbRef.child(getString(R.string.images_CODE))
                 .orderByChild("isHidden_postID")
                 .equalTo(false + "_" + postID)
-                .addValueEventListener(imagesEventListener);
+                .addListenerForSingleValueEvent(imagesEventListener);
     }
 
     @Override
@@ -475,6 +474,43 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case 0:
+                ReportDialog reportDialog = new ReportDialog();
+                reportDialog.setReport(REPORT_POST, post);
+                reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
+                reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
+                    @Override
+                    public void onPositive(boolean isClicked, Map<String,
+                            Object> childUpdate, final Dialog dialog) {
+                        if (isClicked) {
+                            dialog.dismiss();
+                            plzw8Dialog.show();
+                            dbRef.updateChildren(childUpdate)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            plzw8Dialog.dismiss();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    dialog.show();
+                                    plzw8Dialog.dismiss();
+                                    Toast.makeText(PostdetailActivity.this, e.getMessage(),
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+                        }
+                    }
+
+                    @Override
+                    public void onNegative(boolean isClicked, Dialog dialog) {
+                        if (isClicked) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                reportDialog.show(getSupportFragmentManager(), "report_post");
                 return true;
             case 1:
                 return true;

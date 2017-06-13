@@ -1,5 +1,7 @@
 package com.app.ptt.comnha.Models.FireBase;
 
+import com.app.ptt.comnha.Modules.Times;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,22 +21,34 @@ public class ReportstoreNotify {
     public ReportstoreNotify() {
     }
 
-    public ReportstoreNotify(String id, String storeID, String storeName, String address,
-                             String date, String time, String userID, String un,
-                             String contents, String district_province,
-                             boolean readstate, String readState_pro_dist) {
-        this.id = id;
+    public ReportstoreNotify(String storeID, String storeName, String address,
+                             String userID, String un, String contents,
+                             String district_province) {
         this.storeID = storeID;
         this.storeName = storeName;
         this.address = address;
-        this.date = date;
-        this.time = time;
+        this.date = new Times().getDate();
+        this.time = new Times().getTimeNoSecond();
         this.userID = userID;
         this.un = un;
         this.contents = contents;
         this.district_province = district_province;
-        this.readstate = readstate;
-        this.readState_pro_dist = readState_pro_dist;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("storeID", storeID);
+        result.put("storeName", storeName);
+        result.put("address", address);
+        result.put("date", date);
+        result.put("time", time);
+        result.put("userID", userID);
+        result.put("un", un);
+        result.put("contents", contents);
+        result.put("readstate", readstate);
+        result.put("district_province", district_province);
+        result.put("readState_pro_dist", false + "_" + district_province);
+        return result;
     }
 
     public String getStoreID() {
@@ -125,19 +139,11 @@ public class ReportstoreNotify {
         this.address = address;
     }
 
-    public Map<String, Object> toMap() {
-        Map<String, Object> result = new HashMap<>();
-        result.put("storeID", storeID);
-        result.put("storeName", storeName);
-        result.put("address", address);
-        result.put("date", date);
-        result.put("time", time);
-        result.put("userID", userID);
-        result.put("un", un);
-        result.put("contents", contents);
-        result.put("readstate", readstate);
-        result.put("district_province", district_province);
-        result.put("readState_pro_dist", readState_pro_dist);
-        return result;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

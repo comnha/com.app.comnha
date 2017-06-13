@@ -65,7 +65,7 @@
         <activity
             android:name=".Activity.NewsNotifyAdminActivity"
             android:theme="@style/AppTheme.NotifyNewsAdminActivity" />
-        <activity android:name=".Activity.ViewPhotoActivity" />
+        <activity android:name=".Activity.ViewPhotosActivity" />
         <activity android:name=".Activity.ReportsNotifyAdminActivity" />
         <activity
             android:name=".Activity.SearchActivity"

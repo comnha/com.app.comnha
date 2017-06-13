@@ -1,8 +1,8 @@
 package com.app.ptt.comnha.Adapters;
 
-import android.content.Context;
+import android.app.Activity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.app.ptt.comnha.Models.FireBase.ReportpostNotify;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.Utils.AppUtils;
 
 import java.util.ArrayList;
 
@@ -23,11 +24,32 @@ import java.util.ArrayList;
  */
 
 public class notify_reportpost_adapter extends BaseAdapter {
-    Context context;
+    Activity activity;
     ArrayList<ReportpostNotify> items;
+    private OnItemClickLiestner onItemClickLiestner;
+    private OnOptionItemClickListener onOptionItemClickListener;
 
-    public notify_reportpost_adapter(Context context, ArrayList<ReportpostNotify> items) {
-        this.context = context;
+    public interface OnItemClickLiestner {
+        void onItemClick(ReportpostNotify notify, Activity activity);
+    }
+
+    public void setOnItemClickLiestner(OnItemClickLiestner liestner) {
+        onItemClickLiestner = liestner;
+    }
+
+    public interface OnOptionItemClickListener {
+        void onDelNotify(ReportpostNotify notify);
+
+        void onBlockUser(ReportpostNotify notify);
+    }
+
+    public void setOnOptionItemClickListener(OnOptionItemClickListener onOptionItemClickListener) {
+        this.onOptionItemClickListener = onOptionItemClickListener;
+    }
+
+    public notify_reportpost_adapter(Activity activity,
+                                     ArrayList<ReportpostNotify> items) {
+        this.activity = activity;
         this.items = items;
     }
 
@@ -47,11 +69,11 @@ public class notify_reportpost_adapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int i, View convertView, ViewGroup viewGroup) {
+    public View getView(final int position, View convertView, ViewGroup viewGroup) {
         final ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_listv_notify_reportpost, null);
+            convertView = LayoutInflater.from(activity).inflate(R.layout.item_listv_notify_reportpost, null);
             holder.title = (TextView) convertView.findViewById(R.id.textV_title_item_notify_reportpost);
             holder.un = (TextView) convertView.findViewById(R.id.textV_un_item_notify_reportpost);
             holder.date = (TextView) convertView.findViewById(R.id.textV_date_item_notify_reportpost);
@@ -59,43 +81,64 @@ public class notify_reportpost_adapter extends BaseAdapter {
             holder.content = (TextView) convertView.findViewById(R.id.textV_content_item_notify_reportpost);
             holder.readestate = (TextView) convertView.findViewById(R.id.textV_readstate_item_notify_reportpost);
             holder.more = (ImageView) convertView.findViewById(R.id.imgV_option_item_notify_reportpost);
+            holder.cardv = (CardView) convertView.findViewById(R.id.cardv_item_notify_reportpost);
             convertView.setTag(holder);
         } else {
 
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.title.setText(items.get(i).getTitle());
-        holder.date.setText("Ngày: " + items.get(i).getDate());
-        holder.time.setText("Giờ: " + items.get(i).getTime());
-        holder.un.setText("Từ: " + items.get(i).getUn());
-        holder.content.setText("Nội dung: " + items.get(i).getContents());
-        if (items.get(i).isReadstate()) {
-            holder.readestate.setText("Chưa đọc");
-            holder.readestate.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+        holder.title.setText(activity.getString(R.string.text_title) + ": " + items.get(position).getTitle());
+        holder.date.setText(activity.getString(R.string.txt_date) + ": " + items.get(position).getDate());
+        holder.time.setText(activity.getString(R.string.txt_time) + ": " + items.get(position).getTime());
+        holder.un.setText(activity.getString(R.string.txt_from) + ": " + items.get(position).getUn());
+        holder.content.setText(items.get(position).getContents());
+        if (!items.get(position).isReadstate()) {
+            holder.readestate.setText(activity.getString(R.string.txt_notread));
+            holder.readestate.setTextColor(activity.getResources()
+                    .getColor(R.color.colorPrimary));
         } else {
-            holder.readestate.setText("Đã đọc");
-            holder.readestate.setTextColor(context.getResources().getColor(R.color.color_read));
+            holder.readestate.setText(activity.getString(R.string.txt_read));
+            holder.readestate.setTextColor(activity.getResources()
+                    .getColor(android.R.color.darker_gray));
         }
+        holder.cardv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onItemClickLiestner != null) {
+                    if (!items.get(position).isReadstate()) {
+                        holder.readestate.setText(activity.getString(R.string.txt_read));
+                        holder.readestate.setTextColor(activity.getResources()
+                                .getColor(android.R.color.darker_gray));
+                    }
+                    onItemClickLiestner.onItemClick(items.get(position),
+                            activity);
+                }
+            }
+        });
         holder.more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupMenu menu = new PopupMenu(context, holder.more, Gravity.TOP);
-                menu.inflate(R.menu.menu_item_notify);
-                menu.getMenu().add(Menu.NONE, 0, 0, context.getResources().getString(R.string.text_delnotify));
-                menu.getMenu().add(Menu.NONE, 1, 1, context.getResources().getString(R.string.text_block_reportpost));
-                menu.getMenu().add(Menu.NONE, 2, 2, context.getResources().getString(R.string.text_delnotify));
-                menu.show();
-                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                PopupMenu popupMenu = new PopupMenu(activity, holder.more, Gravity.TOP);
+                Menu menu = popupMenu.getMenu();
+                menu = AppUtils.createMenu(menu, new String[]{
+                        activity.getResources().getString(R.string.text_delnotify),
+                        activity.getResources().getString(R.string.text_block_reportpost)});
+                popupMenu.show();
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case 0:
-                                Log.d("setOnMenuItemClick", "item " + 0);
+                                if (onOptionItemClickListener != null) {
+                                    onOptionItemClickListener.onDelNotify(
+                                            items.get(position));
+                                }
                                 break;
                             case 1:
-                                break;
-                            case 2:
-                                break;
+                                if (onOptionItemClickListener != null) {
+                                    onOptionItemClickListener.onBlockUser(
+                                            items.get(position));
+                                }
                         }
                         return true;
                     }
@@ -108,5 +151,6 @@ public class notify_reportpost_adapter extends BaseAdapter {
     class ViewHolder {
         TextView title, content, date, time, readestate, un;
         ImageView more;
+        CardView cardv;
     }
 }

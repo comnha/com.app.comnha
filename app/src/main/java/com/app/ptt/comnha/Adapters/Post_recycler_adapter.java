@@ -72,21 +72,23 @@ public class Post_recycler_adapter extends RecyclerView.Adapter<Post_recycler_ad
         } else {
             holder.imgv_banner.setVisibility(View.GONE);
         }
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_banner.getDrawable())
-                            .getBitmap();
-                    posts.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
-                    onItemClickLiestner.onItemClick(posts.get(holder.getAdapterPosition()),
-                            holder.itemView);
-                } catch (NullPointerException e) {
-                    onItemClickLiestner.onItemClick(posts.get(holder.getAdapterPosition()),
-                            holder.itemView);
+        if (onItemClickLiestner != null) {
+            holder.cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_banner.getDrawable())
+                                .getBitmap();
+                        posts.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
+                        onItemClickLiestner.onItemClick(posts.get(holder.getAdapterPosition()),
+                                holder.itemView);
+                    } catch (NullPointerException e) {
+                        onItemClickLiestner.onItemClick(posts.get(holder.getAdapterPosition()),
+                                holder.itemView);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override

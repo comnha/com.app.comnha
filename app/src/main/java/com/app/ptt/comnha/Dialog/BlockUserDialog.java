@@ -91,7 +91,7 @@ public class BlockUserDialog extends DialogFragment {
                 false);
         stRef = FirebaseStorage.getInstance().
                 getReferenceFromUrl(getString(R.string.firebaseStorage_path));
-        ref(view);
+        init(view);
         if (user != null) {
             getdata();
         } else {
@@ -122,7 +122,7 @@ public class BlockUserDialog extends DialogFragment {
                 + user.getUn());
     }
 
-    private void ref(View view) {
+    private void init(View view) {
         imgv_avatar = (CircularImageView) view.findViewById(R.id.imgv_avatar_blockuser);
         txtv_un = (TextView) view.findViewById(R.id.txtv_un_blockuser);
         txtv_email = (TextView) view.findViewById(R.id.txtv_email_blockuser);
@@ -140,7 +140,6 @@ public class BlockUserDialog extends DialogFragment {
                 String key = user.getuID();
 //                Toast.makeText(getContext(), key, Toast.LENGTH_LONG).show();
                 User childUser = user;
-                childUser.setuID(null);
                 Map<String, Object> userValue = childUser.toMap();
                 Map<String, Object> childUpdate = new HashMap<>();
                 childUpdate.put(getString(R.string.users_CODE)

@@ -41,4 +41,8 @@ public class Const {
         BLOCK_REPRTPOST
     }
 
+    public enum REPORTS {
+        REPORT_STORE, REPORT_POST,
+        REPORT_IMG,REPORT_FOOD;
+    }
 }

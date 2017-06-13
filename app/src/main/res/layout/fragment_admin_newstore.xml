@@ -4,16 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="4dp"
-    android:paddingStart="8dp"
+    android:paddingBottom="4dp"
     android:paddingEnd="8dp"
-    tools:activity="com.app.ptt.comnha.Fragment.AdminNewStoreFragment">
+    android:paddingStart="8dp"
+    android:paddingTop="4dp"
+    tools:context="com.app.ptt.comnha.Fragment.AdminNewStoreFragment">
 
     <ListView
-        android:divider="@android:color/transparent"
         android:id="@+id/listview_newstore_frag"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:divider="@android:color/transparent"
         android:scrollbars="none" />
 
 </LinearLayout>

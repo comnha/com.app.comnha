@@ -1,5 +1,7 @@
 package com.app.ptt.comnha.Models.FireBase;
 
+import com.app.ptt.comnha.Modules.Times;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,7 +10,7 @@ import java.util.Map;
  */
 
 public class ReportfoodNotify {
-    String id, foodID, name, storeID, storeName, date, time, userID, un,
+    String id, foodID, name, date, time, userID, un,
             contents, district_province;
     boolean readstate = false;
     //phép kết
@@ -17,22 +19,32 @@ public class ReportfoodNotify {
     public ReportfoodNotify() {
     }
 
-    public ReportfoodNotify(String foodID, String name, String storeID,
-                            String storeName, String date, String time, String userID, String un,
-                            String contents, String district_province, boolean readstate,
-                            String readState_pro_dist) {
-        this.foodID = foodID;
+    public ReportfoodNotify(String name, String foodID,
+                            String userID, String un,
+                            String contents, String district_province) {
         this.name = name;
-        this.storeID = storeID;
-        this.storeName = storeName;
-        this.date = date;
-        this.time = time;
+        this.foodID = foodID;
+        this.date = new Times().getDate();
+        this.time = new Times().getTimeNoSecond();
         this.userID = userID;
         this.un = un;
         this.contents = contents;
         this.district_province = district_province;
-        this.readstate = readstate;
-        this.readState_pro_dist = readState_pro_dist;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("foodID", foodID);
+        result.put("name", name);
+        result.put("date", date);
+        result.put("time", time);
+        result.put("userID", userID);
+        result.put("un", un);
+        result.put("contents", contents);
+        result.put("readstate", readstate);
+        result.put("district_province", district_province);
+        result.put("readState_pro_dist", false + "_" + district_province);
+        return result;
     }
 
     public String getFoodID() {
@@ -51,21 +63,6 @@ public class ReportfoodNotify {
         this.name = name;
     }
 
-    public String getStoreID() {
-        return storeID;
-    }
-
-    public void setStoreID(String storeID) {
-        this.storeID = storeID;
-    }
-
-    public String getStoreName() {
-        return storeName;
-    }
-
-    public void setStoreName(String storeName) {
-        this.storeName = storeName;
-    }
 
     public String getDate() {
         return date;
@@ -131,18 +128,11 @@ public class ReportfoodNotify {
         this.readState_pro_dist = readState_pro_dist;
     }
 
-    public Map<String, Object> toMap() {
-        Map<String, Object> result = new HashMap<>();
-        result.put("foodID", foodID);
-        result.put("name", name);
-        result.put("date", date);
-        result.put("time", time);
-        result.put("userID", userID);
-        result.put("un", un);
-        result.put("contents", contents);
-        result.put("readstate", readstate);
-        result.put("district_province", district_province);
-        result.put("readState_pro_dist", readState_pro_dist);
-        return result;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

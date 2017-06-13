@@ -29,7 +29,7 @@ public class PhotoAlbum_recycler_adapter extends RecyclerView.Adapter<PhotoAlbum
     private OnItemClickLiestner onItemClickLiestner;
 
     public interface OnItemClickLiestner {
-        void onItemClick(Image image, Activity activity, View itemView);
+        void onItemClick( Image image, Activity activity, View itemView);
     }
 
     public void setOnItemClickLiestner(OnItemClickLiestner liestner) {
@@ -56,22 +56,23 @@ public class PhotoAlbum_recycler_adapter extends RecyclerView.Adapter<PhotoAlbum
                         .into(holder.imgv);
             }
         });
-
-        holder.imgv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    Bitmap imgBitmap = ((BitmapDrawable) holder.imgv.getDrawable())
-                            .getBitmap();
-                    photos.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
-                    onItemClickLiestner.onItemClick(photos.get(holder.getAdapterPosition()),
-                            activity, holder.itemView);
-                } catch (NullPointerException e) {
-                    onItemClickLiestner.onItemClick(photos.get(holder.getAdapterPosition()),
-                            activity, holder.itemView);
+        if (onItemClickLiestner != null) {
+            holder.imgv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        Bitmap imgBitmap = ((BitmapDrawable) holder.imgv.getDrawable())
+                                .getBitmap();
+                        photos.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
+                        onItemClickLiestner.onItemClick( photos.get(holder.getAdapterPosition()),
+                                activity, holder.itemView);
+                    } catch (NullPointerException e) {
+                        onItemClickLiestner.onItemClick( photos.get(holder.getAdapterPosition()),
+                                activity, holder.itemView);
+                    }
                 }
-            }
-        });
+            });
+        }
 
     }
 

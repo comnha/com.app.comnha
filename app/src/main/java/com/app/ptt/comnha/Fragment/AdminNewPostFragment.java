@@ -64,7 +64,9 @@ public class AdminNewPostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_admin_newpost, container, false);
-        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getString(R.string.firebase_path));
+        dbRef = FirebaseDatabase
+                .getInstance()
+                .getReferenceFromUrl(getString(R.string.firebase_path));
         ref(view);
         getdata();
         return view;
@@ -155,7 +157,7 @@ public class AdminNewPostFragment extends Fragment {
                 getUserInfo(notify);
             }
         });
-        plzwaitDialog = AppUtils.SetupProgressDialog(getContext(),
+        plzwaitDialog = AppUtils.setupProgressDialog(getContext(),
                 getString(R.string.txt_plzwait), null, false, false,
                 ProgressDialog.STYLE_SPINNER, 0);
     }

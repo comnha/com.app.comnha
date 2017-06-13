@@ -2,7 +2,7 @@ package com.app.ptt.comnha.Models.FireBase;
 
 import android.graphics.Bitmap;
 
-import com.app.ptt.comnha.Utils.Times;
+import com.app.ptt.comnha.Modules.Times;
 
 import java.util.HashMap;
 import java.util.Map;

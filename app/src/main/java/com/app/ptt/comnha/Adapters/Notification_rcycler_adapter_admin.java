@@ -153,9 +153,9 @@ public class Notification_rcycler_adapter_admin extends RecyclerView.Adapter<Not
                 }
                 //review
                 if(list.get(position).getType() ==3) {
-//                    Intent intent = new Intent(activity, AdapterActivity.class);
-//                    intent.putExtra(activity.getResources().getString(R.string.fragment_CODE),
-//                            activity.getResources().getString(R.string.frg_viewpost_CODE));
+//                    Intent intent = new Intent(context, AdapterActivity.class);
+//                    intent.putExtra(context.getResources().getString(R.string.fragment_CODE),
+//                            context.getResources().getString(R.string.frg_viewpost_CODE));
 //                    EditPost.getInstance().setPost(list.get(position).getPost());
 ////                    ChoosePost.getInstance().setPostID(foods.get(position).getPost().getPostID());
 ////                    ChoosePost.getInstance().setType(foods.get(position).getPost().getType());
@@ -163,14 +163,14 @@ public class Notification_rcycler_adapter_admin extends RecyclerView.Adapter<Not
 ////                    if(foods.get(position).getType()==1)
 ////                        ChoosePost.getInstance().setFoodID(foods.get(position).getFood().getFoodID());
 //                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    activity.startActivity(intent);
+//                    context.startActivity(intent);
                 }
 //                if(foods.get(position).getType() ==1) {
-//                    Intent intent=new Intent(activity,AdapterActivity.class);
-//                    intent.putExtra(activity.getString(R.string.fragment_CODE),activity.getString(R.string.frg_viewfood_CODE));
+//                    Intent intent=new Intent(context,AdapterActivity.class);
+//                    intent.putExtra(context.getString(R.string.fragment_CODE),context.getString(R.string.frg_viewfood_CODE));
 //                    ChooseFood.getInstance().setFood(foods.get(position).getFood());
 //                    ChooseFood.getInstance().setLocation(foods.get(position).getLocation());
-//                    activity.startActivity(intent);
+//                    context.startActivity(intent);
 //                }
 //                if (!foods.get(position).getReaded()) {
 //                    holder.txt_date.setTypeface(null, Typeface.NORMAL);
@@ -184,7 +184,7 @@ public class Notification_rcycler_adapter_admin extends RecyclerView.Adapter<Not
 //        holder.button.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                PopupMenu popup = new PopupMenu(activity.getApplicationContext(), v);
+//                PopupMenu popup = new PopupMenu(context.getApplicationContext(), v);
 //                if (foods.get(position).getType() == 4) {
 //
 //
@@ -204,11 +204,11 @@ public class Notification_rcycler_adapter_admin extends RecyclerView.Adapter<Not
 //                    public boolean onMenuItemClick(MenuItem item) {
 //                        switch (item.getItemId()) {
 //                            case R.id.menu_item_notification_xemnoidung:
-//                                Toast.makeText(activity.getApplicationContext(),"xem noi dung",Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(context.getApplicationContext(),"xem noi dung",Toast.LENGTH_SHORT).show();
 //
 //                                break;
 //                            case R.id.menu_notification_dendiachi:
-//                                Toast.makeText(activity.getApplicationContext(),"den dia chi",Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(context.getApplicationContext(),"den dia chi",Toast.LENGTH_SHORT).show();
 //                                //if(foods.get(position).getType() == 5){
 //
 //                                }
@@ -219,11 +219,11 @@ public class Notification_rcycler_adapter_admin extends RecyclerView.Adapter<Not
 //
 //                                break;
 //                            case R.id.menu_notification_dongy:
-//                                Toast.makeText(activity.getApplicationContext(),"dong y report",Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(context.getApplicationContext(),"dong y report",Toast.LENGTH_SHORT).show();
 //
 //                                break;
 //                            case R.id.menu_notification_khongdongy:
-//                                Toast.makeText(activity.getApplicationContext(),"khong dong y report",Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(context.getApplicationContext(),"khong dong y report",Toast.LENGTH_SHORT).show();
 //
 //                                break;
 //                        }

@@ -1,6 +1,7 @@
 package com.app.ptt.comnha.Activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 import com.app.ptt.comnha.Adapters.Food_recycler_adapter;
 import com.app.ptt.comnha.Adapters.Photo_recycler_adapter;
 import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
+import com.app.ptt.comnha.Dialog.ReportDialog;
 import com.app.ptt.comnha.Fragment.AddFoodFragment;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
@@ -32,6 +34,7 @@ import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;
+import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.Utils.AppUtils;
@@ -52,12 +55,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_STORE;
+
 public class StoreDeatailActivity extends AppCompatActivity implements View.OnClickListener {
     RecyclerView postRecycler, photoRecycler, foodRecycler;
     RecyclerView.LayoutManager postLayoutManager, photoLayoutManager,
             foodLayoutManager;
     Post_recycler_adapter postAdapter;
-    Photo_recycler_adapter photoAdapter;
+    Photo_recycler_adapter photoAdapter = null;
     Food_recycler_adapter foodAdapter;
     ArrayList<Post> posts;
     ArrayList<Image> images;
@@ -76,7 +81,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     Store store = ChooseStore.getInstance().getStore();
     LinearLayout linear_progress;
     String storeID = null;
-    ProgressDialog plzw8Dialog;
+    ProgressDialog plzw8Dialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,9 +134,9 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         photoAdapter.setOnItemClickLiestner(new Photo_recycler_adapter.OnItemClickLiestner() {
             @Override
             public void onItemClick(Image image, Activity activity, View itemView) {
-                Intent intent_openPhoto = new Intent(activity, ViewPhotoActivity.class);
-                intent_openPhoto.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent_openPhoto);
+                Intent intent_openViewPhoto = new Intent(activity, ViewPhotosActivity.class);
+                intent_openViewPhoto.putExtra("imgPosition", images.indexOf(image));
+                startActivity(intent_openViewPhoto);
             }
         });
         foodRecycler = (RecyclerView) include_view.findViewById(R.id.recycler_foods_storedetail);
@@ -185,7 +190,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         imgv_viewlocation.setOnClickListener(this);
         fab.setOnClickListener(this);
         linear_progress = (LinearLayout) findViewById(R.id.linear_progress_storedetail);
-        plzw8Dialog = AppUtils.SetupProgressDialog(StoreDeatailActivity.this,
+        plzw8Dialog = AppUtils.setupProgressDialog(this,
                 getString(R.string.txt_plzwait), null, false, false,
                 ProgressDialog.STYLE_SPINNER, -1);
     }
@@ -212,6 +217,43 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case 0:
+                ReportDialog reportDialog = new ReportDialog();
+                reportDialog.setReport(REPORT_STORE, store);
+                reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
+                reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
+                    @Override
+                    public void onPositive(boolean isClicked, Map<String,
+                            Object> childUpdate, final Dialog dialog) {
+                        if (isClicked) {
+                            dialog.dismiss();
+                            plzw8Dialog.show();
+                            dbRef.updateChildren(childUpdate)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            plzw8Dialog.dismiss();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    dialog.show();
+                                    plzw8Dialog.dismiss();
+                                    Toast.makeText(StoreDeatailActivity.this, e.getMessage(),
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+                        }
+                    }
+
+                    @Override
+                    public void onNegative(boolean isClicked, Dialog dialog) {
+                        if (isClicked) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                reportDialog.show(getSupportFragmentManager(), "report_store");
                 return true;
             case 1:
                 return true;
@@ -389,11 +431,8 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     image.setImageID(key);
                     images.add(image);
                 }
+                ChoosePhotoList.getInstance().setImage(images);
                 photoAdapter.notifyDataSetChanged();
-                dbRef.child(getString(R.string.images_CODE))
-                        .orderByChild("isHidden_storeID")
-                        .equalTo(false + "_" + storeID)
-                        .removeEventListener(photoValueListener);
             }
 
             @Override

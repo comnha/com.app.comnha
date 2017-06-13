@@ -66,11 +66,11 @@ public class SingleImageImportRvAdapter extends RecyclerView.Adapter<SingleImage
             @Override
             public void onClick(View view) {
                 if (selectedImages.get(position).isSelected()) {
-//                    holder.selected_imgv.setBackground(activity.getResources().getDrawable(R.drawable.checked_bound));
+//                    holder.selected_imgv.setBackground(context.getResources().getDrawable(R.drawable.checked_bound));
                     selectedImages.get(position).setSelected(false);
                     firstPosition = position;
                 } else {
-//                    holder.selected_imgv.setBackground(activity.getResources().getDrawable(R.drawable.selected_img_bound));
+//                    holder.selected_imgv.setBackground(context.getResources().getDrawable(R.drawable.selected_img_bound));
                     if (firstPosition < 0) {//lần đầu show dialog, chưa chọn
                         selectedImages.get(position).setSelected(true);
                     } else {
@@ -79,7 +79,9 @@ public class SingleImageImportRvAdapter extends RecyclerView.Adapter<SingleImage
                     }
                     firstPosition = position;
                 }
-                onSingleClickListener.onClick(true);
+                if (onSingleClickListener != null) {
+                    onSingleClickListener.onClick(true);
+                }
 
             }
         });

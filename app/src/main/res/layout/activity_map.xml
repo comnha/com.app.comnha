@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:activity="com.app.ptt.comnha.Activity.MapActivity">
+    tools:context="com.app.ptt.comnha.Activity.MapActivity">
 
     <FrameLayout
         android:id="@+id/frame_map_adapter"
