@@ -65,38 +65,38 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<Store_recycler_
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if (stores.get(position).getDistance() == null) {
-            AnimationUtils.fadeAnimation(holder.itemView, 700,true, 0);
-            holder.txtv_storename.setText(stores.get(position).getName());
-            holder.txtv_address.setText(stores.get(position).getAddress());
-            holder.txtv_rate.setText(String.valueOf(stores.get(position).getRateAVG()));
-            holder.txtv_opentime.setText(stores.get(position).getOpentime());
-            holder.txtv_phonenumb.setText(stores.get(position).getPhonenumb());
-            if (!stores.get(holder.getAdapterPosition()).getStoreimg().equals("")) {
-                StorageReference imgRef = stRef.child(stores.get(holder.getAdapterPosition())
-                        .getStoreimg());
-                Log.d("imgName", stores.get(holder.getAdapterPosition())
-                        .getStoreimg());
-                Log.d("Imgpath", imgRef.getDownloadUrl() + "");
-                imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Log.d("getUrl().addOnSuccess", uri.toString() + "");
-//                    holder.imgv_avatar.setImageURI(uri);
-                        Picasso.with(context)
-                                .load(uri)
-                                .into(holder.imgv_avatar);
-                    }
-                });
-            } else {
-                holder.imgv_avatar.setImageResource(R.drawable.ic_item_store);
-            }
+            AnimationUtils.fadeAnimation(holder.itemView, 700, true, 0);
         } else {
             holder.txtv_distance.setText(String.format("%s km", stores.get(position).getDistance()));
         }
-        if (stores.get(position).isHidden()){
+        holder.txtv_storename.setText(stores.get(position).getName());
+        holder.txtv_address.setText(stores.get(position).getAddress());
+        holder.txtv_rate.setText(String.valueOf(stores.get(position).getRateAVG()));
+        holder.txtv_opentime.setText(stores.get(position).getOpentime());
+        holder.txtv_phonenumb.setText(stores.get(position).getPhonenumb());
+        if (!stores.get(holder.getAdapterPosition()).getStoreimg().equals("")) {
+            StorageReference imgRef = stRef.child(stores.get(holder.getAdapterPosition())
+                    .getStoreimg());
+            Log.d("imgName", stores.get(holder.getAdapterPosition())
+                    .getStoreimg());
+            Log.d("Imgpath", imgRef.getDownloadUrl() + "");
+            imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Log.d("getUrl().addOnSuccess", uri.toString() + "");
+//                    holder.imgv_avatar.setImageURI(uri);
+                    Picasso.with(context)
+                            .load(uri)
+                            .into(holder.imgv_avatar);
+                }
+            });
+        } else {
+            holder.imgv_avatar.setImageResource(R.drawable.ic_item_store);
+        }
+        if (stores.get(position).isHidden()) {
             holder.cardView.setBackgroundColor(
                     context.getResources().getColor(R.color.colorFabRipple));
-        }else {
+        } else {
             holder.cardView.setBackgroundColor(
                     context.getResources().getColor(android.R.color.white));
         }
