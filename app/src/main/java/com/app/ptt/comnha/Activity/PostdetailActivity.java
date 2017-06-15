@@ -467,8 +467,13 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
     }
 
     private List<Pair<Integer, String>> returnContenMenuItems() {
-        int role = LoginSession.getInstance().getUser().getRole();
-        String uID = LoginSession.getInstance().getUser().getuID();
+        int role = 0;
+        String uID = "";
+
+        if (LoginSession.getInstance().getUser() != null) {
+            role = LoginSession.getInstance().getUser().getRole();
+            uID = LoginSession.getInstance().getUser().getuID();
+        }
         List<Pair<Integer, String>> contents = new ArrayList<>();
         if (role == 1) {
             contents.add(new Pair<Integer, String>
@@ -500,43 +505,11 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.string.txt_report:
-                ReportDialog reportDialog = new ReportDialog();
-                reportDialog.setReport(REPORT_POST, post);
-                reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
-                reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
-                    @Override
-                    public void onPositive(boolean isClicked, Map<String,
-                            Object> childUpdate, final Dialog dialog) {
-                        if (isClicked) {
-                            dialog.dismiss();
-                            plzw8Dialog.show();
-                            dbRef.updateChildren(childUpdate)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            plzw8Dialog.dismiss();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    dialog.show();
-                                    plzw8Dialog.dismiss();
-                                    Toast.makeText(PostdetailActivity.this, e.getMessage(),
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            });
+                if (LoginSession.getInstance().getUser() != null) {
+                    reportPost();
+                }else {
 
-                        }
-                    }
-
-                    @Override
-                    public void onNegative(boolean isClicked, Dialog dialog) {
-                        if (isClicked) {
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                reportDialog.show(getSupportFragmentManager(), "report_post");
+                }
                 return true;
             case R.string.text_hidepost:
                 if (!post.isHidden()) {
@@ -553,6 +526,47 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void reportPost() {
+
+        ReportDialog reportDialog = new ReportDialog();
+        reportDialog.setReport(REPORT_POST, post);
+        reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
+        reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
+            @Override
+            public void onPositive(boolean isClicked, Map<String,
+                    Object> childUpdate, final Dialog dialog) {
+                if (isClicked) {
+                    dialog.dismiss();
+                    plzw8Dialog.show();
+                    dbRef.updateChildren(childUpdate)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    plzw8Dialog.dismiss();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            dialog.show();
+                            plzw8Dialog.dismiss();
+                            Toast.makeText(PostdetailActivity.this, e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onNegative(boolean isClicked, Dialog dialog) {
+                if (isClicked) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        reportDialog.show(getSupportFragmentManager(), "report_post");
     }
 
     private void showPost() {
@@ -676,11 +690,19 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgv_send_postdetail:
-                commentDialog.dismiss();
-                saveCommentValue();
+                if (LoginSession.getInstance().getUser() != null) {
+                    commentDialog.dismiss();
+                    saveCommentValue();
+                } else {
+
+                }
                 break;
             case R.id.txtv_writecomt_postdetail:
-                commentDialog.show();
+                if (LoginSession.getInstance().getUser() != null) {
+                    commentDialog.show();
+                } else {
+
+                }
                 break;
         }
     }

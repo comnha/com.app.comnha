@@ -209,8 +209,12 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     }
 
     private List<Pair<Integer, String>> returnContentMenuItems() {
-        int role = LoginSession.getInstance().getUser().getRole();
-        String uID = LoginSession.getInstance().getUser().getuID();
+        int role = 0;
+        String uID = "";
+        if (LoginSession.getInstance().getUser() != null) {
+            role = LoginSession.getInstance().getUser().getRole();
+            uID = LoginSession.getInstance().getUser().getuID();
+        }
         List<Pair<Integer, String>> contents = new ArrayList<>();
         if (role == 1) {
             contents.add(new Pair<Integer, String>
@@ -246,7 +250,11 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.string.txt_report:
-                reportStore();
+                if (LoginSession.getInstance().getUser() != null) {
+                    reportStore();
+                } else {
+
+                }
                 return true;
             case R.string.txt_followStore:
                 return true;
@@ -449,7 +457,10 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void getFoodList() {
-        int role = LoginSession.getInstance().getUser().getRole();
+        int role = 0;
+        if (LoginSession.getInstance().getUser() != null) {
+            role = LoginSession.getInstance().getUser().getRole();
+        }
         if (role == 1) {
             foodValueListener = new ValueEventListener() {
                 @Override

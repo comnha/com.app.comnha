@@ -122,7 +122,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         if (LoginSession.getInstance().getUser() != null
                 && LoginSession.getInstance().getFirebUser() != null) {
             FirebaseUser firebaseUser = LoginSession.getInstance().getFirebUser();
-            user=LoginSession.getInstance().getUser();
+            user = LoginSession.getInstance().getUser();
             txt_email.setText(firebaseUser.getEmail());
             txt_un.setText(firebaseUser.getDisplayName());
             Picasso.with(getApplicationContext())
@@ -462,6 +462,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         itemAdmin.setVisible(false);
                         imgv_avatar.setImageResource(R.drawable.ic_logo);
                         closeDialog();
+                        LoginSession.getInstance().setFirebUser(null);
+                        LoginSession.getInstance().setUser(null);
                         AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), getString(R.string.text_signout_success));
                     }
                 };
