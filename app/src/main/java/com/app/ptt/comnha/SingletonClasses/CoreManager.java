@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.Store;
+import com.app.ptt.comnha.Models.MyLocation;
 import com.app.ptt.comnha.Utils.Storage;
 import com.app.ptt.comnha.preference.PreferenceUtils;
 
@@ -39,8 +40,8 @@ public class CoreManager {
     private String myLocation;
 
 
-    public Store getMyLocation() {
-        List<Store> list=new ArrayList<>();
+    public MyLocation getMyLocation() {
+        List<MyLocation> list=new ArrayList<>();
         if(!TextUtils.isEmpty(myLocation)) {
             list = Storage.readJSONMyLocation(myLocation);
         }else{

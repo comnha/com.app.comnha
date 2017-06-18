@@ -30,6 +30,7 @@
     <string name="text_pricerate">Giá</string>
     <string name="text_healthyrate">Vệ sinh</string>
     <string name="text_servicerate">Phục vụ</string>
+    <string name="text_all">Tất cả</string>
     <string name="text_save">Save</string>
     <string name="text_saveaddloca">Lưu địa điểm</string>
     <string name="text_add">Thêm</string>

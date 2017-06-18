@@ -68,6 +68,10 @@ public class LocationController implements GoogleApiClient.ConnectionCallbacks,
 
         createLocationRequest();
     }
+    public boolean isGoogleAPIClientConnected(){
+        return mGoogleApiClient.isConnected();
+    }
+
 
 
     /**
