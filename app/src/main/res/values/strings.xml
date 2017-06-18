@@ -185,6 +185,7 @@
     <string name="frag_map_CODE">map</string>
     <string name="frag_writepost_CODE">writepost</string>
     <string name="frag_menu_CODE">menu</string>
+
     <string name="frg_postdetail_CODE">postdetail</string>
     <string name="frg_viewfood_CODE">viewfood</string>
     <string name="frg_signup_CODE">signup</string>
@@ -196,6 +197,7 @@
     <string name="frag_storedetail_CODE">storedetail</string>
     <string name="frag_vote_CODE">vote</string>
     <string name="fragment_CODE">FRAGMENTCODE</string>
+
     <string name="key_CODE">KEYCODE</string>
     <string name="keyPost_CODE">KEYPOSTCODE</string>
     <string name="keyloca_CODE">KEYLOCACODE</string>
