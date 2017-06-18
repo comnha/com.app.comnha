@@ -63,8 +63,11 @@ public class MapActivity extends AppCompatActivity {
 
     private void openMap(int a) {
         MapFragment mapFragment = new MapFragment();
-        mapFragment.setLocation(ChooseStore.getInstance().getStore());
-        ChooseStore.getInstance().setStore(null);
+        if(a==0) {
+            ChooseStore.getInstance().setStore(null);
+        }else{
+            mapFragment.setLocation(ChooseStore.getInstance().getStore());
+        }
         getSupportFragmentManager().beginTransaction().add(R.id.frame_map_adapter, mapFragment).commit();
     }
 

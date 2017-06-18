@@ -8,6 +8,7 @@ import android.util.Log;
 import com.app.ptt.comnha.Fragment.AddFoodFragment;
 import com.app.ptt.comnha.Fragment.AddstoreFragment;
 import com.app.ptt.comnha.Fragment.FooddetailFragment;
+import com.app.ptt.comnha.Fragment.MapFragment;
 import com.app.ptt.comnha.Fragment.NotificationFragment;
 import com.app.ptt.comnha.Fragment.SigninFragment;
 import com.app.ptt.comnha.Fragment.SignupFragment;
@@ -133,6 +134,16 @@ public class AdapterActivity extends AppCompatActivity {
                     fooddetailFragment.setArguments(getIntent().getExtras());
 
                     getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, fooddetailFragment).commit();
+                }
+            }
+        }else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frag_map_CODE))) {
+            if (findViewById(R.id.frame_adapter) != null) {
+                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
+                    MapFragment mapFragment = new MapFragment();
+                    Bundle bundle=new Bundle();
+                    bundle.putString(getResources().getString(R.string.frag_map_CODE),getResources().getString(R.string.frag_map_CODE));
+                    mapFragment.setArguments(bundle);
+                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, mapFragment).commit();
                 }
             }
         }
