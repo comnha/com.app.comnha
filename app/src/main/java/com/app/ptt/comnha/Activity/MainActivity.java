@@ -35,13 +35,9 @@ import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Fragment.AboutBottomSheetDialogFragment;
 import com.app.ptt.comnha.Interfaces.Comunication;
-import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.Models.MyLocation;
 import com.app.ptt.comnha.Modules.ConnectionDetector;
-import com.app.ptt.comnha.Modules.LocationFinderListener;
-import com.app.ptt.comnha.Modules.PlaceAPI;
-import com.app.ptt.comnha.Modules.PlaceAttribute;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.CoreManager;
@@ -52,7 +48,6 @@ import com.app.ptt.comnha.Utils.MyTool;
 import com.app.ptt.comnha.Utils.Storage;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -85,9 +80,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private TabLayout tabLayout;
     private MainFragPagerAdapter pagerAdapter;
     private FloatingActionButton fab;
-    private int connectionStatus=-1;
+    private int connectionStatus = -1;
     private Snackbar snackbar;
-    private MenuItem itemProfile,itemAdmin,itemSignIn, itemSignOut,itemMap,itemSetting;
+    private MenuItem itemProfile, itemAdmin, itemSignIn, itemSignOut, itemMap, itemSetting;
     NestedScrollView nestedScrollView;
     AlertDialog.Builder alertDialog;
     private MyTool myTool;
@@ -103,14 +98,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private DatabaseReference dbRef;
     private ValueEventListener userValueListener;
     private User user;
-    private  LocationController locationController;
+    private LocationController locationController;
     private NetworkChangeReceiver mBroadcastReceiver;
     private IntentFilter mIntentFilter;
     private Intent broadcastIntent;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG,"onCreate");
+        Log.i(TAG, "onCreate");
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
         stRef = FirebaseStorage.getInstance().getReferenceFromUrl(
@@ -118,7 +114,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         dbRef = FirebaseDatabase.getInstance()
                 .getReferenceFromUrl(getString(R.string.firebase_path));
         CoreManager.getInstance().initData(this);
-        myTool=new MyTool(this);
+        myTool = new MyTool(this);
         ref();
         startMyService();
         initMenu();
@@ -170,9 +166,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 user = dataSnapshot.getValue(User.class);
                 String key = firebaseUser.getUid();
                 user.setuID(key);
-                if(user.getRole()==1){
+                if (user.getRole() == 1) {
                     itemAdmin.setVisible(true);
-                }else{
+                } else {
                     itemAdmin.setVisible(false);
                 }
                 LoginSession.getInstance().setUser(user);
@@ -188,6 +184,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 + firebaseUser.getUid())
                 .addListenerForSingleValueEvent(userValueListener);
     }
+
     private void ref() {
 
         mtoolbar = (Toolbar) findViewById(R.id.toolbar_main);
@@ -383,14 +380,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.i(TAG,"onCreateOptionsMenu");
+        Log.i(TAG, "onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i(TAG,"onOptionsItemSelected");
+        Log.i(TAG, "onOptionsItemSelected");
         switch (item.getItemId()) {
             case R.id.action_search_main:
                 Intent intent_openSearch = new Intent(this, SearchActivity.class);
@@ -429,7 +426,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
             case R.id.nav_signout:
                 showProgressDialog(getString(R.string.txt_plzwait), getString(R.string.txt_logginout));
-                CountDownTimer countDownTimer=new CountDownTimer(1000,1000) {
+                CountDownTimer countDownTimer = new CountDownTimer(1000, 1000) {
                     @Override
                     public void onTick(long millisUntilFinished) {
 
@@ -446,22 +443,21 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         itemAdmin.setVisible(false);
                         imgv_avatar.setImageResource(R.drawable.ic_logo);
                         closeDialog();
-                        AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(),getString(R.string.text_signout_success));
+                        AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), getString(R.string.text_signout_success));
                     }
                 };
                 countDownTimer.start();
 
 
-
                 break;
             case R.id.nav_map:
-                if(!MyService.canGetLocation(this)){
-                    AppUtils.showSnackbar(this,getWindow().getDecorView(),"Bật GPS để sử dụng chức năng này","Bật GPS",Const.SNACKBAR_TURN_ON_GPS,Snackbar.LENGTH_SHORT);
-                }else{
+                if (!MyService.canGetLocation(this)) {
+                    AppUtils.showSnackbar(this, getWindow().getDecorView(), "Bật GPS để sử dụng chức năng này", "Bật GPS", Const.SNACKBAR_TURN_ON_GPS, Snackbar.LENGTH_SHORT);
+                } else {
                     Intent intent2 = new Intent(MainActivity.this, MapActivity.class);
                     intent2.putExtra(getString(R.string.fragment_CODE),
                             getString(R.string.frag_map_CODE));
-                    intent2.putExtra("type",0);
+                    intent2.putExtra("type", 0);
                     startActivity(intent2);
                 }
 
@@ -545,7 +541,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
 
-//
+    //
 //    private ChangeLocationBottomSheetDialogFragment changeLccaBtmSheet;
 //
 //    public void initUI() {
@@ -603,14 +599,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 //
     public void initMenu() {
         final Menu menu = mnavigationView.getMenu();
-    itemMap=menu.findItem(R.id.nav_map);
-    itemAdmin=menu.findItem(R.id.nav_admin);
-    itemProfile=menu.findItem(R.id.nav_profile);
-    itemSignIn=menu.findItem(R.id.nav_signin);
-    itemSignOut =menu.findItem(R.id.nav_signout);
-    itemSetting=menu.findItem(R.id.nav_setting);
+        itemMap = menu.findItem(R.id.nav_map);
+        itemAdmin = menu.findItem(R.id.nav_admin);
+        itemProfile = menu.findItem(R.id.nav_profile);
+        itemSignIn = menu.findItem(R.id.nav_signin);
+        itemSignOut = menu.findItem(R.id.nav_signout);
+        itemSetting = menu.findItem(R.id.nav_setting);
     }
-//
+
+    //
 //    public void getRole() {
 //        role = false;
 //        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
@@ -831,15 +828,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i(TAG,"onStart");
+        Log.i(TAG, "onStart");
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i(TAG,"onPause");
-        if(mBroadcastReceiver!=null) {
+        Log.i(TAG, "onPause");
+        if (mBroadcastReceiver != null) {
             unregisterReceiver(mBroadcastReceiver);
         }
     }
@@ -848,24 +845,24 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onResume() {
         super.onResume();
         getUser();
-        Log.i(TAG,"onResume");
-        mIntentFilter=new IntentFilter(Const.BROADCAST_SEND_STATUS_INTERNET);
+        Log.i(TAG, "onResume");
+        mIntentFilter = new IntentFilter(Const.BROADCAST_SEND_STATUS_INTERNET);
         mIntentFilter.addAction(Const.BROADCAST_SEND_STATUS_GET_LOCATION);
         mIntentFilter.addAction(Const.SNACKBAR_GO_ONLINE);
         mIntentFilter.addAction(Const.SNACKBAR_TURN_ON_GPS);
-        broadcastIntent=new Intent();
-        mBroadcastReceiver=new NetworkChangeReceiver();
-        registerReceiver(mBroadcastReceiver,mIntentFilter);
+        broadcastIntent = new Intent();
+        mBroadcastReceiver = new NetworkChangeReceiver();
+        registerReceiver(mBroadcastReceiver, mIntentFilter);
         startGetLocation();
-        if(!MyService.isNetworkAvailable(this)){
-            showSnackbar(MainActivity.this, getWindow().getDecorView(), getString(R.string.text_not_internet), getString(R.string.text_connect), Const.SNACKBAR_GO_ONLINE,Snackbar.LENGTH_INDEFINITE);
-        }else{
-            if(!MyService.canGetLocation(this)) {
+        if (!MyService.isNetworkAvailable(this)) {
+            showSnackbar(MainActivity.this, getWindow().getDecorView(), getString(R.string.text_not_internet), getString(R.string.text_connect), Const.SNACKBAR_GO_ONLINE, Snackbar.LENGTH_INDEFINITE);
+        } else {
+            if (!MyService.canGetLocation(this)) {
                 if (null == CoreManager.getInstance().getMyLocation()) {
                     showSnackbar(MainActivity.this, getWindow().getDecorView(), "Bật GPS để sử dụng chức năng này", "Bật GPS", Const.SNACKBAR_TURN_ON_GPS, Snackbar.LENGTH_INDEFINITE);
                 }
-            }else{
-                if(null!=snackbar && snackbar.isShown()){
+            } else {
+                if (null != snackbar && snackbar.isShown()) {
                     snackbar.dismiss();
                 }
 
@@ -877,11 +874,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i(TAG,"onStop");
+        Log.i(TAG, "onStop");
 //        if (mAuthListener != null) {
 //        }
     }
-//
+
+    //
     @Override
     protected void onDestroy() {
         Log.i(TAG, "onDestroy");
@@ -902,65 +900,65 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public void requestPermisson(List<String> strings) {
-        AppUtils.requestPermission(this,strings,Const.PERMISSION_LOCATION_FLAG);
+        AppUtils.requestPermission(this, strings, Const.PERMISSION_LOCATION_FLAG);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode){
+        switch (requestCode) {
             case Const.PERMISSION_LOCATION_FLAG:
-                for (int i=0;i<grantResults.length;i++){
-                    if(grantResults[i]!= PackageManager.PERMISSION_GRANTED){
+                for (int i = 0; i < grantResults.length; i++) {
+                    if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                         break;
                     }
 
                 }
                 locationController.loadLocationService();
+                CoreManager.getInstance().setMyLocation(this, null);
                 break;
         }
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.i(TAG,"Location:"+location.getLatitude()+"-long:"+location.getLongitude());
-        MyLocation savedLocation=CoreManager.getInstance().getMyLocation();
-        if(savedLocation!=null) {
-            if (myTool.distanceFrom_in_Km(savedLocation.getLat(),savedLocation.getLng(),location.getLatitude(),location.getLongitude())>2000) {
+        Log.i(TAG, "Location:" + location.getLatitude() + "-long:" + location.getLongitude());
+        MyLocation savedLocation = CoreManager.getInstance().getMyLocation();
+        if (savedLocation != null) {
+            if (myTool.distanceFrom_in_Km(savedLocation.getLat(), savedLocation.getLng(), location.getLatitude(), location.getLongitude()) > 2000) {
                 MyLocation myLocation = myTool.returnMyLocation(location.getLatitude(), location.getLongitude());
-                List<MyLocation> listLocation=new ArrayList<>();
+                List<MyLocation> listLocation = new ArrayList<>();
                 listLocation.add(myLocation);
-                CoreManager.getInstance().setMyLocation(this,Storage.parseMyLocationToJson(listLocation));
+                CoreManager.getInstance().setMyLocation(this, Storage.parseMyLocationToJson(listLocation));
                 Comunication.sendLocationListener.notice();
             }
-        }else{
+        } else {
             MyLocation myLocation = myTool.returnMyLocation(location.getLatitude(), location.getLongitude());
-            List<MyLocation> listLocation=new ArrayList<>();
+            List<MyLocation> listLocation = new ArrayList<>();
             listLocation.add(myLocation);
-            CoreManager.getInstance().setMyLocation(this,Storage.parseMyLocationToJson(listLocation));
+            CoreManager.getInstance().setMyLocation(this, Storage.parseMyLocationToJson(listLocation));
 
         }
         locationController.disconnect();
-        if(null!=snackbar && snackbar.isShown()){
+        if (null != snackbar && snackbar.isShown()) {
             snackbar.dismiss();
         }
 
     }
 
 
-
     public class NetworkChangeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(final Context context, final Intent intent) {
-            switch (intent.getAction()){
+            switch (intent.getAction()) {
                 case Const.BROADCAST_SEND_STATUS_INTERNET:
                     if (intent.getBooleanExtra(Const.BROADCAST_SEND_STATUS_INTERNET, false)) {
-                        if(intent.getBooleanExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION,false)){
-                        }else{
-                            if(null==CoreManager.getInstance().getMyLocation()){
+                        if (intent.getBooleanExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION, false)) {
+                        } else {
+                            if (null == CoreManager.getInstance().getMyLocation()) {
                                 ConnectionDetector.showSettingGPSAlert(alertDialog, context);
                             }
                         }
-                        if(null!=snackbar && snackbar.isShown()){
+                        if (null != snackbar && snackbar.isShown()) {
                             snackbar.dismiss();
                         }
                     } else {
@@ -974,32 +972,33 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
                     }
                     break;
-                case  Const.SNACKBAR_GO_ONLINE:
-                    if(null!=intent.getStringExtra(Const.SNACKBAR_GO_ONLINE)){
+                case Const.SNACKBAR_GO_ONLINE:
+                    if (null != intent.getStringExtra(Const.SNACKBAR_GO_ONLINE)) {
                         Intent intentSetting = new Intent(Settings.ACTION_SETTINGS);
                         startActivity(intentSetting);
                     }
 
-                case  Const.SNACKBAR_TURN_ON_GPS:
-                    if(null!=intent.getStringExtra(Const.SNACKBAR_TURN_ON_GPS)){
+                case Const.SNACKBAR_TURN_ON_GPS:
+                    if (null != intent.getStringExtra(Const.SNACKBAR_TURN_ON_GPS)) {
                         Intent intentGpsSetting = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         startActivity(intentGpsSetting);
                     }
 
-                break;
+                    break;
             }
 
         }
     }
+
     public void showSnackbar(final Context c, View view, final String title, final String actionTitle, final String type, final int showTime) {
-        if(snackbar==null){
+        if (snackbar == null) {
             snackbar = Snackbar.make(view, title, showTime);
             snackbar.setAction(actionTitle, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent snackBarIntent = new Intent();
                     snackBarIntent.setAction(type);
-                    snackBarIntent.putExtra(type,type);
+                    snackBarIntent.putExtra(type, type);
                     c.sendBroadcast(snackBarIntent);
                     if (showTime == Snackbar.LENGTH_INDEFINITE) {
                         snackbar.dismiss();
@@ -1008,12 +1007,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             });
 
         }
-        if(!snackbar.isShown()) {
+        if (!snackbar.isShown()) {
             snackbar.show();
         }
     }
-    public void startGetLocation(){
-        locationController=new LocationController(this);
+
+    public void startGetLocation() {
+        locationController = new LocationController(this);
         locationController.initController();
         locationController.connect();
         locationController.setLocationListener(this);
