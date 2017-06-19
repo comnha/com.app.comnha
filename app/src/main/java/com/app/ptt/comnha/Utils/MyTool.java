@@ -15,6 +15,8 @@ import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Interfaces.DoInBackGroundOK;
 import com.app.ptt.comnha.Interfaces.LocationFinderListener;
 import com.app.ptt.comnha.Models.FireBase.Store;
+import com.app.ptt.comnha.Models.MyLocation;
+import com.app.ptt.comnha.Modules.PlaceAttribute;
 import com.firebase.client.Firebase;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -76,6 +78,18 @@ public class MyTool implements
         distance = locationA.distanceTo(locationB);
         return distance;
     }
+    public float distanceFrom_in_Km(double lat1, double lng1, double lat2, double lng2) {
+        double earthRadius = 6371000; //meters
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLng/2) * Math.sin(dLng/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        float dist = (float) (earthRadius * c);
+
+        return dist;
+    }
 
 
     @Override
@@ -107,6 +121,21 @@ public class MyTool implements
         getLocationFail = false;
     }
 
+    @Override
+    public void onLocationFinderStart() {
+
+    }
+
+    @Override
+    public void onGeocodingFinderSuccess(String address) {
+
+    }
+
+    @Override
+    public void onLocationFinderSuccess(PlaceAttribute placeAttribute) {
+
+    }
+
     class ParseToLocation extends AsyncTask<Void, Void, Void> {
         Location location;
         Store store;
@@ -120,7 +149,7 @@ public class MyTool implements
 
         @Override
         protected Void doInBackground(Void... params) {
-            store = returnLocationByLatLng(geocoder,location.getLatitude(), location.getLongitude());
+            store = returnLocationByLatLng(location.getLatitude(), location.getLongitude());
             return null;
         }
 
@@ -155,8 +184,71 @@ public class MyTool implements
             return null;
     }
 
-    public Store returnLocationByLatLng(Geocoder geocoder,Double latitude, Double longitude) {
+    public Store returnLocationByLatLng(Double latitude, Double longitude) {
         Store store = new Store();
+        List<Address> addresses;
+        Double lat = latitude;
+        Double lon = longitude;
+        try {
+            if (lat != null && lon != null) {
+                addresses = geocoder.getFromLocation(lat, lon, 1);
+                if (addresses.size() > 0) {
+                    Address address = addresses.get(0);
+                    String a = address.getAddressLine(0);
+                    String b = address.getSubLocality();
+                    String c = address.getSubAdminArea();
+                    String d = address.getAdminArea();
+                    String e = "";
+                    if (a != null) {
+                        e += a;
+                    }
+                    if (b != null) {
+                        if (a == null)
+                            e += b;
+                        else
+                            e += ", " + b;
+
+                    }
+
+                    if (c != null) {
+                        Scanner kb = new Scanner(c);
+                        String name;
+                        while (kb.hasNext()) {
+                            name = kb.next();
+                            if (name.equals("District") || name.equals("Quận")) {
+                                c = "Quận";
+                                while (kb.hasNext()) {
+                                    c += " " + kb.next();
+                                }
+                            }
+                        }
+                        if (a == null && b == null)
+                            e += c;
+                        else
+                            e += ", " + c;
+
+                        store.setProvince(c);
+                    }
+                    if (d != null) {
+                        if (a == null && b == null && c == null)
+                            e += d;
+                        else
+                            e += ", " + d;
+                        store.setDistrict(d);
+                    }
+                    store.setAddress(e);
+                    store.setLat(lat);
+                    store.setLng(lon);
+                    return store;
+                }
+                return null;
+            }
+        } catch (IOException e) {
+        }
+        return null;
+    }
+    public MyLocation returnMyLocation(Double latitude, Double longitude) {
+        MyLocation store = new MyLocation();
         List<Address> addresses;
         Double lat = latitude;
         Double lon = longitude;
@@ -232,8 +324,8 @@ public class MyTool implements
         } else return null;
     }
 
-    public ArrayList<PlaceAttribute> returnPlaceAttributeByName(String mAddress) {
-        ArrayList<PlaceAttribute> listPlaceAttribute = new ArrayList<>();
+    public List<PlaceAttribute> returnPlaceAttributeByName(String mAddress) {
+        List<PlaceAttribute> listPlaceAttribute = new ArrayList<>();
         List<Address> addresses = new ArrayList<>();
         try {
             addresses = geocoder.getFromLocationName(mAddress, 4);
@@ -294,45 +386,8 @@ public class MyTool implements
         return null;
     }
 
-    @Override
-    public void onLocationFinderStart() {
 
-    }
 
-    @Override
-    public void onLocationFinderSuccess(PlaceAttribute placeAttribute) {
-        if (placeAttribute != null) {
-//            yourLocation = new Store();
-//            yourLocation.setDiachi(placeAttribute.getFullname());
-//            yourLocation.setQuanhuyen(placeAttribute.getDistrict());
-//            yourLocation.setTinhtp(placeAttribute.getState());
-            try {
-                LatLng a = (returnLatLngByName(placeAttribute.getFullname()));
-//                yourLocation.setLat(a.latitude);
-//                yourLocation.setLng(a.longitude);
-                if (flag == 2) {
-                    sendBroadcast("Location");
-                    getLocationFail = false;
-                }
-            } catch (Exception e) {
-                getLocationFail = true;
-            }
-
-            if (flag == 3) {
-                ArrayList<Store> mList = new ArrayList<>();
-                mList.add(yourLocation);
-                Storage.writeFile(mContext, Storage.parseMyLocationToJson(mList).toString(), "myLocation");
-            }
-        } else {
-            Log.i(LOG + ".onLocationFinder", "State: null");
-        }
-        flag = -10;
-    }
-
-    @Override
-    public void onGeocodingFinderSuccess(String address) {
-
-    }
 
 
 }

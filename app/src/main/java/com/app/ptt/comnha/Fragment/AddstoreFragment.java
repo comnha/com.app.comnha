@@ -8,8 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,23 +26,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.ptt.comnha.Adapters.PlacesAutoCompleteAdapter;
 import com.app.ptt.comnha.Adapters.SingleImageImportRvAdapter;
 import com.app.ptt.comnha.Classes.SelectedImage;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.NewstoreNotify;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Modules.LocationFinderListener;
-import com.app.ptt.comnha.Modules.MyTool;
 import com.app.ptt.comnha.Modules.PlaceAPI;
 import com.app.ptt.comnha.Modules.PlaceAttribute;
 import com.app.ptt.comnha.Modules.Times;
@@ -52,12 +47,8 @@ import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
+import com.app.ptt.comnha.Utils.MyTool;
 import com.github.clans.fab.FloatingActionButton;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -70,16 +61,11 @@ import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.io.File;
-import java.io.IOException;
-import java.security.Permission;
-import java.security.Permissions;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Scanner;
 
 
 /**
@@ -87,9 +73,8 @@ import java.util.Scanner;
  */
 public class AddstoreFragment extends Fragment implements View.OnClickListener, TimePickerDialog.OnTimeSetListener,
         DialogInterface.OnDismissListener, DialogInterface.OnCancelListener, LocationFinderListener {
-    FloatingActionButton fab_save;
     public static final String LOG = AddstoreFragment.class.getSimpleName();
-    ArrayList<PlaceAttribute> mPlaceAttribute;
+
     EditText edt_storeName, edt_phoneNumb ;
     List<String> addressList;
     AutoCompleteTextView edt_address;
@@ -101,10 +86,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
     Calendar now;
     TimePickerDialog tpd;
     int edtID, pos = -1;
-    Store newLocation;
     int hour, min;
-    String key;
-    PlaceAPI placeAPI;
     boolean isConnected = true;
     IntentFilter mIntentFilter;
     Toolbar toolbar;
@@ -116,7 +98,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
     private SelectedImage selectedImage;
     private BottomSheetDialog imgsDialog;
     private MyTool myTool;
-    String storename, address, phonenumb, opentime,
+    String storename, address, phonenumb,opentime,
             province, district , storeimg = "";
     double lat, lng;
     String userID;//người tạo
@@ -184,7 +166,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
     private void setupAutoCompleteTextView(){
         myTool=new MyTool(getActivity());
         addressList=new ArrayList<>();
-        edt_address.setAdapter(new PlacesAutoCompleteAdapter(getContext(), R.layout.autocomplete_list_item));
+        edt_address.setAdapter(new PlacesAutoCompleteAdapter(getContext(), R.layout.autocomplete_list_item,myTool));
         edt_address.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -192,68 +174,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
             }
         });
     }
-        class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
-        ArrayList<String> resultList;
-        Context mContext;
-        int mResource;
 
-        public PlacesAutoCompleteAdapter(Context context, int resource) {
-            super(context, resource);
-            mContext = context;
-            mPlaceAttribute = new ArrayList<>();
-            mResource = resource;
-        }
-
-        @Override
-        public int getCount() {
-            if (resultList != null) {
-                return resultList.size();
-            } else return 0;
-        }
-
-
-        @Override
-        public String getItem(int position) {
-            return resultList.get(position);
-        }
-
-        @NonNull
-        @Override
-        public Filter getFilter() {
-            final Filter filter = new Filter() {
-                @Override
-                protected FilterResults performFiltering(CharSequence constraint) {
-                    FilterResults filterResults = new FilterResults();
-                    if (constraint != null) {
-                        mPlaceAttribute = new ArrayList<>();
-                        mPlaceAttribute = myTool.returnPlaceAttributeByName(constraint.toString());
-                        if (mPlaceAttribute != null) {
-                            resultList = new ArrayList<>();
-                            for (PlaceAttribute placeAttribute : mPlaceAttribute)
-                                resultList.add(placeAttribute.getFullname());
-                            filterResults.values = resultList;
-                            filterResults.count = resultList.size();
-                        } else {
-                            PlaceAttribute a1 =new PlaceAttribute();
-                            a1.setFullname(constraint.toString());
-                            mPlaceAttribute.add(a1);
-                        }
-                    }
-                    return filterResults;
-                }
-
-                @Override
-                protected void publishResults(CharSequence constraint, FilterResults results) {
-                    if (results != null && results.count > 0) {
-                        notifyDataSetChanged();
-                    } else {
-                        notifyDataSetInvalidated();
-                    }
-                }
-            };
-            return filter;
-        }
-    }
     void anhXa(View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().getWindow().setStatusBarColor(getResources()
@@ -374,7 +295,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         uploadImgDialog.setMax(100);
         uploadImgDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         uploadImgDialog.setCanceledOnTouchOutside(true);
-        uploadImgDialog.setCancelable(true);
+        uploadImgDialog.setCancelable(false);
     }
 
 
@@ -389,7 +310,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
                 } else if (AppUtils.checkEmptyEdt(edt_phoneNumb)) {
                     edt_phoneNumb.setError(getText(R.string.txt_nophonenumb));
                 } else {
-                    new PlaceAPI(mPlaceAttribute.get(pos).getFullname(),this);
+                    new PlaceAPI(edt_address.getText().toString(),this);
                 }
                 break;
             case R.id.frg_addloction_btn_opentime:
@@ -586,9 +507,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onLocationFinderSuccess(final PlaceAttribute placeAttribute) {
         if (placeAttribute != null) {
-            final PlaceAttribute myPlaceAttribute = placeAttribute;
-
-            Log.i(LOG + ".onLocationFinder", placeAttribute.getState() + "-" + placeAttribute.getDistrict());
+                       Log.i(LOG + ".onLocationFinder", placeAttribute.getState() + "-" + placeAttribute.getDistrict());
             final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setMessage("Địa chỉ: " + placeAttribute.getFullname()).setTitle("Xác nhận")
                     .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {

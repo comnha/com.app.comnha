@@ -25,6 +25,7 @@
     <dimen name="edt_ngsinh_height">50dp</dimen>
     <dimen name="cardv_sign_width">330dp</dimen>
     <dimen name="layout_popup_width">350dp</dimen>
+    <dimen name="image_size">50dp</dimen>
     <dimen name="popup_width">300dp</dimen>
     <dimen name="popup_height">315dp</dimen>
     <dimen name="text_rate_mark">20sp</dimen>

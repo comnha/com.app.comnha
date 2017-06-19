@@ -43,19 +43,19 @@ public class ConnectionDetector {
 
     }
 
-    public static boolean showSettingGPSAlert(final Context mContext) {
+    public static boolean showSettingGPSAlert(AlertDialog.Builder alertDialog ,final Context mContext) {
 
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-        alertDialog.setTitle("GPS settings");
-        alertDialog.setMessage("GPS is not enabled.Do you want to go to setting menu?");
-        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+        alertDialog = new AlertDialog.Builder(mContext);
+        alertDialog.setTitle("Thông báo");
+        alertDialog.setMessage("Bạn cần kết nối  GPS trong lần đầu sử dụng để chúng tôi có thể biết vị trí của bạn");
+        alertDialog.setPositiveButton("Kết nối", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 mContext.startActivity(intent);
             }
         });
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton("Hủy bỏ", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

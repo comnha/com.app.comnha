@@ -88,7 +88,7 @@ public class MyService extends Service {
 
     private static User userAccount;
     public boolean isNetworkConnected = false, isLocationConnected = false;
-    static boolean isNetworkConnectedStatic = false, isSuccess = false, isLocationConnectedStatic = false;
+    public static boolean isNetworkConnectedStatic = false, isSuccess = false, isLocationConnectedStatic = false;
     public boolean isSaved = false;
     MyTool myTool;
     static String changeContent = "";
@@ -267,7 +267,8 @@ public class MyService extends Service {
             if (intent.getAction().equals(Const.BROADCAST_PROVIDER_CHANGED)) {
                 broadcastIntent=new Intent();
                 if (canGetLocation(context)) {
-                    isLocationConnectedStatic = false;
+                    isLocationConnected = true ;
+                    isLocationConnectedStatic = true;
                     broadcastIntent.setAction(Const.BROADCAST_SEND_STATUS_GET_LOCATION);
                     broadcastIntent.putExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION, Const.CONNECTED);
                 } else {
@@ -275,10 +276,10 @@ public class MyService extends Service {
                         isLocationConnectedStatic = false;
                         broadcastIntent.setAction(Const.BROADCAST_SEND_STATUS_GET_LOCATION);
                         broadcastIntent.putExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION, Const.NOTCONNECTED);
-
                 }
+                context.sendBroadcast(broadcastIntent);
             }
-            context.sendBroadcast(broadcastIntent);
+
         }
 
 
