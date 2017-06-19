@@ -6,9 +6,12 @@ import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,13 +30,16 @@ import android.widget.Toast;
 import com.app.ptt.comnha.Adapters.Food_recycler_adapter;
 import com.app.ptt.comnha.Adapters.Photo_recycler_adapter;
 import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Dialog.ReportDialog;
 import com.app.ptt.comnha.Fragment.AddFoodFragment;
+import com.app.ptt.comnha.Fragment.MapFragment;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;
 import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
@@ -99,11 +105,11 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
             onBackPressed();
         } else {
             storeID = store.getStoreID();
+            ChooseStore.getInstance().setStore(null);
         }
         ref();
         createStoreInfo();
     }
-
     private void ref() {
         View include_view = findViewById(R.id.include_storedetail_content);
         postRecycler = (RecyclerView) include_view.findViewById(R.id.recycler_post_storedetail);
@@ -526,7 +532,19 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 addFoodFragment.show(getSupportFragmentManager(), "addfood_frag");
                 break;
             case R.id.imgv_viewlocation_storedetail:
-
+                Bitmap imgBitmap = ((BitmapDrawable) imgv_avatar.getDrawable())
+                        .getBitmap();
+                store.setImgBitmap(imgBitmap);
+                ChooseStore.getInstance().setStore(store);
+                if(!MyService.canGetLocation(this)){
+                    AppUtils.showSnackbar(this,getWindow().getDecorView(),"Bật GPS để sử dụng chức năng này","Bật GPS", Const.SNACKBAR_TURN_ON_GPS, Snackbar.LENGTH_SHORT);
+                }else{
+                    Intent intent2 = new Intent(StoreDeatailActivity.this, MapActivity.class);
+                    intent2.putExtra(getString(R.string.fragment_CODE),
+                            getString(R.string.frag_map_CODE));
+                    intent2.putExtra("type",1);
+                    startActivity(intent2);
+                }
                 break;
             case R.id.fab_menu_storedetail:
                 Intent intent_openmenu = new Intent(this, AdapterActivity.class);

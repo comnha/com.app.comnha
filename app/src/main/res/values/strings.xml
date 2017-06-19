@@ -30,6 +30,7 @@
     <string name="text_pricerate">Giá</string>
     <string name="text_healthyrate">Vệ sinh</string>
     <string name="text_servicerate">Phục vụ</string>
+    <string name="text_all">Tất cả</string>
     <string name="text_save">Save</string>
     <string name="text_saveaddloca">Lưu địa điểm</string>
     <string name="text_add">Thêm</string>
@@ -184,6 +185,7 @@
     <string name="frag_map_CODE">map</string>
     <string name="frag_writepost_CODE">writepost</string>
     <string name="frag_menu_CODE">menu</string>
+
     <string name="frg_postdetail_CODE">postdetail</string>
     <string name="frg_viewfood_CODE">viewfood</string>
     <string name="frg_signup_CODE">signup</string>
@@ -195,6 +197,7 @@
     <string name="frag_storedetail_CODE">storedetail</string>
     <string name="frag_vote_CODE">vote</string>
     <string name="fragment_CODE">FRAGMENTCODE</string>
+
     <string name="key_CODE">KEYCODE</string>
     <string name="keyPost_CODE">KEYPOSTCODE</string>
     <string name="keyloca_CODE">KEYLOCACODE</string>
