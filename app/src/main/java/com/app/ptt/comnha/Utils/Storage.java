@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.Store;
+import com.app.ptt.comnha.Models.MyLocation;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -99,10 +100,10 @@ public class Storage {
         return null;
 
     }
-    public static ArrayList<Store> readJSONMyLocation(String json){
+    public static ArrayList<MyLocation> readJSONMyLocation(String json){
         Gson gson=new Gson();
-        ArrayList<Store> locations =
-                gson.fromJson(json,new TypeToken<ArrayList<Store>>(){}.getType());
+        ArrayList<MyLocation> locations =
+                gson.fromJson(json,new TypeToken<ArrayList<MyLocation>>(){}.getType());
         if(locations.size()>0) {
             Log.i("readJSONPost", "locations.size() =" + locations.size());
             return locations;
@@ -142,7 +143,7 @@ public class Storage {
     }
 
 
-    public static String  parseMyLocationToJson(List<Store> locations) {
+    public static String  parseMyLocationToJson(List<MyLocation> locations) {
         Gson gson=new Gson();
         String json1=gson.toJson(locations);
         //Log.i("json string:",json1);

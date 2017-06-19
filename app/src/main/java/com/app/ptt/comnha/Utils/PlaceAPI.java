@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.app.ptt.comnha.Interfaces.LocationFinderListener;
+import com.app.ptt.comnha.Modules.PlaceAttribute;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
@@ -167,7 +168,7 @@ public class PlaceAPI {
         return e;
 
     }
-    public PlaceAttribute addtoPlaceAttribute(List<String> list,String name) {
+    public PlaceAttribute addtoPlaceAttribute(List<String> list, String name) {
         if (name == null)
             name = "";
 
