@@ -19,8 +19,8 @@ public class Const {
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.INTERNET,
             Manifest.permission.ACCESS_FINE_LOCATION};
-    public static final String SNACKBAR_GO_ONLINE = "SNACKBAR_GO_ONLINE";
-    public static final String SNACKBAR_TURN_ON_GPS= "SNACKBAR_TURN_ON_GPS";
+    public static final String SNACKBAR_GO_ONLINE = "5";
+    public static final String SNACKBAR_TURN_ON_GPS= "6";
 
     public static final boolean CONNECTED = true;
     public static final boolean NOTCONNECTED = false;

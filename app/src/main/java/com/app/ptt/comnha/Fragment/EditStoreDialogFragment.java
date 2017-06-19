@@ -29,9 +29,9 @@ import android.widget.Toast;
 
 import com.app.ptt.comnha.Interfaces.LocationFinderListener;
 import com.app.ptt.comnha.Models.FireBase.Store;
+import com.app.ptt.comnha.Modules.PlaceAttribute;
 import com.app.ptt.comnha.Utils.MyTool;
 import com.app.ptt.comnha.Utils.PlaceAPI;
-import com.app.ptt.comnha.Utils.PlaceAttribute;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.EditLocal;
 import com.google.android.gms.maps.model.LatLng;
@@ -43,6 +43,7 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -70,7 +71,7 @@ public class EditStoreDialogFragment extends DialogFragment implements View.OnCl
     int pos = -1;
     PlaceAPI placeAPI;
     Store newLocation;
-    ArrayList<PlaceAttribute> placeAttributes;
+    List<PlaceAttribute> placeAttributes;
 
     public EditStoreDialogFragment() {
         // Required empty public constructor

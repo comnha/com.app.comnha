@@ -18,15 +18,37 @@
         android:orientation="vertical"
         android:paddingEnd="10dp"
         android:paddingStart="10dp">
-
-        <fragment
-            android:id="@+id/place_autocomplete_fragment"
-            android:name="com.google.android.gms.store.places.ui.PlaceAutocompleteFragment"
+        <android.support.v7.widget.CardView
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:background="@color/white"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="5"
+                android:layout_height="wrap_content">
+                <AutoCompleteTextView
+                    android:id="@+id/edt_search"
+                    android:text=""
+                    android:layout_width="0dp"
+                    android:layout_weight="4.5"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"
+                    android:layout_height="wrap_content"/>
+                <ImageButton
+                    android:id="@+id/btn_search"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_margin="5dp"
+                    android:layout_gravity="center"
+                    android:layout_height="match_parent"
 
+                    android:background="@drawable/ic_search_grey_600_24dp"
+                    />
+            </LinearLayout>
 
+        </android.support.v7.widget.CardView>
         <android.support.v7.widget.CardView
             android:id="@+id/frg_map_cardV_mylocation"
             android:layout_width="35dp"
@@ -44,6 +66,28 @@
                 android:layout_height="match_parent"
                 android:padding="6dp"
                 android:src="@drawable/ic_my_location_grey_800_18dp" />
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/frg_map_cardV_distance"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="20dp"
+            android:alpha="0.9"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            app:cardCornerRadius="@dimen/cardv_cornerRadius"
+            app:cardElevation="@dimen/cardv_elevation">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:id="@+id/txt_distance"
+                android:textSize="10sp"
+                />
+
         </android.support.v7.widget.CardView>
     </LinearLayout>
 
