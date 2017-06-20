@@ -3,6 +3,7 @@ package com.app.ptt.comnha.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -47,6 +49,7 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -72,6 +75,8 @@ public class ViewPhotosActivity extends AppCompatActivity {
     TextView tv_un, tv_datetime;
     ValueEventListener userEventListener;
     User temp_user = null;
+    int indexselect = 0;
+    Menu pubMenu = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,6 +87,7 @@ public class ViewPhotosActivity extends AppCompatActivity {
         setContentView(R.layout.activity_viewphoto);
         Intent intent = getIntent();
         position = intent.getIntExtra("imgPosition", 0);
+        indexselect = position;
         Log.i("ViewPhoto_pos", position + "");
         stRef = FirebaseStorage
                 .getInstance()
@@ -180,7 +186,10 @@ public class ViewPhotosActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
+                indexselect = position;
                 image = images.get(position);
+                pubMenu.clear();
+                ViewPhotosActivity.this.onCreateOptionsMenu(pubMenu);
                 tv_datetime.setText(image.getDate() + " - " + image.getTime());
                 if (!image.getUserID().equals(temp_user.getuID())
                         && temp_user != null) {
@@ -204,20 +213,31 @@ public class ViewPhotosActivity extends AppCompatActivity {
                     images.get(vp_viewphoto.getCurrentItem()).getUserID())) {
                 contents.add(new Pair<Integer, String>
                         (R.string.txt_report, getString(R.string.txt_report)));
-                contents.add(new Pair<Integer, String>
-                        (R.string.txt_hideimg, getString(R.string.txt_hideimg)));
+                if (images.get(indexselect).isHidden()) {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.txt_showpost, getString(R.string.txt_showphoto)));
+                } else {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.text_hidepost, getString(R.string.txt_hideimg)));
+                }
             } else {
                 contents.add(new Pair<Integer, String>
                         (R.string.txt_report, getString(R.string.txt_report)));
             }
         }
         if (role == 1) {
-            contents.add(new Pair<Integer, String>
-                    (R.string.txt_hideimg, getString(R.string.txt_hideimg)));
+            if (images.get(indexselect).isHidden()) {
+                contents.add(new Pair<Integer, String>
+                        (R.string.txt_showpost, getString(R.string.txt_showphoto)));
+            } else {
+                contents.add(new Pair<Integer, String>
+                        (R.string.text_hidepost, getString(R.string.txt_hideimg)));
+            }
             contents.add(new Pair<Integer, String>
                     (R.string.txt_delphoto, getString(R.string.txt_delphoto)));
         }
         menu = AppUtils.createMenu(menu, contents);
+        pubMenu = menu;
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -228,51 +248,148 @@ public class ViewPhotosActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.string.txt_report:
-                ReportDialog reportDialog = new ReportDialog();
-                reportDialog.setReport(REPORT_IMG, image);
-                reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
-                reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
-                    @Override
-                    public void onPositive(boolean isClicked, Map<String,
-                            Object> childUpdate, final Dialog dialog) {
-                        if (isClicked) {
-                            dialog.dismiss();
-                            plzw8Dialog.show();
-                            dbRef.updateChildren(childUpdate)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            plzw8Dialog.dismiss();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    dialog.show();
-                                    plzw8Dialog.dismiss();
-                                    Toast.makeText(ViewPhotosActivity.this,
-                                            e.getMessage(),
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            });
-
-                        }
-                    }
-
-                    @Override
-                    public void onNegative(boolean isClicked, Dialog dialog) {
-                        if (isClicked) {
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                reportDialog.show(getSupportFragmentManager(), "report_store");
+                doReportImg();
                 return true;
             case R.string.txt_hideimg:
+//                if (!images.get(indexselect).isHidden()) {
+                    hidePhoto();
+//                }
+                return true;
+            case R.string.txt_showphoto:
+//                if (images.get(indexselect).isHidden()) {
+                    showPhoto();
+//                }
                 return true;
             case R.string.txt_delphoto:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void doReportImg() {
+        ReportDialog reportDialog = new ReportDialog();
+        reportDialog.setReport(REPORT_IMG, image);
+        reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
+        reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
+            @Override
+            public void onPositive(boolean isClicked, Map<String,
+                    Object> childUpdate, final Dialog dialog) {
+                if (isClicked) {
+                    dialog.dismiss();
+                    plzw8Dialog.show();
+                    dbRef.updateChildren(childUpdate)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    plzw8Dialog.dismiss();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            dialog.show();
+                            plzw8Dialog.dismiss();
+                            Toast.makeText(ViewPhotosActivity.this,
+                                    e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onNegative(boolean isClicked, Dialog dialog) {
+                if (isClicked) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        reportDialog.show(getSupportFragmentManager(), "report_store");
+    }
+
+    private void showPhoto() {
+        plzw8Dialog.show();
+        images.get(indexselect).setHidden(false);
+        String key = images.get(indexselect).getImageID();
+//        Toast.makeText(StoreDeatailActivity.this,
+//                key, Toast.LENGTH_SHORT).show();
+        Image childimg = images.get(indexselect);
+        Map<String, Object> imgValue = childimg.toMap();
+        Map<String, Object> childUpdate = new HashMap<>();
+        childUpdate.put(getString(R.string.images_CODE)
+                + key, imgValue);
+        dbRef.updateChildren(childUpdate)
+                .addOnSuccessListener(
+                        new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+//                                item.setTitle(getString(R.string.text_hidestore));
+                                pubMenu.clear();
+                                ViewPhotosActivity.this.onCreateOptionsMenu(pubMenu);
+                                plzw8Dialog.cancel();
+                            }
+                        }).addOnFailureListener(
+                new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        plzw8Dialog.cancel();
+                        Toast.makeText(getApplicationContext(),
+                                e.getMessage(), Toast.LENGTH_LONG)
+                                .show();
+                    }
+                });
+    }
+
+    private void hidePhoto() {
+        new AlertDialog.Builder(this)
+                .setCancelable(true)
+                .setMessage(getString(R.string.txt_hideconfirm))
+                .setPositiveButton(getString(R.string.txt_hide),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(
+                                    final DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                                plzw8Dialog.show();
+                                images.get(indexselect).setHidden(true);
+                                String key = images.get(indexselect).getImageID();
+//                                Toast.makeText(StoreDeatailActivity.this,
+//                                        key, Toast.LENGTH_SHORT).show();
+                                Image childImg = images.get(indexselect);
+                                Map<String, Object> imgValue = childImg.toMap();
+                                Map<String, Object> childUpdate = new HashMap<>();
+                                childUpdate.put(getString(R.string.images_CODE)
+                                        + key, imgValue);
+                                dbRef.updateChildren(childUpdate)
+                                        .addOnSuccessListener(
+                                                new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        pubMenu.clear();
+                                                        ViewPhotosActivity.this.onCreateOptionsMenu(pubMenu);
+                                                        plzw8Dialog.cancel();
+                                                    }
+                                                }).addOnFailureListener(
+                                        new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                plzw8Dialog.cancel();
+                                                Toast.makeText(getApplicationContext(),
+                                                        e.getMessage(), Toast.LENGTH_LONG)
+                                                        .show();
+                                            }
+                                        });
+                            }
+                        })
+                .setNegativeButton(getString(R.string.text_no),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(
+                                    DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        })
+                .show();
     }
 }
