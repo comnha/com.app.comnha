@@ -64,12 +64,12 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<Store_recycler_
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        AnimationUtils.fadeAnimation(holder.itemView, 700, 0);
+        AnimationUtils.fadeAnimation(holder.itemView, 700, true, 0);
         holder.txtv_storename.setText(stores.get(position).getName());
         holder.txtv_address.setText(stores.get(position).getAddress());
         holder.txtv_rate.setText(String.valueOf(stores.get(position).getRateAVG()));
-        if(null!=stores.get(position).getDistance()){
-            holder.txtv_distance.setText(stores.get(position).getDistance()+" km");
+        if (null != stores.get(position).getDistance()) {
+            holder.txtv_distance.setText(stores.get(position).getDistance() + " km");
         }
         holder.txtv_opentime.setText(stores.get(position).getOpentime());
         holder.txtv_phonenumb.setText(stores.get(position).getPhonenumb());
