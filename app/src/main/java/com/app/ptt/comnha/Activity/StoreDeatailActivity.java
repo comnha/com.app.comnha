@@ -33,7 +33,6 @@ import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Dialog.ReportDialog;
 import com.app.ptt.comnha.Fragment.AddFoodFragment;
-import com.app.ptt.comnha.Fragment.MapFragment;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.Post;
@@ -110,6 +109,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         ref();
         createStoreInfo();
     }
+
     private void ref() {
         View include_view = findViewById(R.id.include_storedetail_content);
         postRecycler = (RecyclerView) include_view.findViewById(R.id.recycler_post_storedetail);
@@ -259,7 +259,21 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 if (LoginSession.getInstance().getUser() != null) {
                     reportStore();
                 } else {
-
+                    new AlertDialog.Builder(StoreDeatailActivity.this)
+                            .setMessage(getString(R.string.txt_needlogin))
+                            .setPositiveButton(getString(R.string.text_signin), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    StoreDeatailActivity.this.finish();
+                                }
+                            }).setNegativeButton(getString(R.string.text_no),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .show();
                 }
                 return true;
             case R.string.txt_followStore:
@@ -536,13 +550,13 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                         .getBitmap();
                 store.setImgBitmap(imgBitmap);
                 ChooseStore.getInstance().setStore(store);
-                if(!MyService.canGetLocation(this)){
-                    AppUtils.showSnackbar(this,getWindow().getDecorView(),"Bật GPS để sử dụng chức năng này","Bật GPS", Const.SNACKBAR_TURN_ON_GPS, Snackbar.LENGTH_SHORT);
-                }else{
+                if (!MyService.canGetLocation(this)) {
+                    AppUtils.showSnackbar(this, getWindow().getDecorView(), "Bật GPS để sử dụng chức năng này", "Bật GPS", Const.SNACKBAR_TURN_ON_GPS, Snackbar.LENGTH_SHORT);
+                } else {
                     Intent intent2 = new Intent(StoreDeatailActivity.this, MapActivity.class);
                     intent2.putExtra(getString(R.string.fragment_CODE),
                             getString(R.string.frag_map_CODE));
-                    intent2.putExtra("type",1);
+                    intent2.putExtra("type", 1);
                     startActivity(intent2);
                 }
                 break;

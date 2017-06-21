@@ -206,8 +206,17 @@ public class ViewPhotosActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        menu = AppUtils.createMenu(menu, returnContenMenuItems());
+        pubMenu = menu;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private List<Pair<Integer, String>> returnContenMenuItems() {
         List<Pair<Integer, String>> contents = new ArrayList<>();
-        int role = LoginSession.getInstance().getUser().getRole();
+        int role = 0;
+        if (LoginSession.getInstance().getUser() != null) {
+            role = LoginSession.getInstance().getUser().getRole();
+        }
         if (role == 0) {
             if (LoginSession.getInstance().getUser().getuID().equals(
                     images.get(vp_viewphoto.getCurrentItem()).getUserID())) {
@@ -215,10 +224,10 @@ public class ViewPhotosActivity extends AppCompatActivity {
                         (R.string.txt_report, getString(R.string.txt_report)));
                 if (images.get(indexselect).isHidden()) {
                     contents.add(new Pair<Integer, String>
-                            (R.string.txt_showpost, getString(R.string.txt_showphoto)));
+                            (R.string.txt_showphoto, getString(R.string.txt_showphoto)));
                 } else {
                     contents.add(new Pair<Integer, String>
-                            (R.string.text_hidepost, getString(R.string.txt_hideimg)));
+                            (R.string.txt_hideimg, getString(R.string.txt_hideimg)));
                 }
             } else {
                 contents.add(new Pair<Integer, String>
@@ -228,17 +237,15 @@ public class ViewPhotosActivity extends AppCompatActivity {
         if (role == 1) {
             if (images.get(indexselect).isHidden()) {
                 contents.add(new Pair<Integer, String>
-                        (R.string.txt_showpost, getString(R.string.txt_showphoto)));
+                        (R.string.txt_showphoto, getString(R.string.txt_showphoto)));
             } else {
                 contents.add(new Pair<Integer, String>
-                        (R.string.text_hidepost, getString(R.string.txt_hideimg)));
+                        (R.string.txt_hideimg, getString(R.string.txt_hideimg)));
             }
             contents.add(new Pair<Integer, String>
                     (R.string.txt_delphoto, getString(R.string.txt_delphoto)));
         }
-        menu = AppUtils.createMenu(menu, contents);
-        pubMenu = menu;
-        return super.onCreateOptionsMenu(menu);
+        return contents;
     }
 
     @Override
@@ -251,14 +258,14 @@ public class ViewPhotosActivity extends AppCompatActivity {
                 doReportImg();
                 return true;
             case R.string.txt_hideimg:
-//                if (!images.get(indexselect).isHidden()) {
+                if (!images.get(indexselect).isHidden()) {
                     hidePhoto();
-//                }
+                }
                 return true;
             case R.string.txt_showphoto:
-//                if (images.get(indexselect).isHidden()) {
+                if (images.get(indexselect).isHidden()) {
                     showPhoto();
-//                }
+                }
                 return true;
             case R.string.txt_delphoto:
                 return true;
