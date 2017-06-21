@@ -696,4 +696,5 @@
     <string name="text_updatefood_failed">Cập nhật món ăn không thành công</string>
     <string name="txt_updatinfood">Đang cập nhật món ăn&#8230;</string>
     <string name="txt_showphoto">Hiện hình ảnh</string>
+    <string name="txt_delimgconfirm">Bạn muốn xóa hình ảnh này?</string>
 </resources>

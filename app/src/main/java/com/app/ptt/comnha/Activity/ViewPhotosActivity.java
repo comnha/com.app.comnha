@@ -268,10 +268,56 @@ public class ViewPhotosActivity extends AppCompatActivity {
                 }
                 return true;
             case R.string.txt_delphoto:
+                new AlertDialog.Builder(ViewPhotosActivity.this)
+                        .setMessage(getString(R.string.txt_delimgconfirm))
+                        .setPositiveButton(getString(R.string.txt_del), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                deleteImage();
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.text_no), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        }).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void deleteImage() {
+        plzw8Dialog.show();
+//        StorageReference delRef = stRef.child(images.get(indexselect).getName());
+//        delRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void aVoid) {
+//                deleteFromDb();
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Log.d("OnFailureListener", e.getMessage());
+//                Toast.makeText(ViewPhotosActivity.this,
+//                        e.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+        deleteFromDb();
+    }
+
+    private void deleteFromDb() {
+        dbRef.child(getString(R.string.images_CODE) + images.get(vp_viewphoto.getCurrentItem()).getImageID())
+                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                images.remove(images.get(vp_viewphoto.getCurrentItem()));
+                photoAdapter.notifyDataSetChanged();
+                plzw8Dialog.dismiss();
+            }
+        });
     }
 
     private void doReportImg() {

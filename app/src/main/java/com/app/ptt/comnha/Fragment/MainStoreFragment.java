@@ -83,7 +83,7 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
     @Override
     public void notice() {
         if (null != CoreManager.getInstance().getMyLocation()) {
-            pro_dist = CoreManager.getInstance().getMyLocation().getProvince() + "_" + CoreManager.getInstance().getMyLocation().getDistrict();
+            pro_dist = CoreManager.getInstance().getMyLocation().getDistrict()+ "_" + CoreManager.getInstance().getMyLocation().getProvince() ;
             getStoreList(pro_dist);
         }
     }
