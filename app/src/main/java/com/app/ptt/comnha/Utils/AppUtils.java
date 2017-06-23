@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
+import android.util.Pair;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.View;
@@ -20,8 +21,6 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import com.app.ptt.comnha.Const.Const;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +40,7 @@ public class AppUtils {
                 snackBarIntent.setAction(type);
                 snackBarIntent.putExtra(type, type);
                 c.sendBroadcast(snackBarIntent);
-                if(showTime==Snackbar.LENGTH_INDEFINITE){
+                if (showTime == Snackbar.LENGTH_INDEFINITE) {
                     snackbar.dismiss();
                 }
             }
@@ -125,9 +124,10 @@ public class AppUtils {
     }
 
     public static Menu createMenu(Menu menu,
-                                  String[] menuitems) {
-        for (int i = 0; i < menuitems.length; i++) {
-            menu.add(Menu.NONE, i, Menu.NONE, menuitems[i]);
+                                  List<Pair<Integer, String>> menuitems) {
+        for (Pair<Integer, String> item : menuitems) {
+            menu.add(Menu.NONE, menuitems.get(menuitems.indexOf(item)).first,
+                    Menu.NONE, menuitems.get(menuitems.indexOf(item)).second);
         }
         return menu;
     }

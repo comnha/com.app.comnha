@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,6 +64,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_POST;
@@ -93,13 +96,14 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
     ValueEventListener commentEventListener, imagesEventListener, foodsEventListener,
             userEventListener;
     LinearLayout linear_rate, linear_food;
-    ProgressDialog plzw8Dialog;
+    ProgressDialog plzw8Dialog = null;
     Post post;
     BottomSheetDialog commentDialog;
     EditText edt_comment;
     String comtContent;
     Comment comment = null;
     User user = null;
+    Menu pubMenu = null;
     boolean isConnected = true;
     IntentFilter mIntentFilter;
     public static final String mBroadcastSendAddress = "mBroadcastSendAddress";
@@ -132,7 +136,7 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
         } else {
             onBackPressed();
         }
-        Ref();
+        init();
         createPostView();
         getAllImgs();
         getAllComts();
@@ -158,7 +162,7 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
         super.onDestroy();
     }
 
-    private void Ref() {
+    private void init() {
 
         View view_include = findViewById(R.id.include_postdetail_content);
         plzw8Dialog = AppUtils.setupProgressDialog(this,
@@ -368,9 +372,10 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
                 txtv_foodprice.setBackgroundColor(getResources().getColor(android.R.color.transparent));
                 txtv_rateComment.setBackgroundColor(getResources().getColor(android.R.color.transparent));
                 txtv_foodname.setText(food.getName());
-                txtv_foodprice.setText(food.getPrice() + "");
+                txtv_foodprice.setText(post.getFoodRate() + "");
                 rb_foodrating.setRating(food.getRating());
-                int rat = (int) food.getRating() / (int) food.getTotal();
+//                int rat = (int) food.getRating() / (int) food.getTotal();
+                int rat = (int) post.getFoodRate();
                 switch (rat) {
                     case 1:
                         txtv_rateComment.setText(getString(R.string.txt_toofuckingbad));
@@ -456,77 +461,197 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (post.isHidden()) {
-            menu = AppUtils.createMenu(menu, new String[]{
-                    getString(R.string.txt_report),
-                    getString(R.string.txt_showpost),
-                    getString(R.string.txt_changeinfo)});
-        } else {
-            menu = AppUtils.createMenu(menu, new String[]{
-                    getString(R.string.txt_report),
-                    getString(R.string.text_hidepost),
-                    getString(R.string.txt_changeinfo)});
-        }
+        menu = AppUtils.createMenu(menu, returnContenMenuItems());
+        pubMenu = menu;
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private List<Pair<Integer, String>> returnContenMenuItems() {
+        int role = 0;
+        String uID = "";
+
+        if (LoginSession.getInstance().getUser() != null) {
+            role = LoginSession.getInstance().getUser().getRole();
+            uID = LoginSession.getInstance().getUser().getuID();
+        }
+        List<Pair<Integer, String>> contents = new ArrayList<>();
+        if (role == 1) {
+            contents.add(new Pair<Integer, String>
+                    (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
+            if (post.isHidden()) {
+                contents.add(new Pair<Integer, String>
+                        (R.string.txt_showpost, getString(R.string.txt_showpost)));
+            } else {
+                contents.add(new Pair<Integer, String>
+                        (R.string.text_hidepost, getString(R.string.text_hidepost)));
+            }
+        } else {
+            if (uID.equals(post.getUserID())) {
+                if (post.isHidden()) {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.txt_showpost, getString(R.string.txt_showpost)));
+                } else {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.text_hidepost, getString(R.string.text_hidepost)));
+                }
+            }
+            contents.add(new Pair<Integer, String>
+                    (R.string.txt_report, getString(R.string.txt_report)));
+        }
+        return contents;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case 0:
-                ReportDialog reportDialog = new ReportDialog();
-                reportDialog.setReport(REPORT_POST, post);
-                reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
-                reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
-                    @Override
-                    public void onPositive(boolean isClicked, Map<String,
-                            Object> childUpdate, final Dialog dialog) {
-                        if (isClicked) {
-                            dialog.dismiss();
-                            plzw8Dialog.show();
-                            dbRef.updateChildren(childUpdate)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            plzw8Dialog.dismiss();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    dialog.show();
-                                    plzw8Dialog.dismiss();
-                                    Toast.makeText(PostdetailActivity.this, e.getMessage(),
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            });
+            case R.string.txt_report:
+                if (LoginSession.getInstance().getUser() != null) {
+                    reportPost();
+                }else {
 
-                        }
-                    }
-
-                    @Override
-                    public void onNegative(boolean isClicked, Dialog dialog) {
-                        if (isClicked) {
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                reportDialog.show(getSupportFragmentManager(), "report_post");
-                return true;
-            case 1:
-                return true;
-            case 2:
-                if (post.isHidden()) {
-//                    showStore(item);
-                } else {
-//                    hideStore(item);
                 }
                 return true;
-            case 3:
-
+            case R.string.text_hidepost:
+                if (!post.isHidden()) {
+                    hidePost();
+                }
+                return true;
+            case R.string.txt_showpost:
+                if (post.isHidden()) {
+                    showPost();
+                }
+                return true;
+            case R.string.txt_changeinfo:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void reportPost() {
+
+        ReportDialog reportDialog = new ReportDialog();
+        reportDialog.setReport(REPORT_POST, post);
+        reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
+        reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
+            @Override
+            public void onPositive(boolean isClicked, Map<String,
+                    Object> childUpdate, final Dialog dialog) {
+                if (isClicked) {
+                    dialog.dismiss();
+                    plzw8Dialog.show();
+                    dbRef.updateChildren(childUpdate)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    plzw8Dialog.dismiss();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            dialog.show();
+                            plzw8Dialog.dismiss();
+                            Toast.makeText(PostdetailActivity.this, e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onNegative(boolean isClicked, Dialog dialog) {
+                if (isClicked) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        reportDialog.show(getSupportFragmentManager(), "report_post");
+    }
+
+    private void showPost() {
+        plzw8Dialog.show();
+        post.setHidden(false);
+        String key = post.getPostID();
+//        Toast.makeText(StoreDeatailActivity.this,
+//                key, Toast.LENGTH_SHORT).show();
+        Post childPost = post;
+        Map<String, Object> postValue = childPost.toMap();
+        Map<String, Object> childUpdate = new HashMap<>();
+        childUpdate.put(getString(R.string.posts_CODE)
+                + key, postValue);
+        dbRef.updateChildren(childUpdate)
+                .addOnSuccessListener(
+                        new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+//                                item.setTitle(getString(R.string.text_hidestore));
+                                pubMenu.clear();
+                                PostdetailActivity.this.onCreateOptionsMenu(pubMenu);
+                                plzw8Dialog.cancel();
+                            }
+                        }).addOnFailureListener(
+                new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        plzw8Dialog.cancel();
+                        Toast.makeText(getApplicationContext(),
+                                e.getMessage(), Toast.LENGTH_LONG)
+                                .show();
+                    }
+                });
+    }
+
+    private void hidePost() {
+        new AlertDialog.Builder(this)
+                .setCancelable(true)
+                .setMessage(getString(R.string.txt_hideconfirm))
+                .setPositiveButton(getString(R.string.txt_hide),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(
+                                    final DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                                plzw8Dialog.show();
+                                post.setHidden(true);
+                                String key = post.getPostID();
+//                                Toast.makeText(StoreDeatailActivity.this,
+//                                        key, Toast.LENGTH_SHORT).show();
+                                Post childPost = post;
+                                Map<String, Object> postValue = childPost.toMap();
+                                Map<String, Object> childUpdate = new HashMap<>();
+                                childUpdate.put(getString(R.string.posts_CODE)
+                                        + key, postValue);
+                                dbRef.updateChildren(childUpdate)
+                                        .addOnSuccessListener(
+                                                new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        pubMenu.clear();
+                                                        PostdetailActivity.this.onCreateOptionsMenu(pubMenu);
+                                                        plzw8Dialog.cancel();
+                                                    }
+                                                }).addOnFailureListener(
+                                        new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                plzw8Dialog.cancel();
+                                                Toast.makeText(getApplicationContext(),
+                                                        e.getMessage(), Toast.LENGTH_LONG)
+                                                        .show();
+                                            }
+                                        });
+                            }
+                        })
+                .setNegativeButton(getString(R.string.text_no),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(
+                                    DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        })
+                .show();
     }
 
     @Override
@@ -565,11 +690,19 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgv_send_postdetail:
-                commentDialog.dismiss();
-                saveCommentValue();
+                if (LoginSession.getInstance().getUser() != null) {
+                    commentDialog.dismiss();
+                    saveCommentValue();
+                } else {
+
+                }
                 break;
             case R.id.txtv_writecomt_postdetail:
-                commentDialog.show();
+                if (LoginSession.getInstance().getUser() != null) {
+                    commentDialog.show();
+                } else {
+
+                }
                 break;
         }
     }

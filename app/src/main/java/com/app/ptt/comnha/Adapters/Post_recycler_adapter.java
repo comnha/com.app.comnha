@@ -72,6 +72,13 @@ public class Post_recycler_adapter extends RecyclerView.Adapter<Post_recycler_ad
         } else {
             holder.imgv_banner.setVisibility(View.GONE);
         }
+        if (posts.get(position).isHidden()){
+            holder.cardView.setBackgroundColor(
+                    context.getResources().getColor(R.color.colorFabRipple));
+        }else {
+            holder.cardView.setBackgroundColor(
+                    context.getResources().getColor(android.R.color.white));
+        }
         if (onItemClickLiestner != null) {
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override

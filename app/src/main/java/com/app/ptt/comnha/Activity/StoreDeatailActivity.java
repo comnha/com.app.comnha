@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,7 +33,6 @@ import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Dialog.ReportDialog;
 import com.app.ptt.comnha.Fragment.AddFoodFragment;
-import com.app.ptt.comnha.Fragment.MapFragment;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.Post;
@@ -43,6 +43,7 @@ import com.app.ptt.comnha.SingletonClasses.ChooseFood;
 import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -59,6 +60,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_STORE;
@@ -88,6 +90,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     LinearLayout linear_progress;
     String storeID = null;
     ProgressDialog plzw8Dialog = null;
+    Menu pubMenu = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +109,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         ref();
         createStoreInfo();
     }
+
     private void ref() {
         View include_view = findViewById(R.id.include_storedetail_content);
         postRecycler = (RecyclerView) include_view.findViewById(R.id.recycler_post_storedetail);
@@ -203,74 +207,91 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (store.isHidden()) {
-            menu = AppUtils.createMenu(menu, new String[]{
-                    getString(R.string.txt_report),
-                    getString(R.string.txt_followStore),
-                    getString(R.string.txt_showstore),
-                    getString(R.string.txt_changeinfo)});
-        } else {
-            menu = AppUtils.createMenu(menu, new String[]{
-                    getString(R.string.txt_report),
-                    getString(R.string.txt_followStore),
-                    getString(R.string.text_hidestore),
-                    getString(R.string.txt_changeinfo)});
-        }
+        List<Pair<Integer, String>> contents = returnContentMenuItems();
+        menu = AppUtils.createMenu(menu, contents);
+        pubMenu = menu;
         return super.onCreateOptionsMenu(menu);
+
+    }
+
+    private List<Pair<Integer, String>> returnContentMenuItems() {
+        int role = 0;
+        String uID = "";
+        if (LoginSession.getInstance().getUser() != null) {
+            role = LoginSession.getInstance().getUser().getRole();
+            uID = LoginSession.getInstance().getUser().getuID();
+        }
+        List<Pair<Integer, String>> contents = new ArrayList<>();
+        if (role == 1) {
+            contents.add(new Pair<Integer, String>
+                    (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
+            contents.add(new Pair<Integer, String>
+                    (R.string.txt_delstore, getString(R.string.txt_delstore)));
+            if (store.isHidden()) {
+                contents.add(new Pair<Integer, String>
+                        (R.string.txt_showstore, getString(R.string.txt_showstore)));
+            } else {
+                contents.add(new Pair<Integer, String>
+                        (R.string.text_hidestore, getString(R.string.text_hidestore)));
+            }
+        } else {
+            contents.add(new Pair<Integer, String>
+                    (R.string.txt_report, getString(R.string.txt_report)));
+            contents.add(new Pair<Integer, String>
+                    (R.string.txt_followStore, getString(R.string.txt_followStore)));
+            if (store.getUserID().equals(uID)) {
+                if (store.isHidden()) {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.txt_showstore, getString(R.string.txt_showstore)));
+                } else {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.text_hidestore, getString(R.string.text_hidestore)));
+                }
+            }
+        }
+        return contents;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case 0:
-                ReportDialog reportDialog = new ReportDialog();
-                reportDialog.setReport(REPORT_STORE, store);
-                reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
-                reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
-                    @Override
-                    public void onPositive(boolean isClicked, Map<String,
-                            Object> childUpdate, final Dialog dialog) {
-                        if (isClicked) {
-                            dialog.dismiss();
-                            plzw8Dialog.show();
-                            dbRef.updateChildren(childUpdate)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            plzw8Dialog.dismiss();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    dialog.show();
-                                    plzw8Dialog.dismiss();
-                                    Toast.makeText(StoreDeatailActivity.this, e.getMessage(),
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            });
-
-                        }
-                    }
-
-                    @Override
-                    public void onNegative(boolean isClicked, Dialog dialog) {
-                        if (isClicked) {
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                reportDialog.show(getSupportFragmentManager(), "report_store");
-                return true;
-            case 1:
-                return true;
-            case 2:
-                if (store.isHidden()) {
-                    showStore(item);
+            case R.string.txt_report:
+                if (LoginSession.getInstance().getUser() != null) {
+                    reportStore();
                 } else {
-                    hideStore(item);
+                    new AlertDialog.Builder(StoreDeatailActivity.this)
+                            .setMessage(getString(R.string.txt_needlogin))
+                            .setPositiveButton(getString(R.string.text_signin), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    StoreDeatailActivity.this.finish();
+                                }
+                            }).setNegativeButton(getString(R.string.text_no),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .show();
                 }
                 return true;
-            case 3:
+            case R.string.txt_followStore:
+                return true;
+            case R.string.text_hidestore:
+                if (!store.isHidden()) {
+                    hideStore();
+                }
+                return true;
+            case R.string.txt_showstore:
+                if (store.isHidden()) {
+                    showStore();
+                }
+                return true;
+            case R.string.txt_delstore:
+
+                return true;
+            case R.string.txt_changeinfo:
 
                 return true;
             default:
@@ -278,7 +299,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    private void showStore(final MenuItem item) {
+    private void showStore() {
         plzw8Dialog.show();
         store.setHidden(false);
         String key = store.getStoreID();
@@ -294,7 +315,9 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                         new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                item.setTitle(getString(R.string.text_hidestore));
+//                                item.setTitle(getString(R.string.text_hidestore));
+                                pubMenu.clear();
+                                StoreDeatailActivity.this.onCreateOptionsMenu(pubMenu);
                                 plzw8Dialog.cancel();
                             }
                         }).addOnFailureListener(
@@ -309,7 +332,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 });
     }
 
-    private void hideStore(final MenuItem item) {
+    private void hideStore() {
         new AlertDialog.Builder(this)
                 .setCancelable(true)
                 .setMessage(getString(R.string.txt_hideconfirm))
@@ -334,7 +357,8 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                                                 new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
-                                                        item.setTitle(getString(R.string.txt_showstore));
+                                                        pubMenu.clear();
+                                                        StoreDeatailActivity.this.onCreateOptionsMenu(pubMenu);
                                                         plzw8Dialog.cancel();
                                                     }
                                                 }).addOnFailureListener(
@@ -453,31 +477,55 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void getFoodList() {
-        foodValueListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
-                    Food food = dataItem.getValue(Food.class);
-                    String key = dataItem.getKey();
-                    food.setFoodID(key);
-                    foods.add(food);
+        int role = 0;
+        if (LoginSession.getInstance().getUser() != null) {
+            role = LoginSession.getInstance().getUser().getRole();
+        }
+        if (role == 1) {
+            foodValueListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
+                        Food food = dataItem.getValue(Food.class);
+                        String key = dataItem.getKey();
+                        food.setFoodID(key);
+                        foods.add(food);
+                    }
+                    foodAdapter.notifyDataSetChanged();
                 }
-                foodAdapter.notifyDataSetChanged();
-                dbRef.child(getString(R.string.food_CODE))
-                        .orderByChild("isHidden_storeID")
-                        .equalTo(false + "_" + storeID)
-                        .removeEventListener(foodValueListener);
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        };
-        dbRef.child(getString(R.string.food_CODE))
-                .orderByChild("isHidden_storeID")
-                .equalTo(false + "_" + storeID)
-                .addValueEventListener(foodValueListener);
+                }
+            };
+            dbRef.child(getString(R.string.food_CODE))
+                    .orderByChild("storeID")
+                    .equalTo(storeID)
+                    .addListenerForSingleValueEvent(foodValueListener);
+        } else {
+            foodValueListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
+                        Food food = dataItem.getValue(Food.class);
+                        String key = dataItem.getKey();
+                        food.setFoodID(key);
+                        foods.add(food);
+                    }
+                    foodAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            dbRef.child(getString(R.string.food_CODE))
+                    .orderByChild("isHidden_storeID")
+                    .equalTo(false + "_" + storeID)
+                    .addListenerForSingleValueEvent(foodValueListener);
+        }
     }
 
     @Override
@@ -502,13 +550,13 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                         .getBitmap();
                 store.setImgBitmap(imgBitmap);
                 ChooseStore.getInstance().setStore(store);
-                if(!MyService.canGetLocation(this)){
-                    AppUtils.showSnackbar(this,getWindow().getDecorView(),"Bật GPS để sử dụng chức năng này","Bật GPS", Const.SNACKBAR_TURN_ON_GPS, Snackbar.LENGTH_SHORT);
-                }else{
+                if (!MyService.canGetLocation(this)) {
+                    AppUtils.showSnackbar(this, getWindow().getDecorView(), "Bật GPS để sử dụng chức năng này", "Bật GPS", Const.SNACKBAR_TURN_ON_GPS, Snackbar.LENGTH_SHORT);
+                } else {
                     Intent intent2 = new Intent(StoreDeatailActivity.this, MapActivity.class);
                     intent2.putExtra(getString(R.string.fragment_CODE),
                             getString(R.string.frag_map_CODE));
-                    intent2.putExtra("type",1);
+                    intent2.putExtra("type", 1);
                     startActivity(intent2);
                 }
                 break;
@@ -523,6 +571,46 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
             default:
                 return;
         }
+    }
+
+    private void reportStore() {
+        ReportDialog reportDialog = new ReportDialog();
+        reportDialog.setReport(REPORT_STORE, store);
+        reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
+        reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
+            @Override
+            public void onPositive(boolean isClicked, Map<String,
+                    Object> childUpdate, final Dialog dialog) {
+                if (isClicked) {
+                    dialog.dismiss();
+                    plzw8Dialog.show();
+                    dbRef.updateChildren(childUpdate)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    plzw8Dialog.dismiss();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            dialog.show();
+                            plzw8Dialog.dismiss();
+                            Toast.makeText(StoreDeatailActivity.this, e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onNegative(boolean isClicked, Dialog dialog) {
+                if (isClicked) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        reportDialog.show(getSupportFragmentManager(), "report_store");
     }
 
     @Override

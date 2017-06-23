@@ -6,8 +6,11 @@ import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,11 +18,13 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,6 +45,7 @@ import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -53,9 +59,12 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_FOOD;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 /**
@@ -96,6 +105,7 @@ public class FooddetailFragment extends Fragment {
         }
     };
     ProgressDialog plzw8Dialog;
+    Menu pubMenu = null;
 
     public FooddetailFragment() {
         // Required empty public constructor
@@ -152,11 +162,20 @@ public class FooddetailFragment extends Fragment {
                     Picasso.with(getContext())
                             .load(uri)
                             .into(imgv_photo);
+                    try {
+                        Bitmap imgBitmap = ((BitmapDrawable) imgv_photo.getDrawable())
+                                .getBitmap();
+                        food.setImgBitmap(imgBitmap);
+                    } catch (NullPointerException mess) {
+
+                    }
                 }
             });
         } else {
             imgv_photo.setImageBitmap(food.getImgBitmap());
-
+            Bitmap imgBitmap = ((BitmapDrawable) imgv_photo.getDrawable())
+                    .getBitmap();
+            food.setImgBitmap(imgBitmap);
         }
 
         postEventListener = new ValueEventListener() {
@@ -243,17 +262,47 @@ public class FooddetailFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu = AppUtils.createMenu(menu, new String[]{
-                getString(R.string.txt_report),
-                getString(R.string.txt_changeinfo),
-                getString(R.string.text_hidefood)});
+        menu = AppUtils.createMenu(menu, returnContentMenuItems());
+        pubMenu = menu;
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private List<Pair<Integer, String>> returnContentMenuItems() {
+        int role = LoginSession.getInstance().getUser().getRole();
+        String uID = LoginSession.getInstance().getUser().getuID();
+        List<Pair<Integer, String>> contents = new ArrayList<>();
+        if (role == 1) {
+            contents.add(new Pair<Integer, String>
+                    (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
+            contents.add(new Pair<Integer, String>
+                    (R.string.txt_changeinfo, getString(R.string.txt_delfood)));
+            if (food.isHidden()) {
+                contents.add(new Pair<Integer, String>
+                        (R.string.text_showfood, getString(R.string.text_showfood)));
+            } else {
+                contents.add(new Pair<Integer, String>
+                        (R.string.text_hidefood, getString(R.string.text_hidefood)));
+            }
+        } else {
+            contents.add(new Pair<Integer, String>
+                    (R.string.txt_report, getString(R.string.txt_report)));
+            if (uID.equals(food.getUserID())) {
+                if (food.isHidden()) {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.text_hidefood, getString(R.string.text_showfood)));
+                } else {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.text_hidefood, getString(R.string.text_hidefood)));
+                }
+            }
+        }
+        return contents;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case 0:
+            case R.string.txt_report:
                 ReportDialog reportDialog = new ReportDialog();
                 reportDialog.setReport(REPORT_FOOD, food);
                 reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
@@ -292,15 +341,113 @@ public class FooddetailFragment extends Fragment {
                 });
                 reportDialog.show(getActivity().getSupportFragmentManager(), "report_food");
                 return true;
-            case 1:
+            case R.string.txt_changeinfo:
+                AddFoodFragment addFoodFragment = new AddFoodFragment();
+                addFoodFragment.setEditFoood(true, food);
+                addFoodFragment.show(getActivity()
+                        .getSupportFragmentManager(), "updatefood_dialog");
                 return true;
-            case 2:
+            case R.string.text_hidefood:
+                if (!food.isHidden()) {
+                    hideFood();
+                }
+                return true;
+            case R.string.text_showfood:
+                if (food.isHidden()) {
+                    showFood();
+                }
+                return true;
+            case R.string.txt_delfood:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private void showFood() {
+        plzw8Dialog.show();
+        food.setHidden(false);
+        String key = food.getFoodID();
+//        Toast.makeText(StoreDeatailActivity.this,
+//                key, Toast.LENGTH_SHORT).show();
+        Food childFood = food;
+        Map<String, Object> foodValue = childFood.toMap();
+        Map<String, Object> childUpdate = new HashMap<>();
+        childUpdate.put(getString(R.string.food_CODE)
+                + key, foodValue);
+        dbRef.updateChildren(childUpdate)
+                .addOnSuccessListener(
+                        new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+//                                item.setTitle(getString(R.string.text_hidestore));
+                                pubMenu.clear();
+                                FooddetailFragment.this.onCreateOptionsMenu(pubMenu, null);
+                                plzw8Dialog.cancel();
+                            }
+                        }).addOnFailureListener(
+                new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        plzw8Dialog.cancel();
+                        Toast.makeText(getApplicationContext(),
+                                e.getMessage(), Toast.LENGTH_LONG)
+                                .show();
+                    }
+                });
+    }
+
+    private void hideFood() {
+        new AlertDialog.Builder(getContext())
+                .setCancelable(true)
+                .setMessage(getString(R.string.txt_hideconfirm))
+                .setPositiveButton(getString(R.string.txt_hide),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(
+                                    final DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                                plzw8Dialog.show();
+                                food.setHidden(true);
+                                String key = food.getFoodID();
+//                                Toast.makeText(StoreDeatailActivity.this,
+//                                        key, Toast.LENGTH_SHORT).show();
+                                Food childFood = food;
+                                Map<String, Object> foodValue = childFood.toMap();
+                                Map<String, Object> childUpdate = new HashMap<>();
+                                childUpdate.put(getString(R.string.food_CODE)
+                                        + key, foodValue);
+                                dbRef.updateChildren(childUpdate)
+                                        .addOnSuccessListener(
+                                                new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        pubMenu.clear();
+                                                        FooddetailFragment.this.onCreateOptionsMenu(pubMenu, null);
+                                                        plzw8Dialog.cancel();
+                                                    }
+                                                }).addOnFailureListener(
+                                        new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                plzw8Dialog.cancel();
+                                                Toast.makeText(getApplicationContext(),
+                                                        e.getMessage(), Toast.LENGTH_LONG)
+                                                        .show();
+                                            }
+                                        });
+                            }
+                        })
+                .setNegativeButton(getString(R.string.text_no),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(
+                                    DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        })
+                .show();
+    }
 
     @Override
     public void onDetach() {

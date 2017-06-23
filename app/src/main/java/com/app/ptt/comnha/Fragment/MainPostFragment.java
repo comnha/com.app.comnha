@@ -59,7 +59,9 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
                 .getReferenceFromUrl(getString(R.string.firebaseStorage_path));
         ref(view);
         if(null!= CoreManager.getInstance().getMyLocation()){
-            pro_dist=CoreManager.getInstance().getMyLocation().getProvince()+"_"+CoreManager.getInstance().getMyLocation().getDistrict();
+//            pro_dist=CoreManager.getInstance().getMyLocation().getDistrict()
+//                    +"_"+CoreManager.getInstance().getMyLocation().getProvince();
+            pro_dist="Quận 9_HCM";
             getPostList(pro_dist);
         }else{
             if(getView()!=null)

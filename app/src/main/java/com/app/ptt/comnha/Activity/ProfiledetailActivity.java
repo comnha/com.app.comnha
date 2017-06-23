@@ -1,10 +1,12 @@
 package com.app.ptt.comnha.Activity;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -91,7 +93,7 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
     String avatarimg = "";
     Button btn_localimgdialog_close, btn_localimgdialog_select;
     UploadTask uploadTask;
-    ProgressDialog uploadImgDialog, mProgressDialog;
+    ProgressDialog uploadImgDialog, mProgressDialog,plzw8Dialog;
 
     public ProfiledetailActivity() {
         // Required empty public constructor
@@ -127,7 +129,7 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
         mToolbar = (Toolbar) findViewById(R.id.toolbar_prodetail);
         this.setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
+        getSupportActionBar().setTitle(getString(R.string.nav_profile));
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setShowHideAnimationEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -415,6 +417,21 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_chosefromloca:
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                                            != PackageManager.PERMISSION_GRANTED) {
+
+                                        // Should we show an explanation?
+                                        if (shouldShowRequestPermissionRationale(
+                                                Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                                            // Explain to the user why we need to read the contacts
+                                        }
+
+                                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                                1);
+                                        return false;
+                                    }
+                                }
                                 singleImageImportRvAdapter.readthentranstoarray();
                                 imagesrv.scrollToPosition(0);
                                 imgsDialog.show();
@@ -422,6 +439,32 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
                             case R.id.action_chosefromUploaded:
                                 break;
                             case R.id.action_viewprofilephoto:
+//                                final ArrayList<Image> imgs = new ArrayList<>();
+//                                plzw8Dialog = AppUtils.setupProgressDialog(ProfiledetailActivity.this,
+//                                        getString(R.string.txt_plzwait), null, true, false,
+//                                        ProgressDialog.STYLE_SPINNER, 0);
+//                                dbRef.child(getString(R.string.images_CODE))
+//                                        .orderByChild("type_uID")
+//                                        .equalTo(2 + "_" + userID)
+//                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+//                                            @Override
+//                                            public void onDataChange(DataSnapshot dataSnapshot) {
+//                                                Image image = dataSnapshot.getValue(Image.class);
+//                                                image.setImageID(dataSnapshot.getKey());
+//                                                imgs.add(image);
+//                                                ChoosePhotoList.getInstance().setImage(imgs);
+//                                                Intent intent_openViewPhoto = new Intent(ProfiledetailActivity.this,
+//                                                        ViewPhotosActivity.class);
+//                                                intent_openViewPhoto.putExtra("imgPosition", 0);
+//                                                startActivity(intent_openViewPhoto);
+//                                            }
+//
+//                                            @Override
+//                                            public void onCancelled(DatabaseError databaseError) {
+//
+//                                            }
+//                                        });
+
                                 break;
                         }
                         return true;

@@ -137,7 +137,7 @@
     <string name="txt_mostcomment">Quan tâm</string>
     <string name="txt_mostlike">Yêu thích</string>
     <string name="txt_myloca">Vị trí của tôi</string>
-    <string name="txt_choseloca">Chọn địa điểm</string>
+    <string name="txt_chooseloca">Chọn địa điểm</string>
     <string name="txt_review">Review</string>
     <string name="txt_quanan">Quán ăn</string>
     <string name="txt_album">Album</string>
@@ -252,7 +252,7 @@
 
     <string name="action_addpost">Đăng review</string>
     <string name="action_addloca">Thêm địa điểm</string>
-    <string name="action_changeloca">Vị trí</string>
+    <string name="action_changeloca">Thay đổi vị trí</string>
     <string name="menu_locadetail_themmon">Thêm món ăn</string>
     <string name="menu_notification_moinhat">Xem theo ngày</string>
     <!-- Strings related to login -->
@@ -600,7 +600,7 @@
     <string name="nav_aboutus">Thông tin ứng dụng</string>
     <string name="nav_share">Chia sẻ</string>
     <string name="text_block_reportfood">Chặn \"Report Món ăn\"</string>
-    <string name="text_block_reportimg">Chặn \"Report Ảnh\"</string>
+    <string name="text_block_reportimg">Chặn \"Report Hình ảnh\"</string>
     <string name="text_block_reportpost">Chặn \"Report Review\"</string>
     <string name="txt_nointernet">"Không có kết nối internet", "Kết nối"</string>
     <string name="txt_passtooshort">Mật khẩu quá ngắn</string>
@@ -687,4 +687,14 @@
     <string name="txt_imgname">Tên hình</string>
     <string name="txt_imgdetail">Thông tin ảnh</string>
     <string name="txt_hideimg">Ẩn hình ảnh</string>
+    <string name="txt_delphoto">Xóa hình ảnh</string>
+    <string name="txt_delstore">Xóa quán ăn</string>
+    <string name="text_showfood">Hiện món ăn</string>
+    <string name="txt_delfood">Xóa món ăn</string>
+    <string name="text_block_reportstore">Chặn \"Report Quán ăn\"</string>
+    <string name="text_updatefood_succ">Món ăn đã được cập nhật</string>
+    <string name="text_updatefood_failed">Cập nhật món ăn không thành công</string>
+    <string name="txt_updatinfood">Đang cập nhật món ăn&#8230;</string>
+    <string name="txt_showphoto">Hiện hình ảnh</string>
+    <string name="txt_delimgconfirm">Bạn muốn xóa hình ảnh này?</string>
 </resources>

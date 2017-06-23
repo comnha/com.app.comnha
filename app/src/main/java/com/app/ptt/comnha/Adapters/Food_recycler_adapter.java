@@ -26,7 +26,7 @@ import java.util.ArrayList;
  */
 
 public class Food_recycler_adapter extends RecyclerView.Adapter<Food_recycler_adapter.ViewHolder> {
-    ArrayList<Food> foodList;
+    ArrayList<Food> foods;
     Activity activity;
     StorageReference stRef;
     private OnItemClickLiestner onItemClickLiestner;
@@ -39,9 +39,9 @@ public class Food_recycler_adapter extends RecyclerView.Adapter<Food_recycler_ad
         onItemClickLiestner = liestner;
     }
 
-    public Food_recycler_adapter(ArrayList<Food> foodList,
+    public Food_recycler_adapter(ArrayList<Food> foods,
                                  Activity activity, StorageReference stRef) {
-        this.foodList = foodList;
+        this.foods = foods;
         this.activity = activity;
         this.stRef = stRef;
     }
@@ -58,19 +58,19 @@ public class Food_recycler_adapter extends RecyclerView.Adapter<Food_recycler_ad
                 .getColor(android.R.color.white));
         holder.txt_price.setTextColor(activity.getResources()
                 .getColor(android.R.color.white));
-        holder.txt_price.setText(foodList.get(position).getPrice() + "đ");
-        holder.txt_name.setText(foodList.get(position).getName());
-        if (foodList.get(position).getTotal() == 0) {
+        holder.txt_price.setText(foods.get(position).getPrice() + "đ");
+        holder.txt_name.setText(foods.get(position).getName());
+        if (foods.get(position).getTotal() == 0) {
             holder.ratingBar.setRating(0);
         } else {
-            holder.ratingBar.setRating(foodList.get(position).getRating() /
-                    foodList.get(position)
+            holder.ratingBar.setRating(foods.get(position).getRating() /
+                    foods.get(position)
                             .getTotal());
         }
         holder.ratingBar.setIsIndicator(true);
         holder.cardv.setCardBackgroundColor(activity.getResources()
                 .getColor(R.color.color_notify_reportfood));
-        StorageReference imgRef = stRef.child(foodList.get(position).getFoodImg());
+        StorageReference imgRef = stRef.child(foods.get(position).getFoodImg());
         imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -87,13 +87,13 @@ public class Food_recycler_adapter extends RecyclerView.Adapter<Food_recycler_ad
                     try {
                         Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_photo.getDrawable())
                                 .getBitmap();
-                        foodList.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
+                        foods.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
                         onItemClickLiestner.onItemClick(
-                                foodList.get(holder.getAdapterPosition()),
+                                foods.get(holder.getAdapterPosition()),
                                 activity, holder.itemView);
                     } catch (NullPointerException e) {
                         onItemClickLiestner.onItemClick(
-                                foodList.get(holder.getAdapterPosition()),
+                                foods.get(holder.getAdapterPosition()),
                                 activity, holder.itemView);
                     }
                 }
@@ -103,7 +103,7 @@ public class Food_recycler_adapter extends RecyclerView.Adapter<Food_recycler_ad
 
     @Override
     public int getItemCount() {
-        return foodList.size();
+        return foods.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

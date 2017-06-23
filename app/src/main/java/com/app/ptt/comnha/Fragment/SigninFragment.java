@@ -2,7 +2,6 @@ package com.app.ptt.comnha.Fragment;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,11 +16,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.app.ptt.comnha.Activity.AdapterActivity;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -82,8 +81,8 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
                     Intent intent = new Intent(getActivity().getApplicationContext(), AdapterActivity.class);
                     intent.putExtra(getActivity().getResources().getString(R.string.fragment_CODE),
                             getActivity().getResources().getString(R.string.frg_signup_CODE));
-                    intent.putExtra("email",AppUtils.getText(edt_email));
-                    intent.putExtra("pass",AppUtils.getText(edt_pass));
+                    intent.putExtra("email", AppUtils.getText(edt_email));
+                    intent.putExtra("pass", AppUtils.getText(edt_pass));
                     //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivityForResult(intent, Const.INTENT_KEY_SIGN_UP);
                 } else {
@@ -94,7 +93,7 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
                 if (isNetworkConnected) {
                     doSignin(view);
                 } else
-                    showSnackbar(getActivity(), getView(), getString(R.string.text_not_internet), getString(R.string.text_connect), Const.SNACKBAR_GO_ONLINE,Snackbar.LENGTH_SHORT);
+                    showSnackbar(getActivity(), getView(), getString(R.string.text_not_internet), getString(R.string.text_connect), Const.SNACKBAR_GO_ONLINE, Snackbar.LENGTH_SHORT);
 
                 break;
 //            case R.id.btn_siFrg_exit:
@@ -134,39 +133,42 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
     }
 
     void doSignin(final View view) {
-        showProgressDialog(getActivity(),getString(R.string.text_signin),getString(R.string.txt_plzwait));
-        if(checkInput(view)){
-                auth.signInWithEmailAndPassword(edt_email.getText().toString(),
-                        edt_pass.getText().toString())
-                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
-                                if (!task.isSuccessful()) {
-                                    Log.w(TAG, "signInWithEmail:onComplete", task.getException());
-                                    AppUtils.showSnackbarWithoutButton(view,getString(R.string.text_signin_fail));
-                                } else {
-                                    getActivity().finish();
-                                }
-                                closeDialog();
-
+        showProgressDialog(getActivity(), getString(R.string.text_signin), getString(R.string.txt_plzwait));
+        if (checkInput(view)) {
+            auth.signInWithEmailAndPassword(edt_email.getText().toString(),
+                    edt_pass.getText().toString())
+                    .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+                            if (!task.isSuccessful()) {
+                                Log.w(TAG, "signInWithEmail:onComplete", task.getException());
+                                AppUtils.showSnackbarWithoutButton(view, getString(R.string.text_signin_fail));
+                            } else {
+                                LoginSession.getInstance().setUser(null);
+                                LoginSession.getInstance().setFirebUser(null);
+                                getActivity().finish();
                             }
-                        });
-            }
+                            closeDialog();
+
+                        }
+                    });
+        }
 
     }
-     boolean checkInput(View view){
-        if(isEqualsNull(edt_email)){
+
+    boolean checkInput(View view) {
+        if (isEqualsNull(edt_email)) {
             AppUtils.showSnackbarWithoutButton(view, getString(R.string.txt_noemail));
             edt_email.requestFocus();
             return false;
         }
-        if(!isValidEmailAddress(AppUtils.getText(edt_email))){
+        if (!isValidEmailAddress(AppUtils.getText(edt_email))) {
             AppUtils.showSnackbarWithoutButton(view, getString(R.string.txt_notemail));
             edt_email.requestFocus();
             return false;
         }
-        if(isEqualsNull(edt_pass)){
+        if (isEqualsNull(edt_pass)) {
             AppUtils.showSnackbarWithoutButton(view, getString(R.string.txt_nopass));
             edt_pass.requestFocus();
             return false;
