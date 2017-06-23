@@ -315,7 +315,9 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         super.onResume();
     }
 
-    private void showStore(final MenuItem item) {
+
+    private void showStore() {
+
         plzw8Dialog.show();
         store.setHidden(false);
         String key = store.getStoreID();

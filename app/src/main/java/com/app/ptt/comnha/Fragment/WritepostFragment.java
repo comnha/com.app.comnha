@@ -598,7 +598,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //                }
                 selected_food = food;
                 if (selected_store == null) {
-                    getStores(selected_food.getStoreID());
+                    getStores();
                 }
                 foodDialog.dismiss();
             }
@@ -640,7 +640,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                         public void onClick(View view) {
                             if (stores.size() == 0) {
                                 plzw8Dialog.show();
-                                getStores("");
+                                getStores();
                                 plzw8Dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                                     @Override
                                     public void onDismiss(DialogInterface dialogInterface) {
@@ -722,7 +722,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 moreDialog.dismiss();
                 if (stores.size() == 0) {
                     plzw8Dialog.show();
-                    getStores("");
+                    getStores();
                     plzw8Dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialogInterface) {

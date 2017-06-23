@@ -18,8 +18,6 @@ import java.util.List;
 public class CoreManager {
     private static CoreManager ourInstance;
 
-    boolean isLaunchFistTime;
-    private String myLocation;
     private boolean isPostAdded;
 
 
