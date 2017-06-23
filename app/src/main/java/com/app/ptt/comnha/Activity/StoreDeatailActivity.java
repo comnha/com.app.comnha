@@ -33,6 +33,11 @@ import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Dialog.ReportDialog;
 import com.app.ptt.comnha.Fragment.AddFoodFragment;
+
+import com.app.ptt.comnha.Fragment.MapFragment;
+import com.app.ptt.comnha.Interfaces.Comunication;
+import com.app.ptt.comnha.Interfaces.SendLocationListener;
+
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.Post;
@@ -43,7 +48,11 @@ import com.app.ptt.comnha.SingletonClasses.ChooseFood;
 import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
+
+import com.app.ptt.comnha.SingletonClasses.CoreManager;
+
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
+
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -65,7 +74,7 @@ import java.util.Map;
 
 import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_STORE;
 
-public class StoreDeatailActivity extends AppCompatActivity implements View.OnClickListener {
+public class StoreDeatailActivity extends AppCompatActivity implements View.OnClickListener, SendLocationListener {
     RecyclerView postRecycler, photoRecycler, foodRecycler;
     RecyclerView.LayoutManager postLayoutManager, photoLayoutManager,
             foodLayoutManager;
@@ -108,6 +117,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         }
         ref();
         createStoreInfo();
+        Comunication.sendLocationListener=this;
     }
 
     private void ref() {
@@ -299,7 +309,13 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    private void showStore() {
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    private void showStore(final MenuItem item) {
         plzw8Dialog.show();
         store.setHidden(false);
         String key = store.getStoreID();
@@ -536,6 +552,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 intent_writepost.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent_writepost.putExtra(getString(R.string.fragment_CODE),
                         getString(R.string.frag_writepost_CODE));
+                ChooseStore.getInstance().setStore(store);
                 startActivity(intent_writepost);
                 break;
             case R.id.imgv_addfood_storedetail:
@@ -616,5 +633,12 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    public void notice() {
+        getPostList();
+        getImageList();
+        getFoodList();
     }
 }

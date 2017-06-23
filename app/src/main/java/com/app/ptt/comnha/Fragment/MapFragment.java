@@ -641,7 +641,11 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                 txt_DiemPhucVu.setText(a.getServiceSum() + "");
             }
             int width = getPixelFromDimen(getActivity(), R.dimen.image_size);
-            Picasso.with(getActivity()).load(a.getStoreimg()).error(R.mipmap.ic_launcher).resize(width, width).into(imgMarker);
+            if( TextUtils.isEmpty(a.getStoreimg())){
+                Picasso.with(getActivity()).load(R.mipmap.ic_launcher).resize(width, width).into(imgMarker);
+            }else {
+                Picasso.with(getActivity()).load(a.getStoreimg()).error(R.mipmap.ic_launcher).resize(width, width).into(imgMarker);
+            }
         } else
             Log.i(LOG + ".infoWindow", "Không thể tìm được địa chỉ này");
         return viewInfoWindow;

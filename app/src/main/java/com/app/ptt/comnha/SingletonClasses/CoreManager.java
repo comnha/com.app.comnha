@@ -18,6 +18,11 @@ import java.util.List;
 public class CoreManager {
     private static CoreManager ourInstance;
 
+    boolean isLaunchFistTime;
+    private String myLocation;
+    private boolean isPostAdded;
+
+
     public static CoreManager getInstance() {
         if (ourInstance == null) {
             ourInstance = new CoreManager();
@@ -30,7 +35,11 @@ public class CoreManager {
         this.myLocation = PreferenceUtils.getStringPref(context, Const.PREF_MY_LOCATION, "");
     }
 
+
+
+
     boolean isLaunchFistTime;
+
 
     public boolean isLaunchFistTime() {
         return isLaunchFistTime;
@@ -41,7 +50,9 @@ public class CoreManager {
         PreferenceUtils.saveBoolPref(context, Const.PREF_FIRST_LAUNCH, isLaunchFistTime);
     }
 
+
     private String myLocation;
+
 
 
     public MyLocation getMyLocation() {

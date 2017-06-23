@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import android.widget.Toast;
 
 import com.app.ptt.comnha.Adapters.SingleImageImportRvAdapter;
 import com.app.ptt.comnha.Classes.SelectedImage;
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
@@ -56,6 +58,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -314,9 +317,30 @@ public class AddFoodFragment extends DialogFragment implements View.OnClickListe
                 getDialog().cancel();
                 break;
             case R.id.imgv_photo_addfood:
-                singleImageImportRvAdapter.readthentranstoarray();
-                imagesrv.scrollToPosition(0);
-                imgsDialog.show();
+                String[] permissons=new String[1];
+                permissons[0]= Const.mListPermissions[0];
+                List<String> results=AppUtils.checkPermissions(getActivity(),permissons);
+                if (results.size()>0){
+                    AppUtils.requestPermission(getActivity(),results,Const.PERMISSION_LOCATION_FLAG);
+                } else {
+                    singleImageImportRvAdapter.readthentranstoarray();
+                    imagesrv.scrollToPosition(0);
+                    imgsDialog.show();
+                }
+                break;
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case Const.PERMISSION_LOCATION_FLAG:
+                if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
+                    singleImageImportRvAdapter.readthentranstoarray();
+                    imagesrv.scrollToPosition(0);
+                    imgsDialog.show();
+                }else{
+
+                }
                 break;
         }
     }

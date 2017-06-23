@@ -50,7 +50,7 @@ public class AdminNewPostFragment extends Fragment {
     ArrayList<NewpostNotify> items;
     DatabaseReference dbRef;
     ValueEventListener notiEventListener, postEventListener, userEventListener;
-    String dist_pro = "Quận 9_HCM";
+    String dist_pro;
     ProgressDialog plzwaitDialog;
     Post post = null;
     User user;

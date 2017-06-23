@@ -50,7 +50,7 @@ public class AdminReportFoodFragment extends Fragment {
     ArrayList<ReportfoodNotify> items;
     DatabaseReference dbRef;
     ValueEventListener reportEventListener, foodEventListener, userEventListener;
-    String dist_pro = "Quận 9_HCM";
+    String dist_pro;
     Food food = null;
     ProgressDialog plzwaitDialog;
     User user;

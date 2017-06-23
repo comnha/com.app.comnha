@@ -52,7 +52,7 @@ public class AdminNewStoreFragment extends Fragment {
     DatabaseReference dbRef;
     ValueEventListener storeEventListener, userValueListener,
             notiEventListener;
-    String dist_pro = "Quận 9_HCM";
+    String dist_pro;
     Store store = null;
     ProgressDialog plzwaitDialog=null;
     User user;

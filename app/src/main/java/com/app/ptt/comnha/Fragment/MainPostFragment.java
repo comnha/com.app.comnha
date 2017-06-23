@@ -40,7 +40,7 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
     Post_recycler_adapter postadapter;
     DatabaseReference dbRef;
     ValueEventListener postsEventListener;
-    String pro_dist;
+    String dist_pro;
     StorageReference stRef;
     SwipeRefreshLayout swipeRefresh;
 
@@ -59,10 +59,9 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
                 .getReferenceFromUrl(getString(R.string.firebaseStorage_path));
         ref(view);
         if(null!= CoreManager.getInstance().getMyLocation()){
-//            pro_dist=CoreManager.getInstance().getMyLocation().getDistrict()
-//                    +"_"+CoreManager.getInstance().getMyLocation().getProvince();
-            pro_dist="Quận 9_HCM";
-            getPostList(pro_dist);
+            dist_pro=CoreManager.getInstance().getMyLocation().getDistrict()+"_"+CoreManager.getInstance().getMyLocation().getProvince();
+            getPostList(dist_pro);
+
         }else{
             if(getView()!=null)
                 AppUtils.showSnackbarWithoutButton(getView(),"Không tìm thấy vị trí của bạn");
@@ -73,7 +72,7 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
 
 
 
-    private void getPostList(final String pro_dist) {
+    private void getPostList(final String dist_pro) {
         posts.clear();
         postsEventListener = new ValueEventListener() {
             @Override
@@ -88,7 +87,7 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
                 swipeRefresh.setRefreshing(false);
 //                dbRef.child(getString(R.string.posts_CODE))
 //                        .orderByChild("isHidden_dist_prov")
-//                        .equalTo(false + "_" + pro_dist)
+//                        .equalTo(false + "_" + dist_pro)
 //                        .removeEventListener(postsEventListener);
             }
 
@@ -99,14 +98,14 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
         };
         dbRef.child(getString(R.string.posts_CODE))
                 .orderByChild("isHidden_dist_prov")
-                .equalTo(false + "_" + pro_dist)
+                .equalTo(false + "_" + dist_pro)
                 .addValueEventListener(postsEventListener);
     }
     @Override
     public void notice() {
         if(null!= CoreManager.getInstance().getMyLocation()){
-            pro_dist=CoreManager.getInstance().getMyLocation().getProvince()+"_"+CoreManager.getInstance().getMyLocation().getDistrict();
-            getPostList(pro_dist);
+            dist_pro=CoreManager.getInstance().getMyLocation().getDistrict()+"_"+CoreManager.getInstance().getMyLocation().getProvince();
+            getPostList(dist_pro);
         }
     }
     private void ref(View view) {
@@ -139,7 +138,7 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
             @Override
             public void onRefresh() {
                 posts.clear();
-                getPostList(pro_dist);
+                getPostList(dist_pro);
             }
         });
     }

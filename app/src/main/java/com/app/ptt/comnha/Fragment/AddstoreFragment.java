@@ -37,6 +37,7 @@ import com.app.ptt.comnha.Adapters.PlacesAutoCompleteAdapter;
 import com.app.ptt.comnha.Adapters.SingleImageImportRvAdapter;
 import com.app.ptt.comnha.Classes.SelectedImage;
 import com.app.ptt.comnha.Const.Const;
+import com.app.ptt.comnha.Interfaces.Comunication;
 import com.app.ptt.comnha.Models.FireBase.NewstoreNotify;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Modules.LocationFinderListener;
@@ -72,7 +73,8 @@ import java.util.Map;
  * A simple {@link Fragment} subclass.
  */
 public class AddstoreFragment extends Fragment implements View.OnClickListener, TimePickerDialog.OnTimeSetListener,
-        DialogInterface.OnDismissListener, DialogInterface.OnCancelListener, LocationFinderListener {
+        DialogInterface.OnDismissListener, DialogInterface.OnCancelListener, LocationFinderListener
+{
     public static final String LOG = AddstoreFragment.class.getSimpleName();
 
     EditText edt_storeName, edt_phoneNumb ;
@@ -407,6 +409,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         mProgressDialog.dismiss();
+                                        //Comunication.sendLocationListener.notice();
                                         Toast.makeText(getContext(), getString(R.string.text_addloca_succ)
                                                 , Toast.LENGTH_LONG).show();
                                         getActivity().finish();
@@ -426,11 +429,11 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
             });
         } else {
             mProgressDialog.show();
-            mProgressDialog.show();
             dbRef.updateChildren(childUpdate).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     mProgressDialog.dismiss();
+                    //Comunication.sendLocationListener.notice();
                     Toast.makeText(getContext(), getString(R.string.text_addloca_succ)
                             , Toast.LENGTH_LONG).show();
                     getActivity().finish();
