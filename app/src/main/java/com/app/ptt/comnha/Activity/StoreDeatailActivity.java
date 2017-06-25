@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,11 +33,12 @@ import com.app.ptt.comnha.Adapters.Photo_recycler_adapter;
 import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Dialog.ReportDialog;
-import com.app.ptt.comnha.Fragment.AddFoodFragment;
+import com.app.ptt.comnha.Dialog.AddFoodDialog;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.Store;
+import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;
@@ -48,6 +50,8 @@ import com.app.ptt.comnha.Utils.AppUtils;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -84,13 +88,18 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
 
     DatabaseReference dbRef;
     StorageReference stRef;
-    ValueEventListener postValueListener, photoValueListener, foodValueListener;
+    ValueEventListener postValueListener, photoValueListener,
+            foodValueListener, userValueListener;
 
     Store store = ChooseStore.getInstance().getStore();
     LinearLayout linear_progress;
     String storeID = null;
     ProgressDialog plzw8Dialog = null;
     Menu pubMenu = null;
+    FirebaseAuth mAuth;
+    private static final int REQUEST_SIGNIN = 101;
+    FirebaseAuth.AuthStateListener mAuthListener;
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +109,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 .getReferenceFromUrl(getString(R.string.firebase_path));
         stRef = FirebaseStorage.getInstance()
                 .getReferenceFromUrl(getString(R.string.firebaseStorage_path));
+        mAuth = FirebaseAuth.getInstance();
         if (store == null) {
             onBackPressed();
         } else {
@@ -532,18 +542,64 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgv_writepost_storedetail:
-                Intent intent_writepost = new Intent(this, AdapterActivity.class);
-                intent_writepost.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent_writepost.putExtra(getString(R.string.fragment_CODE),
-                        getString(R.string.frag_writepost_CODE));
-                startActivity(intent_writepost);
+                if (LoginSession.getInstance().getUser() != null) {
+                    Intent intent_writepost = new Intent(this, AdapterActivity.class);
+                    intent_writepost.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent_writepost.putExtra(getString(R.string.fragment_CODE),
+                            getString(R.string.frag_writepost_CODE));
+                    startActivity(intent_writepost);
+                } else {
+                    new AlertDialog.Builder(this)
+                            .setMessage(getString(R.string.txt_nologin)
+                                    + "\n" + getString(R.string.txt_uneedlogin))
+                            .setPositiveButton(getString(R.string.text_signin), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent intent_signin = new Intent(StoreDeatailActivity.this,
+                                            AdapterActivity.class);
+                                    intent_signin.putExtra(getString(R.string.fragment_CODE),
+                                            getString(R.string.frg_signin_CODE));
+                                    intent_signin.putExtra("signinfromStoreDe", 1);
+                                    startActivityForResult(intent_signin, REQUEST_SIGNIN);
+                                }
+                            })
+                            .setNegativeButton(getString(R.string.text_no), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            }).show();
+                }
                 break;
             case R.id.imgv_addfood_storedetail:
-                AddFoodFragment addFoodFragment = new AddFoodFragment();
-                addFoodFragment.setStyle(DialogFragment.STYLE_NORMAL,
-                        R.style.AddfoodDialog);
-                addFoodFragment.setStore(store);
-                addFoodFragment.show(getSupportFragmentManager(), "addfood_frag");
+                if (LoginSession.getInstance().getUser() != null) {
+                    AddFoodDialog addFoodDialog = new AddFoodDialog();
+                    addFoodDialog.setStyle(DialogFragment.STYLE_NORMAL,
+                            R.style.AddfoodDialog);
+                    addFoodDialog.setStore(store);
+                    addFoodDialog.show(getSupportFragmentManager(), "addfood_frag");
+                } else {
+                    new AlertDialog.Builder(this)
+                            .setMessage(getString(R.string.txt_nologin)
+                                    + "\n" + getString(R.string.txt_uneedlogin))
+                            .setPositiveButton(getString(R.string.text_signin), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent intent_signin = new Intent(StoreDeatailActivity.this,
+                                            AdapterActivity.class);
+                                    intent_signin.putExtra(getString(R.string.fragment_CODE),
+                                            getString(R.string.frg_signin_CODE));
+                                    intent_signin.putExtra("signinfromStoreDe", 1);
+                                    startActivityForResult(intent_signin, REQUEST_SIGNIN);
+                                }
+                            })
+                            .setNegativeButton(getString(R.string.text_no), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            }).show();
+                }
                 break;
             case R.id.imgv_viewlocation_storedetail:
                 Bitmap imgBitmap = ((BitmapDrawable) imgv_avatar.getDrawable())
@@ -571,6 +627,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
             default:
                 return;
         }
+
     }
 
     private void reportStore() {
@@ -616,5 +673,61 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_SIGNIN:
+                if (resultCode == RESULT_OK) {
+                    getUser();
+                } else {
+
+                }
+                break;
+        }
+    }
+
+    private void getUser() {
+        plzw8Dialog.show();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                if (firebaseUser != null) {
+                    // User is signed in
+                    getUserInfo(firebaseUser);
+                    Log.d("onAuthStateChanged", "onAuthStateChanged:signed_in:" + firebaseUser.getUid());
+                } else {
+                    // User is signed out
+                    Log.d("onAuthStateChanged", "onAuthStateChanged:signed_out");
+                    plzw8Dialog.dismiss();
+                }
+            }
+        };
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    private void getUserInfo(final FirebaseUser firebaseUser) {
+        userValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = dataSnapshot.getValue(User.class);
+                String key = firebaseUser.getUid();
+                user.setuID(key);
+                LoginSession.getInstance().setUser(user);
+                LoginSession.getInstance().setFirebUser(firebaseUser);
+                mAuth.removeAuthStateListener(mAuthListener);
+                plzw8Dialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+        dbRef.child(getString(R.string.users_CODE)
+                + firebaseUser.getUid())
+                .addListenerForSingleValueEvent(userValueListener);
     }
 }

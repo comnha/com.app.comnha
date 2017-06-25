@@ -39,6 +39,7 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
     private EditText edt_email, edt_pass;
     private Button btn_signin;
     private TextView txtV_signup;
+    int signinfromStoreDe = -1;
 
     public SigninFragment() {
         // Required empty public constructor
@@ -48,6 +49,7 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_signin, container, false);
         anhXa(view);
+        signinfromStoreDe = this.getArguments().getInt("signinfromStoreDe");
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         return view;
     }
@@ -144,9 +146,15 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
                             if (!task.isSuccessful()) {
                                 Log.w(TAG, "signInWithEmail:onComplete", task.getException());
                                 AppUtils.showSnackbarWithoutButton(view, getString(R.string.text_signin_fail));
+                                if (signinfromStoreDe == 1) {
+                                    getActivity().setResult(Activity.RESULT_CANCELED);
+                                }
                             } else {
                                 LoginSession.getInstance().setUser(null);
                                 LoginSession.getInstance().setFirebUser(null);
+                                if (signinfromStoreDe == 1) {
+                                    getActivity().setResult(Activity.RESULT_OK);
+                                }
                                 getActivity().finish();
                             }
                             closeDialog();

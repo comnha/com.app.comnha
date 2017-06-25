@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Pair;
@@ -29,6 +31,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -507,7 +510,7 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
             case R.string.txt_report:
                 if (LoginSession.getInstance().getUser() != null) {
                     reportPost();
-                }else {
+                } else {
 
                 }
                 return true;
@@ -522,10 +525,107 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
                 }
                 return true;
             case R.string.txt_changeinfo:
+                changeContent();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void changeContent() {
+        final String[] content = {""}, title = {""};
+        final BottomSheetDialog edtPostDialog = new BottomSheetDialog(this);
+        edtPostDialog.setContentView(R.layout.layout_editpost);
+        final TextInputLayout ilayout_content =
+                (TextInputLayout) edtPostDialog.findViewById(R.id.ilayout_content),
+                ilayout_title =
+                        (TextInputLayout) edtPostDialog.findViewById(R.id.ilayout_title);
+
+        EditText edt_title = (EditText) edtPostDialog.findViewById(R.id.edt_title_writepost);
+        edt_title.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
+        edt_title.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                title[0] = charSequence.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() > 0) {
+                    ilayout_title.setError(null);
+                } else {
+                    ilayout_title.setError(
+                            getResources().getString(R.string.txt_notitle));
+                }
+            }
+        });
+        EditText edt_content = (EditText) edtPostDialog.findViewById(R.id.edt_content_editpost);
+        edt_content.setFilters(new InputFilter[]{new InputFilter.LengthFilter(200)});
+        edt_content.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                content[0] = charSequence.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() > 0) {
+                    ilayout_content.setError(null);
+                } else {
+                    ilayout_content.setError(
+                            getResources().getString(R.string.txt_nocontent));
+                }
+            }
+        });
+        Button btnSave = (Button) edtPostDialog.findViewById(R.id.btn_save_editpost),
+                btnCancel = (Button) edtPostDialog.findViewById(R.id.btn_close_editpost);
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveEdit(title[0], content[0], edtPostDialog);
+            }
+        });
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                edtPostDialog.cancel();
+            }
+        });
+        edtPostDialog.show();
+    }
+
+    private void saveEdit(String title, String content, final BottomSheetDialog edtPostDialog) {
+        plzw8Dialog.show();
+        Post edtPost = post;
+        edtPost.setContent(content);
+        edtPost.setTitle(title);
+        Map<String, Object> postValue = edtPost.toMap();
+        Map<String, Object> updatePost = new HashMap<>();
+        updatePost.put(getString(R.string.posts_CODE) + edtPost.getPostID(), postValue);
+        dbRef.updateChildren(updatePost)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        plzw8Dialog.dismiss();
+                        edtPostDialog.dismiss();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
     }
 
     private void reportPost() {

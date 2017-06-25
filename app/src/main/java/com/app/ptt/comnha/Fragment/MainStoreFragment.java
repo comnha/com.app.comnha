@@ -65,11 +65,16 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
                 getReferenceFromUrl(getString(R.string.firebase_path));
         stRef = FirebaseStorage.getInstance().getReferenceFromUrl(
                 getString(R.string.firebaseStorage_path));
+
         ref(view);
+        pro_dist = "Quận 9_Hồ Chí Minh";
+        getStoreList(pro_dist);
+
         if (null != CoreManager.getInstance().getMyLocation()) {
-            pro_dist = CoreManager.getInstance().getMyLocation().getDistrict()+"_"+CoreManager.getInstance().getMyLocation().getProvince();
+            pro_dist = CoreManager.getInstance().getMyLocation().getDistrict()
+                    +"_"+CoreManager.getInstance().getMyLocation().getProvince();
             Log.d(TAG, "pro_dist: " + pro_dist);
-            getStoreList(pro_dist);
+            pro_dist = "Quận 9_Hồ Chí Minh";
         } else {
             if (getView() != null) {
                 AppUtils.showSnackbarWithoutButton(getView(), "Không tìm thấy vị trí của bạn");
@@ -83,7 +88,7 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
     @Override
     public void notice() {
         if (null != CoreManager.getInstance().getMyLocation()) {
-            pro_dist = CoreManager.getInstance().getMyLocation().getDistrict()+ "_" + CoreManager.getInstance().getMyLocation().getProvince() ;
+            pro_dist = CoreManager.getInstance().getMyLocation().getDistrict() + "_" + CoreManager.getInstance().getMyLocation().getProvince();
             getStoreList(pro_dist);
         }
     }

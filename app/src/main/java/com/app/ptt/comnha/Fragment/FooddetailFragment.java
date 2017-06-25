@@ -38,6 +38,7 @@ import android.widget.Toast;
 
 import com.app.ptt.comnha.Activity.PostdetailActivity;
 import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
+import com.app.ptt.comnha.Dialog.AddFoodDialog;
 import com.app.ptt.comnha.Dialog.ReportDialog;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Post;
@@ -275,7 +276,7 @@ public class FooddetailFragment extends Fragment {
             contents.add(new Pair<Integer, String>
                     (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
             contents.add(new Pair<Integer, String>
-                    (R.string.txt_changeinfo, getString(R.string.txt_delfood)));
+                    (R.string.txt_delfood, getString(R.string.txt_delfood)));
             if (food.isHidden()) {
                 contents.add(new Pair<Integer, String>
                         (R.string.text_showfood, getString(R.string.text_showfood)));
@@ -342,9 +343,9 @@ public class FooddetailFragment extends Fragment {
                 reportDialog.show(getActivity().getSupportFragmentManager(), "report_food");
                 return true;
             case R.string.txt_changeinfo:
-                AddFoodFragment addFoodFragment = new AddFoodFragment();
-                addFoodFragment.setEditFoood(true, food);
-                addFoodFragment.show(getActivity()
+                AddFoodDialog addFoodDialog = new AddFoodDialog();
+                addFoodDialog.setEditFoood(true, food);
+                addFoodDialog.show(getActivity()
                         .getSupportFragmentManager(), "updatefood_dialog");
                 return true;
             case R.string.text_hidefood:

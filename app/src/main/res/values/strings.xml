@@ -697,4 +697,6 @@
     <string name="txt_updatinfood">Đang cập nhật món ăn&#8230;</string>
     <string name="txt_showphoto">Hiện hình ảnh</string>
     <string name="txt_delimgconfirm">Bạn muốn xóa hình ảnh này?</string>
+    <string name="txt_uneedlogin">Bạn cần đăng nhập để tiếp tục</string>
+    <string name="txt_nologin">Bạn chưa đăng nhập?</string>
 </resources>

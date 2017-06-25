@@ -130,7 +130,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
     Food selected_food = null;
     Post post;
     NewpostNotify newpostNotify = null;
-    String dist_prov = "Quận 9_HCM";
+    String dist_prov = "Quận 9_Hồ Chí Minh";
     ValueEventListener storeValueListener, foodValueListener,
             foodFromStoreValueListener;
     float foodRate = 0;

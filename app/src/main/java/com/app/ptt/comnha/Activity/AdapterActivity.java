@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.app.ptt.comnha.Fragment.AddFoodFragment;
+import com.app.ptt.comnha.Dialog.AddFoodDialog;
 import com.app.ptt.comnha.Fragment.AddstoreFragment;
 import com.app.ptt.comnha.Fragment.FooddetailFragment;
 import com.app.ptt.comnha.Fragment.MapFragment;
@@ -20,7 +20,6 @@ public class AdapterActivity extends AppCompatActivity {
     static final int CHECK_ADDPOST_FRAGMENT = 1;
     String FRAGMENT_CODE = null;
     String fromFrag;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,9 +100,9 @@ public class AdapterActivity extends AppCompatActivity {
         } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frg_themmon_CODE))) {
             if (findViewById(R.id.frame_adapter) != null) {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
-                    AddFoodFragment addFoodFragment = new AddFoodFragment();
-                    addFoodFragment.setArguments(getIntent().getExtras());
-                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, addFoodFragment)
+                    AddFoodDialog addFoodDialog = new AddFoodDialog();
+                    addFoodDialog.setArguments(getIntent().getExtras());
+                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, addFoodDialog)
                             .commit();
                 }
             }

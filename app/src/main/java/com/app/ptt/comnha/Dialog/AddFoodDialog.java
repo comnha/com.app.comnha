@@ -1,4 +1,4 @@
-package com.app.ptt.comnha.Fragment;
+package com.app.ptt.comnha.Dialog;
 
 
 import android.app.Dialog;
@@ -62,8 +62,8 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddFoodFragment extends DialogFragment implements View.OnClickListener {
-    private static final String LOG = AddFoodFragment.class.getSimpleName();
+public class AddFoodDialog extends DialogFragment implements View.OnClickListener {
+    private static final String LOG = AddFoodDialog.class.getSimpleName();
     EditText edt_name, edt_price, edt_comment;
     DatabaseReference dbRef;
     StorageReference stRef;
@@ -111,7 +111,7 @@ public class AddFoodFragment extends DialogFragment implements View.OnClickListe
         }
     };
 
-    public AddFoodFragment() {
+    public AddFoodDialog() {
         // Required empty public constructor
     }
 

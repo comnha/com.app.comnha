@@ -180,9 +180,17 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             public void onCancelled(DatabaseError databaseError) {
             }
         };
-        dbRef.child(getString(R.string.users_CODE)
-                + firebaseUser.getUid())
-                .addListenerForSingleValueEvent(userValueListener);
+        if (LoginSession.getInstance().getUser() == null) {
+            dbRef.child(getString(R.string.users_CODE)
+                    + firebaseUser.getUid())
+                    .addListenerForSingleValueEvent(userValueListener);
+        }else {
+            if (LoginSession.getInstance().getUser().getRole() == 1) {
+                itemAdmin.setVisible(true);
+            } else {
+                itemAdmin.setVisible(false);
+            }
+        }
     }
 
     private void ref() {
