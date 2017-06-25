@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.util.Pair;
 import android.util.TypedValue;
@@ -163,7 +164,6 @@ public class AppUtils {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
     }
-
     public static void setStatusBarTranslucent(Activity activity) {
 //        View v = findViewById(R.id.bellow_actionbar);
 //        if (v != null) {

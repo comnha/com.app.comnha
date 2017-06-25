@@ -155,7 +155,7 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
         dbRef.child(getString(R.string.store_CODE))
                 .orderByChild("isHidden_dis_pro")
                 .equalTo(String.valueOf(false) + "_" + pro_dist)
-                .addValueEventListener(childEventListener);
+                .addListenerForSingleValueEvent(childEventListener);
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -18,7 +18,6 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -75,7 +74,7 @@ import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_POST;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PostdetailActivity extends AppCompatActivity implements View.OnClickListener {
+public class PostdetailActivity extends BaseActivity implements View.OnClickListener {
     private String postID;
     private static final String LOG = PostdetailActivity.class.getSimpleName();
     ImageView imgv_banner, imgv_sendcomment;
@@ -533,15 +532,15 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void changeContent() {
-        final String[] content = {""}, title = {""};
+        final String[] content = {post.getContent()}, title = {post.getTitle()};
         final BottomSheetDialog edtPostDialog = new BottomSheetDialog(this);
         edtPostDialog.setContentView(R.layout.layout_editpost);
         final TextInputLayout ilayout_content =
-                (TextInputLayout) edtPostDialog.findViewById(R.id.ilayout_content),
+                (TextInputLayout) edtPostDialog.findViewById(R.id.ilayout_content_editpost),
                 ilayout_title =
-                        (TextInputLayout) edtPostDialog.findViewById(R.id.ilayout_title);
+                        (TextInputLayout) edtPostDialog.findViewById(R.id.ilayout_title_editpost);
 
-        EditText edt_title = (EditText) edtPostDialog.findViewById(R.id.edt_title_writepost);
+        final EditText edt_title = (EditText) edtPostDialog.findViewById(R.id.edt_title_editpost);
         edt_title.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
         edt_title.addTextChangedListener(new TextWatcher() {
             @Override
@@ -564,7 +563,7 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
                 }
             }
         });
-        EditText edt_content = (EditText) edtPostDialog.findViewById(R.id.edt_content_editpost);
+        final EditText edt_content = (EditText) edtPostDialog.findViewById(R.id.edt_content_editpost);
         edt_content.setFilters(new InputFilter[]{new InputFilter.LengthFilter(200)});
         edt_content.addTextChangedListener(new TextWatcher() {
             @Override
@@ -587,12 +586,33 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
                 }
             }
         });
+        edt_content.setText(post.getContent());
+        edt_title.setText(post.getTitle());
         Button btnSave = (Button) edtPostDialog.findViewById(R.id.btn_save_editpost),
                 btnCancel = (Button) edtPostDialog.findViewById(R.id.btn_close_editpost);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveEdit(title[0], content[0], edtPostDialog);
+                if (AppUtils.getText(edt_title).equals("")) {
+                    edt_title.requestFocus();
+                    ilayout_title.setError(getString(R.string.txt_notitle));
+                } else if (AppUtils.getText(edt_content).equals("")) {
+                    edt_content.requestFocus();
+                    ilayout_content.setError(getString(R.string.txt_nocontent));
+                } else {
+                    if (post.getContent().equals(content[0])
+                            && post.getTitle().equals(title[0])) {
+                        edtPostDialog.cancel();
+                    } else if (post.getTitle().equals(title[0])
+                            && !post.getContent().equals(content[0])) {
+                        saveEdit(post.getTitle(), content[0], edtPostDialog);
+                    } else if (post.getContent().equals(content[0])
+                            && !post.getTitle().equals(title[0])) {
+                        saveEdit(title[0], post.getContent(), edtPostDialog);
+                    } else {
+                        saveEdit(title[0], content[0], edtPostDialog);
+                    }
+                }
             }
         });
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -604,7 +624,8 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
         edtPostDialog.show();
     }
 
-    private void saveEdit(String title, String content, final BottomSheetDialog edtPostDialog) {
+    private void saveEdit(final String title, final String content,
+                          final BottomSheetDialog edtPostDialog) {
         plzw8Dialog.show();
         Post edtPost = post;
         edtPost.setContent(content);
@@ -617,6 +638,8 @@ public class PostdetailActivity extends AppCompatActivity implements View.OnClic
                     @Override
                     public void onSuccess(Void aVoid) {
                         plzw8Dialog.dismiss();
+                        txtv_content.setText(content);
+                        txtv_title.setText(title);
                         edtPostDialog.dismiss();
                     }
                 })
