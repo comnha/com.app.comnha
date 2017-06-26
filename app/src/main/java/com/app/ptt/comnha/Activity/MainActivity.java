@@ -421,7 +421,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 Intent intent1 = new Intent(MainActivity.this, AdapterActivity.class);
                 intent1.putExtra(getString(R.string.fragment_CODE),
                         getString(R.string.frg_signin_CODE));
-
                 startActivity(intent1);
                 break;
             case R.id.nav_signout:
@@ -914,9 +913,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
                 }
                 locationController.loadLocationService();
-
-                CoreManager.getInstance().setMyLocation(this, null);
-
                 break;
         }
     }

@@ -636,7 +636,7 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
                             String tenLot="";
                             user.setHo(name[0]);
                             for(int i=1;i<name.length-1;i++){
-                                tenLot+=name[i];
+                                tenLot+=name[i]+" ";
                             }
                             user.setTenlot(tenLot);
                             user.setTen(name[name.length-1]);

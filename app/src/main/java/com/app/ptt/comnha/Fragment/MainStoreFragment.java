@@ -132,9 +132,17 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
                         items.add(store);
                         itemadapter.notifyDataSetChanged();
                     }
-                    itemadapter.setStorageRef(
-                            FirebaseStorage.getInstance().getReferenceFromUrl(
-                                    getActivity().getResources().getString(R.string.firebaseStorage_path)));
+                    try {
+                        itemadapter.setStorageRef(
+                                FirebaseStorage.getInstance().getReferenceFromUrl(
+                                        getActivity().getResources().getString(R.string.firebaseStorage_path)));
+                    }catch (Exception e){
+                        itemadapter.setStorageRef(
+                                FirebaseStorage.getInstance().getReferenceFromUrl(
+                                       "gs://comnha-e4dbe.appspot.com/"));
+
+
+                    }
                     Log.d("added", "added");
 
                 }
