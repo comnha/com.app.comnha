@@ -207,23 +207,34 @@ public class User {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
+    public String getAddress() {
+        return address;
+    }
 
-    String uID,
-            ho,
-            ten,
-            tenlot,
-            birth,
-            pass,
-            un,
-            email,
-    //more detail
-    street = "",
-            ward = "",
-            district = "",
-            province = "",
-            phonenumb = "",
-            work = "", avatar = "";
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
+
+    String uID;
+    String ho;
+    String ten;
+    String tenlot;
+    String birth;
+    String pass;
+    String un;
+    String email;
+    String//more detail
+            street = "";
+    String ward = "";
+    String district = "";
+    String province = "";
+    String phonenumb = "";
+    String work = "";
+    String avatar = "";
+
+
+    String address="";
     boolean sexual = false,
             isAddfoodBlocked = false,
             isWritepostBlocked = false,
@@ -233,7 +244,6 @@ public class User {
             isReportimgBlocked = false,
             isReportfoodBlocked = false;
     int role = 0;
-
     //phép kết
     String dist_prov = "";//tìm user theo tỉnh_huyện
 
@@ -270,6 +280,7 @@ public class User {
         result.put("dist_prov", dist_prov);
         result.put("role", role);
         result.put("avatar", avatar);
+        result.put("address",address);
         result.put("isAddfoodBlocked", isAddfoodBlocked);
         result.put("isWritepostBlocked", isWritepostBlocked);
         result.put("isAddstoreBlocked", isAddstoreBlocked);

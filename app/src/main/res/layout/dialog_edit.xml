@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="sadsadsad"
+            android:textStyle="bold"
+            android:padding="10dp"
+            android:textSize="20sp"
+            android:id="@+id/txt_title"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:weightSum="3">
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="0dp"
+                android:id="@+id/til"
+
+                android:layout_height="wrap_content"
+                android:layout_weight="2.5">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="date"
+                    android:id="@+id/edt_edit"
+                    android:textColorHint="@color/mdtp_red"/>
+            </android.support.design.widget.TextInputLayout>
+            <RadioGroup
+                android:layout_width="0dp"
+                android:id="@+id/rg_total"
+                android:layout_weight="2.5"
+
+                android:layout_height="wrap_content">
+                <RadioButton
+                    android:id="@+id/rb_nam"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nam"/>
+                <RadioButton
+                    android:id="@+id/rb_nu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nữ"/>
+            </RadioGroup>
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center"
+                android:layout_weight="0.5"
+                android:id="@+id/btn_edit"
+                android:background="@drawable/ic_chevron_right_50black_24dp"
+                android:paddingBottom="50dp"
+                android:paddingStart="50dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

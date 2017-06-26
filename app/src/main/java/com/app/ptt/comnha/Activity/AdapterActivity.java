@@ -9,7 +9,6 @@ import com.app.ptt.comnha.Fragment.AddFoodFragment;
 import com.app.ptt.comnha.Fragment.AddstoreFragment;
 import com.app.ptt.comnha.Fragment.FooddetailFragment;
 import com.app.ptt.comnha.Fragment.MapFragment;
-import com.app.ptt.comnha.Fragment.NotificationFragment;
 import com.app.ptt.comnha.Fragment.SigninFragment;
 import com.app.ptt.comnha.Fragment.SignupFragment;
 import com.app.ptt.comnha.Fragment.WritepostFragment;
@@ -118,14 +117,7 @@ public class AdapterActivity extends AppCompatActivity {
                 }
             }
         } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frg_notification_CODE))) {
-            if (findViewById(R.id.frame_adapter) != null) {
-                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
-                    NotificationFragment notificationFragment = new NotificationFragment();
-                    notificationFragment.setArguments(getIntent().getExtras());
 
-                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, notificationFragment).commit();
-                }
-            }
         } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frg_viewfood_CODE))) {
             Log.i("ZOOOOOOOOOOOO", "VIEW FOOD");
             if (findViewById(R.id.frame_adapter) != null) {

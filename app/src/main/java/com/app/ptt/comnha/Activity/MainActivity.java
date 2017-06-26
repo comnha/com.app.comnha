@@ -614,7 +614,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 //        profileValueEventListener = new ValueEventListener() {
 //            @Override
 //            public void onDataChange(DataSnapshot dataSnapshot) {
-//                Account account = dataSnapshot.getValue(Account.class);
+//
 //                role = account.getRole();
 //                account.setId(dataSnapshot.getKey());
 //                account.setUsername(user.getDisplayName());

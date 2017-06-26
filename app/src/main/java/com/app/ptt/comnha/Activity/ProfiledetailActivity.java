@@ -3,6 +3,7 @@ package com.app.ptt.comnha.Activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -21,12 +23,18 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +66,8 @@ import com.google.firebase.storage.UploadTask;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,7 +82,7 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
     Toolbar mToolbar;
     CircularImageView imgv_profile;
     TextView txtv_email, txtv_un, txtv_expandpro, txtv_expandimg, txtv_openacti,
-            txtv_name, txtv_birth, txtv_address, txtv_distpro,
+            txtv_name, txtv_birth, txtv_address,
             txtv_work, txtv_phonenumb, txtv_sex, txtv_seemoreimg;
     User user = null;
     String userID;
@@ -145,7 +155,6 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
         txtv_birth = (TextView) include_view.findViewById(R.id.txtv_birth_prodetail);
         txtv_name = (TextView) include_view.findViewById(R.id.txtv_name_prodetail);
         txtv_address = (TextView) include_view.findViewById(R.id.txtv_address_prodetail);
-        txtv_distpro = (TextView) include_view.findViewById(R.id.txtv_distpro_prodetail);
         txtv_work = (TextView) include_view.findViewById(R.id.txtv_work_prodetail);
         txtv_phonenumb = (TextView) include_view.findViewById(R.id.txtv_phonenumb_prodetail);
         txtv_sex = (TextView) include_view.findViewById(R.id.txtv_sex_prodetail);
@@ -155,6 +164,63 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
         images = new ArrayList<>();
         imgAdapter = new Photo_recycler_adapter(images, stRef, this);
         rv_imgs.setAdapter(imgAdapter);
+
+
+
+        txtv_name.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onClick(1,user.getHo()+" "+user.getTenlot()+" "+user.getTen());
+                return false;
+            }
+        });
+        txtv_address.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onClick(3,user.getAddress());
+                return false;
+            }
+        });
+        txtv_birth.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onClick(2,user.getBirth());
+                return false;
+            }
+        });
+        txtv_email.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onClick(7,user.getEmail());
+                return false;
+            }
+        });
+        txtv_phonenumb.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onClick(5,user.getPhonenumb());
+                return false;
+            }
+        });
+        txtv_sex.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(!user.isSexual()){
+                    onClick(6,"Nữ");
+                }else{
+                    onClick(6,"Nam");
+                }
+                return false;
+            }
+        });
+        txtv_work.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onClick(4,user.getWork());
+                return false;
+            }
+        });
+
         imgAdapter.setOnItemClickLiestner(new Photo_recycler_adapter.OnItemClickLiestner() {
             @Override
             public void onItemClick(Image image, Activity activity, View itemView) {
@@ -362,19 +428,14 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
         txtv_name.setText(user.getHo() + " " + user.getTenlot() + " " + user.getTen()
                 + "\n" + getString(R.string.text_hoten));
         txtv_birth.setText(user.getBirth() + "\n" + getString(R.string.text_birth));
-        if (!user.getWard().equals("") && !user.getStreet().equals("")) {
-            txtv_address.setText(user.getStreet() + ", " + user.getWard() +
+        if(!TextUtils.isEmpty(user.getAddress())){
+            txtv_address.setText(user.getAddress() +
                     "\n" + getString(R.string.text_address));
         } else {
             txtv_address.setText("\n" + getString(R.string.text_address));
         }
-        if (!user.getDist_prov().equals("")) {
-            txtv_distpro.setText(getString(R.string.txt_dispro) + ": " + user.getDistrict() + ", " + user.getProvince());
-        } else {
-            txtv_distpro.setText("\n" + getString(R.string.txt_dispro));
-        }
-        if (!user.getWard().equals("")) {
-            txtv_work.setText(getString(R.string.txt_yourwork) + ": " + user.getWork());
+        if (!user.getWork().equals("")) {
+            txtv_work.setText( user.getWork()+"\n"+getString(R.string.txt_yourwork));
         } else {
             txtv_work.setText("\n" + getString(R.string.txt_yourwork));
         }
@@ -514,4 +575,138 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
                 break;
         }
     }
+    public void onClick(final int type, final String text){
+        final Dialog dialog=new Dialog(this);
+        dialog.setContentView(R.layout.dialog_edit);
+        dialog.setTitle("Thay đổi");
+        final EditText edt= (EditText) dialog.findViewById(R.id.edt_edit);
+        ImageButton btn= (ImageButton) dialog.findViewById(R.id.btn_edit);
+        TextView txt= (TextView) dialog.findViewById(R.id.txt_title);
+        final RadioGroup rg= (RadioGroup) dialog.findViewById(R.id.rg_total);
+        final TextInputLayout textInputLayout= (TextInputLayout) dialog.findViewById(R.id.til);
+        rg.setVisibility(View.GONE);
+        final RadioButton rbNam= (RadioButton) dialog.findViewById(R.id.rb_nam),rbNu= (RadioButton) dialog.findViewById(R.id.rb_nu);
+        String title = "";
+        switch (type){
+            case 1:
+                title="Họ tên";
+                edt.setInputType(InputType.TYPE_CLASS_TEXT);
+                break;
+            case 2:
+                title="Ngày sinh";
+                edt.setInputType(InputType.TYPE_CLASS_DATETIME);
+                break;
+            case 3:
+                title="Địa chỉ";
+                edt.setInputType(InputType.TYPE_CLASS_TEXT);
+                break;
+            case 4:
+                title="Nghề ngiệp";
+                edt.setInputType(InputType.TYPE_CLASS_TEXT);
+                break;
+            case 5:
+                title="Số điện thoại";
+                edt.setInputType(InputType.TYPE_CLASS_NUMBER);
+                break;
+            case 6:
+                title="Giới tính";
+                textInputLayout.setVisibility(View.GONE);
+                rg.setVisibility(View.VISIBLE);
+                if(text.toLowerCase().equals("Nam")){
+                    rbNam.setChecked(true);
+                }else{
+                    rbNu.setChecked(true);
+                }
+                break;
+            case 7:
+                title="Email";
+                edt.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                break;
+        }
+        txt.setText(title+" mới");
+        edt.setText(text);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if((!TextUtils.isEmpty(edt.getText())&&type!=6)||type==6 ){
+                    switch (type){
+                        case 1:
+                            String a= edt.getText().toString();
+                            String[] name=a.split(" ");
+                            String tenLot="";
+                            user.setHo(name[0]);
+                            for(int i=1;i<name.length-1;i++){
+                                tenLot+=name[i];
+                            }
+                            user.setTenlot(tenLot);
+                            user.setTen(name[name.length-1]);
+
+                            break;
+                        case 2:
+                            user.setBirth(edt.getText().toString());
+                            break;
+                        case 3:
+                            user.setAddress(edt.getText().toString());
+                            break;
+                        case 4:
+                            user.setWork(edt.getText().toString());
+                            break;
+                        case 5:
+                            user.setPhonenumb(edt.getText().toString());
+                            break;
+                        case 6:
+                            if(rbNam.isChecked()){
+                                user.setSexual(true);
+                            }else{
+                                user.setSexual(false);
+                            }
+                            break;
+                        case 7:
+                            user.setEmail(edt.getText().toString());
+
+                            break;
+                    }
+                    Map<String, Object> userInfo = user.toMap();
+                    Map<String, Object> childUpdates = new HashMap<>();
+                                childUpdates.put(getResources().getString(R.string.users_CODE) + user.getuID(), userInfo);
+                    dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Toast.makeText(ProfiledetailActivity.this, "Đã sửa", Toast.LENGTH_SHORT).show();
+                            getUserInfo(user.getuID());
+                            setUserInfo();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(ProfiledetailActivity.this, "Chưa sửa được. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    dialog.dismiss();
+                }
+
+
+            }
+        });
+        dialog.show();
+    }
+    private void getUserInfo(final String uid) {
+        ValueEventListener userValueListener;
+        userValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = dataSnapshot.getValue(User.class);
+                String key = uid;
+                user.setuID(key);
+                LoginSession.getInstance().setUser(user);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+        dbRef.child(getString(R.string.users_CODE)
+                + uid)
+                .addListenerForSingleValueEvent(userValueListener);
+    }
+
 }
