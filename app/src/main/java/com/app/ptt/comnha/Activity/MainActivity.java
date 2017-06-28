@@ -35,13 +35,9 @@ import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Fragment.AboutBottomSheetDialogFragment;
 import com.app.ptt.comnha.Interfaces.Comunication;
-import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.Models.MyLocation;
 import com.app.ptt.comnha.Modules.ConnectionDetector;
-import com.app.ptt.comnha.Modules.LocationFinderListener;
-import com.app.ptt.comnha.Modules.PlaceAPI;
-import com.app.ptt.comnha.Modules.PlaceAttribute;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.CoreManager;
@@ -52,7 +48,6 @@ import com.app.ptt.comnha.Utils.MyTool;
 import com.app.ptt.comnha.Utils.Storage;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -113,10 +108,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         Log.i(TAG,"onCreate");
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
-        stRef = FirebaseStorage.getInstance().getReferenceFromUrl(
-                getString(R.string.firebaseStorage_path));
         dbRef = FirebaseDatabase.getInstance()
-                .getReferenceFromUrl(getString(R.string.firebase_path));
+                .getReferenceFromUrl(Const.DATABASE_PATH);
+        stRef = FirebaseStorage.getInstance()
+                .getReferenceFromUrl(Const.STORAGE_PATH);
         CoreManager.getInstance().initData(this);
         myTool=new MyTool(this);
         ref();

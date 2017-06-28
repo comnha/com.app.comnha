@@ -84,7 +84,7 @@ public class EditStoreDialogFragment extends DialogFragment implements View.OnCl
         View view = inflater.inflate(R.layout.fragment_edit_store_dialog, container, false);
         location = EditLocal.getInstance().getStore();
         now = Calendar.getInstance();
-        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
+        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebaseDB_path));
         childUpdates=new HashMap<>();
         anhxa(view);
         return view;

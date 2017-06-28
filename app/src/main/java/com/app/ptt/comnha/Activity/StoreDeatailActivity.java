@@ -106,9 +106,9 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store_deatail);
         dbRef = FirebaseDatabase.getInstance()
-                .getReferenceFromUrl(getString(R.string.firebase_path));
+                .getReferenceFromUrl(Const.DATABASE_PATH);
         stRef = FirebaseStorage.getInstance()
-                .getReferenceFromUrl(getString(R.string.firebaseStorage_path));
+                .getReferenceFromUrl(Const.STORAGE_PATH);
         mAuth = FirebaseAuth.getInstance();
         if (store == null) {
             onBackPressed();
@@ -491,46 +491,29 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         if (LoginSession.getInstance().getUser() != null) {
             role = LoginSession.getInstance().getUser().getRole();
         }
+        foodValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
+                    Food food = dataItem.getValue(Food.class);
+                    String key = dataItem.getKey();
+                    food.setFoodID(key);
+                    foods.add(food);
+                }
+                foodAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
         if (role == 1) {
-            foodValueListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
-                        Food food = dataItem.getValue(Food.class);
-                        String key = dataItem.getKey();
-                        food.setFoodID(key);
-                        foods.add(food);
-                    }
-                    foodAdapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            };
             dbRef.child(getString(R.string.food_CODE))
                     .orderByChild("storeID")
                     .equalTo(storeID)
                     .addListenerForSingleValueEvent(foodValueListener);
         } else {
-            foodValueListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
-                        Food food = dataItem.getValue(Food.class);
-                        String key = dataItem.getKey();
-                        food.setFoodID(key);
-                        foods.add(food);
-                    }
-                    foodAdapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            };
             dbRef.child(getString(R.string.food_CODE))
                     .orderByChild("isHidden_storeID")
                     .equalTo(false + "_" + storeID)

@@ -123,10 +123,10 @@ public class AddFoodDialog extends DialogFragment implements View.OnClickListene
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         isConnected = MyService.returnIsNetworkConnected();
-        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(
-                getResources().getString(R.string.firebase_path));
-        stRef = FirebaseStorage.getInstance().getReferenceFromUrl(
-                getResources().getString(R.string.firebaseStorage_path));
+        dbRef = FirebaseDatabase.getInstance()
+                .getReferenceFromUrl(Const.DATABASE_PATH);
+        stRef = FirebaseStorage.getInstance()
+                .getReferenceFromUrl(Const.STORAGE_PATH);
         View view = inflater.inflate(R.layout.fragment_addfood, container, false);
         init(view);
         return view;

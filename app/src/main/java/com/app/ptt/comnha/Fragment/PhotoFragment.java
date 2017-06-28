@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.R;
 import com.google.firebase.database.ChildEventListener;
@@ -42,7 +43,7 @@ public class PhotoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_allphoto, container, false);
         database = FirebaseDatabase.getInstance();
-        dbRef = database.getReferenceFromUrl(getResources().getString(R.string.firebase_path));
+        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(Const.DATABASE_PATH);
 
         anhxa(view);
 

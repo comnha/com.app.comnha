@@ -48,7 +48,7 @@ public class SplashActivity extends BaseActivity {
         setContentView(R.layout.activity_splash);
         mAuth = FirebaseAuth.getInstance();
         dbRef = FirebaseDatabase.getInstance()
-                .getReferenceFromUrl(getString(R.string.firebase_path));
+                .getReferenceFromUrl(getString(R.string.firebaseDB_path));
         dot1 = (TextView) findViewById(R.id.act_splash_dot1);
         dot2 = (TextView) findViewById(R.id.act_splash_dot2);
         dot3 = (TextView) findViewById(R.id.act_splash_dot3);

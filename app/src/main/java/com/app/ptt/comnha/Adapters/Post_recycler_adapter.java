@@ -6,10 +6,12 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -58,24 +60,35 @@ public class Post_recycler_adapter extends RecyclerView.Adapter<Post_recycler_ad
                 posts.get(position).getUn());
         holder.txtv_storename.setText(posts.get(position).getStoreName());
         holder.txtv_title.setText(posts.get(position).getTitle());
-        if (!posts.get(holder.getAdapterPosition()).getBanner().equals("")) {
-            StorageReference imgRef = stRef.child(posts.get(holder.getAdapterPosition())
-                    .getBanner());
-            imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Picasso.with(context)
-                            .load(uri)
-                            .into(holder.imgv_banner);
-                }
-            });
+        if (posts.get(holder.getAdapterPosition()).getImgBitmap() == null) {
+            if (!posts.get(holder.getAdapterPosition()).getBanner().equals("")) {
+                StorageReference imgRef = stRef.child(posts.get(holder.getAdapterPosition())
+                        .getBanner());
+                imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.with(context)
+                                .load(uri)
+                                .into(holder.imgv_banner);
+                        try {
+                            Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_banner.getDrawable())
+                                    .getBitmap();
+                            posts.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
+                        } catch (NullPointerException e) {
+
+                        }
+                    }
+                });
+            } else {
+                holder.imgv_banner.setVisibility(View.GONE);
+            }
         } else {
-            holder.imgv_banner.setVisibility(View.GONE);
+            holder.imgv_banner.setImageBitmap(posts.get(position).getImgBitmap());
         }
-        if (posts.get(position).isHidden()){
+        if (posts.get(position).isHidden()) {
             holder.cardView.setBackgroundColor(
                     context.getResources().getColor(R.color.colorFabRipple));
-        }else {
+        } else {
             holder.cardView.setBackgroundColor(
                     context.getResources().getColor(android.R.color.white));
         }

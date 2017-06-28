@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.app.ptt.comnha.Adapters.Store_recycler_adapter;
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
@@ -46,9 +47,9 @@ public class YourAddStoreActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_youraddstore);
         dbRef = FirebaseDatabase.getInstance()
-                .getReferenceFromUrl(getString(R.string.firebase_path));
+                .getReferenceFromUrl(Const.DATABASE_PATH);
         stRef = FirebaseStorage.getInstance()
-                .getReferenceFromUrl(getString(R.string.firebaseStorage_path));
+                .getReferenceFromUrl(Const.STORAGE_PATH);
         Ref();
         getAllImg();
     }

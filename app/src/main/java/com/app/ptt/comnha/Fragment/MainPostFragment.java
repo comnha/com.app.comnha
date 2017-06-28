@@ -15,12 +15,14 @@ import android.view.ViewGroup;
 
 import com.app.ptt.comnha.Activity.PostdetailActivity;
 import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Interfaces.Comunication;
 import com.app.ptt.comnha.Interfaces.SendLocationListener;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.SingletonClasses.CoreManager;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,14 +56,14 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
         Log.d("MainFragmentPage", "createviewPost");
         View view = inflater.inflate(R.layout.fragment_main_post, container, false);
         dbRef = FirebaseDatabase.getInstance()
-                .getReferenceFromUrl(getString(R.string.firebase_path));
+                .getReferenceFromUrl(Const.DATABASE_PATH);
         stRef = FirebaseStorage.getInstance()
-                .getReferenceFromUrl(getString(R.string.firebaseStorage_path));
-        ref(view);
+                .getReferenceFromUrl(Const.STORAGE_PATH);
+        init(view);
         if (null != CoreManager.getInstance().getMyLocation()) {
             dist_pro = CoreManager.getInstance().getMyLocation().getDistrict() + "_" + CoreManager.getInstance().getMyLocation().getProvince();
-            getPostList(dist_pro);
-            Log.d("dist_pro", dist_pro);
+            getPostList();
+            Log.d("dist_pro_posts", dist_pro);
         } else {
             if (getView() != null)
                 AppUtils.showSnackbarWithoutButton(getView(), "Không tìm thấy vị trí của bạn");
@@ -71,8 +73,12 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
     }
 
 
-    private void getPostList(final String pro_dist) {
+    private void getPostList() {
         posts.clear();
+        int role = 0;
+        if (LoginSession.getInstance().getUser() != null) {
+            role = LoginSession.getInstance().getUser().getRole();
+        }
         postsEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -84,10 +90,6 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
                 }
                 postadapter.notifyDataSetChanged();
                 swipeRefresh.setRefreshing(false);
-//                dbRef.child(getString(R.string.posts_CODE))
-//                        .orderByChild("isHidden_dist_prov")
-//                        .equalTo(false + "_" + dist_pro)
-//                        .removeEventListener(postsEventListener);
             }
 
             @Override
@@ -95,21 +97,28 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
 
             }
         };
-        dbRef.child(getString(R.string.posts_CODE))
-                .orderByChild("isHidden_dist_prov")
-                .equalTo(false + "_" + pro_dist)
-                .addValueEventListener(postsEventListener);
+        if (role == 1) {
+            dbRef.child(getString(R.string.posts_CODE))
+                    .orderByChild("dist_pro")
+                    .equalTo(dist_pro)
+                    .addListenerForSingleValueEvent(postsEventListener);
+        } else {
+            dbRef.child(getString(R.string.posts_CODE))
+                    .orderByChild("isHidden_dist_prov")
+                    .equalTo(false + "_" + dist_pro)
+                    .addListenerForSingleValueEvent(postsEventListener);
+        }
     }
 
     @Override
     public void notice() {
         if (null != CoreManager.getInstance().getMyLocation()) {
             dist_pro = CoreManager.getInstance().getMyLocation().getProvince() + "_" + CoreManager.getInstance().getMyLocation().getDistrict();
-            getPostList(dist_pro);
+            getPostList();
         }
     }
 
-    private void ref(View view) {
+    private void init(View view) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerV_postfrag);
         layoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false);
@@ -139,7 +148,7 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
             @Override
             public void onRefresh() {
                 posts.clear();
-                getPostList(dist_pro);
+                getPostList();
             }
         });
     }

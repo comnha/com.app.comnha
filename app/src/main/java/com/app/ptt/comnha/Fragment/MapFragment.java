@@ -3,7 +3,6 @@ package com.app.ptt.comnha.Fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -37,7 +36,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -46,13 +44,12 @@ import android.widget.Toast;
 import com.app.ptt.comnha.Activity.StoreDeatailActivity;
 import com.app.ptt.comnha.Adapters.PlacesAutoCompleteAdapter;
 import com.app.ptt.comnha.Classes.AnimationUtils;
-import com.app.ptt.comnha.Interfaces.LocationFinderListener;
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.MyLocation;
 import com.app.ptt.comnha.Modules.PlaceAttribute;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
-import com.app.ptt.comnha.SingletonClasses.ChooseLoca;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.SingletonClasses.CoreManager;
 import com.app.ptt.comnha.Utils.MyTool;
@@ -134,8 +131,8 @@ public class MapFragment extends Fragment implements View.OnClickListener,
         Log.i(LOG, "onCreate");
         list = new ArrayList<>();
         myTool = new MyTool(getContext());
-        stRef = FirebaseStorage.getInstance().getReferenceFromUrl(
-                getString(R.string.firebaseStorage_path));
+        stRef = FirebaseStorage.getInstance()
+                .getReferenceFromUrl(Const.STORAGE_PATH);
     }
 
 
@@ -159,7 +156,8 @@ public class MapFragment extends Fragment implements View.OnClickListener,
         Log.i(LOG, "onCreateView");
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.frg_map_fablocation);
-        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getString(R.string.firebase_path));
+        dbRef = FirebaseDatabase.getInstance()
+                .getReferenceFromUrl(Const.DATABASE_PATH);
         anhxa(view);
 
         viewInfoWindow = getLayoutInflater(savedInstanceState).inflate(R.layout.infowindowlayout, null);

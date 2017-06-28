@@ -107,7 +107,10 @@ public class BaseFragment extends Fragment {
 
         auth=FirebaseAuth.getInstance();
         Firebase.setAndroidContext(getContext());
-        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getString(R.string.firebase_path));
+        dbRef = FirebaseDatabase.getInstance()
+                .getReferenceFromUrl(Const.DATABASE_PATH);
+//        stRef = FirebaseStorage.getInstance()
+//                .getReferenceFromUrl(Const.STORAGE_PATH);
     }
     @Override
     public void onStop() {

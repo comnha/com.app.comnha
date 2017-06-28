@@ -63,7 +63,9 @@ public class AdminReportImgFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_admin_report_img, container, false);
         dbRef = FirebaseDatabase.getInstance()
-                .getReferenceFromUrl(getString(R.string.firebase_path));
+                .getReferenceFromUrl(Const.DATABASE_PATH);
+//        stRef = FirebaseStorage.getInstance()
+//                .getReferenceFromUrl(Const.STORAGE_PATH);
         getImgReport();
         init(view);
         return view;
