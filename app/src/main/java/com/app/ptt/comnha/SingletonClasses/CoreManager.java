@@ -2,6 +2,7 @@ package com.app.ptt.comnha.SingletonClasses;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.MyLocation;
@@ -65,7 +66,7 @@ public class CoreManager {
 
     public void setMyLocation(Context context, String myLocation) {
         this.myLocation = myLocation;
-//        Log.d("mylocation", myLocation);
+        Log.d("mylocation", myLocation);
         PreferenceUtils.saveStringPref(context, Const.PREF_MY_LOCATION, myLocation);
     }
 

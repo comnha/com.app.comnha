@@ -550,7 +550,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     startActivity(intent_writepost);
                 } else {
                     new AlertDialog.Builder(this)
-                            .setMessage(getString(R.string.txt_nologin)
+                            .setMessage(getString(R.string.notify_newpost_CODE)
                                     + "\n" + getString(R.string.txt_uneedlogin))
                             .setPositiveButton(getString(R.string.text_signin), new DialogInterface.OnClickListener() {
                                 @Override

@@ -418,78 +418,7 @@ public class AddFoodDialog extends DialogFragment implements View.OnClickListene
         }
     }
 
-    private void updateFood() {
-        mProgressDialog = AppUtils.setupProgressDialog(getContext(),
-                getString(R.string.txt_updatinfood), null, false, false,
-                ProgressDialog.STYLE_SPINNER, 0);
-        mProgressDialog.show();
-        Food childfood = oldfood;
-        childfood.setName(name);
-        childfood.setPrice(Long.parseLong(price));
-        childfood.setComment(comment);
-        childfood.setFoodImg(avatarname);
-        Map<String, Object> foodValue = childfood.toMap();
-        final Map<String, Object> childUpdate = new HashMap<>();
-        childUpdate.put(getString(R.string.food_CODE) + childfood.getFoodID(), foodValue);
-        if (!avatarname.equals(oldfood.getFoodImg())) {
-            StorageReference imgRef = stRef.child(avatarname);
-            uploadTask = imgRef.putFile(
-                    Uri.fromFile(new File(selectedImage.getUri().toString())));
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    dbRef.updateChildren(childUpdate).addOnSuccessListener(
-                            new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    mProgressDialog.dismiss();
-                                    getDialog().dismiss();
-                                    Toast.makeText(getContext(),
-                                            getString(R.string.text_updatefood_succ),
-                                            Toast.LENGTH_SHORT)
-                                            .show();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            mProgressDialog.cancel();
-                            Toast.makeText(getContext(),
-                                    getString(R.string.text_updatefood_failed),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    mProgressDialog.cancel();
-                    Toast.makeText(getContext(), getString(R.string.txt_failedUploadImg)
-                            , Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else {
-            dbRef.updateChildren(childUpdate).addOnSuccessListener(
-                    new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            mProgressDialog.dismiss();
-                            getDialog().dismiss();
-                            Toast.makeText(getContext(),
-                                    getString(R.string.text_updatefood_succ),
-                                    Toast.LENGTH_SHORT)
-                                    .show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    mProgressDialog.cancel();
-                    Toast.makeText(getContext(),
-                            getString(R.string.text_updatefood_failed),
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    }
+
 
     @Override
     public void onResume() {

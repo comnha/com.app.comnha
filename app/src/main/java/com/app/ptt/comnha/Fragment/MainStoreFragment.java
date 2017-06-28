@@ -25,7 +25,6 @@ import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.SingletonClasses.CoreManager;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.app.ptt.comnha.Utils.MyTool;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,15 +45,14 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
     ArrayList<Store> items;
     DatabaseReference dbRef;
     ValueEventListener childEventListener;
-    String pro_dist;
+    String dist_pro;
     StorageReference stRef;
     SwipeRefreshLayout swipeRefresh;
     MyTool myTool;
+
     public MainStoreFragment() {
         // Required empty public constructor
     }
-
-
 
 
     @Override
@@ -67,41 +65,43 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
         stRef = FirebaseStorage.getInstance().getReferenceFromUrl(
                 getString(R.string.firebaseStorage_path));
         ref(view);
-        if(null!=CoreManager.getInstance().getMyLocation()) {
-            pro_dist=CoreManager.getInstance().getMyLocation().getProvince()+"_"+CoreManager.getInstance().getMyLocation().getDistrict();
-            getStoreList(pro_dist);
-        }else{
-            if(getView()!=null) {
+        if (null != CoreManager.getInstance().getMyLocation()) {
+            dist_pro = CoreManager.getInstance().getMyLocation().getDistrict() + "_" + CoreManager.getInstance().getMyLocation().getProvince();
+            getStoreList(dist_pro);
+            Log.d("dist_pro", dist_pro);
+        } else {
+            if (getView() != null) {
                 AppUtils.showSnackbarWithoutButton(getView(), "Không tìm thấy vị trí của bạn");
             }
         }
-        myTool=new MyTool(getActivity());
-        Comunication.sendLocationListener=this;
+        myTool = new MyTool(getActivity());
+        Comunication.sendLocationListener = this;
         return view;
     }
 
     @Override
     public void notice() {
-        if(null!=CoreManager.getInstance().getMyLocation()) {
-            pro_dist=CoreManager.getInstance().getMyLocation().getProvince()+"_"+CoreManager.getInstance().getMyLocation().getDistrict();
-            getStoreList(pro_dist);
+        if (null != CoreManager.getInstance().getMyLocation()) {
+            dist_pro = CoreManager.getInstance().getMyLocation().getProvince() + "_" + CoreManager.getInstance().getMyLocation().getDistrict();
+            getStoreList(dist_pro);
         }
     }
 
-    public class calculateDistance extends AsyncTask<Void,Void,Void>{
+    public class calculateDistance extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            for (Store store:items) {double distance=0;
+            for (Store store : items) {
+                double distance = 0;
 
                 try {
-                    distance= myTool.distanceFrom_in_Km(store.getLat(), store.getLng(),
+                    distance = myTool.distanceFrom_in_Km(store.getLat(), store.getLng(),
                             CoreManager.getInstance().getMyLocation().getLat(), CoreManager.getInstance().getMyLocation().getLng());
                     int c = (int) Math.round(distance);
-                                int d = c / 1000;
-                                int e = c % 1000;
-                                int f = e / 100;
+                    int d = c / 1000;
+                    int e = c % 1000;
+                    int f = e / 100;
                     store.setDistance(d + "," + f);
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
 
@@ -134,7 +134,7 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
                 swipeRefresh.setRefreshing(false);
 //                dbRef.child(getString(R.string.store_CODE))
 //                        .orderByChild("isHidden_dis_pro")
-//                        .equalTo(String.valueOf(false) + "_" + pro_dist)
+//                        .equalTo(String.valueOf(false) + "_" + dist_pro)
 //                        .removeEventListener(childEventListener);
             }
 
@@ -151,7 +151,7 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 itemadapter.notifyDataSetChanged();
-                if(null!=CoreManager.getInstance().getMyLocation()) {
+                if (null != CoreManager.getInstance().getMyLocation()) {
                     new calculateDistance().execute();
                 }
             }
@@ -194,7 +194,7 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
             @Override
             public void onRefresh() {
 
-                getStoreList(pro_dist);
+                getStoreList(dist_pro);
             }
         });
     }
