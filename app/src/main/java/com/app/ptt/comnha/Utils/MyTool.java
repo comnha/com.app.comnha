@@ -290,14 +290,14 @@ public class MyTool implements
                         else
                             e += ", " + c;
 
-                        store.setProvince(c);
+                        store.setDistrict(c);
                     }
                     if (d != null) {
                         if (a == null && b == null && c == null)
                             e += d;
                         else
                             e += ", " + d;
-                        store.setDistrict(d);
+                        store.setProvince(d);
                     }
                     store.setAddress(e);
                     store.setLat(lat);

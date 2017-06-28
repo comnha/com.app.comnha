@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import android.widget.Toast;
 
 import com.app.ptt.comnha.Adapters.SingleImageImportRvAdapter;
 import com.app.ptt.comnha.Classes.SelectedImage;
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
@@ -56,6 +58,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -314,10 +317,104 @@ public class AddFoodDialog extends DialogFragment implements View.OnClickListene
                 getDialog().cancel();
                 break;
             case R.id.imgv_photo_addfood:
-                singleImageImportRvAdapter.readthentranstoarray();
-                imagesrv.scrollToPosition(0);
-                imgsDialog.show();
+                String[] permissons=new String[1];
+                permissons[0]= Const.mListPermissions[0];
+                List<String> results=AppUtils.checkPermissions(getActivity(),permissons);
+                if (results.size()>0){
+                    AppUtils.requestPermission(getActivity(),results,Const.PERMISSION_LOCATION_FLAG);
+                } else {
+                    singleImageImportRvAdapter.readthentranstoarray();
+                    imagesrv.scrollToPosition(0);
+                    imgsDialog.show();
+                }
                 break;
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case Const.PERMISSION_LOCATION_FLAG:
+                if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
+                    singleImageImportRvAdapter.readthentranstoarray();
+                    imagesrv.scrollToPosition(0);
+                    imgsDialog.show();
+                }else{
+
+                }
+                break;
+        }
+    }
+
+    private void updateFood() {
+        mProgressDialog = AppUtils.setupProgressDialog(getContext(),
+                getString(R.string.txt_updatinfood), null, false, false,
+                ProgressDialog.STYLE_SPINNER, 0);
+        mProgressDialog.show();
+        Food childfood = oldfood;
+        childfood.setName(name);
+        childfood.setPrice(Long.parseLong(price));
+        childfood.setComment(comment);
+        childfood.setFoodImg(avatarname);
+        Map<String, Object> foodValue = childfood.toMap();
+        final Map<String, Object> childUpdate = new HashMap<>();
+        childUpdate.put(getString(R.string.food_CODE) + childfood.getFoodID(), foodValue);
+        if (!avatarname.equals(oldfood.getFoodImg())) {
+            StorageReference imgRef = stRef.child(avatarname);
+            uploadTask = imgRef.putFile(
+                    Uri.fromFile(new File(selectedImage.getUri().toString())));
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    dbRef.updateChildren(childUpdate).addOnSuccessListener(
+                            new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    mProgressDialog.dismiss();
+                                    getDialog().dismiss();
+                                    Toast.makeText(getContext(),
+                                            getString(R.string.text_updatefood_succ),
+                                            Toast.LENGTH_SHORT)
+                                            .show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            mProgressDialog.cancel();
+                            Toast.makeText(getContext(),
+                                    getString(R.string.text_updatefood_failed),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    mProgressDialog.cancel();
+                    Toast.makeText(getContext(), getString(R.string.txt_failedUploadImg)
+                            , Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            dbRef.updateChildren(childUpdate).addOnSuccessListener(
+                    new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            mProgressDialog.dismiss();
+                            getDialog().dismiss();
+                            Toast.makeText(getContext(),
+                                    getString(R.string.text_updatefood_succ),
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    mProgressDialog.cancel();
+                    Toast.makeText(getContext(),
+                            getString(R.string.text_updatefood_failed),
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 

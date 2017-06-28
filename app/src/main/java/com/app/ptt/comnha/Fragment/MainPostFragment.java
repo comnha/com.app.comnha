@@ -32,8 +32,6 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
-import static com.facebook.login.widget.ProfilePictureView.TAG;
-
 
 public class MainPostFragment extends Fragment implements SendLocationListener {
     RecyclerView mRecyclerView;
@@ -60,22 +58,17 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
         stRef = FirebaseStorage.getInstance()
                 .getReferenceFromUrl(getString(R.string.firebaseStorage_path));
         ref(view);
-        pro_dist = "Quận 9_Hồ Chí Minh";
-        getPostList(pro_dist);
-
-        if (null != CoreManager.getInstance().getMyLocation()) {
-            pro_dist=CoreManager.getInstance().getMyLocation().getDistrict()
-                    +"_"+CoreManager.getInstance().getMyLocation().getProvince();
-            Log.d(TAG, "pro_dist: " + pro_dist);
-            pro_dist = "Quận 9_Hồ Chí Minh";
-
-        } else {
-            if (getView() != null)
-                AppUtils.showSnackbarWithoutButton(getView(), "Không tìm thấy vị trí của bạn");
+        if(null!= CoreManager.getInstance().getMyLocation()){
+            pro_dist=CoreManager.getInstance().getMyLocation().getProvince()+"_"+CoreManager.getInstance().getMyLocation().getDistrict();
+            getPostList(pro_dist);
+        }else{
+            if(getView()!=null)
+                AppUtils.showSnackbarWithoutButton(getView(),"Không tìm thấy vị trí của bạn");
         }
-        Comunication.sendLocationListener = this;
+        Comunication.sendLocationListener=this;
         return view;
     }
+
 
 
     private void getPostList(final String pro_dist) {
@@ -105,17 +98,15 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
         dbRef.child(getString(R.string.posts_CODE))
                 .orderByChild("isHidden_dist_prov")
                 .equalTo(false + "_" + pro_dist)
-                .addListenerForSingleValueEvent(postsEventListener);
+                .addValueEventListener(postsEventListener);
     }
-
     @Override
     public void notice() {
-        if (null != CoreManager.getInstance().getMyLocation()) {
-            pro_dist = CoreManager.getInstance().getMyLocation().getProvince() + "_" + CoreManager.getInstance().getMyLocation().getDistrict();
+        if(null!= CoreManager.getInstance().getMyLocation()){
+            pro_dist=CoreManager.getInstance().getMyLocation().getProvince()+"_"+CoreManager.getInstance().getMyLocation().getDistrict();
             getPostList(pro_dist);
         }
     }
-
     private void ref(View view) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerV_postfrag);
         layoutManager = new LinearLayoutManager(getContext(),

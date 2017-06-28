@@ -33,7 +33,7 @@ public class Notification {
 
     String to;
     Boolean isReaded;
-    Account account;
+    User account;
 
 
     public int getType() {
@@ -56,11 +56,11 @@ public class Notification {
 
 
 
-    public Account getAccount() {
+    public User getAccount() {
         return account;
     }
 
-    public void setAccount(Account account) {
+    public void setAccount(User account) {
         this.account = account;
     }
 
