@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.app.ptt.comnha.Adapters.CustomAutoCompleteTextAdapter;
 import com.app.ptt.comnha.Adapters.User_rcyler_adapter;
 import com.app.ptt.comnha.Classes.AnimationUtils;
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Fragment.PickLocationBottomSheetDialogFragment;
 import com.app.ptt.comnha.Interfaces.Comunication;
 import com.app.ptt.comnha.Interfaces.Transactions;
@@ -98,7 +99,7 @@ public class UserManageActivity extends BaseActivity implements View.OnClickList
         ref();
 
         dbRef = FirebaseDatabase.getInstance()
-                .getReferenceFromUrl(getString(R.string.firebase_path));
+                .getReferenceFromUrl(Const.DATABASE_PATH);
 
         pickLocationDialog = new PickLocationBottomSheetDialogFragment();
         pickLocationDialog.setOnPickListener(this);
