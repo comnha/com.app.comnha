@@ -37,7 +37,7 @@ public class Reviewlist_rcyler_adapter extends RecyclerView.Adapter<Reviewlist_r
             super(view);
 //            if(type==2){
 //                txt_time = (TextView) view.findViewById(R.id.food_txtv_time);
-//                txt_un = (TextView) view.findViewById(R.id.food_txtv_username);
+//                txtName = (TextView) view.findViewById(R.id.food_txtv_username);
 //                txt_postdate = (TextView) view.findViewById(R.id.food_txtv_postdate);
 //                txt_likenumb = (TextView) view.findViewById(R.id.food_txtv_likenumb);
 //                txt_commentnumb = (TextView) view.findViewById(R.id.food_txtv_commentnumb);
@@ -47,7 +47,7 @@ public class Reviewlist_rcyler_adapter extends RecyclerView.Adapter<Reviewlist_r
 //                txt_ratingtext=(TextView) view.findViewById(R.id.rating_text);
 //            }else{
 //                txt_time = (TextView) view.findViewById(R.id.post_txtv_time);
-//                txt_un = (TextView) view.findViewById(R.id.post_txtv_un);
+//                txtName = (TextView) view.findViewById(R.id.post_txtv_un);
 //                txt_tenmon = (TextView) view.findViewById(R.id.review_txtv_tenmon);
 //                txt_postdate = (TextView) view.findViewById(R.id.post_txtv_postdate);
 //                txt_gia = (TextView) view.findViewById(R.id.review_txtv_gia);
@@ -125,7 +125,7 @@ public class Reviewlist_rcyler_adapter extends RecyclerView.Adapter<Reviewlist_r
         }
 //        holder.txt_postdate.setText(foods.get(position).getDate());
 //        holder.txt_time.setText(foods.get(position).getTime());
-//        holder.txt_un.setText(foods.get(position).getUserName());
+//        holder.txtName.setText(foods.get(position).getUserName());
 //        holder.txt_likenumb.setText(String.valueOf(foods.get(position).getLikeCount()) + " Likes");
 //        holder.txt_commentnumb.setText(String.valueOf(foods.get(position).getCommentCount()) + " Comments");
 

@@ -609,7 +609,7 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
                 title="Giới tính";
                 textInputLayout.setVisibility(View.GONE);
                 rg.setVisibility(View.VISIBLE);
-                if(text.toLowerCase().equals("Nam")){
+                if(text.equals("Nam")){
                     rbNam.setChecked(true);
                 }else{
                     rbNu.setChecked(true);

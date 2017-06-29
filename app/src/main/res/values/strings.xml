@@ -4,6 +4,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="text_admin_selection_news">Thông báo thêm mới: từ bài đánh giá, quán ăn</string>
     <string name="text_admin_selection_reports">Thông báo report: từ những bài đánh giá, hình ảnh, quán ăn, món ăn</string>
+    <string name="text_admin_user_management">Quản lý tài khoản</string>
     <string name="text_delnotify">Xóa thông báo</string>
     <string name="text_hidefood">Ẩn món ăn</string>
     <string name="text_rate">Đánh giá quán ăn</string>
@@ -92,6 +93,7 @@
     <string name="txt_noemail">Bạn chưa nhập email</string>
     <string name="txt_notemail">Email không hợp lệ</string>
     <string name="txt_nopass">Bạn chưa nhập password</string>
+    <string name="txt_deluser">Tài khoản đã bị xóa</string>
     <string name="txt_noho">Warning: Chưa nhập họ</string>
     <string name="txt_notenlot">Warning: Chưa nhập tên lót</string>
     <string name="txt_noten">Warning: Chưa nhập tên</string>

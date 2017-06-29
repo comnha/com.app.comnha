@@ -20,12 +20,22 @@ import android.widget.TextView;
 import com.app.ptt.comnha.Activity.AdapterActivity;
 import com.app.ptt.comnha.Activity.MainActivity;
 import com.app.ptt.comnha.Const.Const;
+import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import static android.content.ContentValues.TAG;
 import static com.app.ptt.comnha.R.id.btn_siFrg_signin;
@@ -38,10 +48,16 @@ import static com.app.ptt.comnha.Utils.AppUtils.showSnackbar;
  */
 public class SigninFragment extends BaseFragment implements View.OnClickListener {
     private EditText edt_email, edt_pass;
+    private User user;FirebaseUser firebaseUser;
+
     private Button btn_signin;
     private TextView txtV_signup;
     int signinfromStoreDe = -1;
 
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    FirebaseAuth mAuth;
+    private DatabaseReference dbRef;
+    private ValueEventListener userValueListener;
     public SigninFragment() {
         // Required empty public constructor
     }
@@ -51,6 +67,12 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
         View view = inflater.inflate(R.layout.fragment_signin, container, false);
         anhXa(view);
         signinfromStoreDe = this.getArguments().getInt("signinfromStoreDe");
+        Bundle args = getArguments();
+        if(args!=null && args.getString("name")!=null&& args.getString("pass")!=null){
+            edt_email.setText(args.getString("name").toString());
+            edt_pass.setText(args.getString("pass").toString());
+            AppUtils.showSnackbarWithoutButton(view, getString(R.string.text_signup_successful));
+        }
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         return view;
     }
@@ -63,6 +85,9 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
         txtV_signup.setOnClickListener(this);
         btn_signin.setOnClickListener(this);
         edt_email.requestFocus();
+        mAuth = FirebaseAuth.getInstance();
+        dbRef = FirebaseDatabase.getInstance()
+                .getReferenceFromUrl(Const.DATABASE_PATH);
     }
 
 
@@ -147,20 +172,8 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
                             if (!task.isSuccessful()) {
                                 Log.w(TAG, "signInWithEmail:onComplete", task.getException());
                                 AppUtils.showSnackbarWithoutButton(view, getString(R.string.text_signin_fail));
-                                if (signinfromStoreDe == 1) {
-                                    getActivity().setResult(Activity.RESULT_CANCELED);
-                                }
                             } else {
-                                LoginSession.getInstance().setUser(null);
-                                LoginSession.getInstance().setFirebUser(null);
-
-                                Intent i=new Intent(getActivity(), MainActivity.class);
-                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                if (signinfromStoreDe == 1) {
-                                    getActivity().setResult(Activity.RESULT_OK);
-                                }
-                                getActivity().finish();
-                                getActivity().startActivity(i);
+                              getUser();
                             }
                             closeDialog();
 
@@ -169,7 +182,26 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
         }
 
     }
-
+    private void getUser() {
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                firebaseUser = firebaseAuth.getCurrentUser();
+                if (firebaseUser != null) {
+                    // User is signed in
+                    getUserInfo(firebaseUser);
+                    Log.d("onAuthStateChanged", "onAuthStateChanged:signed_in:" + firebaseUser.getUid());
+                } else {
+                    AppUtils.showSnackbarWithoutButton(getView(), getString(R.string.text_signin_fail));
+                    // User is signed out
+                }
+            }
+        };
+        mAuth.addAuthStateListener(mAuthListener);
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
     boolean checkInput(View view) {
         if (isEqualsNull(edt_email)) {
             AppUtils.showSnackbarWithoutButton(view, getString(R.string.txt_noemail));
@@ -188,4 +220,68 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
         }
         return true;
     }
+    private void getUserInfo(final FirebaseUser firebaseUser) {
+
+        userValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                try {
+                    user = dataSnapshot.getValue(User.class);
+                    String key = firebaseUser.getUid();
+                    user.setuID(key);
+                }catch (Exception e){
+                    user=null;
+                }
+//                mAuth.removeAuthStateListener(mAuthListener);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+        dbRef.child(getString(R.string.users_CODE)
+                + firebaseUser.getUid())
+                .addListenerForSingleValueEvent(userValueListener);
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(null==user){
+                    deleteUser(firebaseUser);
+                    auth.signOut();
+                }else{
+                    LoginSession.getInstance().setUser(null);
+                    LoginSession.getInstance().setFirebUser(null);
+                    Intent i=new Intent(getActivity(), MainActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    if (signinfromStoreDe == 1) {
+                        getActivity().setResult(Activity.RESULT_OK);
+                    }
+                    getActivity().finish();
+                    getActivity().startActivity(i);
+                }
+                if (mAuthListener != null) {
+                    auth.removeAuthStateListener(mAuthListener);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    public void deleteUser(FirebaseUser firebaseUser){
+        firebaseUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+               AppUtils.showSnackbarWithoutButton(getView(),"Tài khoản đã bị xóa");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                AppUtils.showSnackbarWithoutButton(getView(),"Tài khoản đã bị xóa");
+            }
+        });
+    }
+
 }

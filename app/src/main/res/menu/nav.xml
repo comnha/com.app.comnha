@@ -37,6 +37,7 @@
     <item android:title="Quản trị">
         <menu>
             <item
+                android:icon="@drawable/icon_admin_1"
                 android:id="@+id/nav_admin"
                 android:title="Admin" />
         </menu>

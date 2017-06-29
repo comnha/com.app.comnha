@@ -73,17 +73,21 @@ public class SplashActivity extends BaseActivity {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-                if (firebaseUser != null) {
-                    // User is signed in
-                    getUserInfo(firebaseUser);
-                    Log.d("onAuthStateChanged", "onAuthStateChanged:signed_in:" + firebaseUser.getUid());
-                } else {
-                    // User is signed out
-                    Log.d("onAuthStateChanged", "onAuthStateChanged:signed_out");
-                    LoginSession.getInstance().setFirebUser(null);
-                    LoginSession.getInstance().setUser(null);
-                    startMainActi();
+                try {
+                    FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                    if (firebaseUser != null ) {
+                        // User is signed in
+                        getUserInfo(firebaseUser);
+                        Log.d("onAuthStateChanged", "onAuthStateChanged:signed_in:" + firebaseUser.getUid());
+                    } else {
+                        // User is signed out
+                        Log.d("onAuthStateChanged", "onAuthStateChanged:signed_out");
+                        LoginSession.getInstance().setFirebUser(null);
+                        LoginSession.getInstance().setUser(null);
+                        startMainActi();
+                    }
+                }catch (Exception e){
+
                 }
             }
         };
@@ -94,12 +98,19 @@ public class SplashActivity extends BaseActivity {
         userValueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                user = dataSnapshot.getValue(User.class);
-                String key = firebaseUser.getUid();
-                user.setuID(key);
-                LoginSession.getInstance().setUser(user);
-                LoginSession.getInstance().setFirebUser(firebaseUser);
-                mAuth.removeAuthStateListener(mAuthListener);
+                try {
+                    user = dataSnapshot.getValue(User.class);
+                    String key = firebaseUser.getUid();
+                    user.setuID(key);
+                    LoginSession.getInstance().setUser(user);
+                    LoginSession.getInstance().setFirebUser(firebaseUser);
+                    mAuth.removeAuthStateListener(mAuthListener);
+                }catch (Exception e){
+
+                    Log.d("onAuthStateChanged", "onAuthStateChanged:signed_out");
+                    LoginSession.getInstance().setFirebUser(null);
+                    LoginSession.getInstance().setUser(null);
+                }
                 startMainActi();
             }
 

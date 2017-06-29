@@ -7,9 +7,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
 
 public class AdminActivity extends AppCompatActivity implements View.OnClickListener {
-    LinearLayout linear_selection_news, linear_selection_reports;
+    LinearLayout linear_selection_news, linear_selection_reports,llUserManage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,7 +18,12 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_admin);
         linear_selection_news = (LinearLayout) findViewById(R.id.linear_selection_news_adminact);
         linear_selection_reports = (LinearLayout) findViewById(R.id.linear_selection_reports_adminact);
+        llUserManage= (LinearLayout) findViewById(R.id.ll_user_manager);
+        llUserManage.setOnClickListener(this);
         linear_selection_reports.setOnClickListener(this);
+        if(LoginSession.getInstance().getUser().getRole()==1){
+            llUserManage.setVisibility(View.GONE);
+        }
         linear_selection_news.setOnClickListener(this);
     }
 
@@ -32,6 +38,10 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
                 Intent intent_reports = new Intent(this, ReportsNotifyAdminActivity.class);
                 startActivity(intent_reports);
                 break;
+            case R.id.ll_user_manager:
+                Intent intent_user_manage = new Intent(this, UserManageActivity.class);
+                startActivity(intent_user_manage);
+               break;
         }
     }
 }

@@ -19,6 +19,7 @@ import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -202,10 +203,16 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isComplete()) {
-                            addUserInfo(task.getResult().getUser().getUid());
-                        } else {
-                            removeUserInfo();
+                        try {
+                            if (task.isComplete()) {
+                                addUserInfo(task.getResult().getUser().getUid());
+                            } else {
+                                AppUtils.showSnackbarWithoutButton(getView(), "Email đã tồn tại");
+                                closeDialog();
+                            }
+                        }catch (Exception e){
+                            AppUtils.showSnackbarWithoutButton(getView(), "Email đã tồn tại");
+                            closeDialog();
                         }
 
                     }
@@ -229,11 +236,16 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra(Const.INTENT_KEY_EMAIL, AppUtils.getText(editText_email));
-                    returnIntent.putExtra(Const.INTENT_KEY_PASSWORD, AppUtils.getText(editText_password));
-                    getActivity().setResult(Activity.RESULT_OK, returnIntent);
+
                     getActivity().finish();
+                    SigninFragment signinFragment = new SigninFragment();
+                    Bundle args = new Bundle();
+                    args.putString("name", AppUtils.getText(editText_email));
+                    args.putString("pass",AppUtils.getText(editText_password));
+                    signinFragment.setArguments(args);
+                    getActivity().getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, signinFragment)
+                            .commit();
+
                 } else {
                     AppUtils.showSnackbarWithoutButton(getView(), getString(R.string.txt_tryagain));
                 }
