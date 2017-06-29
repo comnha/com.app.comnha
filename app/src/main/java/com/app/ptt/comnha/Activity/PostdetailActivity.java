@@ -40,6 +40,7 @@ import android.widget.Toast;
 
 import com.app.ptt.comnha.Adapters.Comment_rcyler_adapter;
 import com.app.ptt.comnha.Adapters.Photo_recycler_adapter;
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Dialog.ReportDialog;
 import com.app.ptt.comnha.Models.FireBase.Comment;
 import com.app.ptt.comnha.Models.FireBase.Food;
@@ -130,8 +131,10 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         setContentView(R.layout.activity_post_detail);
         isConnected = MyService.returnIsNetworkConnected();
-        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
-        stRef = FirebaseStorage.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebaseStorage_path));
+        dbRef = FirebaseDatabase.getInstance()
+                .getReferenceFromUrl(Const.DATABASE_PATH);
+        stRef = FirebaseStorage.getInstance()
+                .getReferenceFromUrl(Const.STORAGE_PATH);
         if (ChoosePost.getInstance().getPost() != null) {
             post = ChoosePost.getInstance().getPost();
             postID = post.getPostID();

@@ -27,6 +27,7 @@ import com.app.ptt.comnha.Models.FireBase.ReportfoodNotify;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;
+import com.app.ptt.comnha.SingletonClasses.CoreManager;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -64,8 +65,15 @@ public class AdminReportFoodFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_admin_report_food, container, false);
-        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getString(R.string.firebase_path));
+        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getString(R.string.firebaseDB_path));
         init(view);
+        if (null != CoreManager.getInstance().getMyLocation()) {
+            dist_pro = CoreManager.getInstance().getMyLocation().getDistrict() + "_" + CoreManager.getInstance().getMyLocation().getProvince();
+            Log.d("dist_pro", dist_pro);
+        } else {
+            if (getView() != null)
+                AppUtils.showSnackbarWithoutButton(getView(), "Không tìm thấy vị trí của bạn");
+        }
         getFoodReport();
         return view;
     }

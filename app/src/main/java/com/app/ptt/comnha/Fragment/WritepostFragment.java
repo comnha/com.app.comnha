@@ -47,6 +47,7 @@ import com.app.ptt.comnha.Adapters.ImagesImportRvAdapter;
 import com.app.ptt.comnha.Adapters.Storeselection_rcyler_adapter;
 import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Classes.SelectedImage;
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.NewpostNotify;
@@ -143,9 +144,9 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //        isConnected = MyService.returnIsConnected();
         View view = inflater.inflate(R.layout.fragment_writepost, container, false);
         dbRef = FirebaseDatabase.getInstance()
-                .getReferenceFromUrl(getString(R.string.firebase_path));
+                .getReferenceFromUrl(Const.DATABASE_PATH);
         stRef = FirebaseStorage.getInstance()
-                .getReferenceFromUrl(getString(R.string.firebaseStorage_path));
+                .getReferenceFromUrl(Const.STORAGE_PATH);
         cr = getContext().getContentResolver();
         if (LoginSession.getInstance().getFirebUser() != null) {
             user = LoginSession.getInstance().getUser();

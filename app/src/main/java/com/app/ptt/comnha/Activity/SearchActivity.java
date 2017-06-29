@@ -2,8 +2,6 @@ package com.app.ptt.comnha.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -73,7 +71,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         ref();
 
         dbRef = FirebaseDatabase.getInstance()
-                .getReferenceFromUrl(getString(R.string.firebase_path));
+                .getReferenceFromUrl(getString(R.string.firebaseDB_path));
         list=new ArrayList<>();
         stores=new ArrayList<>();
         foods=new ArrayList<>();

@@ -66,7 +66,7 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<Store_recycler_
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if (null != stores.get(position).getDistance()) {
             holder.txtv_distance.setText(stores.get(position).getDistance() + " km");
-        }else {
+        } else {
             AnimationUtils.fadeAnimation(holder.itemView, 700, true, 0);
         }
         holder.txtv_storename.setText(stores.get(position).getName());
@@ -75,29 +75,40 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<Store_recycler_
 
         holder.txtv_opentime.setText(stores.get(position).getOpentime());
         holder.txtv_phonenumb.setText(stores.get(position).getPhonenumb());
-        if (!stores.get(holder.getAdapterPosition()).getStoreimg().equals("")) {
-            StorageReference imgRef = stRef.child(stores.get(holder.getAdapterPosition())
-                    .getStoreimg());
-            Log.d("imgName", stores.get(holder.getAdapterPosition())
-                    .getStoreimg());
-            Log.d("Imgpath", imgRef.getDownloadUrl() + "");
-            imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Log.d("getUrl().addOnSuccess", uri.toString() + "");
+        if (stores.get(holder.getAdapterPosition()).getImgBitmap() == null) {
+            if (!stores.get(holder.getAdapterPosition()).getStoreimg().equals("")) {
+                StorageReference imgRef = stRef.child(stores.get(holder.getAdapterPosition())
+                        .getStoreimg());
+                Log.d("imgName", stores.get(holder.getAdapterPosition())
+                        .getStoreimg());
+                Log.d("Imgpath", imgRef.getDownloadUrl() + "");
+                imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Log.d("getUrl().addOnSuccess", uri.toString() + "");
 //                    holder.imgv_avatar.setImageURI(uri);
-                    Picasso.with(context)
-                            .load(uri)
-                            .into(holder.imgv_avatar);
-                }
-            });
+                        Picasso.with(context)
+                                .load(uri)
+                                .into(holder.imgv_avatar);
+                        try {
+                            Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_avatar.getDrawable())
+                                    .getBitmap();
+                            stores.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
+                        } catch (NullPointerException e) {
+
+                        }
+                    }
+                });
+            } else {
+                holder.imgv_avatar.setImageResource(R.drawable.ic_item_store);
+            }
         } else {
-            holder.imgv_avatar.setImageResource(R.drawable.ic_item_store);
+            holder.imgv_avatar.setImageBitmap(stores.get(position).getImgBitmap());
         }
-        if (stores.get(position).isHidden()){
+        if (stores.get(position).isHidden()) {
             holder.cardView.setBackgroundColor(
                     context.getResources().getColor(R.color.colorFabRipple));
-        }else {
+        } else {
             holder.cardView.setBackgroundColor(
                     context.getResources().getColor(android.R.color.white));
         }

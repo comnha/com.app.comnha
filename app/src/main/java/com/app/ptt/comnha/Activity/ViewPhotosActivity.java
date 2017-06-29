@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.app.ptt.comnha.Adapters.ViewPhotoVPadapter;
 import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Classes.ZoomOutPageTransformer;
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Dialog.ReportDialog;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.User;
@@ -89,12 +90,10 @@ public class ViewPhotosActivity extends AppCompatActivity {
         position = intent.getIntExtra("imgPosition", 0);
         indexselect = position;
         Log.i("ViewPhoto_pos", position + "");
-        stRef = FirebaseStorage
-                .getInstance()
-                .getReferenceFromUrl(getString(R.string.firebaseStorage_path));
-        dbRef = FirebaseDatabase
-                .getInstance()
-                .getReferenceFromUrl(getString(R.string.firebase_path));
+        dbRef = FirebaseDatabase.getInstance()
+                .getReferenceFromUrl(Const.DATABASE_PATH);
+        stRef = FirebaseStorage.getInstance()
+                .getReferenceFromUrl(Const.STORAGE_PATH);
         init();
     }
 

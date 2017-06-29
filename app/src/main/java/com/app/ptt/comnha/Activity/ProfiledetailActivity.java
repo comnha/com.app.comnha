@@ -41,6 +41,7 @@ import android.widget.Toast;
 import com.app.ptt.comnha.Adapters.Photo_recycler_adapter;
 import com.app.ptt.comnha.Adapters.SingleImageImportRvAdapter;
 import com.app.ptt.comnha.Classes.SelectedImage;
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
@@ -65,8 +66,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -113,12 +112,10 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profiledetail);
-        dbRef = FirebaseDatabase
-                .getInstance()
-                .getReferenceFromUrl(getString(R.string.firebase_path));
-        stRef = FirebaseStorage
-                .getInstance()
-                .getReferenceFromUrl(getString(R.string.firebaseStorage_path));
+        dbRef = FirebaseDatabase.getInstance()
+                .getReferenceFromUrl(Const.DATABASE_PATH);
+        stRef = FirebaseStorage.getInstance()
+                .getReferenceFromUrl(Const.STORAGE_PATH);
         if (LoginSession.getInstance().getUser() != null) {
             user = LoginSession.getInstance().getUser();
             userID = LoginSession.getInstance().getUser().getuID();

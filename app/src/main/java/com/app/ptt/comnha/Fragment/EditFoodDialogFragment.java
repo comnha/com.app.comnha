@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;
@@ -64,7 +65,10 @@ public class EditFoodDialogFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_edit_food_dialog, container, false);
         editFood = ChooseFood.getInstance().getFood();
         childUpdates = new HashMap<>();
-        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
+        dbRef = FirebaseDatabase.getInstance()
+                .getReferenceFromUrl(Const.DATABASE_PATH);
+//        stRef = FirebaseStorage.getInstance()
+//                .getReferenceFromUrl(Const.STORAGE_PATH);
         edtTenMon = (EditText) view.findViewById(R.id.edt_tenmon);
 //        edtTenMon.setText(ChooseFood.getInstance().getFood().getName());
 //        edtGia=(EditText) view.findViewById(R.id.edt_gia);

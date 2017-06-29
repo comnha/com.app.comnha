@@ -97,7 +97,7 @@ public class FilterFragment extends Fragment implements View.OnKeyListener ,View
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_filter, container, false);
         dbRef = FirebaseDatabase.getInstance()
-                .getReferenceFromUrl(getResources().getString(R.string.firebase_path));
+                .getReferenceFromUrl(getResources().getString(R.string.firebaseDB_path));
         isConnected= MyService.returnIsNetworkConnected();
         anhxa(view);
         return view;

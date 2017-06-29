@@ -7,6 +7,8 @@ import android.Manifest;
  */
 
 public class Const {
+    public static final String DATABASE_PATH="https://comnha-e4dbe.firebaseio.com/";
+    public static final String STORAGE_PATH="gs://comnha-e4dbe.appspot.com/";
     public static final String BROADCAST_SEND_INFO = "1";
     public static final String BROADCAST_SEND_STATUS_GET_LOCATION = "2";
     public static final String BROADCAST_SEND_STATUS_INTERNET = "3";

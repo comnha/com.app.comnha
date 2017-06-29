@@ -41,6 +41,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.ptt.comnha.Activity.AdapterActivity;
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Interfaces.DoInBackGroundOK;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
@@ -185,8 +186,10 @@ public class EditPostDialogFragment extends DialogFragment
         // Inflate the layout for this fragment
         isConnected= MyService.returnIsNetworkConnected();
         View view = inflater.inflate(R.layout.fragment_edit_post_dialog, container, false);
-        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
-        storeRef = FirebaseStorage.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebaseStorage_path));
+        dbRef = FirebaseDatabase.getInstance()
+                .getReferenceFromUrl(Const.DATABASE_PATH);
+//        stRef = FirebaseStorage.getInstance()
+//                .getReferenceFromUrl(Const.STORAGE_PATH);
         ref(view);
         setData();
 
@@ -555,7 +558,7 @@ public class EditPostDialogFragment extends DialogFragment
 //        }
 
         else {
-            dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
+//            dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
 //            key = oldPost.getPostID();
 //            locaID = oldPost.getLocaID();
 //            updateLoca.setLocaID(null);
@@ -582,7 +585,7 @@ public class EditPostDialogFragment extends DialogFragment
         images=new ArrayList<>();
         uris=new ArrayList<>();
         childUpdates = new HashMap<String, Object>();
-        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebase_path));
+        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(Const.DATABASE_PATH);
         newPost = oldPost;
 //        Toast.makeText(getContext(),"POS TYPE="+oldPost.getType()+"---"+cb_monAn.isChecked(), Toast.LENGTH_SHORT).show();
 //        if(cb_monAn.isChecked()&&oldPost.getType()==2){

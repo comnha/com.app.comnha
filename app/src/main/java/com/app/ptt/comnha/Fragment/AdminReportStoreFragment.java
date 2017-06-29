@@ -27,6 +27,7 @@ import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
+import com.app.ptt.comnha.SingletonClasses.CoreManager;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -50,7 +51,7 @@ public class AdminReportStoreFragment extends Fragment {
     ArrayList<ReportstoreNotify> items;
     DatabaseReference dbRef;
     ValueEventListener reportEventListener, storeEventListener, userEventListener;
-    String dist_pro = "Quận 9_HCM";
+    String dist_pro;
     Store store = null;
     ProgressDialog plzwaitDialog;
     User user;
@@ -66,8 +67,15 @@ public class AdminReportStoreFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_admin_report_store, container, false);
         dbRef = FirebaseDatabase
                 .getInstance()
-                .getReferenceFromUrl(getString(R.string.firebase_path));
+                .getReferenceFromUrl(getString(R.string.firebaseDB_path));
         init(view);
+        if (null != CoreManager.getInstance().getMyLocation()) {
+            dist_pro = CoreManager.getInstance().getMyLocation().getDistrict() + "_" + CoreManager.getInstance().getMyLocation().getProvince();
+            Log.d("dist_pro", dist_pro);
+        } else {
+            if (getView() != null)
+                AppUtils.showSnackbarWithoutButton(getView(), "Không tìm thấy vị trí của bạn");
+        }
         getStoreReport();
         return view;
     }

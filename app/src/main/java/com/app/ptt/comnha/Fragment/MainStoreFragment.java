@@ -17,12 +17,14 @@ import android.view.ViewGroup;
 
 import com.app.ptt.comnha.Activity.StoreDeatailActivity;
 import com.app.ptt.comnha.Adapters.Store_recycler_adapter;
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Interfaces.Comunication;
 import com.app.ptt.comnha.Interfaces.SendLocationListener;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.SingletonClasses.CoreManager;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.app.ptt.comnha.Utils.MyTool;
 import com.google.firebase.database.DataSnapshot;
@@ -42,9 +44,9 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager layoutManager;
     Store_recycler_adapter itemadapter;
-    ArrayList<Store> items;
+    ArrayList<Store> stores;
     DatabaseReference dbRef;
-    ValueEventListener childEventListener;
+    ValueEventListener storesEventListener;
     String dist_pro;
     StorageReference stRef;
     SwipeRefreshLayout swipeRefresh;
@@ -60,14 +62,14 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
                              Bundle savedInstanceState) {
         Log.d("MainFragmentPage", "createviewStore");
         View view = inflater.inflate(R.layout.fragment_main_store, container, false);
-        dbRef = FirebaseDatabase.getInstance().
-                getReferenceFromUrl(getString(R.string.firebase_path));
-        stRef = FirebaseStorage.getInstance().getReferenceFromUrl(
-                getString(R.string.firebaseStorage_path));
-        ref(view);
+        dbRef = FirebaseDatabase.getInstance()
+                .getReferenceFromUrl(Const.DATABASE_PATH);
+        stRef = FirebaseStorage.getInstance()
+                .getReferenceFromUrl(Const.STORAGE_PATH);
+        init(view);
         if (null != CoreManager.getInstance().getMyLocation()) {
             dist_pro = CoreManager.getInstance().getMyLocation().getDistrict() + "_" + CoreManager.getInstance().getMyLocation().getProvince();
-            getStoreList(dist_pro);
+            getStoreList();
             Log.d("dist_pro", dist_pro);
         } else {
             if (getView() != null) {
@@ -83,14 +85,14 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
     public void notice() {
         if (null != CoreManager.getInstance().getMyLocation()) {
             dist_pro = CoreManager.getInstance().getMyLocation().getProvince() + "_" + CoreManager.getInstance().getMyLocation().getDistrict();
-            getStoreList(dist_pro);
+            getStoreList();
         }
     }
 
     public class calculateDistance extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            for (Store store : items) {
+            for (Store store : stores) {
                 double distance = 0;
 
                 try {
@@ -115,27 +117,26 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
         }
     }
 
-    private void getStoreList(final String pro_dist) {
-        items.clear();
-        childEventListener = new ValueEventListener() {
+    private void getStoreList() {
+        stores.clear();
+        int role = 0;
+        if (LoginSession.getInstance().getUser() != null) {
+            role = LoginSession.getInstance().getUser().getRole();
+        }
+        storesEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot item : dataSnapshot.getChildren()) {
                     Store store = item.getValue(Store.class);
                     store.setStoreID(item.getKey());
 
-                    items.add(store);
-                    itemadapter.setStorageRef(
-                            FirebaseStorage.getInstance().getReferenceFromUrl(
-                                    getActivity().getResources().getString(R.string.firebaseStorage_path)));
-                    Log.d("added", "added");
+                    stores.add(store);
 
+                    Log.d("added", "added");
                 }
+                itemadapter.notifyDataSetChanged();
+                new calculateDistance().execute();
                 swipeRefresh.setRefreshing(false);
-//                dbRef.child(getString(R.string.store_CODE))
-//                        .orderByChild("isHidden_dis_pro")
-//                        .equalTo(String.valueOf(false) + "_" + dist_pro)
-//                        .removeEventListener(childEventListener);
             }
 
             @Override
@@ -143,33 +144,25 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
 
             }
         };
-        dbRef.child(getString(R.string.store_CODE))
-                .orderByChild("isHidden_dis_pro")
-                .equalTo(String.valueOf(false) + "_" + pro_dist)
-                .addValueEventListener(childEventListener);
-        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                itemadapter.notifyDataSetChanged();
-                if (null != CoreManager.getInstance().getMyLocation()) {
-                    new calculateDistance().execute();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
+        if (role == 1) {
+            dbRef.child(getString(R.string.store_CODE))
+                    .orderByChild("pro_dist")
+                    .equalTo(dist_pro)
+                    .addListenerForSingleValueEvent(storesEventListener);
+        } else {
+            dbRef.child(getString(R.string.store_CODE))
+                    .orderByChild("isHidden_dis_pro")
+                    .equalTo(String.valueOf(false) + "_" + dist_pro)
+                    .addListenerForSingleValueEvent(storesEventListener);
+        }
     }
 
-    private void ref(final View view) {
+    private void init(final View view) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerV_storefrag);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
-        items = new ArrayList<>();
-        itemadapter = new Store_recycler_adapter(items, getContext());
+        stores = new ArrayList<>();
+        itemadapter = new Store_recycler_adapter(stores, getContext(), stRef);
         itemadapter.setOnItemClickLiestner(new Store_recycler_adapter.OnItemClickLiestner() {
             @Override
             public void onItemClick(Store store, View itemView) {
@@ -194,7 +187,7 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
             @Override
             public void onRefresh() {
 
-                getStoreList(dist_pro);
+                getStoreList();
             }
         });
     }

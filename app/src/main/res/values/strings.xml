@@ -158,7 +158,7 @@
     <string name="txt_agree">Đồng ý</string>
     <string name="txt_disagree">Không đồng ý</string>
     <!--PATH-->
-    <string name="firebase_path">https://comnha-e4dbe.firebaseio.com/</string>
+    <string name="firebaseDB_path">https://comnha-e4dbe.firebaseio.com/</string>
     <string name="firebaseStorage_path">gs://comnha-e4dbe.appspot.com/</string>
 
     <!--PATH-->
