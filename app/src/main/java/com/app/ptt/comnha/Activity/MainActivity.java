@@ -153,6 +153,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     itemProfile.setVisible(false);
                     itemAdmin.setVisible(false);
                     imgv_avatar.setImageResource(R.drawable.ic_logo);
+                    closeDialog();
+                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), getString(R.string.text_signout_success));
+
                 }
             }
         };
@@ -167,7 +170,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     user = dataSnapshot.getValue(User.class);
                     String key = firebaseUser.getUid();
                     user.setuID(key);
-                    if (user.getRole() >0) {
+                    if (user.getRole() > 0) {
                         itemAdmin.setVisible(true);
                     } else {
                         itemAdmin.setVisible(false);
@@ -175,7 +178,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     LoginSession.getInstance().setUser(user);
                     LoginSession.getInstance().setFirebUser(firebaseUser);
                     mAuth.removeAuthStateListener(mAuthListener);
-                }catch (Exception e){
+                } catch (Exception e) {
                     mAuth.signOut();
                     getUser();
                 }
@@ -447,8 +450,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         itemProfile.setVisible(false);
                         itemAdmin.setVisible(false);
                         imgv_avatar.setImageResource(R.drawable.ic_logo);
-                        closeDialog();
-                        AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), getString(R.string.text_signout_success));
+                        getUser();
                     }
                 };
                 countDownTimer.start();
@@ -849,8 +851,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onResume() {
         super.onResume();
-        if(null!=LoginSession.getInstance().getUser()&&null!=LoginSession.getInstance().getFirebUser()){
-            User user=LoginSession.getInstance().getUser();
+        if (null != LoginSession.getInstance().getUser() && null != LoginSession.getInstance().getFirebUser()) {
+            User user = LoginSession.getInstance().getUser();
             txt_email.setText(user.getEmail());
             txt_un.setText(LoginSession.getInstance().getFirebUser().getDisplayName());
             Picasso.with(getApplicationContext())
@@ -862,12 +864,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             itemSignOut.setVisible(true);
             itemProfile.setVisible(true);
             itemAdmin.setVisible(false);
-            if (user.getRole() >0) {
+            if (user.getRole() > 0) {
                 itemAdmin.setVisible(true);
             } else {
                 itemAdmin.setVisible(false);
             }
-        }else {
+        } else {
             getUser();
         }
         Log.i(TAG, "onResume");

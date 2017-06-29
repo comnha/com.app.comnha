@@ -68,11 +68,11 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
         stRef = FirebaseStorage.getInstance().getReferenceFromUrl(
                 getString(R.string.firebaseStorage_path));
         ref(view);
-        if(null!=CoreManager.getInstance().getMyLocation()) {
-            dist_pro =CoreManager.getInstance().getMyLocation().getDistrict()+"_"+CoreManager.getInstance().getMyLocation().getProvince();
+        if (null != CoreManager.getInstance().getMyLocation()) {
+            dist_pro = CoreManager.getInstance().getMyLocation().getDistrict() + "_" + CoreManager.getInstance().getMyLocation().getProvince();
             getStoreList(dist_pro);
-        }else{
-            if(getView()!=null) {
+        } else {
+            if (getView() != null) {
 
                 AppUtils.showSnackbarWithoutButton(getView(), "Không tìm thấy vị trí của bạn");
             }
@@ -85,10 +85,10 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
     @Override
     public void notice() {
 
-       if(null!=CoreManager.getInstance().getMyLocation()) {
-           dist_pro =CoreManager.getInstance().getMyLocation().getDistrict()+"_"+CoreManager.getInstance().getMyLocation().getProvince();
-           getStoreList(dist_pro);
-       }
+        if (null != CoreManager.getInstance().getMyLocation()) {
+            dist_pro = CoreManager.getInstance().getMyLocation().getDistrict() + "_" + CoreManager.getInstance().getMyLocation().getProvince();
+            getStoreList(dist_pro);
+        }
 
     }
 
@@ -161,20 +161,22 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
         }
 
     }
-    public boolean checkExist(String id){
-        for (Store store: stores){
-            if(store.getStoreID().equals(id)){
+
+    public boolean checkExist(String id) {
+        for (Store store : stores) {
+            if (store.getStoreID().equals(id)) {
                 return true;
             }
         }
         return false;
     }
+
     private void ref(final View view) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerV_storefrag);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         stores = new ArrayList<>();
-        itemadapter = new Store_recycler_adapter(stores, getContext());
+        itemadapter = new Store_recycler_adapter(stores, getContext(), stRef);
         itemadapter.setOnItemClickLiestner(new Store_recycler_adapter.OnItemClickLiestner() {
             @Override
             public void onItemClick(Store store, View itemView) {

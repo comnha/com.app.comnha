@@ -18,7 +18,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -57,7 +56,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     int tabPos=0;
     ValueEventListener foodValueListener,childEventListener;
     DatabaseReference dbRef;
-    ImageButton btnSearch;
+    ImageView btnSearch;
     String dist_pro;
     Button btnQuan,btnHuyen;
     FragmentManager fm;
@@ -83,7 +82,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
     private void ref() {
         imgv_back = (ImageView) findViewById(R.id.imgv_back_search);
-        btnSearch= (ImageButton) findViewById(R.id.btn_search);
+        btnSearch= (ImageView) findViewById(R.id.btn_search);
         btnSearch.setVisibility(View.INVISIBLE);
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -18,44 +18,49 @@
         android:orientation="vertical"
         android:paddingEnd="10dp"
         android:paddingStart="10dp">
+
         <android.support.v7.widget.CardView
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:background="@color/white"
-            android:layout_height="40dp">
+            android:layout_height="?attr/actionBarSize"
+            android:layout_marginTop="10dp"
+            android:background="@color/white">
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="horizontal"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:weightSum="5"
-                android:layout_height="wrap_content">
+                android:orientation="horizontal"
+                android:weightSum="5">
+
                 <AutoCompleteTextView
                     android:id="@+id/edt_search"
-                    android:text=""
                     android:layout_width="0dp"
-                    android:layout_weight="4.5"
-                    android:inputType="text"
-                    android:padding="5dp"
-                    android:imeOptions="actionDone"
                     android:layout_height="match_parent"
+                    android:layout_weight="4.5"
                     android:background="@android:color/transparent"
                     android:gravity="start|center_vertical"
                     android:hint="@string/txt_search"
-                    android:textAllCaps="false"/>
-                <ImageButton
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:padding="4dp"
+                    android:text=""
+                    android:textAllCaps="false" />
+
+                <ImageView
                     android:id="@+id/btn_search"
                     android:layout_width="0dp"
-                    android:layout_weight="0.5"
-                    android:layout_margin="3dp"
-                    android:layout_gravity="center"
-                    android:adjustViewBounds="true"
                     android:layout_height="match_parent"
-
-                    android:background="@drawable/ic_search_grey_600_24dp"
-                    />
+                    android:layout_gravity="center"
+                    android:layout_margin="4dp"
+                    android:layout_weight="0.5"
+                    android:adjustViewBounds="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:src="@drawable/ic_search_grey_600_24dp" />
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
+
         <android.support.v7.widget.CardView
             android:id="@+id/frg_map_cardV_mylocation"
             android:layout_width="35dp"
@@ -88,12 +93,11 @@
             app:cardElevation="@dimen/cardv_elevation">
 
             <TextView
+                android:id="@+id/txt_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:id="@+id/txt_distance"
-                android:textSize="10sp"
-                />
+                android:textSize="10sp" />
 
         </android.support.v7.widget.CardView>
     </LinearLayout>

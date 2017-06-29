@@ -36,6 +36,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.ptt.comnha.Activity.AdapterActivity;
 import com.app.ptt.comnha.Activity.PostdetailActivity;
 import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
 import com.app.ptt.comnha.Const.Const;
@@ -43,6 +44,7 @@ import com.app.ptt.comnha.Dialog.AddFoodDialog;
 import com.app.ptt.comnha.Dialog.ReportDialog;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Post;
+import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;
@@ -51,6 +53,8 @@ import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -65,6 +69,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.app.Activity.RESULT_OK;
 import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_FOOD;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -84,7 +89,7 @@ public class FooddetailFragment extends Fragment {
     ImageView imgv_photo;
     RatingBar ratingBar;
     ArrayList<Post> postlist;
-    ValueEventListener postEventListener;
+    ValueEventListener postEventListener, userValueListener;
     ActionBar actionBar;
     Toolbar toolbar;
     Food food = ChooseFood.getInstance().getFood();
@@ -92,6 +97,9 @@ public class FooddetailFragment extends Fragment {
     public static final String mBroadcastSendAddress = "mBroadcastSendAddress";
     boolean isConnected = false;
     IntentFilter mIntentFilter;
+    private static final int REQUEST_SIGNIN_FROMFOOD = 101;
+    FirebaseAuth mAuth;
+    FirebaseAuth.AuthStateListener mAuthListener;
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -108,6 +116,7 @@ public class FooddetailFragment extends Fragment {
     };
     ProgressDialog plzw8Dialog;
     Menu pubMenu = null;
+    User user = null;
 
     public FooddetailFragment() {
         // Required empty public constructor
@@ -137,6 +146,7 @@ public class FooddetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_fooddetail, container, false);
         isConnected = MyService.returnIsNetworkConnected();
 //        locaID = ChooseFood.getInstance().getStore().getLocaID();
+        mAuth = FirebaseAuth.getInstance();
         dbRef = FirebaseDatabase.getInstance()
                 .getReferenceFromUrl(Const.DATABASE_PATH);
         stRef = FirebaseStorage.getInstance()
@@ -272,8 +282,12 @@ public class FooddetailFragment extends Fragment {
     }
 
     private List<Pair<Integer, String>> returnContentMenuItems() {
-        int role = LoginSession.getInstance().getUser().getRole();
-        String uID = LoginSession.getInstance().getUser().getuID();
+        int role = 0;
+        String uID = "";
+        if (LoginSession.getInstance().getUser() != null) {
+            role = LoginSession.getInstance().getUser().getRole();
+            uID = LoginSession.getInstance().getUser().getuID();
+        }
         List<Pair<Integer, String>> contents = new ArrayList<>();
         if (role == 1) {
             contents.add(new Pair<Integer, String>
@@ -307,49 +321,14 @@ public class FooddetailFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.string.txt_report:
-                ReportDialog reportDialog = new ReportDialog();
-                reportDialog.setReport(REPORT_FOOD, food);
-                reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
-                reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
-                    @Override
-                    public void onPositive(boolean isClicked, Map<String,
-                            Object> childUpdate, final Dialog dialog) {
-                        if (isClicked) {
-                            dialog.dismiss();
-                            plzw8Dialog.show();
-                            dbRef.updateChildren(childUpdate)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            plzw8Dialog.dismiss();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    dialog.show();
-                                    plzw8Dialog.dismiss();
-                                    Toast.makeText(getActivity(), e.getMessage(),
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            });
-
-                        }
-                    }
-
-                    @Override
-                    public void onNegative(boolean isClicked, Dialog dialog) {
-                        if (isClicked) {
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                reportDialog.show(getActivity().getSupportFragmentManager(), "report_food");
+                if (LoginSession.getInstance().getUser() != null) {
+                    reportFood();
+                } else {
+                    requestSignin();
+                }
                 return true;
             case R.string.txt_changeinfo:
-                AddFoodDialog addFoodDialog = new AddFoodDialog();
-                addFoodDialog.setEditFoood(true, food);
-                addFoodDialog.show(getActivity()
-                        .getSupportFragmentManager(), "updatefood_dialog");
+                updateFood();
                 return true;
             case R.string.text_hidefood:
                 if (!food.isHidden()) {
@@ -366,6 +345,76 @@ public class FooddetailFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void updateFood() {
+        AddFoodDialog addFoodDialog = new AddFoodDialog();
+        addFoodDialog.setEditFoood(true, food);
+        addFoodDialog.show(getActivity()
+                .getSupportFragmentManager(), "updatefood_dialog");
+    }
+
+    private void requestSignin() {
+        new AlertDialog.Builder(getContext())
+                .setMessage(getString(R.string.txt_nologin)
+                        + "\n" + getString(R.string.txt_uneedlogin))
+                .setPositiveButton(getString(R.string.text_signin), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent_signin = new Intent(getActivity(),
+                                AdapterActivity.class);
+                        intent_signin.putExtra(getString(R.string.fragment_CODE),
+                                getString(R.string.frg_signin_CODE));
+                        intent_signin.putExtra("signinfromFoodDe", 1);
+                        startActivityForResult(intent_signin, REQUEST_SIGNIN_FROMFOOD);
+                    }
+                })
+                .setNegativeButton(getString(R.string.text_no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).show();
+    }
+
+    private void reportFood() {
+        ReportDialog reportDialog = new ReportDialog();
+        reportDialog.setReport(REPORT_FOOD, food);
+        reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
+        reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
+            @Override
+            public void onPositive(boolean isClicked, Map<String,
+                    Object> childUpdate, final Dialog dialog) {
+                if (isClicked) {
+                    dialog.dismiss();
+                    plzw8Dialog.show();
+                    dbRef.updateChildren(childUpdate)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    plzw8Dialog.dismiss();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            dialog.show();
+                            plzw8Dialog.dismiss();
+                            Toast.makeText(getActivity(), e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onNegative(boolean isClicked, Dialog dialog) {
+                if (isClicked) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        reportDialog.show(getActivity().getSupportFragmentManager(), "report_food");
     }
 
     private void showFood() {
@@ -462,6 +511,61 @@ public class FooddetailFragment extends Fragment {
         super.onDetach();
     }
 
-    private class Store {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_SIGNIN_FROMFOOD:
+                if (resultCode == RESULT_OK) {
+                    getUser();
+                } else {
+
+                }
+                break;
+        }
+    }
+
+    private void getUser() {
+        plzw8Dialog.show();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                if (firebaseUser != null) {
+                    // User is signed in
+                    getUserInfo(firebaseUser);
+                    Log.d("onAuthStateChanged", "onAuthStateChanged:signed_in:" + firebaseUser.getUid());
+                } else {
+                    // User is signed out
+                    Log.d("onAuthStateChanged", "onAuthStateChanged:signed_out");
+                    plzw8Dialog.dismiss();
+                }
+            }
+        };
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    private void getUserInfo(final FirebaseUser firebaseUser) {
+        userValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = dataSnapshot.getValue(User.class);
+                String key = firebaseUser.getUid();
+                user.setuID(key);
+                LoginSession.getInstance().setUser(user);
+                LoginSession.getInstance().setFirebUser(firebaseUser);
+                mAuth.removeAuthStateListener(mAuthListener);
+                pubMenu.clear();
+                FooddetailFragment.this.onCreateOptionsMenu(pubMenu, null);
+                plzw8Dialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+        dbRef.child(getString(R.string.users_CODE)
+                + firebaseUser.getUid())
+                .addListenerForSingleValueEvent(userValueListener);
     }
 }

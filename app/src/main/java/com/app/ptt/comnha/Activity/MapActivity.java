@@ -102,8 +102,6 @@ public class MapActivity extends AppCompatActivity {
     protected void onStart() {
         Log.i(LOG, "onStart");
         super.onStart();
-
-
     }
 
 
