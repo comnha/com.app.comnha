@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.app.ptt.comnha.Activity.StoreDeatailActivity;
 import com.app.ptt.comnha.Adapters.Store_recycler_adapter;
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Interfaces.Comunication;
 import com.app.ptt.comnha.Interfaces.SendLocationListener;
 import com.app.ptt.comnha.Models.FireBase.Store;
@@ -63,7 +64,7 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
         Log.d("MainFragmentPage", "createviewStore");
         View view = inflater.inflate(R.layout.fragment_main_store, container, false);
         dbRef = FirebaseDatabase.getInstance().
-                getReferenceFromUrl(getString(R.string.firebase_path));
+                getReferenceFromUrl(Const.DATABASE_PATH);
         stRef = FirebaseStorage.getInstance().getReferenceFromUrl(
                 getString(R.string.firebaseStorage_path));
         ref(view);
