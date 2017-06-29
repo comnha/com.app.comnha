@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.app.ptt.comnha.Activity.AdapterActivity;
+import com.app.ptt.comnha.Activity.MainActivity;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
@@ -152,10 +153,14 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
                             } else {
                                 LoginSession.getInstance().setUser(null);
                                 LoginSession.getInstance().setFirebUser(null);
+
+                                Intent i=new Intent(getActivity(), MainActivity.class);
+                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 if (signinfromStoreDe == 1) {
                                     getActivity().setResult(Activity.RESULT_OK);
                                 }
                                 getActivity().finish();
+                                getActivity().startActivity(i);
                             }
                             closeDialog();
 
