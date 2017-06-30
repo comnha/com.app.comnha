@@ -268,7 +268,18 @@ public class AdminNewPostFragment extends Fragment {
                     NewpostNotify item = dataItem.getValue(NewpostNotify.class);
                     String key = dataItem.getKey();
                     item.setId(key);
-                    items.add(item);
+                    int pos=-1;
+                    for(NewpostNotify notify:items){
+                        if(notify.getId().equals(item.getId())){
+                            pos=items.indexOf(notify);
+                        }
+                    }
+                    if(pos!=-1){
+                        items.set(pos,item);
+                    }else {
+                        items.add(item);
+                    }
+
                 }
                 sortList();
             }
