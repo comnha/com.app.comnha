@@ -28,7 +28,7 @@ import java.util.List;
 
 public class notify_newstore_adapter extends BaseAdapter {
     Activity activity;
-    ArrayList<NewstoreNotify> items;
+    List<NewstoreNotify> items;
     private OnItemClickLiestner onItemClickLiestner;
     private OnOptionItemClickListener onOptionItemClickListener;
 
@@ -45,12 +45,16 @@ public class notify_newstore_adapter extends BaseAdapter {
 
         void onBlockUser(NewstoreNotify notify);
     }
-
+    public void setList(List<NewstoreNotify> list){
+        items=new ArrayList<>();
+        items=list;
+        notifyDataSetChanged();
+    }
     public void setOnOptionItemClickListener(OnOptionItemClickListener onOptionItemClickListener) {
         this.onOptionItemClickListener = onOptionItemClickListener;
     }
 
-    public notify_newstore_adapter(Activity activity, ArrayList<NewstoreNotify> items) {
+    public notify_newstore_adapter(Activity activity, List<NewstoreNotify> items) {
         this.activity = activity;
         this.items = items;
     }

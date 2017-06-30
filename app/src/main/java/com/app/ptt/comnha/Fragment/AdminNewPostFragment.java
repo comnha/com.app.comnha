@@ -23,11 +23,13 @@ import com.app.ptt.comnha.Adapters.notify_newpost_adapter;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Dialog.BlockUserDialog;
 import com.app.ptt.comnha.Models.FireBase.NewpostNotify;
+import com.app.ptt.comnha.Models.FireBase.NewstoreNotify;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.SingletonClasses.CoreManager;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -39,6 +41,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,7 +51,7 @@ public class AdminNewPostFragment extends Fragment {
 
     ListView listView;
     notify_newpost_adapter itemadapter;
-    ArrayList<NewpostNotify> items;
+    List<NewpostNotify> items;
     DatabaseReference dbRef;
     ValueEventListener notiEventListener, postEventListener, userEventListener;
     String dist_pro;
@@ -69,14 +72,12 @@ public class AdminNewPostFragment extends Fragment {
                 .getInstance()
                 .getReferenceFromUrl(getString(R.string.firebaseDB_path));
         ref(view);
-        if (null != CoreManager.getInstance().getMyLocation()) {
-            dist_pro = CoreManager.getInstance().getMyLocation().getDistrict() + "_" + CoreManager.getInstance().getMyLocation().getProvince();
-            Log.d("dist_pro", dist_pro);
-        } else {
-            if (getView() != null)
-                AppUtils.showSnackbarWithoutButton(getView(), "Không tìm thấy vị trí của bạn");
+        if(LoginSession.getInstance().getUser().getRole()>0){
+            dist_pro=LoginSession.getInstance().getUser().getDist_prov();
+            getdata();
+        }else{
+            getActivity().finish();
         }
-        getdata();
         return view;
     }
 
@@ -269,7 +270,7 @@ public class AdminNewPostFragment extends Fragment {
                     item.setId(key);
                     items.add(item);
                 }
-                itemadapter.notifyDataSetChanged();
+                sortList();
             }
 
             @Override
@@ -277,9 +278,28 @@ public class AdminNewPostFragment extends Fragment {
 
             }
         };
-        dbRef.child(getString(R.string.notify_newpost_CODE))
-                .orderByChild("district_province")
-                .equalTo(dist_pro)
-                .addListenerForSingleValueEvent(notiEventListener);
+        if(LoginSession.getInstance().getUser().getRole()==1) {
+            dbRef.child(getString(R.string.notify_newpost_CODE))
+                    .orderByChild("district_province")
+                    .equalTo(dist_pro)
+                    .addValueEventListener(notiEventListener);
+        }else {
+            dbRef.child(getString(R.string.notify_newpost_CODE))
+                    .addValueEventListener(notiEventListener);
+        }
+    }
+    public void sortList(){
+        List<NewpostNotify> list=new ArrayList<>();
+        for(NewpostNotify notify:items){
+            if(!notify.isReadstate()){
+                list.add(notify);
+            }
+        }
+        for(NewpostNotify notify:items){
+            if(notify.isReadstate()){
+                list.add(notify);
+            }
+        }
+        itemadapter.setList(list);
     }
 }
