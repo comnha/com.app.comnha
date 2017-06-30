@@ -6,12 +6,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -96,6 +94,7 @@ public class Post_recycler_adapter extends RecyclerView.Adapter<Post_recycler_ad
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (posts.get(position).getImgBitmap()==null){
                     try {
                         Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_banner.getDrawable())
                                 .getBitmap();
@@ -103,6 +102,9 @@ public class Post_recycler_adapter extends RecyclerView.Adapter<Post_recycler_ad
                         onItemClickLiestner.onItemClick(posts.get(holder.getAdapterPosition()),
                                 holder.itemView);
                     } catch (NullPointerException e) {
+                        onItemClickLiestner.onItemClick(posts.get(holder.getAdapterPosition()),
+                                holder.itemView);
+                    }}else {
                         onItemClickLiestner.onItemClick(posts.get(holder.getAdapterPosition()),
                                 holder.itemView);
                     }
