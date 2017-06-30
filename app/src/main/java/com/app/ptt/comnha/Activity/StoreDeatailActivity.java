@@ -457,7 +457,11 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     Post post = dataItem.getValue(Post.class);
                     String key = dataItem.getKey();
                     post.setPostID(key);
-                    posts.add(post);
+                    if(checkExistPost(key)!=-1){
+                        posts.set(checkExistPost(key),post);
+                    }else {
+                        posts.add(post);
+                    }
                 }
                 postAdapter.notifyDataSetChanged();
             }
@@ -470,7 +474,31 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         dbRef.child(getString(R.string.posts_CODE))
                 .orderByChild("isHidden_storeID")
                 .equalTo(false + "_" + storeID)
-                .addListenerForSingleValueEvent(postValueListener);
+                .addValueEventListener(postValueListener);
+    }
+    private int checkExistPost(String id){
+        for(Post post: posts){
+            if(post.getPostID().equals(id)){
+                return posts.indexOf(post);
+            }
+        }
+        return -1;
+    }
+    private int checkExistFood(String id){
+        for(Food food: foods){
+            if(food.getFoodID().equals(id)){
+                return foods.indexOf(food);
+            }
+        }
+        return -1;
+    }
+    private int checkExistImage(String id){
+        for(Image image: images){
+            if(image.getImageID().equals(id)){
+                return images.indexOf(image);
+            }
+        }
+        return -1;
     }
 
     private void getImageList() {
@@ -481,7 +509,11 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     Image image = item.getValue(Image.class);
                     String key = item.getKey();
                     image.setImageID(key);
-                    images.add(image);
+                    if(checkExistImage(key)!=-1){
+                        images.set(checkExistImage(key),image);
+                    }else {
+                        images.add(image);
+                    }
                 }
                 ChoosePhotoList.getInstance().setImage(images);
                 photoAdapter.notifyDataSetChanged();
@@ -495,7 +527,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         dbRef.child(getString(R.string.images_CODE))
                 .orderByChild("isHidden_storeID")
                 .equalTo(false + "_" + storeID)
-                .addListenerForSingleValueEvent(photoValueListener);
+                .addValueEventListener(photoValueListener);
     }
 
     private void getFoodList() {
@@ -510,7 +542,11 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     Food food = dataItem.getValue(Food.class);
                     String key = dataItem.getKey();
                     food.setFoodID(key);
-                    foods.add(food);
+                    if(checkExistFood(key)!=-1){
+                        foods.set(checkExistFood(key),food);
+                    }else {
+                        foods.add(food);
+                    }
                 }
                 foodAdapter.notifyDataSetChanged();
             }
@@ -524,12 +560,12 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
             dbRef.child(getString(R.string.food_CODE))
                     .orderByChild("storeID")
                     .equalTo(storeID)
-                    .addListenerForSingleValueEvent(foodValueListener);
+                    .addValueEventListener(foodValueListener);
         } else {
             dbRef.child(getString(R.string.food_CODE))
                     .orderByChild("isHidden_storeID")
                     .equalTo(false + "_" + storeID)
-                    .addListenerForSingleValueEvent(foodValueListener);
+                    .addValueEventListener(foodValueListener);
         }
     }
 
@@ -580,6 +616,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void writePost() {
+        ChooseStore.getInstance().setStore(store);
         Intent intent_writepost = new Intent(this, AdapterActivity.class);
         intent_writepost.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent_writepost.putExtra(getString(R.string.fragment_CODE),

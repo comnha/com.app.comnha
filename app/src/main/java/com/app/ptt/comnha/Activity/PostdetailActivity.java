@@ -136,7 +136,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         setContentView(R.layout.activity_post_detail);
-        isConnected = MyService.returnIsNetworkConnected();
+
         dbRef = FirebaseDatabase.getInstance()
                 .getReferenceFromUrl(Const.DATABASE_PATH);
         stRef = FirebaseStorage.getInstance()
@@ -157,7 +157,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onStart() {
-        isConnected = MyService.returnIsNetworkConnected();
+        isConnected = MyService.isNetworkAvailable(this);
         if (!isConnected) {
             Toast.makeText(this, "Offline mode", Toast.LENGTH_SHORT).show();
         }
