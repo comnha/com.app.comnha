@@ -63,7 +63,7 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<Store_recycler_
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         if (null != stores.get(position).getDistance()) {
             holder.txtv_distance.setText(stores.get(position).getDistance() + " km");
         } else {
@@ -115,13 +115,18 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<Store_recycler_
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_avatar.getDrawable())
-                            .getBitmap();
-                    stores.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
-                    onItemClickLiestner.onItemClick(stores.get(holder.getAdapterPosition()),
-                            holder.itemView);
-                } catch (NullPointerException e) {
+                if (stores.get(position).getImgBitmap() == null) {
+                    try {
+                        Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_avatar.getDrawable())
+                                .getBitmap();
+                        stores.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
+                        onItemClickLiestner.onItemClick(stores.get(holder.getAdapterPosition()),
+                                holder.itemView);
+                    } catch (NullPointerException e) {
+                        onItemClickLiestner.onItemClick(stores.get(holder.getAdapterPosition()),
+                                holder.itemView);
+                    }
+                } else {
                     onItemClickLiestner.onItemClick(stores.get(holder.getAdapterPosition()),
                             holder.itemView);
                 }

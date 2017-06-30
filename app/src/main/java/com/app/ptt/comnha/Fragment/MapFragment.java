@@ -36,7 +36,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -94,7 +94,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
     PlaceAttribute myLocationSearch = null;
     TextView txt_TenQuan, txt_DiaChi, txt_GioMo, txt_DiemGia, txt_DiemPhucVu, txt_DiemVeSinh, txt_KhoangCach, txt_Your_Location, txt_Title;
     private CircleImageView imgMarker;
-    private ImageButton btnSearch;
+    private ImageView btnSearch;
     GoogleMap myGoogleMap;
     MyLocation yourLocation;
     Store customLocation;
@@ -178,7 +178,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
     private void anhxa(View view) {
         card_mylocation = (CardView) view.findViewById(R.id.frg_map_cardV_mylocation);
         fab_refresh = (FloatingActionButton) view.findViewById(R.id.frg_map_fabrefresh);
-        btnSearch = (ImageButton) view.findViewById(R.id.btn_search);
+        btnSearch = (ImageView) view.findViewById(R.id.btn_search);
         pickLocationDialog = new PickLocationBottomSheetDialogFragment();
         fm = getActivity().getSupportFragmentManager();
         card_pickProvince = (CardView) view.findViewById(R.id.frg_map_cardV_chonProvince);
@@ -228,9 +228,9 @@ public class MapFragment extends Fragment implements View.OnClickListener,
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!TextUtils.isEmpty(s.toString())) {
-                    btnSearch.setBackgroundResource(R.drawable.mr_ic_close_light);
+                    btnSearch.setImageResource(R.drawable.ic_close_50black_24dp);
                 } else {
-                    btnSearch.setBackgroundResource(R.drawable.ic_search_grey_600_24dp);
+                    btnSearch.setImageResource(R.drawable.ic_search_50black_24dp);
                     myLocationSearch=null;
                 }
                 txt_distance.setText( distance/1000+" km");

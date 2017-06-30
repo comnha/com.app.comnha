@@ -135,12 +135,10 @@ public class FooddetailFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fooddetail, container, false);
+        dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(Const.DATABASE_PATH);
         isConnected = MyService.returnIsNetworkConnected();
 //        locaID = ChooseFood.getInstance().getStore().getLocaID();
-        dbRef = FirebaseDatabase.getInstance()
-                .getReferenceFromUrl(Const.DATABASE_PATH);
-        stRef = FirebaseStorage.getInstance()
-                .getReferenceFromUrl(Const.STORAGE_PATH);
+        stRef = FirebaseStorage.getInstance().getReferenceFromUrl(Const.STORAGE_PATH);
         if (food != null) {
             storeID = food.getStoreID();
             foodID = food.getFoodID();
@@ -272,8 +270,13 @@ public class FooddetailFragment extends Fragment {
     }
 
     private List<Pair<Integer, String>> returnContentMenuItems() {
-        int role = LoginSession.getInstance().getUser().getRole();
-        String uID = LoginSession.getInstance().getUser().getuID();
+        int role = 0;
+        String uID = "";
+
+        if (LoginSession.getInstance().getUser() != null) {
+            role = LoginSession.getInstance().getUser().getRole();
+            uID = LoginSession.getInstance().getUser().getuID();
+        }
         List<Pair<Integer, String>> contents = new ArrayList<>();
         if (role == 1) {
             contents.add(new Pair<Integer, String>

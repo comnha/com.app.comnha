@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.app.ptt.comnha.Activity.AdapterActivity;
-import com.app.ptt.comnha.Activity.MainActivity;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
@@ -35,7 +34,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import static android.content.ContentValues.TAG;
 import static com.app.ptt.comnha.R.id.btn_siFrg_signin;
@@ -48,7 +46,8 @@ import static com.app.ptt.comnha.Utils.AppUtils.showSnackbar;
  */
 public class SigninFragment extends BaseFragment implements View.OnClickListener {
     private EditText edt_email, edt_pass;
-    private User user;FirebaseUser firebaseUser;
+    private User user;
+    FirebaseUser firebaseUser;
 
     private Button btn_signin;
     private TextView txtV_signup;
@@ -58,6 +57,7 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
     FirebaseAuth mAuth;
     private DatabaseReference dbRef;
     private ValueEventListener userValueListener;
+
     public SigninFragment() {
         // Required empty public constructor
     }
@@ -68,7 +68,7 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
         anhXa(view);
         signinfromStoreDe = this.getArguments().getInt("signinfromStoreDe");
         Bundle args = getArguments();
-        if(args!=null && args.getString("name")!=null&& args.getString("pass")!=null){
+        if (args != null && args.getString("name") != null && args.getString("pass") != null) {
             edt_email.setText(args.getString("name").toString());
             edt_pass.setText(args.getString("pass").toString());
             AppUtils.showSnackbarWithoutButton(view, getString(R.string.text_signup_successful));
@@ -173,7 +173,7 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
                                 Log.w(TAG, "signInWithEmail:onComplete", task.getException());
                                 AppUtils.showSnackbarWithoutButton(view, getString(R.string.text_signin_fail));
                             } else {
-                              getUser();
+                                getUser();
                             }
                             closeDialog();
 
@@ -182,6 +182,7 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
         }
 
     }
+
     private void getUser() {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -203,6 +204,7 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
         mAuth.addAuthStateListener(mAuthListener);
 
     }
+
     boolean checkInput(View view) {
         if (isEqualsNull(edt_email)) {
             AppUtils.showSnackbarWithoutButton(view, getString(R.string.txt_noemail));
@@ -221,6 +223,7 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
         }
         return true;
     }
+
     private void getUserInfo(final FirebaseUser firebaseUser) {
 
         userValueListener = new ValueEventListener() {
@@ -230,8 +233,8 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
                     user = dataSnapshot.getValue(User.class);
                     String key = firebaseUser.getUid();
                     user.setuID(key);
-                }catch (Exception e){
-                    user=null;
+                } catch (Exception e) {
+                    user = null;
                 }
 //                mAuth.removeAuthStateListener(mAuthListener);
             }
@@ -246,19 +249,25 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(null==user){
+                if (null == user) {
                     deleteUser(firebaseUser);
                     auth.signOut();
-                }else{
+                } else {
                     LoginSession.getInstance().setUser(null);
                     LoginSession.getInstance().setFirebUser(null);
-                    Intent i=new Intent(getActivity(), MainActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    if (signinfromStoreDe == 1) {
+//                    Intent i = new Intent(getActivity(), MainActivity.class);
+//                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    if (SigninFragment.this.getArguments().getInt("signinfromStoreDe") == 1) {
+                        getActivity().setResult(Activity.RESULT_OK);
+                    }
+                    if (SigninFragment.this.getArguments().getInt("signinfromPostDe") == 1) {
+                        getActivity().setResult(Activity.RESULT_OK);
+                    }
+                    if (SigninFragment.this.getArguments().getInt("signinfromFoodDe") == 1) {
                         getActivity().setResult(Activity.RESULT_OK);
                     }
                     getActivity().finish();
-                    getActivity().startActivity(i);
+//                    getActivity().startActivity(i);
                 }
                 if (mAuthListener != null) {
                     auth.removeAuthStateListener(mAuthListener);
@@ -271,16 +280,17 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
             }
         });
     }
-    public void deleteUser(FirebaseUser firebaseUser){
+
+    public void deleteUser(FirebaseUser firebaseUser) {
         firebaseUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-               AppUtils.showSnackbarWithoutButton(getView(),"Tài khoản đã bị xóa");
+                AppUtils.showSnackbarWithoutButton(getView(), "Tài khoản đã bị xóa");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                AppUtils.showSnackbarWithoutButton(getView(),"Tài khoản đã bị xóa");
+                AppUtils.showSnackbarWithoutButton(getView(), "Tài khoản đã bị xóa");
             }
         });
     }

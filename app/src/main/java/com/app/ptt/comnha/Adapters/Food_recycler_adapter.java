@@ -53,7 +53,7 @@ public class Food_recycler_adapter extends RecyclerView.Adapter<Food_recycler_ad
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.txt_name.setTextColor(activity.getResources()
                 .getColor(android.R.color.white));
         holder.txt_price.setTextColor(activity.getResources()
@@ -70,8 +70,10 @@ public class Food_recycler_adapter extends RecyclerView.Adapter<Food_recycler_ad
         holder.ratingBar.setIsIndicator(true);
         holder.cardv.setCardBackgroundColor(activity.getResources()
                 .getColor(R.color.color_notify_reportfood));
+
         if (foods.get(holder.getAdapterPosition()).getImgBitmap() != null) {
             if (!foods.get(holder.getAdapterPosition()).getImgBitmap().equals("")) {
+
                 StorageReference imgRef = stRef.child(foods.get(position).getFoodImg());
                 imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
@@ -97,14 +99,20 @@ public class Food_recycler_adapter extends RecyclerView.Adapter<Food_recycler_ad
             holder.cardv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    try {
-                        Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_photo.getDrawable())
-                                .getBitmap();
-                        foods.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
-                        onItemClickLiestner.onItemClick(
-                                foods.get(holder.getAdapterPosition()),
-                                activity, holder.itemView);
-                    } catch (NullPointerException e) {
+                    if (foods.get(position).getImgBitmap() == null) {
+                        try {
+                            Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_photo.getDrawable())
+                                    .getBitmap();
+                            foods.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
+                            onItemClickLiestner.onItemClick(
+                                    foods.get(holder.getAdapterPosition()),
+                                    activity, holder.itemView);
+                        } catch (NullPointerException e) {
+                            onItemClickLiestner.onItemClick(
+                                    foods.get(holder.getAdapterPosition()),
+                                    activity, holder.itemView);
+                        }
+                    } else {
                         onItemClickLiestner.onItemClick(
                                 foods.get(holder.getAdapterPosition()),
                                 activity, holder.itemView);

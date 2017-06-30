@@ -269,24 +269,14 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 if (LoginSession.getInstance().getUser() != null) {
                     reportStore();
                 } else {
-                    new AlertDialog.Builder(StoreDeatailActivity.this)
-                            .setMessage(getString(R.string.txt_needlogin))
-                            .setPositiveButton(getString(R.string.text_signin), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    StoreDeatailActivity.this.finish();
-                                }
-                            }).setNegativeButton(getString(R.string.text_no),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .show();
+                    requestSignin();
                 }
                 return true;
             case R.string.txt_followStore:
+                if (LoginSession.getInstance().getUser() != null) {
+                } else {
+                    requestSignin();
+                }
                 return true;
             case R.string.text_hidestore:
                 if (!store.isHidden()) {
@@ -307,6 +297,29 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void requestSignin() {
+        new AlertDialog.Builder(this)
+                .setMessage(getString(R.string.txt_nologin)
+                        + "\n" + getString(R.string.txt_uneedlogin))
+                .setPositiveButton(getString(R.string.text_signin), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent_signin = new Intent(StoreDeatailActivity.this,
+                                AdapterActivity.class);
+                        intent_signin.putExtra(getString(R.string.fragment_CODE),
+                                getString(R.string.frg_signin_CODE));
+                        intent_signin.putExtra("signinfromStoreDe", 1);
+                        startActivityForResult(intent_signin, REQUEST_SIGNIN);
+                    }
+                })
+                .setNegativeButton(getString(R.string.text_no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).show();
     }
 
     private void showStore() {
@@ -526,62 +539,16 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         switch (view.getId()) {
             case R.id.imgv_writepost_storedetail:
                 if (LoginSession.getInstance().getUser() != null) {
-                    Intent intent_writepost = new Intent(this, AdapterActivity.class);
-                    intent_writepost.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent_writepost.putExtra(getString(R.string.fragment_CODE),
-                            getString(R.string.frag_writepost_CODE));
-                    startActivity(intent_writepost);
+                    writePost();
                 } else {
-                    new AlertDialog.Builder(this)
-                            .setMessage(getString(R.string.notify_newpost_CODE)
-                                    + "\n" + getString(R.string.txt_uneedlogin))
-                            .setPositiveButton(getString(R.string.text_signin), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    Intent intent_signin = new Intent(StoreDeatailActivity.this,
-                                            AdapterActivity.class);
-                                    intent_signin.putExtra(getString(R.string.fragment_CODE),
-                                            getString(R.string.frg_signin_CODE));
-                                    intent_signin.putExtra("signinfromStoreDe", 1);
-                                    startActivityForResult(intent_signin, REQUEST_SIGNIN);
-                                }
-                            })
-                            .setNegativeButton(getString(R.string.text_no), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            }).show();
+                    requestSignin();
                 }
                 break;
             case R.id.imgv_addfood_storedetail:
                 if (LoginSession.getInstance().getUser() != null) {
-                    AddFoodDialog addFoodDialog = new AddFoodDialog();
-                    addFoodDialog.setStyle(DialogFragment.STYLE_NORMAL,
-                            R.style.AddfoodDialog);
-                    addFoodDialog.setStore(store);
-                    addFoodDialog.show(getSupportFragmentManager(), "addfood_frag");
+                    addFood();
                 } else {
-                    new AlertDialog.Builder(this)
-                            .setMessage(getString(R.string.txt_nologin)
-                                    + "\n" + getString(R.string.txt_uneedlogin))
-                            .setPositiveButton(getString(R.string.text_signin), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    Intent intent_signin = new Intent(StoreDeatailActivity.this,
-                                            AdapterActivity.class);
-                                    intent_signin.putExtra(getString(R.string.fragment_CODE),
-                                            getString(R.string.frg_signin_CODE));
-                                    intent_signin.putExtra("signinfromStoreDe", 1);
-                                    startActivityForResult(intent_signin, REQUEST_SIGNIN);
-                                }
-                            })
-                            .setNegativeButton(getString(R.string.text_no), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            }).show();
+                    requestSignin();
                 }
                 break;
             case R.id.imgv_viewlocation_storedetail:
@@ -611,6 +578,22 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 return;
         }
 
+    }
+
+    private void writePost() {
+        Intent intent_writepost = new Intent(this, AdapterActivity.class);
+        intent_writepost.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent_writepost.putExtra(getString(R.string.fragment_CODE),
+                getString(R.string.frag_writepost_CODE));
+        startActivity(intent_writepost);
+    }
+
+    private void addFood() {
+        AddFoodDialog addFoodDialog = new AddFoodDialog();
+        addFoodDialog.setStyle(DialogFragment.STYLE_NORMAL,
+                R.style.AddfoodDialog);
+        addFoodDialog.setStore(store);
+        addFoodDialog.show(getSupportFragmentManager(), "addfood_frag");
     }
 
     private void reportStore() {
@@ -702,6 +685,8 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 LoginSession.getInstance().setUser(user);
                 LoginSession.getInstance().setFirebUser(firebaseUser);
                 mAuth.removeAuthStateListener(mAuthListener);
+                pubMenu.clear();
+                StoreDeatailActivity.this.onCreateOptionsMenu(pubMenu);
                 plzw8Dialog.dismiss();
             }
 
