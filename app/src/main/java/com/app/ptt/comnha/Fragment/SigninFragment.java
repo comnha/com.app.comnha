@@ -253,13 +253,10 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
                     deleteUser(firebaseUser);
                     auth.signOut();
                 } else {
-                    LoginSession.getInstance().setUser(null);
-                    LoginSession.getInstance().setFirebUser(null);
+                    LoginSession.getInstance().setUser(user);
+                    LoginSession.getInstance().setFirebUser(firebaseUser);
 //                    Intent i = new Intent(getActivity(), MainActivity.class);
 //                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    if (SigninFragment.this.getArguments().getInt("signinfromStoreDe") == 1) {
-                        getActivity().setResult(Activity.RESULT_OK);
-                    }
                     if (SigninFragment.this.getArguments().getInt("signinfromPostDe") == 1) {
                         getActivity().setResult(Activity.RESULT_OK);
                     }

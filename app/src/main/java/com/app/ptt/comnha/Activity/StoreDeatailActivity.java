@@ -45,6 +45,7 @@ import com.app.ptt.comnha.SingletonClasses.ChooseFood;
 import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
+import com.app.ptt.comnha.SingletonClasses.CoreManager;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.github.clans.fab.FloatingActionButton;
@@ -139,8 +140,6 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                         StoreDeatailActivity.this, itemView.findViewById(R.id.imgv_banner_postitem),
                         "postBanner");
                 ChoosePost.getInstance().setPost(post);
-//                Toast.makeText(getContext(),
-//                        selected_store.getName() + "", Toast.LENGTH_SHORT).show();
                 startActivity(intent_postdetail, option_postbanner.toBundle());
             }
         });
