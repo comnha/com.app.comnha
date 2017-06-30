@@ -474,12 +474,12 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu = AppUtils.createMenu(menu, returnContenMenuItems());
+        menu = AppUtils.createMenu(menu, returnContentMenuItems());
         pubMenu = menu;
         return super.onCreateOptionsMenu(menu);
     }
 
-    private List<Pair<Integer, String>> returnContenMenuItems() {
+    private List<Pair<Integer, String>> returnContentMenuItems() {
         int role = 0;
         String uID = "";
 
