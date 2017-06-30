@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.app.ptt.comnha.Activity.PostdetailActivity;
 import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Interfaces.Comunication;
 import com.app.ptt.comnha.Interfaces.SendLocationListener;
 import com.app.ptt.comnha.Models.FireBase.Post;
@@ -56,9 +57,9 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
         Log.d("MainFragmentPage", "createviewPost");
         View view = inflater.inflate(R.layout.fragment_main_post, container, false);
         dbRef = FirebaseDatabase.getInstance()
-                .getReferenceFromUrl(getString(R.string.firebase_path));
+                .getReferenceFromUrl(Const.DATABASE_PATH);
         stRef = FirebaseStorage.getInstance()
-                .getReferenceFromUrl(getString(R.string.firebaseStorage_path));
+                .getReferenceFromUrl(Const.STORAGE_PATH);
         ref(view);
 //        pro_dist = "Quận 9_Hồ Chí Minh";
         getPostList(pro_dist);
