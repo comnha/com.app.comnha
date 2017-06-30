@@ -55,6 +55,7 @@ import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.SystemControl;
 import com.app.ptt.comnha.Utils.AppUtils;
@@ -140,8 +141,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-//        isConnected = MyService.returnIsConnected();
+
         View view = inflater.inflate(R.layout.fragment_writepost, container, false);
         dbRef = FirebaseDatabase.getInstance()
                 .getReferenceFromUrl(Const.DATABASE_PATH);
@@ -156,7 +156,15 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         } else {
             getActivity().finish();
         }
+
         ref(view);
+        if(null!=ChooseStore.getInstance().getStore()){
+            linear_location.setVisibility(View.VISIBLE);
+            selected_store=ChooseStore.getInstance().getStore();
+            ChooseStore.getInstance().setStore(null);
+            txtv_locaadd.setText(selected_store.getAddress());
+            txtv_locaname.setText(selected_store.getName());
+        }
         return view;
     }
 
