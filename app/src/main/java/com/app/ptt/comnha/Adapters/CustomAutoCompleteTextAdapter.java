@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.app.ptt.comnha.Interfaces.Comunication;
@@ -159,7 +160,7 @@ public class CustomAutoCompleteTextAdapter extends RecyclerView.Adapter<CustomAu
                 holder.img.setImageResource(R.drawable.ic_item_notify_reportstore);
             }
         }
-        holder.cvItem.setOnClickListener(new View.OnClickListener() {
+        holder.llItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Comunication.transactions.onSearchItemClick(search);
@@ -176,14 +177,14 @@ public class CustomAutoCompleteTextAdapter extends RecyclerView.Adapter<CustomAu
     public static class MViewHolder extends RecyclerView.ViewHolder{
         private TextView txtName,txtAddress;
         private CircularImageView img;
-        private CardView cvItem;
+        private LinearLayout llItem;
 
         public MViewHolder(View itemView) {
             super(itemView);
             img= (CircularImageView) itemView.findViewById(R.id.img_item);
             txtName= (TextView) itemView.findViewById(R.id.txt_name_search);
             txtAddress= (TextView) itemView.findViewById(R.id.txt_address_search);
-            cvItem= (CardView) itemView.findViewById(R.id.cv_item);
+            llItem= (LinearLayout) itemView.findViewById(R.id.ll_item);
         }
     }
 }
