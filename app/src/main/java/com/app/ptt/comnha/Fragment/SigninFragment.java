@@ -196,12 +196,13 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
                     AppUtils.showSnackbarWithoutButton(getView(), getString(R.string.text_signin_fail));
                     // User is signed out
                 }
+                if (mAuthListener != null) {
+                    mAuth.removeAuthStateListener(mAuthListener);
+                }
             }
         };
         mAuth.addAuthStateListener(mAuthListener);
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
+
     }
 
     boolean checkInput(View view) {

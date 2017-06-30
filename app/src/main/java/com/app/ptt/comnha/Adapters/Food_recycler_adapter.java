@@ -70,8 +70,10 @@ public class Food_recycler_adapter extends RecyclerView.Adapter<Food_recycler_ad
         holder.ratingBar.setIsIndicator(true);
         holder.cardv.setCardBackgroundColor(activity.getResources()
                 .getColor(R.color.color_notify_reportfood));
-        if (foods.get(holder.getAdapterPosition()).getImgBitmap() == null) {
-            if (!foods.get(holder.getAdapterPosition()).getFoodImg().equals("")) {
+
+        if (foods.get(holder.getAdapterPosition()).getImgBitmap() != null) {
+            if (!foods.get(holder.getAdapterPosition()).getImgBitmap().equals("")) {
+
                 StorageReference imgRef = stRef.child(foods.get(position).getFoodImg());
                 imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override

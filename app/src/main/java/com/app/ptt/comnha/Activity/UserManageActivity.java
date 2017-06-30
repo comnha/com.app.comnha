@@ -1,8 +1,6 @@
 package com.app.ptt.comnha.Activity;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,28 +11,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.ptt.comnha.Adapters.CustomAutoCompleteTextAdapter;
 import com.app.ptt.comnha.Adapters.User_rcyler_adapter;
 import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Const.Const;
@@ -45,8 +34,6 @@ import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.Models.Search;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
-import com.app.ptt.comnha.SingletonClasses.ChooseStore;
-import com.app.ptt.comnha.SingletonClasses.CoreManager;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -73,7 +60,6 @@ public class UserManageActivity extends BaseActivity implements View.OnClickList
     TabLayout tabLayout;
     RelativeLayout relative_temp;
 
-    CustomAutoCompleteTextAdapter adapter;
     int tabPos = 0;
     StorageReference stRef;
     ValueEventListener foodValueListener, childEventListener;
@@ -167,9 +153,7 @@ public class UserManageActivity extends BaseActivity implements View.OnClickList
                                     .createOpenCR(reveal_linear, duration, cx, cy);
                             getWindow().setStatusBarColor(
                                     getResources().getColor(R.color.color_notify_reportfood));
-                            if (null != adapter) {
-                                adapter.setType(0);
-                            }
+
                             tabPos = 0;
                             whatProvince1 = -1;
                             posType = 1;
@@ -191,10 +175,7 @@ public class UserManageActivity extends BaseActivity implements View.OnClickList
                                     .createOpenCR(reveal_linear, duration, cx, cy);
                             getWindow().setStatusBarColor(
                                     getResources().getColor(R.color.admin_color_selection_news));
-                            if (null != adapter) {
-                                adapter.setType(1);
 
-                            }
                             tabPos = 1;
                             if (TextUtils.isEmpty(tinh) && TextUtils.isEmpty(huyen)) {
                                 posType = 2;
@@ -276,16 +257,19 @@ public class UserManageActivity extends BaseActivity implements View.OnClickList
     public void getDataFiltered(int type) {
         user_rcyler_adapter.clearList();
         for (User user : list) {
+            //user
             if (type == 1) {
                 if (user.getRole() == 0) {
                     user_rcyler_adapter.addItem(user);
                 }
             } else {
+                //admin
                 if (type == 2) {
                     if (user.getRole() == 1) {
                         user_rcyler_adapter.addItem(user);
                     }
                 } else {
+                    //custom place
                     if (type == 3) {
                         if (user.getRole() == 1 && user.getDist_prov().toLowerCase().equals(dist_pro.toLowerCase())) {
                             user_rcyler_adapter.addItem(user);
@@ -457,9 +441,14 @@ public class UserManageActivity extends BaseActivity implements View.OnClickList
     }
 
     @Override
+    public void onSearchItemClick(Search search) {
+
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.menu_user_manager, menu);
+        getMenuInflater().inflate(R.menu.menu_search, menu);
 
         MenuItem search = menu.findItem(R.id.search);
 

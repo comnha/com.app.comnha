@@ -1,20 +1,30 @@
 package com.app.ptt.comnha.Adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.LayoutRes;
 
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
+import com.app.ptt.comnha.Interfaces.Comunication;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.Search;
 import com.app.ptt.comnha.R;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.StorageReference;
+import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,113 +33,158 @@ import java.util.List;
  * Created by ciqaz on 22/06/2017.
  */
 
-public class CustomAutoCompleteTextAdapter extends ArrayAdapter<Search> {
+public class CustomAutoCompleteTextAdapter extends RecyclerView.Adapter<CustomAutoCompleteTextAdapter.MViewHolder> implements Filterable {
     List<Search> list;
+    List<Search> filteredList;
     int type;
-    SearchFilter searchFilter;
-    public CustomAutoCompleteTextAdapter(Context context,List<Search> list){
-        super(context,0,list);
+    StorageReference stRef;
+    Context context;
+
+    public CustomAutoCompleteTextAdapter(Context context,List<Search> list,StorageReference stRef){
         this.list=new ArrayList<>();
+        filteredList=new ArrayList<>();
         this.list=list;
+        filteredList=list;
+        this.context=context;
+        this.stRef=stRef;
 
 
     }
+    public void clearList(){
+        list=new ArrayList<>();
+        filteredList=list;
+        notifyDataSetChanged();
+    }
+
     public void setList(List<Search> list){
-        this.list=new ArrayList<>();
-        this.list.addAll(list);
+        this.list.clear();
+        this.list=list;
+        filteredList=list;
+        notifyDataSetChanged();
+    }
+    public void addItem(Search item){
+        this.list.add(item);
+        filteredList=list;
         notifyDataSetChanged();
     }
     public void setType(int type){
         this.type=type;
-        if(null!=searchFilter) {
-            searchFilter.setType(type);
-        }
     }
     public Search returnItem(int pos){
         return list.get(pos);
     }
     @Override
-    public int getCount() {
-        if(null==list){
-            list=new ArrayList<>();
-        }
-        return list.size();
-    }
-
-    @Override
     public Filter getFilter() {
-        searchFilter=new SearchFilter(this,list);
-        return searchFilter;
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                final String filterPattern = constraint.toString();
+                final FilterResults results = new FilterResults();
+                if (filterPattern.isEmpty()) {
+                    filteredList=list;
+                } else {
+
+                    List<Search> mList=new ArrayList<>();
+                    // Your filtering logic goes in here
+                    for (final Search search : list) {
+                        if(type==0 && search.getType()==0){
+                            if (search.getFood().getName().toLowerCase().contains(filterPattern.toLowerCase())) {
+                                mList.add(search);
+                            }
+                        }
+                        if(type==1 && search.getType()==1){
+                            if (search.getStore().getName().toLowerCase().contains(filterPattern.toLowerCase())) {
+                                mList.add(search);
+                            }
+                        }
+
+                    }
+                    filteredList=mList;
+                }
+                results.values = filteredList;
+                results.count = filteredList.size();
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                filteredList=(List<Search>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+
+    @Override
+    public MViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView=LayoutInflater.from(parent.getContext()).inflate(R.layout.item_auto_complete_text,parent,false);
+        return new MViewHolder(itemView);
+
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-       Search search=list.get(position);
-        LayoutInflater inflater=LayoutInflater.from(getContext());
-        convertView= inflater.inflate(R.layout.item_auto_complete_text,parent,false);
-        TextView txtName= (TextView) convertView.findViewById(R.id.txt_name_search);
-        TextView txtAddress= (TextView) convertView.findViewById(R.id.txt_address_search);
+    public void onBindViewHolder(final MViewHolder holder, int position) {
+        final Search search=filteredList.get(position);
         if(search.getType()==0){
-            txtName.setText(search.getFood().getName());
-            txtAddress.setText(search.getStore().getAddress());
-        }
-        if(search.getType()==1){
-            txtName.setText(search.getStore().getName());
-            txtAddress.setText(search.getStore().getAddress());
-        }
-        return convertView;
-
-    }
-}
-class SearchFilter extends Filter {
-
-    CustomAutoCompleteTextAdapter adapter;
-    List<Search> originalList;
-    List<Search> filteredList;
-    int type;
-
-    public SearchFilter(CustomAutoCompleteTextAdapter adapter, List<Search> originalList) {
-        super();
-        this.adapter = adapter;
-        this.originalList = originalList;
-        this.filteredList = new ArrayList<>();
-
-    }
-    public void setType(int type){
-        this.type=type;
-    }
-
-    @Override
-    protected FilterResults performFiltering(CharSequence constraint) {
-        filteredList.clear();
-        final FilterResults results = new FilterResults();
-
-        if (constraint == null || constraint.length() == 0) {
-            filteredList.addAll(originalList);
-        } else {
-            final String filterPattern = constraint.toString().toLowerCase().trim();
-
-            // Your filtering logic goes in here
-            for (final Search search : originalList) {
-                if(type==0 && search.getType()==0){
-                    if (search.getFood().getName().toLowerCase().contains(filterPattern.toLowerCase())) {
-                        filteredList.add(search);
+            holder.txtName.setText(search.getFood().getName());
+            holder.txtAddress.setText(search.getStore().getAddress());
+            if (!TextUtils.isEmpty(search.getFood().getFoodImg())) {
+                StorageReference imgRef = stRef.child(search.getFood().getFoodImg());
+                imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.with(context)
+                                .load(uri)
+                                .into(holder.img);
                     }
-                }
-                if(type==1 && search.getType()==1){
-                    if (search.getStore().getName().toLowerCase().contains(filterPattern.toLowerCase())) {
-                        filteredList.add(search);
-                    }
-                }
+                });
+            } else {
+                holder.img.setImageResource(R.drawable.ic_item_notify_reportfood);
             }
         }
-        results.values = filteredList;
-        results.count = filteredList.size();
-        return results;
+        if(search.getType()==1){
+            holder.txtName.setText(search.getStore().getName());
+            holder.txtAddress.setText(search.getStore().getAddress());
+            if (!TextUtils.isEmpty(search.getStore().getStoreimg())) {
+                StorageReference imgRef = stRef.child(search.getStore().getStoreimg());
+                imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.with(context)
+                                .load(uri)
+                                .into(holder.img);
+                    }
+                });
+            } else {
+                holder.img.setImageResource(R.drawable.ic_item_notify_reportstore);
+            }
+        }
+        holder.cvItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Comunication.transactions.onSearchItemClick(search);
+            }
+        });
     }
 
     @Override
-    protected void publishResults(CharSequence constraint, FilterResults results) {
-        adapter.setList((List<Search>) results.values);
+    public int getItemCount() {
+        if(null==filteredList)
+            filteredList=new ArrayList<>();
+        return filteredList.size() ;
+    }
+    public static class MViewHolder extends RecyclerView.ViewHolder{
+        private TextView txtName,txtAddress;
+        private CircularImageView img;
+        private CardView cvItem;
+
+        public MViewHolder(View itemView) {
+            super(itemView);
+            img= (CircularImageView) itemView.findViewById(R.id.img_item);
+            txtName= (TextView) itemView.findViewById(R.id.txt_name_search);
+            txtAddress= (TextView) itemView.findViewById(R.id.txt_address_search);
+            cvItem= (CardView) itemView.findViewById(R.id.cv_item);
+        }
     }
 }
+

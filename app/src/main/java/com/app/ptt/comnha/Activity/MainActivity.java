@@ -964,8 +964,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             List<MyLocation> listLocation = new ArrayList<>();
             listLocation.add(myLocation);
             CoreManager.getInstance().setMyLocation(this, Storage.parseMyLocationToJson(listLocation));
-
+            Comunication.sendLocationListener.notice();
         }
+
         locationController.disconnect();
         if (null != snackbar && snackbar.isShown()) {
             snackbar.dismiss();

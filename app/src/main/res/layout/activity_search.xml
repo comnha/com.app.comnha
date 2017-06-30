@@ -12,77 +12,26 @@
         android:id="@+id/relative_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <LinearLayout
             android:id="@+id/linear_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:orientation="vertical">
-
-
-            <android.support.v7.widget.Toolbar
+            <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
-                <android.support.v7.widget.CardView
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginTop="4dp"
-                    app:cardCornerRadius="@dimen/cardv_cornerRadius"
-                    app:cardElevation="@dimen/cardv_elevation">
+                    android:layout_height="?attr/actionBarSize"></android.support.v7.widget.Toolbar>
+            </android.support.design.widget.AppBarLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:weightSum="5">
-
-                        <ImageView
-                            android:id="@+id/imgv_back_search"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.7"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:clickable="true"
-                            android:src="@drawable/ic_action_navigation_arrow_back" />
-
-                        <AutoCompleteTextView
-                            android:id="@+id/edt_content_search"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="5dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_weight="3.8"
-                            android:background="@android:color/transparent"
-                            android:gravity="start|center_vertical"
-                            android:hint="@string/txt_search"
-                            android:inputType="text"
-                            android:maxLines="2"
-                            android:textAllCaps="false" />
-
-                        <ImageView
-                            android:id="@+id/btn_search"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center_vertical"
-                            android:layout_margin="5dp"
-                            android:layout_weight="0.5"
-                            android:src="@drawable/ic_close_grey_600_24dp" />
-                    </LinearLayout>
-
-                </android.support.v7.widget.CardView>
-
-            </android.support.v7.widget.Toolbar>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <Button
@@ -90,7 +39,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:layout_marginEnd="10dp"
-                    android:background="@drawable/tag"
+                    android:background="@drawable/bg_round"
                     android:text="Tỉnh/TP"
                     android:textAllCaps="false" />
 
@@ -98,11 +47,20 @@
                     android:id="@+id/btn_quan"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:background="@drawable/tag"
+                    android:background="@drawable/bg_round"
                     android:text="Quận/huyện"
                     android:textAllCaps="false" />
-            </LinearLayout>
 
+                <ImageButton
+                    android:id="@+id/btn_reset"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:padding="10dp"
+                    android:background="@drawable/bg_round"
+                    android:layout_marginStart="20dp"
+                    android:textAllCaps="false"
+                    android:src="@drawable/cast_ic_notification_forward" />
+            </LinearLayout>
             <android.support.design.widget.TabLayout
                 android:id="@+id/tablayout_search"
                 android:layout_width="wrap_content"
@@ -114,11 +72,10 @@
         </LinearLayout>
 
     </RelativeLayout>
-
-
-    <FrameLayout
-        android:id="@+id/frame_content_search"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_list_user"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:padding="10dp"></android.support.v7.widget.RecyclerView>
 
 </LinearLayout>
