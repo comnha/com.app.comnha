@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.ptt.comnha.Models.FireBase.NewpostNotify;
+import com.app.ptt.comnha.Models.FireBase.NewstoreNotify;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Utils.AppUtils;
 
@@ -27,7 +28,7 @@ import java.util.List;
 
 public class notify_newpost_adapter extends BaseAdapter {
     Activity activity;
-    ArrayList<NewpostNotify> items;
+    List<NewpostNotify> items;
 
     private OnItemClickLiestner onItemClickLiestner;
     private OnOptionItemClickListener onOptionItemClickListener;
@@ -49,8 +50,12 @@ public class notify_newpost_adapter extends BaseAdapter {
     public void setOnOptionItemClickListener(OnOptionItemClickListener onOptionItemClickListener) {
         this.onOptionItemClickListener = onOptionItemClickListener;
     }
-
-    public notify_newpost_adapter(Activity activity, ArrayList<NewpostNotify> items) {
+    public void setList(List<NewpostNotify> list){
+        items=new ArrayList<>();
+        items=list;
+        notifyDataSetChanged();
+    }
+    public notify_newpost_adapter(Activity activity, List<NewpostNotify> items) {
         this.activity = activity;
         this.items = items;
     }

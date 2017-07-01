@@ -1,34 +1,35 @@
 package com.app.ptt.comnha.Activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
-import android.text.Editable;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.ptt.comnha.Adapters.CustomAutoCompleteTextAdapter;
 import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Fragment.PickLocationBottomSheetDialogFragment;
+import com.app.ptt.comnha.Interfaces.Comunication;
+import com.app.ptt.comnha.Interfaces.Transactions;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Store;
+import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.Models.Search;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
@@ -39,120 +40,73 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchActivity extends BaseActivity implements View.OnClickListener, PickLocationBottomSheetDialogFragment.onPickListener {
-    ImageView imgv_back;
+public class SearchActivity extends BaseActivity implements View.OnClickListener, PickLocationBottomSheetDialogFragment.onPickListener, Transactions {
+
     List<Search> list;
     List<Store> stores;
     List<Food> foods;
     LinearLayout reveal_linear;
     TabLayout tabLayout;
     RelativeLayout relative_temp;
-    AutoCompleteTextView edtSearch;
+    RecyclerView rvList;
     CustomAutoCompleteTextAdapter adapter;
-    int tabPos=0;
-    ValueEventListener foodValueListener,childEventListener;
+    int tabPos = 0;
+    ValueEventListener foodValueListener, childEventListener;
     DatabaseReference dbRef;
-    ImageView btnSearch;
+    StorageReference stRef;
     String dist_pro;
-    Button btnQuan,btnHuyen;
+    Button btnQuan, btnHuyen;
     FragmentManager fm;
     PickLocationBottomSheetDialogFragment pickLocationDialog;
     int whatProvince = -1;
-    String tinh,huyen;
+    String tinh, huyen;
+    int type = 0;
+    ImageButton btnReset;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        ref();
 
+        stRef = FirebaseStorage.getInstance().getReferenceFromUrl(getResources().getString(R.string.firebaseStorage_path));
         dbRef = FirebaseDatabase.getInstance()
                 .getReferenceFromUrl(getString(R.string.firebaseDB_path));
-        list=new ArrayList<>();
-        stores=new ArrayList<>();
-        foods=new ArrayList<>();
-        dist_pro = CoreManager.getInstance().getMyLocation().getDistrict()+"_"+CoreManager.getInstance().getMyLocation().getProvince();
+        list = new ArrayList<>();
+        stores = new ArrayList<>();
+        foods = new ArrayList<>();
+        ref();
+        dist_pro = CoreManager.getInstance().getMyLocation().getDistrict() + "_" + CoreManager.getInstance().getMyLocation().getProvince();
         pickLocationDialog = new PickLocationBottomSheetDialogFragment();
         pickLocationDialog.setOnPickListener(this);
         fm = getSupportFragmentManager();
+
+        Comunication.transactions = this;
+        getStoreList();
+
     }
 
     private void ref() {
-        imgv_back = (ImageView) findViewById(R.id.imgv_back_search);
-        btnSearch= (ImageView) findViewById(R.id.btn_search);
-        btnSearch.setVisibility(View.INVISIBLE);
-        btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                edtSearch.setText("");
-            }
-        });
-        imgv_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
-        edtSearch = (AutoCompleteTextView) findViewById(R.id.edt_content_search);
-        btnHuyen= (Button) findViewById(R.id.btn_tp);
-        btnQuan= (Button) findViewById(R.id.btn_quan);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        rvList = (RecyclerView) findViewById(R.id.rv_list_user);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvList.setLayoutManager(linearLayoutManager);
+        adapter = new CustomAutoCompleteTextAdapter(getApplicationContext(), list, stRef);
+        adapter.setType(0);
+        rvList.setAdapter(adapter);
+        btnHuyen = (Button) findViewById(R.id.btn_tp);
+        btnQuan = (Button) findViewById(R.id.btn_quan);
+        btnReset = (ImageButton) findViewById(R.id.btn_reset);
+        btnReset.setOnClickListener(this);
         btnQuan.setOnClickListener(this);
         btnHuyen.setOnClickListener(this);
-       edtSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-           @Override
-           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               if(tabPos==0){
-                   edtSearch.setText(adapter.returnItem(position).getFood().getName());
-               }else{
-                   edtSearch.setText(adapter.returnItem(position).getStore().getName());
-               }
-               Intent intent = new Intent(SearchActivity.this, StoreDeatailActivity.class);
-//               Bitmap imgBitmap = ((BitmapDrawable) imgMarker.getDrawable())
-//                       .getBitmap();
-//               a.setImgBitmap(imgBitmap);
-               ChooseStore.getInstance().setStore(adapter.returnItem(position).getStore());
-               startActivity(intent);
-           }
-       });
-        edtSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(TextUtils.isEmpty(s.toString())){
-                    btnSearch.setVisibility(View.INVISIBLE);
-                }else{
-                    btnSearch.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                boolean handled=false;
-                if(actionId==EditorInfo.IME_ACTION_DONE){
-                    handled=true;
-                }
-                InputMethodManager imm= (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-                View view=getCurrentFocus();
-                if(view==null){
-                    view=new View(SearchActivity.this);
-                }
-                imm.hideSoftInputFromInputMethod(view.getWindowToken(),0);
-                return handled;
-            }
-        });
         reveal_linear = (LinearLayout) findViewById(R.id.linear_search);
         relative_temp = (RelativeLayout) findViewById(R.id.relative_search);
         relative_temp.setBackgroundColor(
@@ -192,12 +146,17 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                                     .createOpenCR(reveal_linear, duration, cx, cy);
                             getWindow().setStatusBarColor(
                                     getResources().getColor(R.color.color_notify_reportfood));
+                            tabPos = 0;
+
                             if(null!=adapter){
                                 adapter.setType(0);
-
                             }
-                                tabPos=0;
-
+                            if(TextUtils.isEmpty(tinh) &&TextUtils.isEmpty(huyen)){
+                                type = 0;
+                            }else{
+                                type=2;
+                            }
+                            getDataFiltered(type);
                             break;
 
                         case 1:
@@ -212,11 +171,16 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                                     .createOpenCR(reveal_linear, duration, cx, cy);
                             getWindow().setStatusBarColor(
                                     getResources().getColor(R.color.admin_color_selection_news));
+                            tabPos = 1;
+                            if(TextUtils.isEmpty(tinh) &&TextUtils.isEmpty(huyen)){
+                                type = 1;
+                            }else{
+                                type=3;
+                            }
+                            getDataFiltered(type);
                             if(null!=adapter){
                                 adapter.setType(1);
-
                             }
-                                tabPos=1;
 
                             break;
                     }
@@ -234,6 +198,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             }
         });
     }
+
     private void getFoodList() {
         foodValueListener = new ValueEventListener() {
             @Override
@@ -243,13 +208,18 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                     String key = dataItem.getKey();
                     food.setFoodID(key);
 
-                    for(Store store: stores){
-                        if(food.getStoreID().equals(store.getStoreID())){
-                            Search search=new Search();
+                    for (Store store : stores) {
+                        if (food.getStoreID().equals(store.getStoreID())) {
+                            Search search = new Search();
                             search.setType(0);
                             search.setFood(food);
                             search.setStore(store);
-                            list.add(search);
+                            if (-1 != getItemInList(food.getFoodID(), 0)) {
+                                list.set(getItemInList(food.getFoodID(), 0), search);
+                                getDataFiltered(type);
+                            } else {
+                                list.add(search);
+                            }
                         }
                     }
                 }
@@ -264,10 +234,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 closeDialog();
-                adapter=new CustomAutoCompleteTextAdapter(getApplicationContext(),list);
-                adapter.setType(tabPos);
-                edtSearch.setAdapter(adapter);
-                edtSearch.setThreshold(3);
+                getDataFiltered(type);
             }
 
             @Override
@@ -276,12 +243,46 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             }
         });
         dbRef.child(getString(R.string.food_CODE))
-                .orderByChild("isHidden_dist_prov")
-                .equalTo(false + "_" + dist_pro)
                 .addValueEventListener(foodValueListener);
     }
+
+    public void getDataFiltered(int type) {
+        adapter.clearList();
+        for (Search search : list) {
+            //all food
+            switch (type) {
+                //all food
+                case 0:
+                    if (search.getType() == 0) {
+                        adapter.addItem(search);
+                    }
+                    break;
+                //all store
+                case 1:
+                    if (search.getType() == 1) {
+                        adapter.addItem(search);
+                    }
+                    break;
+                //custom food
+                case 2:
+                    if (search.getType() == 0 && search.getFood().getDist_prov().toLowerCase().equals(dist_pro.toLowerCase())) {
+                        adapter.addItem(search);
+                    }
+                    break;
+                //custom store
+                case 3:
+                    if (search.getType() == 1 && search.getStore().getPro_dist().toLowerCase().equals(dist_pro.toLowerCase())) {
+                        adapter.addItem(search);
+                    }
+                    break;
+
+            }
+
+        }
+    }
+
     private void getStoreList() {
-        showProgressDialog("Loading...","Vui lòng đợi");
+        showProgressDialog("Loading...", "Vui lòng đợi");
         childEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -290,10 +291,16 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                     store.setStoreID(item.getKey());
                     Log.d("added", "added");
                     stores.add(store);
-                    Search search=new Search() ;
+                    Search search = new Search();
                     search.setStore(store);
                     search.setType(1);
-                    list.add(search);
+                    if (-1 != getItemInList(store.getStoreID(), 1)) {
+                        list.set(getItemInList(store.getStoreID(), 1), search);
+                        getDataFiltered(type);
+                    } else {
+                        list.add(search);
+                    }
+
                 }
 
             }
@@ -303,8 +310,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
             }
         };
-        dbRef.child(getString(R.string.store_CODE)).orderByChild("isHidden_dis_pro")
-                .equalTo(false + "_" + dist_pro)
+        dbRef.child(getString(R.string.store_CODE))
                 .addValueEventListener(childEventListener);
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -321,6 +327,23 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
     }
 
+    public int getItemInList(String id, int type) {
+        for (Search search : list) {
+            //store
+            if (type == 1) {
+                if (search.getType()==1 && id.toLowerCase().equals(search.getStore().getStoreID().toLowerCase())) {
+                    return list.indexOf(search);
+                }
+            } else {
+                if (search.getType()==0 &&id.toLowerCase().equals(search.getFood().getFoodID().toLowerCase())) {
+                    return list.indexOf(search);
+                }
+            }
+
+        }
+        return -1;
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -328,8 +351,33 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        MenuItem search = menu.findItem(R.id.search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
+        search(searchView);
+        return true;
+    }
+
+    private void search(SearchView searchView) {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+    }
+
+
+    @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_quan:
                 if (whatProvince >= 0) {
                     Log.i("province", whatProvince + "");
@@ -343,6 +391,20 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             case R.id.btn_tp:
                 pickLocationDialog.show(fm, "pickProvinceDialog");
                 break;
+            case R.id.btn_reset:
+                whatProvince = -1;
+                btnHuyen.setText("Tỉnh/TP");
+                btnQuan.setText("Quận/huyện");
+                tinh = "";
+                huyen = "";
+                if (tabPos == 0) {
+                    type = 0;
+                    getDataFiltered(type);
+                } else {
+                    type = 1;
+                    getDataFiltered(type);
+                }
+                break;
         }
     }
 
@@ -355,14 +417,62 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onPickDistrict(String district) {
-        list.clear();
+
         huyen = district;
         btnQuan.setText(huyen);
         if (MyService.isNetworkAvailable(this)) {
-           dist_pro=huyen+"_"+tinh;
-            getStoreList();
+            dist_pro = huyen + "_" + tinh;
+            if(tabPos==0){
+                type=2;
+            }else{
+                type=3;
+
+            }
+            getDataFiltered(type);
         } else {
             Toast.makeText(this, "You are offline", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void setupFirebase() {
+
+    }
+
+    @Override
+    public boolean createNew() {
+        return false;
+    }
+
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void delete() {
+
+    }
+
+    @Override
+    public void deleteUser(User user) {
+
+    }
+
+    @Override
+    public void changeRole(User user) {
+
+    }
+
+    @Override
+    public void onSearchItemClick(Search search) {
+        Intent intent = new Intent(SearchActivity.this, StoreDeatailActivity.class);
+        if (search.getType() == 0) {
+            ChooseStore.getInstance().setStore(list.get(getItemInList(search.getFood().getStoreID(), 1)).getStore());
+        } else {
+            ChooseStore.getInstance().setStore(list.get(getItemInList(search.getStore().getStoreID(), 1)).getStore());
+        }
+
+        startActivity(intent);
     }
 }

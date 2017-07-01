@@ -29,6 +29,7 @@ import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.SingletonClasses.CoreManager;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,6 +41,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,7 +51,7 @@ public class AdminNewStoreFragment extends Fragment {
 
     ListView listView;
     notify_newstore_adapter itemadapter;
-    ArrayList<NewstoreNotify> items;
+    List<NewstoreNotify> items;
     DatabaseReference dbRef;
     ValueEventListener storeEventListener, userValueListener,
             notiEventListener;
@@ -71,14 +73,13 @@ public class AdminNewStoreFragment extends Fragment {
         dbRef = FirebaseDatabase.getInstance()
                 .getReferenceFromUrl(getString(R.string.firebaseDB_path));
         init(view);
-        if (null != CoreManager.getInstance().getMyLocation()) {
-            dist_pro = CoreManager.getInstance().getMyLocation().getDistrict() + "_" + CoreManager.getInstance().getMyLocation().getProvince();
-            Log.d("dist_pro", dist_pro);
-        } else {
-            if (getView() != null)
-                AppUtils.showSnackbarWithoutButton(getView(), "Không tìm thấy vị trí của bạn");
+        if(LoginSession.getInstance().getUser().getRole()>0){
+            dist_pro=LoginSession.getInstance().getUser().getDist_prov();
+            getdata();
+        }else{
+            getActivity().finish();
         }
-        getdata();
+
         Log.d("notinewstore_createView", "createview");
         return view;
     }
@@ -91,9 +92,20 @@ public class AdminNewStoreFragment extends Fragment {
                     NewstoreNotify item = dataItem.getValue(NewstoreNotify.class);
                     String key = dataItem.getKey();
                     item.setId(key);
-                    items.add(item);
+                    int pos=-1;
+                    for(NewstoreNotify notify:items){
+                        if(notify.getId().equals(item.getId())){
+                          pos=items.indexOf(notify);
+                        }
+                    }
+                    if(pos!=-1){
+                        items.set(pos,item);
+                    }else {
+                        items.add(item);
+                    }
                 }
-                itemadapter.notifyDataSetChanged();
+                sortList();
+                //itemadapter.notifyDataSetChanged();
             }
 
             @Override
@@ -101,10 +113,31 @@ public class AdminNewStoreFragment extends Fragment {
 
             }
         };
-        dbRef.child(getString(R.string.notify_newstore_CODE))
-                .orderByChild("district_province")
-                .equalTo(dist_pro)
-                .addListenerForSingleValueEvent(notiEventListener);
+        if(LoginSession.getInstance().getUser().getRole()==1) {
+            dbRef.child(getString(R.string.notify_newstore_CODE))
+                    .orderByChild("district_province")
+                    .equalTo(dist_pro)
+                    .addValueEventListener(notiEventListener);
+        }else{
+            dbRef.child(getString(R.string.notify_newstore_CODE))
+
+                    .addValueEventListener(notiEventListener);
+        }
+
+    }
+    public void sortList(){
+        List<NewstoreNotify> list=new ArrayList<>();
+        for(NewstoreNotify notify:items){
+            if(!notify.isReadstate()){
+               list.add(notify);
+            }
+        }
+        for(NewstoreNotify notify:items){
+            if(notify.isReadstate()){
+                list.add(notify);
+            }
+        }
+        itemadapter.setList(list);
     }
 
     private void getStoreInfo(NewstoreNotify notify) {

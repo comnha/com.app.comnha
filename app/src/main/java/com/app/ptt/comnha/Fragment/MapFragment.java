@@ -102,7 +102,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
     int pos = -1, option = 1;
     MarkerOptions yourMarker = null;
     AutoCompleteTextView edtSearch;
-    NetworkChangeReceiver mBroadcastReceiver;
+
     FloatingActionButton fab_filter, fab_location, fab_refresh;
     CardView card_pickProvince, card_pickDistrict, card_filterlabel, card_mylocation, card_distance;
     TextView txt_tinh, txt_huyen, txt_filterLabel, txt_distance;
@@ -155,7 +155,6 @@ public class MapFragment extends Fragment implements View.OnClickListener,
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i(LOG, "onCreateView");
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.frg_map_fablocation);
         dbRef = FirebaseDatabase.getInstance()
                 .getReferenceFromUrl(Const.DATABASE_PATH);
         anhxa(view);
@@ -274,9 +273,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
             Toast.makeText(getContext(), "Offline mode", Toast.LENGTH_SHORT).show();
         }
         mIntentFilter = new IntentFilter();
-        // mIntentFilter.addAction(mBroadcastSendAddress);
-        mBroadcastReceiver = new NetworkChangeReceiver();
-        getActivity().registerReceiver(mBroadcastReceiver, mIntentFilter);
+
     }
 
     @Override
@@ -356,7 +353,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                                     break;
 
                             }
-
+                            card_distance.setEnabled(true);
                             return true;
                         }
                     });
@@ -369,14 +366,13 @@ public class MapFragment extends Fragment implements View.OnClickListener,
 
                 if (card_pickDistrict.getTranslationY() == 0
                         && card_pickProvince.getTranslationX() == 0) {
-//                    Log.i("transi", "pro: " + card_pickProvince.getTranslationX()
-//                            + " dis: " + card_pickDistrict.getTranslationY());
                     AnimationUtils.animatHideTagMap(card_pickProvince, card_pickDistrict);
                 } else {
                     AnimationUtils.animatShowTagMap(card_pickProvince, card_pickDistrict);
                 }
                 break;
             case R.id.frg_map_cardV_distance:
+                card_distance.setEnabled(true);
                 Dialog a = onCreateDialog();
                 a.show();
                 break;
@@ -391,8 +387,6 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                 } else {
                     Toast.makeText(getActivity(), getString(R.string.txt_noChoseProvince), Toast.LENGTH_SHORT).show();
                 }
-                break;
-            case R.id.edt_search:
                 break;
             case R.id.btn_search:
                 if (!TextUtils.isEmpty(edtSearch.getText().toString())) {
@@ -418,6 +412,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
 
         if (isConnected) {
             if (tinh != null && huyen != null) {
+
                 myGoogleMap.clear();
                 getDataInFireBase(6);
                 edtSearch.setText("");
@@ -434,7 +429,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
     public void onStop() {
         Log.i(LOG, "onStop");
         super.onStop();
-        getActivity().unregisterReceiver(mBroadcastReceiver);
+
 
     }
 
@@ -461,31 +456,9 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                         yourLocation = a;
                         if (yourLocation != null) {
                             addMarkerYourLocation();
-//                                                   if (custom == 0) {
-//                                getDataInFireBase(1);
-//                            } else {
-//                                googleMap.clear();
-//                                addMarkerYourLocation();
-//                            }
                         }
                         getData();
                     }
-//                                if(custom==1){
-////                                    float kc = (float) myTool.getDistance(new LatLng(yourLocation.getLat(), yourLocation.getLng()), new LatLng(customLocation.getLat(),customLocation.getLng()));
-////                                    int c = Math.round(kc);
-////                                    int d = c / 1000;
-////                                    int e = c % 1000;
-////                                    int f = e / 100;
-////                                    customLocation.setKhoangcach(d + "," + f +"km");
-//                                }
-//                                list=new ArrayList<Store>();
-//                                list.add(customLocation);
-//                                addMarker(customLocation);
-//                                custom=0;
-//                            }
-//
-//                        }
-//                    }
                     googleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
                         @Override
                         public void onMapLoaded() {
@@ -622,7 +595,14 @@ public class MapFragment extends Fragment implements View.OnClickListener,
 
     public View getInfoWindowOfMarker(Marker marker) {
 
-        Store a = returnLocation(marker);
+
+        Store a;
+        if(customLocation==null){
+            a= returnLocation(marker);
+        }else{
+            a=customLocation;
+            card_distance.setEnabled(false);
+        }
         if (a != null) {
             Log.i(LOG + ".infoWindow", a.getAddress() + " : " + a.getDistance());
             txt_TenQuan.setText(a.getName());
@@ -716,36 +696,6 @@ public class MapFragment extends Fragment implements View.OnClickListener,
         return null;
     }
 
-//    @Override
-//    public void onLocationFinderStart() {
-//
-//    }
-
-//    @Override
-//    public void onLocationFinderSuccess(PlaceAttribute placeAttribute) {
-//        if (placeAttribute != null) {
-//            myLocationSearch = placeAttribute;
-//            tinh = placeAttribute.getState();
-//            huyen = placeAttribute.getDistrict();
-//            Log.i(LOG + ".onLocationFinder", "place:" + placeAttribute.getFullname());
-//            isNearest = true;
-//            Log.i(LOG + ".onClick ", "!=current quan huyen");
-//            getDataInFireBase(2);
-//            //}
-//            pos = -1;
-//        } else {
-//            Toast.makeText(getActivity(),
-//                    "Không tìm được",
-//                    Toast.LENGTH_SHORT).show();
-//        }
-//    }
-//
-//    @Override
-//    public void onGeocodingFinderSuccess(String address) {
-//
-//    }
-
-
     public void getDataInFireBase(int type) {
         sortType = type;
         myGoogleMap.clear();
@@ -789,13 +739,8 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                                     addMarker(newLocation);
                             } else {
                                 //all
-//                                if(type==2 ||type==7) {
-//                                    newLocation.setDistance(d + "," + f + " km");
-//                                    addMarker(newLocation);
-//                                }else{
                                     newLocation.setDistance(d + "," + f + " km");
                                     addMarker(newLocation);
-//                                }
                             }
                         }
                     }
@@ -902,20 +847,6 @@ public class MapFragment extends Fragment implements View.OnClickListener,
 
             }
         });
-    }
-
-    class NetworkChangeReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-//            if (intent.getAction().equals(mBroadcastSendAddress)) {
-//                isConnected = intent.getBooleanExtra("isConnected", false);
-//                MyLocation a = CoreManager.getInstance().getMyLocation();
-//                if (a != null) {
-//                    yourLocation = a;
-//                    getDataInFireBase(1);
-//                }
-//            }
-        }
     }
 
     public Dialog onCreateDialog() {

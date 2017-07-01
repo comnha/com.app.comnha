@@ -18,6 +18,7 @@ import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Interfaces.Comunication;
 import com.app.ptt.comnha.Interfaces.SendLocationListener;
+import com.app.ptt.comnha.Models.FireBase.NewpostNotify;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
@@ -61,14 +62,14 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
         stRef = FirebaseStorage.getInstance()
                 .getReferenceFromUrl(Const.STORAGE_PATH);
         ref(view);
-//        pro_dist = "Quận 9_Hồ Chí Minh";
+
         getPostList(pro_dist);
 
         if (null != CoreManager.getInstance().getMyLocation()) {
             pro_dist=CoreManager.getInstance().getMyLocation().getDistrict()
                     +"_"+CoreManager.getInstance().getMyLocation().getProvince();
             Log.d(TAG, "pro_dist: " + pro_dist);
-//            pro_dist = "Quận 9_Hồ Chí Minh";
+
             getPostList(pro_dist);
         } else {
             if (getView() != null)
@@ -88,14 +89,22 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
                     String key = item.getKey();
                     Post post = item.getValue(Post.class);
                     post.setPostID(key);
-                    posts.add(post);
+                    int pos=-1;
+                    for(Post mPost:posts){
+                        if(mPost.getPostID().equals(key)){
+                            pos=posts.indexOf(mPost);
+                        }
+                    }
+                    if(pos!=-1){
+                        posts.set(pos,post);
+                    }else {
+                        posts.add(post);
+                    }
+
                 }
                 postadapter.notifyDataSetChanged();
                 swipeRefresh.setRefreshing(false);
-//                dbRef.child(getString(R.string.posts_CODE))
-//                        .orderByChild("isHidden_dist_prov")
-//                        .equalTo(false + "_" + pro_dist)
-//                        .removeEventListener(postsEventListener);
+
             }
 
             @Override
@@ -106,7 +115,9 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
         dbRef.child(getString(R.string.posts_CODE))
                 .orderByChild("isHidden_dist_prov")
                 .equalTo(false + "_" + pro_dist)
-                .addListenerForSingleValueEvent(postsEventListener);
+
+                .addValueEventListener(postsEventListener);
+
     }
 
     @Override

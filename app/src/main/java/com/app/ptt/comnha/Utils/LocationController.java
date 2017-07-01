@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,9 +30,8 @@ import java.util.List;
 
 public class LocationController implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
-
     private static final String TAG = "LocationController";
-
+    private int count =0;
     public interface LocationControllerListener {
         void onFail();
         void requestPermisson(List<String> strings);
@@ -44,7 +44,6 @@ public class LocationController implements GoogleApiClient.ConnectionCallbacks,
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
-
     public LocationController(Context context) {
         this.context = context;
     }
@@ -82,6 +81,8 @@ public class LocationController implements GoogleApiClient.ConnectionCallbacks,
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+
     }
 
 
@@ -132,8 +133,26 @@ public class LocationController implements GoogleApiClient.ConnectionCallbacks,
 
     @Override
     public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        locationControllerListener.onLocationChanged(location);
+        if(count<3) {
+            count++;
+            if (mGoogleApiClient.isConnected()) {
+                mLastLocation = location;
+                locationControllerListener.onLocationChanged(location);
+            } else {
+                if(mGoogleApiClient!=null) {
+                    mGoogleApiClient.disconnect();
+                }
+
+                mGoogleApiClient = null;
+                mLocationRequest = null;
+            }
+        }else{
+            if(mGoogleApiClient!=null) {
+                mGoogleApiClient.disconnect();
+            }
+            mGoogleApiClient = null;
+            mLocationRequest = null;
+        }
     }
 
     public void connect(){
@@ -141,6 +160,9 @@ public class LocationController implements GoogleApiClient.ConnectionCallbacks,
     }
 
     public void disconnect(){
-        mGoogleApiClient.disconnect();
+        if(mGoogleApiClient!=null) {
+            mGoogleApiClient.disconnect();
+        }
+
     }
 }

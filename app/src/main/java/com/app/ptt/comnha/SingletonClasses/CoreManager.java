@@ -32,10 +32,19 @@ public class CoreManager {
     public void initData(Context context) {
         this.isLaunchFistTime = PreferenceUtils.getBoolPref(context, Const.PREF_FIRST_LAUNCH, true);
         this.myLocation = PreferenceUtils.getStringPref(context, Const.PREF_MY_LOCATION, "");
+        this.isCheckProfileFirstTime=PreferenceUtils.getBoolPref(context,Const.PREF_FIRST_PROFILE_LAUNCH,true);
     }
 
+    public boolean isCheckProfileFirstTime() {
+        return isCheckProfileFirstTime;
+    }
 
+    public void setCheckProfileFirstTime(Context context,boolean checkProfileFirstTime) {
+        isCheckProfileFirstTime = checkProfileFirstTime;
+        PreferenceUtils.saveBoolPref(context, Const.PREF_FIRST_PROFILE_LAUNCH, checkProfileFirstTime);
+    }
 
+    boolean isCheckProfileFirstTime;
 
     boolean isLaunchFistTime;
 
