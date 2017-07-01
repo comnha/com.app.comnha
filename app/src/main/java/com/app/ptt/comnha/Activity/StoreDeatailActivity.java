@@ -116,9 +116,9 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         } else {
             storeID = store.getStoreID();
             ChooseStore.getInstance().setStore(null);
+            createStoreInfo();
         }
         ref();
-        createStoreInfo();
     }
 
     private void ref() {
