@@ -188,14 +188,14 @@ public class AppUtils {
 //        alertDialog.setMessage("GPS is not enabled.Do you want to go to setting menu?");
 //        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
 //            @Override
-//            public void onClick(DialogInterface dialog, int which) {
+//            public void onCustomClick(DialogInterface dialog, int which) {
 //                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 //                startActivity(intent);
 //            }
 //        });
 //        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 //            @Override
-//            public void onClick(DialogInterface dialog, int which) {
+//            public void onCustomClick(DialogInterface dialog, int which) {
 //                dialog.cancel();
 //            }
 //        });
@@ -209,14 +209,14 @@ public class AppUtils {
 //        alertDialog.setMessage("Internet is not enabled. Do you want to go to setting menu?");
 //        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
 //            @Override
-//            public void onClick(DialogInterface dialog, int which) {
+//            public void onCustomClick(DialogInterface dialog, int which) {
 //                Intent intent = new Intent(Settings.ACTION_SETTINGS);
 //                c.startActivity(intent);
 //            }
 //        });
 //        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 //            @Override
-//            public void onClick(DialogInterface dialog, int which) {
+//            public void onCustomClick(DialogInterface dialog, int which) {
 //                dialog.cancel();
 //            }
 //        });
@@ -230,7 +230,7 @@ public class AppUtils {
 //        alertDialog.setMessage("Your location has not been saved. Please turn on your GPS and Internet");
 //        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 //            @Override
-//            public void onClick(DialogInterface dialog, int which) {
+//            public void onCustomClick(DialogInterface dialog, int which) {
 //                //Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 //                // mContext.startActivity(intent);
 //                dialog.cancel();
@@ -245,7 +245,7 @@ public class AppUtils {
 //        builder.setMessage("Network is not enabled.");
 //        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 //            @Override
-//            public void onClick(DialogInterface dialog, int which) {
+//            public void onCustomClick(DialogInterface dialog, int which) {
 //                dialog.cancel();
 //            }
 //        });
@@ -257,7 +257,7 @@ public class AppUtils {
 //        builder.setMessage("Network and GPS is not enabled.");
 //        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 //            @Override
-//            public void onClick(DialogInterface dialog, int which) {
+//            public void onCustomClick(DialogInterface dialog, int which) {
 //                dialog.cancel();
 //            }
 //        });
@@ -269,7 +269,7 @@ public class AppUtils {
 //        builder.setMessage("Taking data in the internet");
 //        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 //            @Override
-//            public void onClick(DialogInterface dialog, int which) {
+//            public void onCustomClick(DialogInterface dialog, int which) {
 //                dialog.cancel();
 //            }
 //        });
@@ -281,7 +281,7 @@ public class AppUtils {
 //        builder.setMessage("Can't get your location. Try again");
 //        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 //            @Override
-//            public void onClick(DialogInterface dialog, int which) {
+//            public void onCustomClick(DialogInterface dialog, int which) {
 //                dialog.cancel();
 //            }
 //        });

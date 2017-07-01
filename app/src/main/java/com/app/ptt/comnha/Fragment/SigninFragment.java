@@ -179,6 +179,8 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
 
                         }
                     });
+        }else{
+            closeDialog();
         }
 
     }
