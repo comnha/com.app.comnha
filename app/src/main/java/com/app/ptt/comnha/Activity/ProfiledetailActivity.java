@@ -174,7 +174,7 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
         if(CoreManager.getInstance().isCheckProfileFirstTime()){
             new SimpleTooltip.Builder(this)
                     .anchorView(txtv_un)
-                    .text("             Hướng dẫn"+"\n"+"Click vào các danh mục để sửa thông tin")
+                    .text("Click vào các danh mục để sửa thông tin")
                     .gravity(Gravity.BOTTOM)
                     .animated(true)
                     .transparentOverlay(false)
