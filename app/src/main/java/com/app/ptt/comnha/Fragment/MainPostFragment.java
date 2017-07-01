@@ -118,6 +118,10 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
 
                 .addValueEventListener(postsEventListener);
 
+
+
+
+
     }
 
     @Override
