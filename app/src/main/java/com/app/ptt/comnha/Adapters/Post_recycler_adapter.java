@@ -94,17 +94,18 @@ public class Post_recycler_adapter extends RecyclerView.Adapter<Post_recycler_ad
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (posts.get(position).getImgBitmap()==null){
-                    try {
-                        Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_banner.getDrawable())
-                                .getBitmap();
-                        posts.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
-                        onItemClickLiestner.onItemClick(posts.get(holder.getAdapterPosition()),
-                                holder.itemView);
-                    } catch (NullPointerException e) {
-                        onItemClickLiestner.onItemClick(posts.get(holder.getAdapterPosition()),
-                                holder.itemView);
-                    }}else {
+                    if (posts.get(position).getImgBitmap() == null) {
+                        try {
+                            Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_banner.getDrawable())
+                                    .getBitmap();
+                            posts.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
+                            onItemClickLiestner.onItemClick(posts.get(holder.getAdapterPosition()),
+                                    holder.itemView);
+                        } catch (NullPointerException e) {
+                            onItemClickLiestner.onItemClick(posts.get(holder.getAdapterPosition()),
+                                    holder.itemView);
+                        }
+                    } else {
                         onItemClickLiestner.onItemClick(posts.get(holder.getAdapterPosition()),
                                 holder.itemView);
                     }
