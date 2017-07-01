@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<android.support.v7.widget.CardView
     android:layout_width="350dp"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
+
     android:orientation="vertical">
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         android:orientation="vertical">
         <TextView
             android:layout_width="wrap_content"
@@ -24,24 +31,56 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:weightSum="3">
-            <android.support.design.widget.TextInputLayout
+            <LinearLayout
                 android:layout_width="0dp"
-                android:id="@+id/til"
-
                 android:layout_height="wrap_content"
-                android:layout_weight="2.5">
+                android:layout_weight="2.5"
+                android:id="@+id/ll_edt"
+                android:orientation="vertical">
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="date"
                     android:id="@+id/edt_edit"
+                    android:hint="Mật khẩu cũ"
+                    android:maxLines="2"
+                    android:ellipsize="end"
                     android:textColorHint="@color/mdtp_red"/>
-            </android.support.design.widget.TextInputLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ll_password"
+                    android:visibility="gone"
+                    android:orientation="vertical">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:maxLines="2"
+                        android:hint="Mật khẩu mới"
+                        android:ellipsize="end"
+                        android:id="@+id/edt_edit1"
+                        android:textColorHint="@color/mdtp_red"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:maxLines="2"
+                        android:hint="Nhập lại mật khẩu"
+                        android:ellipsize="end"
+                        android:id="@+id/edt_edit2"
+                        android:textColorHint="@color/mdtp_red"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
             <RadioGroup
                 android:layout_width="0dp"
                 android:id="@+id/rg_total"
+                android:visibility="gone"
                 android:layout_weight="2.5"
-
                 android:layout_height="wrap_content">
                 <RadioButton
                     android:id="@+id/rb_nam"
@@ -54,17 +93,27 @@
                     android:layout_height="wrap_content"
                     android:text="Nữ"/>
             </RadioGroup>
-
-            <ImageButton
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|center"
                 android:layout_weight="0.5"
                 android:id="@+id/btn_edit"
-                android:background="@drawable/ic_chevron_right_50black_24dp"
-                android:paddingBottom="50dp"
-                android:paddingStart="50dp" />
+                android:layout_gravity="center|bottom"
+                android:gravity="center"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/bg_transparent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:background="@drawable/ic_chevron_right_50black_24dp"
+                     />
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 
 </android.support.v7.widget.CardView>
+    </LinearLayout>

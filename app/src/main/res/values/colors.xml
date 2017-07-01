@@ -23,4 +23,5 @@
     <color name="addlocal_color_opentime">#9303a7</color>
     <color name="color_waiting">#26cecece</color>
     <color name="color_postthumb">#2fE6E9ED</color>
+    <color name="transparent">#00000000</color>
 </resources>

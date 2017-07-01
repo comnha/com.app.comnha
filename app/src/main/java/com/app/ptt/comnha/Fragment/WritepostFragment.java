@@ -1036,7 +1036,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //
 //        frg_filter_txtmon.setOnClickListener(new View.OnClickListener() {
 //            @Override
-//            public void onClick(View v) {
+//            public void onCustomClick(View v) {
 //                PickFoodDialogFragment pickFoodFrg = new PickFoodDialogFragment();
 //                pickFoodFrg.show(fm, "fragment_pickFood");
 //                Log.i("CCS", DoPost.getInstance().getMyLocation().getStoreID() + "-------------------------");
@@ -1193,7 +1193,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 //
 //
 //    @Override
-//    public void onClick(View view) {
+//    public void onCustomClick(View view) {
 //        switch (view.getId()) {
 ////            case R.id.frg_post_fabchoseloca:
 ////                if(isConnected) {
