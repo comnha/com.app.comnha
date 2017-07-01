@@ -116,6 +116,9 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
                 .orderByChild("isHidden_dist_prov")
                 .equalTo(false + "_" + pro_dist)
                 .addValueEventListener(postsEventListener);
+
+
+
     }
 
     @Override
