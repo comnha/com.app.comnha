@@ -78,7 +78,14 @@ public class Post_recycler_adapter extends RecyclerView.Adapter<Post_recycler_ad
                     }
                 });
             } else {
-                holder.imgv_banner.setVisibility(View.GONE);
+                holder.imgv_banner.setBackgroundResource(R.drawable.img_banner);
+                try {
+                    Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_banner.getDrawable())
+                            .getBitmap();
+                    posts.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
+                } catch (NullPointerException e) {
+
+                }
             }
         } else {
             holder.imgv_banner.setImageBitmap(posts.get(position).getImgBitmap());

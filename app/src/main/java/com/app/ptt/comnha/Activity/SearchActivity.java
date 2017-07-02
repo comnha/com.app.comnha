@@ -94,6 +94,8 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private void ref() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         rvList = (RecyclerView) findViewById(R.id.rv_list_user);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvList.setLayoutManager(linearLayoutManager);
@@ -148,13 +150,13 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                                     getResources().getColor(R.color.color_notify_reportfood));
                             tabPos = 0;
 
-                            if(null!=adapter){
+                            if (null != adapter) {
                                 adapter.setType(0);
                             }
-                            if(TextUtils.isEmpty(tinh) &&TextUtils.isEmpty(huyen)){
+                            if (TextUtils.isEmpty(tinh) && TextUtils.isEmpty(huyen)) {
                                 type = 0;
-                            }else{
-                                type=2;
+                            } else {
+                                type = 2;
                             }
                             getDataFiltered(type);
                             break;
@@ -172,13 +174,13 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                             getWindow().setStatusBarColor(
                                     getResources().getColor(R.color.admin_color_selection_news));
                             tabPos = 1;
-                            if(TextUtils.isEmpty(tinh) &&TextUtils.isEmpty(huyen)){
+                            if (TextUtils.isEmpty(tinh) && TextUtils.isEmpty(huyen)) {
                                 type = 1;
-                            }else{
-                                type=3;
+                            } else {
+                                type = 3;
                             }
                             getDataFiltered(type);
-                            if(null!=adapter){
+                            if (null != adapter) {
                                 adapter.setType(1);
                             }
 
@@ -331,11 +333,11 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         for (Search search : list) {
             //store
             if (type == 1) {
-                if (search.getType()==1 && id.toLowerCase().equals(search.getStore().getStoreID().toLowerCase())) {
+                if (search.getType() == 1 && id.toLowerCase().equals(search.getStore().getStoreID().toLowerCase())) {
                     return list.indexOf(search);
                 }
             } else {
-                if (search.getType()==0 &&id.toLowerCase().equals(search.getFood().getFoodID().toLowerCase())) {
+                if (search.getType() == 0 && id.toLowerCase().equals(search.getFood().getFoodID().toLowerCase())) {
                     return list.indexOf(search);
                 }
             }
@@ -422,10 +424,10 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         btnQuan.setText(huyen);
         if (MyService.isNetworkAvailable(this)) {
             dist_pro = huyen + "_" + tinh;
-            if(tabPos==0){
-                type=2;
-            }else{
-                type=3;
+            if (tabPos == 0) {
+                type = 2;
+            } else {
+                type = 3;
 
             }
             getDataFiltered(type);
@@ -474,5 +476,16 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         }
 
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

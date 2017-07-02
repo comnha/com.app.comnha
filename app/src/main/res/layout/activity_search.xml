@@ -17,13 +17,86 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:visibility="invisible"
+                app:elevation="0dp"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+                <android.support.v7.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/transparent"
+                    android:visibility="invisible">
+
+                </android.support.v7.widget.Toolbar>
+            </android.support.design.widget.AppBarLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:visibility="invisible">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/tag"
+                    android:text="Tỉnh/TP"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/tag"
+                    android:text="Quận/huyện"
+                    android:textAllCaps="false" />
+
+                <ImageButton
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="20dp"
+                    android:background="@drawable/bg_round"
+                    android:padding="10dp"
+                    android:src="@drawable/cast_ic_notification_forward"
+                    android:textAllCaps="false" />
+            </LinearLayout>
+
+            <android.support.design.widget.TabLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:visibility="invisible"
+                app:tabGravity="center"
+                app:tabIndicatorColor="@android:color/white"
+                app:tabMode="fixed" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.design.widget.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                app:elevation="0dp"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"></android.support.v7.widget.Toolbar>
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/transparent">
+
+                </android.support.v7.widget.Toolbar>
             </android.support.design.widget.AppBarLayout>
 
 
@@ -39,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:layout_marginEnd="10dp"
-                    android:background="@drawable/bg_round"
+                    android:background="@drawable/tag"
                     android:text="Tỉnh/TP"
                     android:textAllCaps="false" />
 
@@ -47,7 +120,7 @@
                     android:id="@+id/btn_quan"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:background="@drawable/bg_round"
+                    android:background="@drawable/tag"
                     android:text="Quận/huyện"
                     android:textAllCaps="false" />
 
@@ -55,12 +128,13 @@
                     android:id="@+id/btn_reset"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:padding="10dp"
-                    android:background="@drawable/bg_round"
                     android:layout_marginStart="20dp"
-                    android:textAllCaps="false"
-                    android:src="@drawable/cast_ic_notification_forward" />
+                    android:background="@drawable/bg_round"
+                    android:padding="10dp"
+                    android:src="@drawable/cast_ic_notification_forward"
+                    android:textAllCaps="false" />
             </LinearLayout>
+
             <android.support.design.widget.TabLayout
                 android:id="@+id/tablayout_search"
                 android:layout_width="wrap_content"
@@ -71,7 +145,9 @@
                 app:tabMode="fixed" />
         </LinearLayout>
 
+
     </RelativeLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_list_user"
         android:layout_width="match_parent"
