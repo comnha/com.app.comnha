@@ -70,8 +70,8 @@ public class Food_recycler_adapter extends RecyclerView.Adapter<Food_recycler_ad
         holder.ratingBar.setIsIndicator(true);
         holder.cardv.setCardBackgroundColor(activity.getResources()
                 .getColor(R.color.color_notify_reportfood));
-        if (foods.get(holder.getAdapterPosition()).getImgBitmap() != null) {
-            if (!foods.get(holder.getAdapterPosition()).getImgBitmap().equals("")) {
+        if (foods.get(holder.getAdapterPosition()).getImgBitmap() == null) {
+            if (!foods.get(holder.getAdapterPosition()).getFoodImg().equals("")) {
                 StorageReference imgRef = stRef.child(foods.get(position).getFoodImg());
                 imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
@@ -91,7 +91,8 @@ public class Food_recycler_adapter extends RecyclerView.Adapter<Food_recycler_ad
 
             }
         } else {
-            holder.imgv_photo.setImageResource(R.drawable.ic_item_store);
+            holder.imgv_photo.setImageBitmap(foods.get(position)
+                    .getImgBitmap());
         }
         if (onItemClickLiestner != null) {
             holder.cardv.setOnClickListener(new View.OnClickListener() {

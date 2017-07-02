@@ -19,6 +19,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -26,6 +27,7 @@ import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +43,7 @@ import android.widget.Toast;
 import com.app.ptt.comnha.Adapters.Comment_rcyler_adapter;
 import com.app.ptt.comnha.Adapters.Photo_recycler_adapter;
 import com.app.ptt.comnha.Const.Const;
+import com.app.ptt.comnha.Dialog.BlockUserDialog;
 import com.app.ptt.comnha.Dialog.ReportDialog;
 import com.app.ptt.comnha.Models.FireBase.Comment;
 import com.app.ptt.comnha.Models.FireBase.Food;
@@ -69,6 +72,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -99,7 +103,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
     DatabaseReference dbRef;
     StorageReference stRef;
     ValueEventListener commentEventListener, imagesEventListener, foodsEventListener,
-            userValueListener;
+            userValueListener, userEventListener;
     LinearLayout linear_rate, linear_food;
     ProgressDialog plzw8Dialog = null;
     Post post;
@@ -107,7 +111,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
     EditText edt_comment;
     String comtContent;
     Comment comment = null;
-    User user = null;
+    User user = null, blockCommentUser;
     Menu pubMenu = null;
     boolean isConnected = true;
     IntentFilter mIntentFilter;
@@ -115,6 +119,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
     private static final int REQUEST_SIGNIN = 101;
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
+    ProgressDialog plzwaitDialog;
 
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -237,6 +242,42 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         comments = new ArrayList<>();
         comtAdapter = new Comment_rcyler_adapter(this, comments, stRef);
         rv_comments.setAdapter(comtAdapter);
+        if (LoginSession.getInstance().getUser() != null) {
+            if (LoginSession.getInstance().getUser().getRole() != 0) {
+                comtAdapter.setOnItemLongClickListener(new Comment_rcyler_adapter.OnItemLongClickListener() {
+                    @Override
+                    public void onItemClick(final Comment comment, View itemView) {
+                        PopupMenu popupMenu = new PopupMenu(PostdetailActivity.this,
+                                itemView, Gravity.END);
+                        Menu menu = popupMenu.getMenu();
+                        List<Pair<Integer, String>> contents = new ArrayList<>();
+                        contents.add(new Pair<Integer, String>
+                                (R.string.text_delcomt,
+                                        getString(R.string.text_delcomt)));
+                        contents.add(new Pair<Integer, String>
+                                (R.string.text_block_comment,
+                                        getString(R.string.text_block_comment)));
+                        menu = AppUtils.createMenu(menu, contents);
+                        popupMenu.show();
+                        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                switch (item.getItemId()) {
+                                    case R.string.text_delcomt:
+                                        delComment(comment.getCommentID());
+                                        break;
+                                    case R.string.text_block_comment:
+                                        plzwaitDialog.show();
+                                        getUserForBlockComment(comment.getUserID());
+                                }
+                                return true;
+                            }
+                        });
+
+                    }
+                });
+            }
+        }
 
         txtv_writecomt = (TextView) findViewById(R.id.txtv_writecomt_postdetail);
         txtv_writecomt.setOnClickListener(this);
@@ -279,13 +320,18 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         clayout.setTitleEnabled(true);
         clayout.setCollapsedTitleTextColor(getResources().getColor(android.R.color.white));
         clayout.setExpandedTitleColor(getResources().getColor(android.R.color.white));
+        plzwaitDialog = AppUtils.setupProgressDialog(this,
+                getString(R.string.txt_plzwait), null, false, false,
+                ProgressDialog.STYLE_SPINNER, 0);
     }
+
 
     private void createPostView() {
         if (post.getImgBitmap() != null) {
             imgv_banner.setImageBitmap(post.getImgBitmap());
         } else {
             if (post.getBanner().equals("")) {
+                imgv_banner.setBackgroundResource(R.drawable.img_banner);
 
             } else {
                 StorageReference bannerRef = stRef.child(post.getBanner());
@@ -428,11 +474,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                     comments.add(comment);
                 }
                 comtAdapter.notifyDataSetChanged();
-                dbRef.child(getString(R.string.posts_CODE) + postID + "/"
-                        + getString(R.string.comments_CODE))
-                        .orderByChild("isHidden_postID")
-                        .equalTo(false + "_" + postID)
-                        .removeEventListener(commentEventListener);
+                Log.d("postde_commtsize: ", comments.size() + "");
             }
 
             @Override
@@ -442,9 +484,9 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         };
         dbRef.child(getString(R.string.posts_CODE) + postID + "/"
                 + getString(R.string.comments_CODE))
-                .orderByChild("isHidden_postID")
-                .equalTo(false + "_" + postID)
-                .addValueEventListener(commentEventListener);
+                .orderByChild("isHidden")
+                .equalTo(false)
+                .addListenerForSingleValueEvent(commentEventListener);
     }
 
     private void getAllImgs() {
@@ -666,7 +708,11 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         edtPost.setTitle(title);
         Map<String, Object> postValue = edtPost.toMap();
         Map<String, Object> updatePost = new HashMap<>();
-        updatePost.put(getString(R.string.posts_CODE) + edtPost.getPostID(), postValue);
+//        updatePost.put(getString(R.string.posts_CODE) + edtPost.getPostID(), postValue);
+        updatePost.put(getString(R.string.posts_CODE) + edtPost.getPostID()
+                + "/" + "content", content);
+        updatePost.put(getString(R.string.posts_CODE) + edtPost.getPostID()
+                + "/" + "title", title);
         dbRef.updateChildren(updatePost)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -736,7 +782,19 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         Map<String, Object> postValue = childPost.toMap();
         Map<String, Object> childUpdate = new HashMap<>();
         childUpdate.put(getString(R.string.posts_CODE)
-                + key, postValue);
+                + key + "/" + "isHidden", false);
+        childUpdate.put(getString(R.string.posts_CODE)
+                + key + "/" + "isHidden_dist_prov", false
+                + "_" + post.getDist_pro());
+        childUpdate.put(getString(R.string.posts_CODE)
+                + key + "/" + "isHidden_foodID", false
+                + "_" + post.getFoodID());
+        childUpdate.put(getString(R.string.posts_CODE)
+                + key + "/" + "isHidden_storeID", false
+                + "_" + post.getStoreID());
+        childUpdate.put(getString(R.string.posts_CODE)
+                + key + "/" + "isHidden_uID", false
+                + "_" + post.getUserID());
         dbRef.updateChildren(childUpdate)
                 .addOnSuccessListener(
                         new OnSuccessListener<Void>() {
@@ -777,8 +835,22 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                                 Post childPost = post;
                                 Map<String, Object> postValue = childPost.toMap();
                                 Map<String, Object> childUpdate = new HashMap<>();
+//                                childUpdate.put(getString(R.string.posts_CODE)
+//                                        + key, postValue);
                                 childUpdate.put(getString(R.string.posts_CODE)
-                                        + key, postValue);
+                                        + key + "/" + "isHidden", true);
+                                childUpdate.put(getString(R.string.posts_CODE)
+                                        + key + "/" + "isHidden_dist_prov", true
+                                        + "_" + post.getDist_pro());
+                                childUpdate.put(getString(R.string.posts_CODE)
+                                        + key + "/" + "isHidden_foodID", true
+                                        + "_" + post.getFoodID());
+                                childUpdate.put(getString(R.string.posts_CODE)
+                                        + key + "/" + "isHidden_storeID", true
+                                        + "_" + post.getStoreID());
+                                childUpdate.put(getString(R.string.posts_CODE)
+                                        + key + "/" + "isHidden_uID", true
+                                        + "_" + post.getUserID());
                                 dbRef.updateChildren(childUpdate)
                                         .addOnSuccessListener(
                                                 new OnSuccessListener<Void>() {
@@ -821,6 +893,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         String key = dbRef.child(getString(R.string.comments_CODE)).push().getKey();
         User user = LoginSession.getInstance().getUser();
         comment = new Comment(comtContent, user.getUn(), user.getAvatar(), user.getuID(), postID);
+        comment.setCommentID(key);
         Map<String, Object> comtValue = comment.toMap();
         Map<String, Object> childUpdate = new HashMap<>();
         childUpdate.put(getString(R.string.posts_CODE) + postID + "/"
@@ -921,5 +994,116 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         dbRef.child(getString(R.string.users_CODE)
                 + firebaseUser.getUid())
                 .addListenerForSingleValueEvent(userValueListener);
+    }
+
+    private void delComment(final String comtID) {
+        new AlertDialog.Builder(this)
+                .setMessage(getString(R.string.text_delcomt))
+                .setPositiveButton(getString(R.string.txt_del), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dbRef.child(getString(R.string.posts_CODE) + postID + "/"
+                                + getString(R.string.comments_CODE) + comtID).removeValue()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        for (Iterator<Comment> iterator=comments.iterator();iterator.hasNext();){
+                                            Comment comment=iterator.next();
+                                            if (comment.getCommentID().equals(comtID)) {
+                                                iterator.remove();
+                                                comtAdapter.notifyDataSetChanged();
+                                            }
+                                        }
+//                                        for (Comment item : comments) {
+//                                            if (item.getCommentID().equals(comtID)) {
+//                                                comments.remove(comments.indexOf(item));
+//                                                comtAdapter.notifyDataSetChanged();
+//                                            }
+//                                        }
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(PostdetailActivity.this,
+                                                e.getMessage(), Toast.LENGTH_LONG)
+                                                .show();
+                                    }
+                                });
+                    }
+                })
+                .setNegativeButton(getString(R.string.text_no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                }).setCancelable(false).show();
+
+    }
+
+    private void getUserForBlockComment(String userID) {
+        userEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                plzwaitDialog.dismiss();
+                blockCommentUser = dataSnapshot.getValue(User.class);
+                String key = dataSnapshot.getKey();
+                blockCommentUser.setuID(key);
+                if (blockCommentUser.isCommentBlocked()) {
+                    Toast.makeText(PostdetailActivity.this,
+                            getString(R.string.txt_blockeduser)
+                            , Toast.LENGTH_LONG)
+                            .show();
+                } else {
+                    BlockUserDialog blockDialog = new BlockUserDialog();
+                    blockDialog.setStyle(DialogFragment.STYLE_NORMAL,
+                            R.style.AddfoodDialog);
+                    blockDialog.setBlock(blockCommentUser, Const.BLOCK_TYPE.BLOCK_COMMENT);
+                    blockDialog.setOnPosNegListener(new BlockUserDialog.OnPosNegListener() {
+                        @Override
+                        public void onPositive(boolean isClicked, Map<String,
+                                Object> childUpdate, final Dialog dialog) {
+                            if (isClicked) {
+                                dialog.dismiss();
+                                plzwaitDialog.show();
+                                dbRef.updateChildren(childUpdate)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                plzwaitDialog.dismiss();
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        dialog.show();
+                                        plzwaitDialog.dismiss();
+                                        Toast.makeText(PostdetailActivity.this, e.getMessage(),
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                });
+
+                            }
+                        }
+
+                        @Override
+                        public void onNegative(boolean isClicked, Dialog dialog) {
+                            if (isClicked) {
+                                dialog.dismiss();
+                            }
+                        }
+                    });
+                    blockDialog.show(PostdetailActivity.this.getSupportFragmentManager()
+                            , "frag_blockuser");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        dbRef.child(getString(R.string.users_CODE)
+                + userID)
+                .addListenerForSingleValueEvent(userEventListener);
     }
 }

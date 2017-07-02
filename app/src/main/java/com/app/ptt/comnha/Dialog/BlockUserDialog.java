@@ -62,6 +62,9 @@ public class BlockUserDialog extends DialogFragment {
             case BLOCK_REPRTIMG:
                 this.user.setReportimgBlocked(true);
                 break;
+            case BLOCK_COMMENT:
+                this.user.setCommentBlocked(true);
+                break;
         }
     }
 

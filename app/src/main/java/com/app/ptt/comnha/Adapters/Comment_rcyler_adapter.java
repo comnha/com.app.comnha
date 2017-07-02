@@ -23,6 +23,7 @@ import java.util.ArrayList;
  */
 
 public class Comment_rcyler_adapter extends RecyclerView.Adapter<Comment_rcyler_adapter.ViewHolder> {
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView imgv_avatar;
         public TextView txt_un, txt_content, txt_time;
@@ -39,6 +40,15 @@ public class Comment_rcyler_adapter extends RecyclerView.Adapter<Comment_rcyler_
     ArrayList<Comment> comments;
     StorageReference stRef;
     Activity activity;
+    OnItemLongClickListener onItemLongClickListener;
+
+    public interface OnItemLongClickListener {
+        void onItemClick(Comment comment, View itemView);
+    }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
+        this.onItemLongClickListener = onItemLongClickListener;
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -48,7 +58,7 @@ public class Comment_rcyler_adapter extends RecyclerView.Adapter<Comment_rcyler_
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.txt_content.setText(comments.get(position).getContent());
         holder.txt_time.setText(comments.get(position).getTime());
         holder.txt_un.setText(comments.get(position).getUn());
@@ -67,6 +77,16 @@ public class Comment_rcyler_adapter extends RecyclerView.Adapter<Comment_rcyler_
             });
         } else {
             holder.imgv_avatar.setImageResource(R.drawable.ic_item_store);
+        }
+        if (onItemLongClickListener != null) {
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    onItemLongClickListener
+                            .onItemClick(comments.get(position), holder.itemView);
+                    return true;
+                }
+            });
         }
     }
 
