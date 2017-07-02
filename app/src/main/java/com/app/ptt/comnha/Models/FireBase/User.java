@@ -200,6 +200,14 @@ public class User {
         isReportfoodBlocked = reportfoodBlocked;
     }
 
+    public boolean isCommentBlocked() {
+        return isCommentBlocked;
+    }
+
+    public void setCommentBlocked(boolean commentBlocked) {
+        isCommentBlocked = commentBlocked;
+    }
+
     public String getAvatar() {
         return avatar;
     }
@@ -207,6 +215,7 @@ public class User {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
+
     public String getAddress() {
         return address;
     }
@@ -234,7 +243,7 @@ public class User {
     String avatar = "";
 
 
-    String address="";
+    String address = "";
     boolean sexual = false,
             isAddfoodBlocked = false,
             isWritepostBlocked = false,
@@ -242,7 +251,7 @@ public class User {
             isReportpostBlocked = false,
             isReportstoreBlocked = false,
             isReportimgBlocked = false,
-            isReportfoodBlocked = false;
+            isReportfoodBlocked = false, isCommentBlocked = false;
     int role = 0;
     //phép kết
     String dist_prov = "";//tìm user theo tỉnh_huyện
@@ -280,7 +289,7 @@ public class User {
         result.put("dist_prov", dist_prov);
         result.put("role", role);
         result.put("avatar", avatar);
-        result.put("address",address);
+        result.put("address", address);
         result.put("isAddfoodBlocked", isAddfoodBlocked);
         result.put("isWritepostBlocked", isWritepostBlocked);
         result.put("isAddstoreBlocked", isAddstoreBlocked);
@@ -288,6 +297,7 @@ public class User {
         result.put("isReportstoreBlocked", isReportstoreBlocked);
         result.put("isReportimgBlocked", isReportimgBlocked);
         result.put("isReportfoodBlocked", isReportfoodBlocked);
+        result.put("isCommentBlocked", isCommentBlocked);
         return result;
     }
 }

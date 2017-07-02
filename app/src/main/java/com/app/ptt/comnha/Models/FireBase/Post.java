@@ -35,7 +35,7 @@ public class Post {
             serviceRate = 0;
     boolean isHidden = false;
 
-    Map<String, Comment> comments = null;
+//    Map<String, Comment> Comments = null;
     //phép kết
     String userID_dist_prov,
             isHidden_dist_prov,//tìm post theo uid_tỉnh_huyện
@@ -87,7 +87,7 @@ public class Post {
         result.put("priceRate", priceRate);
         result.put("healthyRate", healthyRate);
         result.put("serviceRate", serviceRate);
-        result.put("comments", comments);
+//        result.put("Comments", Comments);
         result.put("userID_dist_prov", userID_dist_prov);
         result.put("dist_pro", dist_pro);
         result.put("isHidden", isHidden);
@@ -101,6 +101,7 @@ public class Post {
                 + "_" + userID);
         return result;
     }
+
 
     public String getTitle() {
         return title;
@@ -214,13 +215,13 @@ public class Post {
         this.serviceRate = serviceRate;
     }
 
-    public Map<String, Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(Map<String, Comment> comments) {
-        this.comments = comments;
-    }
+//    public Map<String, Comment> getComments() {
+//        return Comments;
+//    }
+//
+//    public void setComments(Map<String, Comment> comments) {
+//        this.Comments = comments;
+//    }
 
     public String getUserID_dist_prov() {
         return userID_dist_prov;

@@ -94,6 +94,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private void ref() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.txt_search));
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         rvList = (RecyclerView) findViewById(R.id.rv_list_user);

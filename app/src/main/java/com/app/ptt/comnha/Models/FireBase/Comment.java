@@ -31,7 +31,6 @@ public class Comment {
         this.avatar = avatar;
         this.userID = userID;
         this.postID = postID;
-        this.isHidden_postID = isHidden + "_" + postID;
     }
 
     public Comment() {
@@ -47,7 +46,7 @@ public class Comment {
         result.put("userID", userID);
         result.put("postID", postID);
         result.put("isHidden", isHidden);
-        result.put("isHidden_foodID", isHidden + "_" + postID);
+        result.put("isHidden_postID", isHidden + "_" + postID);
         return result;
     }
 

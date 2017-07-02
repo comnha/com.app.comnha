@@ -20,7 +20,6 @@ import com.app.ptt.comnha.Adapters.Store_recycler_adapter;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Interfaces.Comunication;
 import com.app.ptt.comnha.Interfaces.SendLocationListener;
-import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
@@ -70,7 +69,8 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
                 getString(R.string.firebaseStorage_path));
         ref(view);
         if (null != CoreManager.getInstance().getMyLocation()) {
-            dist_pro = CoreManager.getInstance().getMyLocation().getDistrict() + "_" + CoreManager.getInstance().getMyLocation().getProvince();
+            dist_pro = CoreManager.getInstance().getMyLocation().getDistrict()
+                    + "_" + CoreManager.getInstance().getMyLocation().getProvince();
             getStoreList(dist_pro);
         } else {
             if (getView() != null) {
@@ -134,15 +134,15 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
                 for (DataSnapshot item : dataSnapshot.getChildren()) {
                     Store store = item.getValue(Store.class);
                     store.setStoreID(item.getKey());
-                    int pos=-1;
-                    for(Store mStore:stores){
-                       if(mStore.getStoreID().equals(store.getStoreID())){
-                           stores.indexOf(mStore);
-                       }
+                    int pos = -1;
+                    for (Store mStore : stores) {
+                        if (mStore.getStoreID().equals(store.getStoreID())) {
+                            stores.indexOf(mStore);
+                        }
                     }
-                    if(pos!=-1){
-                        stores.set(pos,store);
-                    }else {
+                    if (pos != -1) {
+                        stores.set(pos, store);
+                    } else {
                         stores.add(store);
                     }
                     Log.d("added", "added");
@@ -157,7 +157,7 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
 
             }
         };
-        if (role == 1) {
+        if (role != 0) {
             dbRef.child(getString(R.string.store_CODE))
                     .orderByChild("pro_dist")
                     .equalTo(dist_pro)
@@ -168,7 +168,6 @@ public class MainStoreFragment extends Fragment implements SendLocationListener 
                     .equalTo(String.valueOf(false) + "_" + dist_pro)
                     .addValueEventListener(storeEventListener);
         }
-
     }
 
     private void ref(final View view) {

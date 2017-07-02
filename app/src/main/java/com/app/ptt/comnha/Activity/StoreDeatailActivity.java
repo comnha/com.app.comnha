@@ -32,8 +32,8 @@ import com.app.ptt.comnha.Adapters.Food_recycler_adapter;
 import com.app.ptt.comnha.Adapters.Photo_recycler_adapter;
 import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
 import com.app.ptt.comnha.Const.Const;
-import com.app.ptt.comnha.Dialog.ReportDialog;
 import com.app.ptt.comnha.Dialog.AddFoodDialog;
+import com.app.ptt.comnha.Dialog.ReportDialog;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.Post;
@@ -45,7 +45,6 @@ import com.app.ptt.comnha.SingletonClasses.ChooseFood;
 import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
-import com.app.ptt.comnha.SingletonClasses.CoreManager;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.github.clans.fab.FloatingActionButton;
@@ -115,10 +114,10 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
             onBackPressed();
         } else {
             storeID = store.getStoreID();
-            ChooseStore.getInstance().setStore(null);
+//            ChooseStore.getInstance().setStore(null);
+            ref();
             createStoreInfo();
         }
-        ref();
     }
 
     private void ref() {
@@ -457,9 +456,9 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     Post post = dataItem.getValue(Post.class);
                     String key = dataItem.getKey();
                     post.setPostID(key);
-                    if(checkExistPost(key)!=-1){
-                        posts.set(checkExistPost(key),post);
-                    }else {
+                    if (checkExistPost(key) != -1) {
+                        posts.set(checkExistPost(key), post);
+                    } else {
                         posts.add(post);
                     }
                 }
@@ -476,25 +475,28 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 .equalTo(false + "_" + storeID)
                 .addValueEventListener(postValueListener);
     }
-    private int checkExistPost(String id){
-        for(Post post: posts){
-            if(post.getPostID().equals(id)){
+
+    private int checkExistPost(String id) {
+        for (Post post : posts) {
+            if (post.getPostID().equals(id)) {
                 return posts.indexOf(post);
             }
         }
         return -1;
     }
-    private int checkExistFood(String id){
-        for(Food food: foods){
-            if(food.getFoodID().equals(id)){
+
+    private int checkExistFood(String id) {
+        for (Food food : foods) {
+            if (food.getFoodID().equals(id)) {
                 return foods.indexOf(food);
             }
         }
         return -1;
     }
-    private int checkExistImage(String id){
-        for(Image image: images){
-            if(image.getImageID().equals(id)){
+
+    private int checkExistImage(String id) {
+        for (Image image : images) {
+            if (image.getImageID().equals(id)) {
                 return images.indexOf(image);
             }
         }
@@ -509,9 +511,9 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     Image image = item.getValue(Image.class);
                     String key = item.getKey();
                     image.setImageID(key);
-                    if(checkExistImage(key)!=-1){
-                        images.set(checkExistImage(key),image);
-                    }else {
+                    if (checkExistImage(key) != -1) {
+                        images.set(checkExistImage(key), image);
+                    } else {
                         images.add(image);
                     }
                 }
@@ -542,9 +544,9 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     Food food = dataItem.getValue(Food.class);
                     String key = dataItem.getKey();
                     food.setFoodID(key);
-                    if(checkExistFood(key)!=-1){
-                        foods.set(checkExistFood(key),food);
-                    }else {
+                    if (checkExistFood(key) != -1) {
+                        foods.set(checkExistFood(key), food);
+                    } else {
                         foods.add(food);
                     }
                 }

@@ -58,6 +58,9 @@ public class Post_recycler_adapter extends RecyclerView.Adapter<Post_recycler_ad
                 posts.get(position).getUn());
         holder.txtv_storename.setText(posts.get(position).getStoreName());
         holder.txtv_title.setText(posts.get(position).getTitle());
+//        if (posts.get(position).getComments() != null) {
+//            Log.d("commentsize: ", posts.get(position).getComments().size()+"");
+//        }
         if (posts.get(holder.getAdapterPosition()).getImgBitmap() == null) {
             if (!posts.get(holder.getAdapterPosition()).getBanner().equals("")) {
                 StorageReference imgRef = stRef.child(posts.get(holder.getAdapterPosition())
