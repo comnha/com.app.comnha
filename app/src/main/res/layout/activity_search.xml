@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:fitsSystemWindows="false"
     android:orientation="vertical"
     tools:context="com.app.ptt.comnha.Activity.SearchActivity">
 
@@ -128,10 +128,9 @@
                     android:id="@+id/btn_reset"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginStart="20dp"
-                    android:background="@drawable/bg_round"
-                    android:padding="10dp"
-                    android:src="@drawable/cast_ic_notification_forward"
+                    android:layout_marginStart="8dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_refresh_white_24dp"
                     android:textAllCaps="false" />
             </LinearLayout>
 
