@@ -438,6 +438,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     @Override
                     public void onTick(long millisUntilFinished) {
                     }
+
                     @Override
                     public void onFinish() {
                         mAuth.signOut();
@@ -483,7 +484,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         intent_openWritepost.putExtra(getString(R.string.fragment_CODE),
                                 getString(R.string.frag_writepost_CODE));
                         startActivity(intent_openWritepost);
-
+                        break;
                     case 1:
                         Intent intent_openAddstore = new Intent(this, AdapterActivity.class);
                         intent_openAddstore.putExtra(getString(R.string.fragment_CODE),
@@ -548,7 +549,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             } else {
                 itemAdmin.setVisible(false);
             }
-        }else{
+        } else {
             Log.d("onAuthStateChanged", "onAuthStateChanged:signed_out");
             LoginSession.getInstance().setFirebUser(null);
             LoginSession.getInstance().setUser(null);
@@ -728,6 +729,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             snackbar.show();
         }
     }
+
     public void startGetLocation() {
         locationController = new LocationController(this);
         locationController.initController();

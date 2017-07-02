@@ -856,6 +856,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                 break;
             case R.id.txtv_writecomt_postdetail:
                 if (LoginSession.getInstance().getUser() != null) {
+                    edt_comment.getText().clear();
                     commentDialog.show();
                 } else {
 
@@ -877,6 +878,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                 break;
         }
     }
+
     private void getUser() {
         plzw8Dialog.show();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -896,6 +898,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         };
         mAuth.addAuthStateListener(mAuthListener);
     }
+
     private void getUserInfo(final FirebaseUser firebaseUser) {
         userValueListener = new ValueEventListener() {
             @Override
