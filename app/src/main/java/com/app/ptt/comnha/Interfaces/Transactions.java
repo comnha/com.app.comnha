@@ -19,6 +19,7 @@ public interface Transactions {
     void deleteUser(User user);
 
     void changeRole(User user);
+    void changeUserPermission(User user);
     void onSearchItemClick(Search search);
 
 }

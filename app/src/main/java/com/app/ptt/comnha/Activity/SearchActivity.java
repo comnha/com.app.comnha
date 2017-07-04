@@ -468,6 +468,11 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     }
 
     @Override
+    public void changeUserPermission(User user) {
+
+    }
+
+    @Override
     public void onSearchItemClick(Search search) {
         Intent intent = new Intent(SearchActivity.this, StoreDeatailActivity.class);
         if (search.getType() == 0) {

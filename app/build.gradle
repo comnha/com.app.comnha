@@ -66,6 +66,8 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:10.2.4'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.github.douglasjunior:android-simple-tooltip:0.2.0'
+    compile 'com.github.zcweng:switch-button:0.0.3@aar'
+    
 
 }
 apply plugin: 'com.google.gms.google-services'

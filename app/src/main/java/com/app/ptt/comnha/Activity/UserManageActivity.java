@@ -368,14 +368,16 @@ public class UserManageActivity extends BaseActivity implements View.OnClickList
                 });
     }
 
-    public void updateUser(final User user) {
-        if (user.getRole() == 0) {
-            user.setRole(1);
-        } else {
-            user.setRole(0);
-            user.setDistrict("");
-            user.setProvince("");
-            user.setDist_prov("");
+    public void updateUser(final User user, final int type) {
+        if(type==1) {
+            if (user.getRole() == 0) {
+                user.setRole(1);
+            } else {
+                user.setRole(0);
+                user.setDistrict("");
+                user.setProvince("");
+                user.setDist_prov("");
+            }
         }
         showProgressDialog("Đang xử lý", "Vui lòng đợi");
         Map<String, Object> newUser;
@@ -385,21 +387,27 @@ public class UserManageActivity extends BaseActivity implements View.OnClickList
         dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if (user.getRole() == 1) {
-                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Cấp quyền thành công");
-                } else {
-                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Xóa quyền thành công");
+                if(type==1) {
+                    if (user.getRole() == 1) {
+                        AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Cấp quyền admin thành công");
+                    } else {
+                        AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Xóa quyền admin thành công");
+                    }
+                    tinh1 = "";
+                    huyen1 = "";
+                }else{
+                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Đã cập nhật quyền");
                 }
-                tinh1 = "";
-                huyen1 = "";
                 closeDialog();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Đã xảy ra lỗi");
+                if(type==1) {
                 tinh1 = "";
                 huyen1 = "";
+                }
                 closeDialog();
             }
         });
@@ -436,8 +444,13 @@ public class UserManageActivity extends BaseActivity implements View.OnClickList
         if (user.getRole() == 0) {
             showDialogSetAdminLocation(user);
         } else {
-            updateUser(user);
+            updateUser(user,1);
         }
+    }
+
+    @Override
+    public void changeUserPermission(User user) {
+        updateUser(user,0);
     }
 
     @Override
@@ -524,7 +537,7 @@ public class UserManageActivity extends BaseActivity implements View.OnClickList
                     user.setDist_prov(huyen1 + "_" + tinh1);
                     user.setDistrict(huyen1);
                     user.setProvince(tinh1);
-                    updateUser(user);
+                    updateUser(user,1);
                     dialog.dismiss();
                 }
             }

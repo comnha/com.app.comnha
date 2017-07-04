@@ -2,8 +2,10 @@ package com.app.ptt.comnha.Adapters;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -12,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -19,24 +22,25 @@ import com.app.ptt.comnha.Interfaces.Comunication;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
+import com.suke.widget.SwitchButton;
 
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  * Created by PTT on 10/5/2016.
  */
 
-public class User_rcyler_adapter extends RecyclerView.Adapter<User_rcyler_adapter.CustomHolder> implements Filterable {
-
+public class User_rcyler_adapter extends RecyclerView.Adapter<User_rcyler_adapter.CustomHolder> implements Filterable, SwitchButton.OnCheckedChangeListener, View.OnClickListener {
+    private SwitchButton swAddFood,swAddStore,swAddPost,swRPFood,swRPStore,swRPPost,swComment,swRPImg;
+    private LinearLayout btnCommit;
     private List<User> mFilteredList;
-    List<User> users;
-    StorageReference stRef;
-    Activity activity;
+    private List<User> users;
+    private User user;
+    private StorageReference stRef;
+    private Activity activity;
+    private Dialog dialog;
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -72,6 +76,8 @@ public class User_rcyler_adapter extends RecyclerView.Adapter<User_rcyler_adapte
         };
     }
 
+
+
     public static class CustomHolder extends RecyclerView.ViewHolder {
         private ImageView imgv_avatar;
         private TextView txtName, txtAddress,txtMenu,txtAdmin,txtUserName;
@@ -98,7 +104,7 @@ public class User_rcyler_adapter extends RecyclerView.Adapter<User_rcyler_adapte
 
     @Override
     public void onBindViewHolder(final CustomHolder holder, int position) {
-        final User user= mFilteredList.get(position);
+          user= mFilteredList.get(position);
         if(null!=user) {
             holder.txtMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -160,6 +166,9 @@ public class User_rcyler_adapter extends RecyclerView.Adapter<User_rcyler_adapte
                                     alBuilder.create();
                                     alBuilder.show();
                                     break;
+                                case R.id.menu_edit_permission:
+                                    showDialog(user);
+                                    break;
 
                             }
                             return false;
@@ -210,6 +219,8 @@ public class User_rcyler_adapter extends RecyclerView.Adapter<User_rcyler_adapte
         mFilteredList=users ;
         this.stRef = stRef;
         this.activity = activity;
+        dialog=new Dialog(activity);
+        setUpDialog();
     }
     public void addItem(User item){
         this.users.add(item);
@@ -230,5 +241,116 @@ public class User_rcyler_adapter extends RecyclerView.Adapter<User_rcyler_adapte
     public int returnSize(){
         return users.size();
     }
+    public void setUpDialog(){
+        dialog.setContentView(R.layout.dialog_permission_control);
+
+        btnCommit= (LinearLayout) dialog.findViewById(R.id.btn_edit);
+        swAddFood= (SwitchButton) dialog.findViewById(R.id.tg_add_food);
+        swAddStore= (SwitchButton) dialog.findViewById(R.id.tg_add_store);
+        swAddPost= (SwitchButton) dialog.findViewById(R.id.tg_add_post);
+        swRPFood= (SwitchButton) dialog.findViewById(R.id.tg_report_food);
+        swRPPost= (SwitchButton) dialog.findViewById(R.id.tg_report_post);
+        swRPStore= (SwitchButton) dialog.findViewById(R.id.tg_report_store);
+        swComment= (SwitchButton) dialog.findViewById(R.id.tg_comment);
+        swRPImg= (SwitchButton) dialog.findViewById(R.id.tg_report_img);
+        swAddFood.setOnCheckedChangeListener(this);
+        swAddStore.setOnCheckedChangeListener(this);
+        swAddPost.setOnCheckedChangeListener(this);
+        swComment.setOnCheckedChangeListener(this);
+        swRPFood.setOnCheckedChangeListener(this);
+        swRPImg.setOnCheckedChangeListener(this);
+        swRPPost.setOnCheckedChangeListener(this);
+        swRPStore.setOnCheckedChangeListener(this);
+        btnCommit.setOnClickListener(this);
+    }
+    public void showDialog(User user){
+        if(user.isAddfoodBlocked()){
+            swAddFood.setChecked(false);
+        }else{
+            swAddFood.setChecked(true);
+        }
+        if(user.isAddstoreBlocked()){
+            swAddStore.setChecked(false);
+        }else{
+            swAddStore.setChecked(true);
+        }
+        if(user.isWritepostBlocked()){
+            swAddPost.setChecked(false);
+        }else{
+            swAddPost.setChecked(true);
+        }
+        if(user.isReportfoodBlocked()){
+            swRPFood.setChecked(false);
+        }else{
+            swRPFood.setChecked(true);
+        }
+        if(user.isReportpostBlocked()){
+            swRPPost.setChecked(false);
+        }else{
+            swRPPost.setChecked(true);
+        }
+        if(user.isReportstoreBlocked()){
+            swRPStore.setChecked(false);
+        }else{
+            swRPStore.setChecked(true);
+        }
+        if(user.isReportimgBlocked()){
+            swRPImg.setChecked(false);
+        }else{
+            swRPImg.setChecked(true);
+        }
+        if(user.isCommentBlocked()){
+            swComment.setChecked(false);
+        }else{
+            swComment.setChecked(true);
+        }
+
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dialog.show();
+            }
+        },200);
+    }
+    @Override
+    public void onCheckedChanged(SwitchButton view, boolean isChecked) {
+        switch (view.getId()){
+            case R.id.tg_add_food:
+                user.setAddfoodBlocked(!isChecked);
+                break;
+            case R.id.tg_add_post:
+                user.setWritepostBlocked(!isChecked);
+                break;
+            case R.id.tg_add_store:
+                user.setAddstoreBlocked(!isChecked);
+                break;
+            case R.id.tg_comment:
+                user.setCommentBlocked(!isChecked);
+                break;
+            case R.id.tg_report_food:
+                user.setReportfoodBlocked(!isChecked);
+                break;
+            case R.id.tg_report_post:
+                user.setReportpostBlocked(!isChecked);
+                break;
+            case R.id.tg_report_store:
+                user.setReportstoreBlocked(!isChecked);
+                break;
+            case R.id.tg_report_img:
+                user.setReportimgBlocked(!isChecked);
+                break;
+        }
+    }
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.btn_edit:
+                dialog.dismiss();
+                Comunication.transactions.changeUserPermission(user);
+                break;
+        }
+    }
+
 
 }

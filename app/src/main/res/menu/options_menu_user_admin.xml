@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/menu_edit"
-        android:title="Xóa quyền"/>
+        android:title="Xóa quyền admin"/>
     <item android:id="@+id/menu_del"
-        android:title="Xóa"/>
+        android:title="Xóa tài khoản"/>
 </menu>
