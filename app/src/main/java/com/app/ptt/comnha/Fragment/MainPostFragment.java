@@ -1,7 +1,10 @@
 package com.app.ptt.comnha.Fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -12,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.app.ptt.comnha.Activity.PostdetailActivity;
 import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
@@ -37,7 +41,7 @@ import java.util.ArrayList;
 import static com.facebook.login.widget.ProfilePictureView.TAG;
 
 
-public class MainPostFragment extends Fragment implements SendLocationListener {
+public class MainPostFragment extends Fragment  {
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager layoutManager;
     ArrayList<Post> posts;
@@ -64,6 +68,7 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
         ref(view);
 
 
+
         if (null != CoreManager.getInstance().getMyLocation()) {
             dist_pro = CoreManager.getInstance().getMyLocation().getDistrict()
                     + "_" + CoreManager.getInstance().getMyLocation().getProvince();
@@ -74,7 +79,7 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
             if (getView() != null)
                 AppUtils.showSnackbarWithoutButton(getView(), "Không tìm thấy vị trí của bạn");
         }
-        Comunication.sendLocationListener = this;
+
         return view;
     }
 
@@ -128,13 +133,6 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
         }
     }
 
-    @Override
-    public void notice() {
-        if (null != CoreManager.getInstance().getMyLocation()) {
-            dist_pro = CoreManager.getInstance().getMyLocation().getProvince() + "_" + CoreManager.getInstance().getMyLocation().getDistrict();
-            getPostList(dist_pro);
-        }
-    }
 
     private void ref(View view) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerV_postfrag);
@@ -176,4 +174,39 @@ public class MainPostFragment extends Fragment implements SendLocationListener {
         super.onAttach(context);
 
     }
+
+    class LocationChange extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(Const.INTENT_KEY_RECEIVE_LOCATION)){
+                if(intent.getStringExtra(Const.KEY_TINH).toString()!=null){
+                    if(intent.getStringExtra(Const.KEY_HUYEN).toString()!=null){
+                        dist_pro = intent.getStringExtra(Const.KEY_HUYEN).toString()
+                                + "_" + intent.getStringExtra(Const.KEY_TINH).toString();
+                        getPostList(dist_pro);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mIntentFilter = new IntentFilter(Const.INTENT_KEY_RECEIVE_LOCATION);
+        mBroadcastReceiver = new LocationChange();
+        broadcastIntent = new Intent();
+        getActivity().registerReceiver(mBroadcastReceiver, mIntentFilter);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(mBroadcastReceiver!=null) {
+            getActivity().unregisterReceiver(mBroadcastReceiver);
+        }
+    }
+    IntentFilter mIntentFilter;
+    Intent broadcastIntent;
+    LocationChange mBroadcastReceiver;
 }

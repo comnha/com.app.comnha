@@ -33,6 +33,9 @@ public class Const {
     public static final String PREF_FIRST_LAUNCH = "PREF_FIRST_LAUNCH";
     public static final String PREF_FIRST_PROFILE_LAUNCH = "PREF_FIRST_PROFILE_LAUNCH";
     public static final String PREF_MY_LOCATION = "PREF_MY_LOCATION";
+    public static final String INTENT_KEY_RECEIVE_LOCATION = "INTENT_KEY_RECEIVE_LOCATION";
+    public static final String KEY_HUYEN = "KEY_HUYEN";
+    public static final String KEY_TINH = "KEY_TINH";
     //
     public static final int PERMISSION_LOCATION_FLAG = 2;
 

@@ -2,6 +2,7 @@ package com.app.ptt.comnha.Fragment;
 
 
 import android.app.Dialog;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
@@ -43,7 +44,15 @@ public class PickLocationBottomSheetDialogFragment extends BottomSheetDialogFrag
     public PickLocationBottomSheetDialogFragment() {
         // Required empty public constructor
     }
-
+    public int checkProvine(String provine, Context context){
+        String[] list= context.getResources().getStringArray(R.array.tinhtp);
+        for (int  i=0;i<list.length;i++){
+            if(provine.toLowerCase().equals(list[i].toLowerCase())){
+                return i;
+            }
+        }
+        return -1;
+    }
     private void anhxa(View view) {
         mToolbar = (Toolbar) view.findViewById(R.id.frg_pickLoca_bottomsheet_toolbar);
 //        AppCompatActivity activity = (AppCompatActivity) getActivity();

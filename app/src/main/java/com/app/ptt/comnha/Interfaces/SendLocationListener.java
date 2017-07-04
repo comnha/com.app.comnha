@@ -9,5 +9,6 @@ import com.app.ptt.comnha.Models.FireBase.Store;
  */
 
 public interface SendLocationListener {
-    void notice();
+    void notice(String tinh,String huyen);
+    void notice1(String tinh,String huyen);
 }

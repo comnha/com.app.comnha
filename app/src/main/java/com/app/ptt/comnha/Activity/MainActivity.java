@@ -17,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -28,12 +29,16 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.ptt.comnha.Adapters.MainFragPagerAdapter;
 import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Fragment.AboutBottomSheetDialogFragment;
+import com.app.ptt.comnha.Fragment.PickLocationBottomSheetDialogFragment;
 import com.app.ptt.comnha.Interfaces.Comunication;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.Models.MyLocation;
@@ -64,10 +69,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, LocationController.LocationControllerListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, LocationController.LocationControllerListener, PickLocationBottomSheetDialogFragment.onPickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private PickLocationBottomSheetDialogFragment pickLocationDialog;
     private String tinh = "", huyen = "";
     private Toolbar mtoolbar;
     private DrawerLayout mdrawer;
@@ -84,10 +90,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private Snackbar snackbar;
     private MenuItem itemProfile, itemAdmin, itemSignIn, itemSignOut, itemMap, itemSetting;
     NestedScrollView nestedScrollView;
+    private LinearLayout llChangeLocation;
     AlertDialog.Builder alertDialog;
     private MyTool myTool;
     View guideView;
-
+    private FragmentManager fm;
+    TextView txtTinh, txtHuyen;
     private View posttabview,
             storetabview,
             notifytabview;
@@ -102,6 +110,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private NetworkChangeReceiver mBroadcastReceiver;
     private IntentFilter mIntentFilter;
     private Intent broadcastIntent;
+    private int whatProvince=-1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -195,7 +204,19 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void ref() {
+        pickLocationDialog = new PickLocationBottomSheetDialogFragment();
+        pickLocationDialog.setOnPickListener(this);
+        if(pickLocationDialog!=null) {
+            whatProvince = pickLocationDialog.checkProvine(CoreManager.getInstance().getMyLocation().getProvince(),getApplicationContext());
+        }
+        fm = getSupportFragmentManager();
+        llChangeLocation= (LinearLayout) findViewById(R.id.ll_change_location);
+        llChangeLocation.setVisibility(View.GONE);
+        txtTinh= (TextView) findViewById(R.id.frg_map_txtProvince);
+        txtHuyen= (TextView) findViewById(R.id.frg_map_txtDistrict);
 
+        txtTinh.setOnClickListener(this);
+        txtHuyen.setOnClickListener(this);
         mtoolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(mtoolbar);
         mdrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -391,6 +412,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.i(TAG, "onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem changeLocation =menu.findItem(R.id.action_changelocation_main);
         return true;
     }
 
@@ -403,6 +425,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 startActivity(intent_openSearch);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 return true;
+            case R.id.action_changelocation_main:
+                llChangeLocation.setVisibility(View.VISIBLE);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -494,6 +519,19 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 }
 
                 break;
+            case R.id.frg_map_txtDistrict:
+                if (whatProvince >= 0) {
+                    Log.i("province", whatProvince + "");
+                    pickLocationDialog.setWhatProvince(whatProvince);
+                    pickLocationDialog.show(fm, "pickDistrictDialog");
+                } else {
+                    Toast.makeText(this, getString(R.string.txt_noChoseProvince), Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+            case R.id.frg_map_txtProvince:
+                pickLocationDialog.show(fm, "pickProvinceDialog");
+                break;
         }
     }
 
@@ -570,6 +608,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mBroadcastReceiver = new NetworkChangeReceiver();
         registerReceiver(mBroadcastReceiver, mIntentFilter);
         startGetLocation();
+        if(null!=CoreManager.getInstance().getMyLocation()){
+            if(pickLocationDialog!=null) {
+                whatProvince = pickLocationDialog.checkProvine(CoreManager.getInstance().getMyLocation().getProvince(),getApplicationContext());
+            }
+            txtTinh.setText(CoreManager.getInstance().getMyLocation().getProvince());
+            txtHuyen.setText(CoreManager.getInstance().getMyLocation().getDistrict());
+            tinh = CoreManager.getInstance().getMyLocation().getProvince();
+            huyen=CoreManager.getInstance().getMyLocation().getDistrict();
+        }
         if (!MyService.isNetworkAvailable(this)) {
             showSnackbar(MainActivity.this, getWindow().getDecorView(), getString(R.string.text_not_internet), getString(R.string.text_connect), Const.SNACKBAR_GO_ONLINE, Snackbar.LENGTH_INDEFINITE);
         } else {
@@ -646,14 +693,29 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 List<MyLocation> listLocation = new ArrayList<>();
                 listLocation.add(myLocation);
                 CoreManager.getInstance().setMyLocation(this, Storage.parseMyLocationToJson(listLocation));
-                Comunication.sendLocationListener.notice();
+                txtTinh.setText(CoreManager.getInstance().getMyLocation().getProvince());
+                txtHuyen.setText(CoreManager.getInstance().getMyLocation().getDistrict());
+                tinh = CoreManager.getInstance().getMyLocation().getProvince();
+                huyen=CoreManager.getInstance().getMyLocation().getDistrict();
+                if(pickLocationDialog!=null) {
+                    whatProvince = pickLocationDialog.checkProvine(CoreManager.getInstance().getMyLocation().getProvince(),getApplicationContext());
+                }
+                sendBroadcast(tinh,huyen);
             }
         } else {
             MyLocation myLocation = myTool.returnMyLocation(location.getLatitude(), location.getLongitude());
             List<MyLocation> listLocation = new ArrayList<>();
             listLocation.add(myLocation);
             CoreManager.getInstance().setMyLocation(this, Storage.parseMyLocationToJson(listLocation));
-            Comunication.sendLocationListener.notice();
+            tinh = CoreManager.getInstance().getMyLocation().getProvince();
+            huyen=CoreManager.getInstance().getMyLocation().getDistrict();
+            txtTinh.setText(CoreManager.getInstance().getMyLocation().getProvince());
+            txtHuyen.setText(CoreManager.getInstance().getMyLocation().getDistrict());
+            if(pickLocationDialog!=null) {
+                whatProvince = pickLocationDialog.checkProvine(CoreManager.getInstance().getMyLocation().getProvince(),getApplicationContext());
+            }
+            sendBroadcast(tinh,huyen);
+
         }
 
         locationController.disconnect();
@@ -661,6 +723,28 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             snackbar.dismiss();
         }
 
+    }
+
+    @Override
+    public void onPicProvince(String province, int position) {
+        whatProvince = position;
+        tinh = province;
+        txtTinh.setText(tinh);
+    }
+
+    @Override
+    public void onPickDistrict(String district) {
+        huyen = district;
+        txtHuyen.setText(huyen);
+        llChangeLocation.setVisibility(View.GONE);
+        sendBroadcast(tinh,huyen);
+
+    }
+    private void sendBroadcast(String tinh, String huyen){
+        broadcastIntent.setAction(Const.INTENT_KEY_RECEIVE_LOCATION);
+        broadcastIntent.putExtra(Const.KEY_HUYEN,huyen);
+        broadcastIntent.putExtra(Const.KEY_TINH,tinh);
+        sendBroadcast(broadcastIntent);
     }
 
 
