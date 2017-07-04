@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.app.ptt.comnha.Classes.AnimationUtils;
+import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -21,6 +22,7 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by PTT on 11/26/2016.
@@ -71,7 +73,7 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<Store_recycler_
         }
         holder.txtv_storename.setText(stores.get(position).getName());
         holder.txtv_address.setText(stores.get(position).getAddress());
-        holder.txtv_rate.setText(String.valueOf(stores.get(position).getRateAVG()));
+        holder.txtv_rate.setText(String.format(Locale.getDefault(), Const.DECIMAL_1F, stores.get(position).getRateAVG()));
 
         holder.txtv_opentime.setText(stores.get(position).getOpentime());
         holder.txtv_phonenumb.setText(stores.get(position).getPhonenumb());

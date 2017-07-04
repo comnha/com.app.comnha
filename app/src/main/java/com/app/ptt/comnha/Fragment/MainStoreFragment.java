@@ -105,8 +105,7 @@ public class MainStoreFragment extends Fragment {
                     int d = c / 1000;
                     int e = c % 1000;
                     int f = e / 100;
-                    String a=String.format(Locale.US,"%*.1f",f);
-                    store.setDistance(d + "," + a);
+                    store.setDistance(d + "," + f);
                 } catch (Exception e) {
 
                 }

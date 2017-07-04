@@ -38,7 +38,7 @@ public class Const {
     public static final String KEY_TINH = "KEY_TINH";
     //
     public static final int PERMISSION_LOCATION_FLAG = 2;
-
+    public static final String DECIMAL_1F = "%.1f";
     public enum BLOCK_TYPE {
 
         BLOCK_ADDSTORE, BLOCK_WRITEPOST,
