@@ -15,7 +15,7 @@ import android.provider.Settings;
 import android.util.Log;
 
 import com.app.ptt.comnha.Const.Const;
-import com.app.ptt.comnha.Models.FireBase.Notification;
+
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.SingletonClasses.CoreManager;
@@ -67,16 +67,6 @@ public class MyService extends Service {
     public static Context returnContext() {
         return staticContext;
     }
-
-    public static ArrayList<Notification> getNotifications() {
-        return notifications;
-    }
-
-    public static void setNotifications(ArrayList<Notification> notifications) {
-        MyService.notifications = notifications;
-    }
-
-    static ArrayList<Notification> notifications;
 
     public static User getUserAccount() {
         return userAccount;

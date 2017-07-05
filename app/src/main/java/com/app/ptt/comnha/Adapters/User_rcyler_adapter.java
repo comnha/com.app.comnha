@@ -41,6 +41,7 @@ public class User_rcyler_adapter extends RecyclerView.Adapter<User_rcyler_adapte
     private StorageReference stRef;
     private Activity activity;
     private Dialog dialog;
+    private boolean isChange;
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -340,14 +341,20 @@ public class User_rcyler_adapter extends RecyclerView.Adapter<User_rcyler_adapte
             case R.id.tg_report_img:
                 user.setReportimgBlocked(!isChecked);
                 break;
+
         }
+        isChange=true;
     }
     @Override
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.btn_edit:
                 dialog.dismiss();
-                Comunication.transactions.changeUserPermission(user);
+                if(isChange) {
+                    Comunication.transactions.changeUserPermission(user);
+                }else{
+                    isChange=false;
+                }
                 break;
         }
     }
