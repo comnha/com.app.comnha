@@ -431,8 +431,8 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                 txtv_foodprice.setBackgroundColor(getResources().getColor(android.R.color.transparent));
                 txtv_rateComment.setBackgroundColor(getResources().getColor(android.R.color.transparent));
                 txtv_foodname.setText(food.getName());
-                txtv_foodprice.setText(post.getFoodRate() + "");
-                rb_foodrating.setRating(food.getRating());
+                txtv_foodprice.setText(food.getPrice()+ "đ");
+                rb_foodrating.setRating(post.getFoodRate());
 //                int rat = (int) food.getRating() / (int) food.getTotal();
                 int rat = (int) post.getFoodRate();
                 switch (rat) {

@@ -158,9 +158,9 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         }
 
         ref(view);
-        if(null!=ChooseStore.getInstance().getStore()){
+        if (null != ChooseStore.getInstance().getStore()) {
             linear_location.setVisibility(View.VISIBLE);
-            selected_store=ChooseStore.getInstance().getStore();
+            selected_store = ChooseStore.getInstance().getStore();
             ChooseStore.getInstance().setStore(null);
             txtv_locaadd.setText(selected_store.getAddress());
             txtv_locaname.setText(selected_store.getName());
@@ -654,6 +654,10 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                             }
                         }
                     }).show();
+                } else if (foodRate == 0) {
+                    Toast.makeText(getActivity(),
+                            getString(R.string.txt_noratefood),
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     savePost();
                 }

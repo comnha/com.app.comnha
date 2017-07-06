@@ -137,6 +137,7 @@ public class MainStoreFragment extends Fragment {
                     for (Store mStore : stores) {
                         if (mStore.getStoreID().equals(store.getStoreID())) {
                             pos=stores.indexOf(mStore);
+                            stores.indexOf(mStore);
                         }
                     }
                     if (pos != -1) {
