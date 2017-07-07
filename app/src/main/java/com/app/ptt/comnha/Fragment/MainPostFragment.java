@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -15,13 +14,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.app.ptt.comnha.Activity.PostdetailActivity;
 import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
 import com.app.ptt.comnha.Const.Const;
-import com.app.ptt.comnha.Interfaces.Comunication;
-import com.app.ptt.comnha.Interfaces.SendLocationListener;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
@@ -66,8 +62,6 @@ public class MainPostFragment extends Fragment  {
         stRef = FirebaseStorage.getInstance()
                 .getReferenceFromUrl(Const.STORAGE_PATH);
         ref(view);
-
-
 
         if (null != CoreManager.getInstance().getMyLocation()) {
             dist_pro = CoreManager.getInstance().getMyLocation().getDistrict()

@@ -29,6 +29,7 @@ public class Post {
     //attachedfood
     String foodID = "";
     long foodRate;
+
     //attachedimage
     String banner = "";//
     //rating

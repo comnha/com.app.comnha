@@ -109,7 +109,7 @@
     <string name="txt_notitle">Bạn chưa điền tiêu đề</string>
     <string name="txt_nocontent">Bạn chưa điền nội dung</string>
     <string name="txt_nochoseloca">Bạn chưa chọn địa điểm</string>
-    <string name="txt_norate">Warning: Chưa đánh giá</string>
+    <string name="txt_noratefood">Bạn chưa đánh giá món ăn</string>
     <string name="txt_addinlocaerr">Bạn không thể thêm địa điểm mới</string>
     <string name="txt_nophoto">Bạn chưa chọn ảnh </string>
     <string name="txt_nofoodname">Bạn chưa điền tên món ăn</string>
