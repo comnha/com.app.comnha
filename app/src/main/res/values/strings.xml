@@ -223,6 +223,7 @@
     <string name="store_CODE">Stores/</string>
     <string name="deleted_CODE">Deleted/</string>
     <string name="posts_CODE">Posts/</string>
+
     <string name="images_CODE">Images/</string>
     <string name="locationpost_CODE">StorePost/</string>
     <string name="userpost_CODE">UserPost/</string>
