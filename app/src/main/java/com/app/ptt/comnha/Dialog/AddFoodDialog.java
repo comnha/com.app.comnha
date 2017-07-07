@@ -42,6 +42,7 @@ import com.app.ptt.comnha.Classes.SelectedImage;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Store;
+import com.app.ptt.comnha.Models.FireBase.UserNotification;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
@@ -445,6 +446,21 @@ public class AddFoodDialog extends DialogFragment implements View.OnClickListene
         childUpdates.put(
                 getResources().getString(R.string.food_CODE)
                         + key, foodvalue);
+        if(!LoginSession.getInstance().getFirebUser().getUid().toLowerCase().equals(store.getUserID())){
+            for(String mUerId: store.getUsersFollow()){
+                UserNotification userNotification=new UserNotification();
+                userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
+
+                userNotification.setFoodId(key);
+                userNotification.setType(4);
+                Map<String,Object> userNotificationMap=userNotification.toMap();
+                String key =dbRef.child(getString(R.string.user_notification_CODE)+mUerId).push().getKey();
+                childUpdates.put(getString(R.string.user_notification_CODE)+mUerId+"/"+key,userNotificationMap);
+            }
+        }
+
+
+
         StorageReference imgRef = stRef.child(avatarname);
         uploadTask = imgRef.putFile(
                 Uri.fromFile(new File(selectedImage.getUri().toString())));

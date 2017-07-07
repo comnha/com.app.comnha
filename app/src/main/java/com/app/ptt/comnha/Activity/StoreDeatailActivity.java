@@ -48,8 +48,10 @@ import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.github.clans.fab.FloatingActionButton;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -66,6 +68,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_STORE;
 
@@ -91,7 +94,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     ValueEventListener postValueListener, photoValueListener,
             foodValueListener, userValueListener;
 
-    Store store = ChooseStore.getInstance().getStore();
+    Store store;
     LinearLayout linear_progress;
     String storeID = null;
     ProgressDialog plzw8Dialog = null;
@@ -110,13 +113,17 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         stRef = FirebaseStorage.getInstance()
                 .getReferenceFromUrl(Const.STORAGE_PATH);
         mAuth = FirebaseAuth.getInstance();
-        if (store == null) {
-            onBackPressed();
-        } else {
+        if(LoginSession.getInstance().getUser()!=null){
+            user=LoginSession.getInstance().getUser();
+        }
+        if(ChooseStore.getInstance().getStore()!=null) {
+            store = ChooseStore.getInstance().getStore();
             storeID = store.getStoreID();
-//            ChooseStore.getInstance().setStore(null);
+            ChooseStore.getInstance().setStore(null);
             ref();
             createStoreInfo();
+        }else{
+            onBackPressed();
         }
     }
 
@@ -215,6 +222,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         List<Pair<Integer, String>> contents = returnContentMenuItems();
         menu = AppUtils.createMenu(menu, contents);
         pubMenu = menu;
@@ -230,7 +238,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
             uID = LoginSession.getInstance().getUser().getuID();
         }
         List<Pair<Integer, String>> contents = new ArrayList<>();
-        if (role == 1) {
+        if (role >0) {
             contents.add(new Pair<Integer, String>
                     (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
             contents.add(new Pair<Integer, String>
@@ -245,8 +253,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         } else {
             contents.add(new Pair<Integer, String>
                     (R.string.txt_report, getString(R.string.txt_report)));
-            contents.add(new Pair<Integer, String>
-                    (R.string.txt_followStore, getString(R.string.txt_followStore)));
+
             if (store.getUserID().equals(uID)) {
                 if (store.isHidden()) {
                     contents.add(new Pair<Integer, String>
@@ -254,6 +261,14 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 } else {
                     contents.add(new Pair<Integer, String>
                             (R.string.text_hidestore, getString(R.string.text_hidestore)));
+                }
+            }else{
+                if(store.checkExist(uID)){
+                    contents.add(new Pair<Integer, String>
+                            (R.string.txt_unfollowStore, getString(R.string.txt_unfollowStore)));
+                }else {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.txt_followStore, getString(R.string.txt_followStore)));
                 }
             }
         }
@@ -272,6 +287,16 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 return true;
             case R.string.txt_followStore:
                 if (LoginSession.getInstance().getUser() != null) {
+                    store.addUserToList(LoginSession.getInstance().getUser().getuID());
+                    updateStore(1);
+                } else {
+                    requestSignin();
+                }
+                return true;
+            case R.string.txt_unfollowStore:
+                if (LoginSession.getInstance().getUser() != null) {
+                    store.removeUser(LoginSession.getInstance().getUser().getuID());
+                    updateStore(2);
                 } else {
                     requestSignin();
                 }
@@ -352,7 +377,30 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     }
                 });
     }
-
+    private boolean updateStore(final int type){
+        Map<String,Object> updatedStore;
+        updatedStore=store.toMap();
+        Map<String,Object> childUpdate=new HashMap<>();
+        childUpdate.put(getString(R.string.store_CODE)+store.getStoreID(),updatedStore);
+        dbRef.updateChildren(childUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                List<Pair<Integer, String>> contents = returnContentMenuItems();
+                pubMenu = AppUtils.createMenu(pubMenu, contents);
+                if(type==1) {
+                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Đã thêm vào danh sách theo dõi");
+                }else{
+                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Đã bỏ theo dõi");
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(),"Có lỗi. Xin thử lại");
+            }
+        });
+        return super.onCreateOptionsMenu(pubMenu);
+    }
     private void hideStore() {
         new AlertDialog.Builder(this)
                 .setCancelable(true)

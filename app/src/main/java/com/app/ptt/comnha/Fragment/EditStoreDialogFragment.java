@@ -177,7 +177,7 @@ public class EditStoreDialogFragment extends DialogFragment implements View.OnCl
 //                            public void onComplete(@NonNull Task<Void> task) {
 //                                if (task.isComplete()) {
 //                                    if(!location.getVisible()){
-//                                        Notification notification = new Notification();
+//                                        UserNotification notification = new UserNotification();
 //                                        String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + "admin").push().getKey();
 //                                        notification.setAccount(MyService.getUserAccount());
 //                                        notification.setDate(new Times().getDate());

@@ -94,7 +94,7 @@ public class EditFoodDialogFragment extends DialogFragment {
                         foodValue = editFood.toMap();
                         // dialog.dismiss();
                         mProgressDialog.show();
-//                        Notification notification = new Notification();
+//                        UserNotification notification = new UserNotification();
 //                                String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + "admin").push().getKey();
 //                                notification.setAccount(MyService.getUserAccount());
 //                                notification.setDate(new Times().getDate());

@@ -50,6 +50,7 @@ import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.User;
+import com.app.ptt.comnha.Models.FireBase.UserNotification;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
@@ -75,6 +76,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_POST;
 
@@ -898,6 +900,9 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         Map<String, Object> childUpdate = new HashMap<>();
         childUpdate.put(getString(R.string.posts_CODE) + postID + "/"
                 + getString(R.string.comments_CODE) + key, comtValue);
+        //update notification
+        childUpdate=updateCommentNotification(childUpdate,user.getuID());
+
         dbRef.updateChildren(childUpdate)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -915,7 +920,37 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             }
         });
     }
+    public Map<String,Object> updateCommentNotification(Map<String,Object> childUpdate,String user){
+        boolean isExist=false;
+        for(String mUSer:post.getUserComment()){
+            if(mUSer.toLowerCase().equals(user.toLowerCase())){
+                isExist=true;
+            }else{
+                UserNotification userNotification=new UserNotification();
+                userNotification.setUserEffectId(user);
+                userNotification.setType(3);
+                Map<String,Object> userNotificationMap=userNotification.toMap();
+                String key =dbRef.child(getString(R.string.user_notification_CODE)+mUSer).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE)+mUSer+"/"+key,userNotificationMap);
+            }
+        }
+        //if user not exist in user commented list
+        if(!isExist){
+            if(!user.toLowerCase().equals(post.getUserID().toLowerCase())) {
+                post.addUsertoList(user);
+                Map<String, Object> updatePost = post.toMap();
+                childUpdate.put((getString(R.string.posts_CODE) + post.getPostID()), updatePost);
+//                UserNotification userNotification=new UserNotification();
+//                userNotification.setUserEffectId(user);
+//                userNotification.setType(3);
+//                Map<String,Object> userNotificationMap=userNotification.toMap();
+//                String key =dbRef.child(getString(R.string.user_notification_CODE)+post.getUserID()).push().getKey();
+//                childUpdate.put(getString(R.string.user_notification_CODE)+post.getUserID()+"/"+key,userNotificationMap);
+            }
+        }
 
+        return childUpdate;
+    }
     @Override
     public void onClick(View view) {
         switch (view.getId()) {

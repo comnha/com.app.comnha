@@ -9,6 +9,14 @@ import java.util.Map;
  * Created by PTT on 10/5/2016.
  */
 public class Comment {
+    public String getIsHidden_postID() {
+        return isHidden_postID;
+    }
+
+    public void setIsHidden_postID(String isHidden_postID) {
+        this.isHidden_postID = isHidden_postID;
+    }
+
     String commentID,
             content,
             time,

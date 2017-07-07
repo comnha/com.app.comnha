@@ -474,6 +474,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         itemProfile.setVisible(false);
                         itemAdmin.setVisible(false);
                         imgv_avatar.setImageResource(R.drawable.ic_logo);
+                        CoreManager.getInstance().setMyLocation(MainActivity.this,null);
                         getUser();
                     }
                 };

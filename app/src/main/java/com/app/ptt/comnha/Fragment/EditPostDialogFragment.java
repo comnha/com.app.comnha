@@ -823,7 +823,7 @@ public class EditPostDialogFragment extends DialogFragment
                     Toast.makeText(getActivity(), "Sửa bị lỗi" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 } else {
 //                    if(!MyService.getUserAccount().getRole()) {
-//                        Notification notification = new Notification();
+//                        UserNotification notification = new UserNotification();
 //                        String key1 = dbRef.child(getResources().getString(R.string.notification_CODE) + "admin").push().getKey();
 //                        notification.setAccount(MyService.getUserAccount());
 //                        notification.setDate(new Times().getDate());

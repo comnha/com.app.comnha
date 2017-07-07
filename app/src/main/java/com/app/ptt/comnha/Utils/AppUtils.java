@@ -126,6 +126,7 @@ public class AppUtils {
 
     public static Menu createMenu(Menu menu,
                                   List<Pair<Integer, String>> menuitems) {
+        menu.clear();
         for (Pair<Integer, String> item : menuitems) {
             menu.add(Menu.NONE, menuitems.get(menuitems.indexOf(item)).first,
                     Menu.NONE, menuitems.get(menuitems.indexOf(item)).second);
