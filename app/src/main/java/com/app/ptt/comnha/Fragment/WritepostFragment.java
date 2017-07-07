@@ -805,12 +805,6 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
 
         String postKey = dbRef.child(getString(R.string.store_CODE))
                 .push().getKey();
-        Map<String,Comment> commentMap=new HashMap<>();
-        String keyComment =dbRef.child(getString(R.string.posts_CODE)+postKey+"/"+getString(R.string.comments_CODE)).push().getKey();
-        Comment comment=new Comment();
-        comment.setContent("asdsadsadasd");
-        commentMap.put(keyComment,comment);
-        post.setComments(commentMap);
         Map<String, Object> postValue = post.toMap();
         final Map<String, Object> childUpdate = new HashMap<>();
         childUpdate.put(getString(R.string.posts_CODE) + postKey,
@@ -826,7 +820,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
             selected_store.setSize(sum);
 
 
-            //Fake data
+
             Map<String, Object> storeValue = selected_store.toMap();
             childUpdate.put(getString(R.string.store_CODE) + storeID,
                     storeValue);

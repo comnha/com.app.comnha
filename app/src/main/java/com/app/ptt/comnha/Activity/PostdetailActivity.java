@@ -901,7 +901,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         childUpdate.put(getString(R.string.posts_CODE) + postID + "/"
                 + getString(R.string.comments_CODE) + key, comtValue);
         //update notification
-        childUpdate=updateCommentNotification(childUpdate,user.getuID());
+        //childUpdate=updateCommentNotification(childUpdate,user.getuID());
 
         dbRef.updateChildren(childUpdate)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

@@ -450,8 +450,8 @@ public class AddFoodDialog extends DialogFragment implements View.OnClickListene
             for(String mUerId: store.getUsersFollow()){
                 UserNotification userNotification=new UserNotification();
                 userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
-
                 userNotification.setFoodId(key);
+                userNotification.setStoreID(store.getStoreID());
                 userNotification.setType(4);
                 Map<String,Object> userNotificationMap=userNotification.toMap();
                 String key =dbRef.child(getString(R.string.user_notification_CODE)+mUerId).push().getKey();
