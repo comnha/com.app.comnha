@@ -153,6 +153,7 @@
     <string name="txt_reviewview">Xem theo Review\t</string>
     <string name="txt_report">Báo cáo</string>
     <string name="txt_followStore">Theo dõi quán ăn</string>
+    <string name="txt_unfollowStore">Bỏ theo dõi quán ăn</string>
     <string name="txt_xoataca">Xóa tất cả</string>
     <string name="txt_setdadoc">Đọc tất cả</string>
     <string name="txt_xemnoidungreport">Xem report</string>
@@ -217,6 +218,7 @@
     <string name="food_CODE">Foods/</string>
     <string name="notify_newstore_CODE">NotifyNewStore/</string>
     <string name="notify_newpost_CODE">NotifyNewPost/</string>
+    <string name="user_notification_CODE">UserNotification/</string>
     <string name="locathucdon_CODE">StoreFood/</string>
     <string name="store_CODE">Stores/</string>
     <string name="deleted_CODE">Deleted/</string>
@@ -224,7 +226,7 @@
     <string name="images_CODE">Images/</string>
     <string name="locationpost_CODE">StorePost/</string>
     <string name="userpost_CODE">UserPost/</string>
-    <string name="comments_CODE">Comments/</string>
+    <string name="comments_CODE">comments/</string>
     <string name="postcomment_CODE">PostComment/</string>
     <string name="locauserpost_CODE">StoreUserPost/</string>
     <string name="menulocation_CODE">FoodLocation/</string>

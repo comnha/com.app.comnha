@@ -4,7 +4,9 @@ import android.graphics.Bitmap;
 
 import com.app.ptt.comnha.Modules.Times;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,8 +36,10 @@ public class Post {
             healthyRate = 0,
             serviceRate = 0;
     boolean isHidden = false;
+    List<String> userComment = new ArrayList<>();
 
-//    Map<String, Comment> Comments = null;
+
+    Map<String, Comment> comments=new HashMap<>();
     //phép kết
     String userID_dist_prov,
             isHidden_dist_prov,//tìm post theo uid_tỉnh_huyện
@@ -43,6 +47,45 @@ public class Post {
             isHidden_storeID,
             isHidden_foodID, isHidden_uID_postID;
     Bitmap imgBitmap = null;
+
+    public String getIsHidden_uID_postID() {
+        return isHidden_uID_postID;
+    }
+
+    public Map<String, Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Map<String, Comment> comments) {
+        this.comments = comments;
+    }
+
+    public void setIsHidden_uID_postID(String isHidden_uID_postID) {
+        this.isHidden_uID_postID = isHidden_uID_postID;
+    }
+
+    public List<String> getUserComment() {
+        return userComment;
+    }
+
+    public void setUserComment(List<String> userComment) {
+        this.userComment = userComment;
+    }
+
+    public void addUsertoList(String user) {
+        userComment.add(user);
+    }
+
+    public void removeUser(String user) {
+        try {
+            if (userComment.contains(user)) {
+                userComment.remove(user);
+            }
+        } catch (Exception e) {
+
+        }
+
+    }
 
     public Post() {
 
@@ -87,7 +130,8 @@ public class Post {
         result.put("priceRate", priceRate);
         result.put("healthyRate", healthyRate);
         result.put("serviceRate", serviceRate);
-//        result.put("Comments", Comments);
+        result.put("comments", comments);
+        result.put("userComment", userComment);
         result.put("userID_dist_prov", userID_dist_prov);
         result.put("dist_pro", dist_pro);
         result.put("isHidden", isHidden);

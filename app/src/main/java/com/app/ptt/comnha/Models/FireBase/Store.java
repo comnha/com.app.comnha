@@ -4,7 +4,9 @@ import android.graphics.Bitmap;
 
 import com.app.ptt.comnha.Modules.Times;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,6 +40,57 @@ public class Store {
     String distance = null;//khoảng cách hiển thị trên danh sách quán ăn
     Map<String, Comment> comments = null;//comment trong post
     Bitmap imgBitmap = null;
+    List<String> usersFollow=new ArrayList<>();
+
+    public String getIsHidden_uID() {
+        return isHidden_uID;
+    }
+
+    public void setIsHidden_uID(String isHidden_uID) {
+        this.isHidden_uID = isHidden_uID;
+    }
+
+
+    public List<String> getUsersFollow() {
+        return usersFollow;
+    }
+
+    public void setUsersFollow(List<String> usersFollow) {
+        if(this.usersFollow==null){
+            usersFollow=new ArrayList<>();
+        }
+        this.usersFollow = usersFollow;
+    }
+    public void addUserToList(String user){
+        if(this.usersFollow==null){
+            usersFollow=new ArrayList<>();
+        }
+        usersFollow.add(user);
+    }
+    public void removeUser(String user){
+        if(this.usersFollow==null){
+            usersFollow=new ArrayList<>();
+            return;
+        }
+        for(String mUser:usersFollow){
+            if(mUser.toLowerCase().equals(user.toLowerCase())){
+                usersFollow.remove(mUser);
+            }
+        }
+    }
+    public boolean checkExist(String user){
+        if(this.usersFollow==null){
+            usersFollow=new ArrayList<>();
+        }
+        for(String mUser:usersFollow){
+            if(mUser.toLowerCase().equals(user.toLowerCase())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
     public Store() {
     }
@@ -58,6 +111,7 @@ public class Store {
         result.put("priceSum", priceSum);
         result.put("healthySum", healthySum);
         result.put("serviceSum", serviceSum);
+        result.put("usersFollow",usersFollow);
         result.put("size", size);
         result.put("storeimg", storeimg);
         result.put("isHidden", isHidden);
@@ -251,6 +305,7 @@ public class Store {
     public void setUserID_pro_dist(String userID_pro_dist) {
         this.userID_pro_dist = userID_pro_dist;
     }
+
 
     public String getDistance() {
         return distance;
