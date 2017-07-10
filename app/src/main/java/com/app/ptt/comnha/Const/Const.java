@@ -26,7 +26,7 @@ public class Const {
 
     public static final boolean CONNECTED = true;
     public static final boolean NOTCONNECTED = false;
-
+    public static final String DATE_TIME_FORMAT="dd/MM/yyyy HH:mm:ss";
     public static final int INTENT_KEY_SIGN_UP = 1000;
     public static final String INTENT_KEY_EMAIL = "EMAIL";
     public static final String INTENT_KEY_PASSWORD = "PASSWORD";
@@ -34,6 +34,9 @@ public class Const {
     public static final String PREF_FIRST_PROFILE_LAUNCH = "PREF_FIRST_PROFILE_LAUNCH";
     public static final String PREF_MY_LOCATION = "PREF_MY_LOCATION";
     public static final String INTENT_KEY_RECEIVE_LOCATION = "INTENT_KEY_RECEIVE_LOCATION";
+    public static final String INTENT_KEY_RECEIVE_LOCATION_TAB = "INTENT_KEY_RECEIVE_LOCATION_TAB";
+    public static final String INTENT_KEY_NOTI_NEW_NOTI = "INTENT_KEY_NOTI_NEW_NOTI";
+    public static final String INTENT_KEY_RELOAD_DATA= "INTENT_KEY_RELOAD_DATA";
     public static final String KEY_HUYEN = "KEY_HUYEN";
     public static final String KEY_TINH = "KEY_TINH";
     //

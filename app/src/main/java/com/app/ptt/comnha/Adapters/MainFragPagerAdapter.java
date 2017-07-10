@@ -13,15 +13,28 @@ import com.app.ptt.comnha.Fragment.MainStoreFragment;
  */
 
 public class MainFragPagerAdapter extends FragmentStatePagerAdapter {
+    String tinh=null,huyen=null;
     public MainFragPagerAdapter(FragmentManager fm) {
         super(fm);
+    }
+    public void setInfoForPage(String tinh, String huyen){
+        this.tinh=tinh;
+        this.huyen=huyen;
     }
 
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new MainPostFragment();
+                MainPostFragment m= new MainPostFragment();
+                if(tinh!=null&&huyen!=null) {
+                    m.setAttribute(tinh,huyen);
+                    tinh=null;
+                    huyen=null;
+                }else{
+
+                }
+                return m;
             case 1:
                 return new MainStoreFragment();
             case 2:
@@ -30,6 +43,7 @@ public class MainFragPagerAdapter extends FragmentStatePagerAdapter {
                 return null;
         }
     }
+
 
     @Override
     public int getCount() {

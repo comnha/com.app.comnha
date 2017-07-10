@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.app.ptt.comnha.Activity.AdapterActivity;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
@@ -191,7 +192,7 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
         }
 
         addUser();
-//        addUserInfo();
+
     }
 
 
@@ -227,6 +228,7 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
                 AppUtils.getText(editText_ten),
                 AppUtils.getText(editText_tenlot),
                 AppUtils.getText(editText_birth));
+        user.setStatus(true);
 //        String key = dbRef.child(getString(R.string.users_CODE)).push().getKey();
         Map<String, Object> userInfoMap = user.toMap();
         Map<String, Object> child = new HashMap<>();
@@ -237,15 +239,13 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
 
-                    getActivity().finish();
-                    SigninFragment signinFragment = new SigninFragment();
-                    Bundle args = new Bundle();
-                    args.putString("name", AppUtils.getText(editText_email));
-                    args.putString("pass",AppUtils.getText(editText_password));
-                    signinFragment.setArguments(args);
-                    getActivity().getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, signinFragment)
-                            .commit();
-
+                    Intent intent = new Intent(getActivity().getApplicationContext(), AdapterActivity.class);
+                    intent.putExtra(getActivity().getResources().getString(R.string.fragment_CODE),
+                            getActivity().getResources().getString(R.string.frg_signin_CODE));
+                    intent.putExtra("email", AppUtils.getText(editText_email));
+                    intent.putExtra("pass", AppUtils.getText(editText_password));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                 } else {
                     AppUtils.showSnackbarWithoutButton(getView(), getString(R.string.txt_tryagain));
                 }

@@ -446,17 +446,31 @@ public class AddFoodDialog extends DialogFragment implements View.OnClickListene
         childUpdates.put(
                 getResources().getString(R.string.food_CODE)
                         + key, foodvalue);
-        if(!LoginSession.getInstance().getFirebUser().getUid().toLowerCase().equals(store.getUserID())){
             for(String mUerId: store.getUsersFollow()){
                 UserNotification userNotification=new UserNotification();
                 userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
+                userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
                 userNotification.setFoodId(key);
                 userNotification.setStoreID(store.getStoreID());
+                userNotification.setFoodName(name);
+                userNotification.setƠwnPost(false);
                 userNotification.setType(4);
                 Map<String,Object> userNotificationMap=userNotification.toMap();
                 String key =dbRef.child(getString(R.string.user_notification_CODE)+mUerId).push().getKey();
                 childUpdates.put(getString(R.string.user_notification_CODE)+mUerId+"/"+key,userNotificationMap);
             }
+        if(!LoginSession.getInstance().getUser().getuID().toLowerCase().equals(store.getUserID().toLowerCase())){
+            UserNotification userNotification=new UserNotification();
+            userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
+            userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
+            userNotification.setFoodId(key);
+            userNotification.setFoodName(name);
+            userNotification.setStoreID(store.getStoreID());
+            userNotification.setƠwnPost(true);
+            userNotification.setType(4);
+            Map<String,Object> userNotificationMap=userNotification.toMap();
+            String key =dbRef.child(getString(R.string.user_notification_CODE)+store.getUserID()).push().getKey();
+            childUpdates.put(getString(R.string.user_notification_CODE)+store.getUserID()+"/"+key,userNotificationMap);
         }
 
 

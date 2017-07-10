@@ -75,7 +75,6 @@ public class CoreManager {
 
     public void setMyLocation(Context context, String myLocation) {
         this.myLocation = myLocation;
-        Log.d("mylocation", myLocation);
         PreferenceUtils.saveStringPref(context, Const.PREF_MY_LOCATION, myLocation);
     }
 

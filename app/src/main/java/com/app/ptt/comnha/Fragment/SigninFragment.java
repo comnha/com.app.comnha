@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 import com.app.ptt.comnha.Activity.AdapterActivity;
 import com.app.ptt.comnha.Const.Const;
+import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
@@ -46,12 +48,12 @@ import static com.app.ptt.comnha.Utils.AppUtils.showSnackbar;
  */
 public class SigninFragment extends BaseFragment implements View.OnClickListener {
     private EditText edt_email, edt_pass;
-    private User user;
+    private User user=null;
     FirebaseUser firebaseUser;
-
+    String email,pass;
     private Button btn_signin;
     private TextView txtV_signup;
-    int signinfromStoreDe = -1;
+    int signinfromStoreDe = -1,signinfromFoodDe=-1;
 
     private FirebaseAuth.AuthStateListener mAuthListener;
     FirebaseAuth mAuth;
@@ -67,14 +69,20 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
         View view = inflater.inflate(R.layout.fragment_signin, container, false);
         anhXa(view);
         signinfromStoreDe = this.getArguments().getInt("signinfromStoreDe");
+        signinfromFoodDe=this.getArguments().getInt("signinfromFoodDe");
         Bundle args = getArguments();
-        if (args != null && args.getString("name") != null && args.getString("pass") != null) {
-            edt_email.setText(args.getString("name").toString());
-            edt_pass.setText(args.getString("pass").toString());
-            AppUtils.showSnackbarWithoutButton(view, getString(R.string.text_signup_successful));
-        }
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if(!TextUtils.isEmpty(email) &&!TextUtils.isEmpty(pass)){
+            AppUtils.showSnackbarWithoutButton(getView(), getString(R.string.text_signup_successful));
+            edt_email.setText(email);
+            edt_pass.setText(pass);
+        }
     }
 
     private void anhXa(final View view) {
@@ -100,7 +108,14 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
     public void onStop() {
         super.onStop();
     }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
+
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -112,14 +127,14 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
                     intent.putExtra("email", AppUtils.getText(edt_email));
                     intent.putExtra("pass", AppUtils.getText(edt_pass));
                     //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivityForResult(intent, Const.INTENT_KEY_SIGN_UP);
+                    startActivity(intent);
                 } else {
                     showSnackbar(getActivity(), getView(), getString(R.string.text_not_internet), getString(R.string.text_connect), Const.SNACKBAR_GO_ONLINE, Snackbar.LENGTH_SHORT);
                 }
                 break;
             case R.id.btn_siFrg_signin:
                 if (isNetworkConnected) {
-                    doSignin(view);
+                    checkStatusUser(edt_email.getText().toString().trim());
                 } else
                     showSnackbar(getActivity(), getView(), getString(R.string.text_not_internet), getString(R.string.text_connect), Const.SNACKBAR_GO_ONLINE, Snackbar.LENGTH_SHORT);
 
@@ -145,24 +160,10 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Const.INTENT_KEY_SIGN_UP) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (!AppUtils.isTextEqualsNull(data.getStringExtra(Const.INTENT_KEY_EMAIL).toString())
-                        && !AppUtils.isTextEqualsNull(data.getStringExtra(Const.INTENT_KEY_PASSWORD).toString())) {
-                    AppUtils.showSnackbarWithoutButton(getView(), getString(R.string.text_signup_successful));
-                    edt_email.setText(data.getStringExtra(Const.INTENT_KEY_EMAIL).toString());
-                    edt_pass.setText(data.getStringExtra(Const.INTENT_KEY_PASSWORD).toString());
-                }
-            }
-        }
-    }
 
-    void doSignin(final View view) {
+    void doSignin(final User user) {
         showProgressDialog(getActivity(), getString(R.string.text_signin), getString(R.string.txt_plzwait));
-        if (checkInput(view)) {
+        if (checkInput(getView())) {
             auth.signInWithEmailAndPassword(edt_email.getText().toString(),
                     edt_pass.getText().toString())
                     .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
@@ -171,9 +172,9 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
                             Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
                             if (!task.isSuccessful()) {
                                 Log.w(TAG, "signInWithEmail:onComplete", task.getException());
-                                AppUtils.showSnackbarWithoutButton(view, getString(R.string.text_signin_fail));
+                                AppUtils.showSnackbarWithoutButton(getView(), getString(R.string.text_signin_fail));
                             } else {
-                                getUser();
+                                getUser(user);
                             }
                             closeDialog();
 
@@ -185,14 +186,22 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
 
     }
 
-    private void getUser() {
+    private void getUser(final User user) {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 firebaseUser = firebaseAuth.getCurrentUser();
                 if (firebaseUser != null) {
                     // User is signed in
-                    getUserInfo(firebaseUser);
+                    LoginSession.getInstance().setUser(user);
+                    LoginSession.getInstance().setFirebUser(firebaseUser);
+                    if (signinfromStoreDe == 1) {
+                        getActivity().setResult(Activity.RESULT_OK);
+                    }
+                    if (SigninFragment.this.getArguments().getInt("signinfromFoodDe") == 1) {
+                        getActivity().setResult(Activity.RESULT_OK);
+                    }
+                    getActivity().finish();
                     Log.d("onAuthStateChanged", "onAuthStateChanged:signed_in:" + firebaseUser.getUid());
                 } else {
                     AppUtils.showSnackbarWithoutButton(getView(), getString(R.string.text_signin_fail));
@@ -225,73 +234,107 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
         }
         return true;
     }
+    private void checkStatusUser(String email){
 
-    private void getUserInfo(final FirebaseUser firebaseUser) {
-
-        userValueListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                try {
-                    user = dataSnapshot.getValue(User.class);
-                    String key = firebaseUser.getUid();
-                    user.setuID(key);
-                } catch (Exception e) {
-                    user = null;
-                }
-//                mAuth.removeAuthStateListener(mAuthListener);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        };
-        dbRef.child(getString(R.string.users_CODE)
-                + firebaseUser.getUid())
-                .addListenerForSingleValueEvent(userValueListener);
-        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (null == user) {
-                    deleteUser(firebaseUser);
-                    auth.signOut();
-                } else {
-                    LoginSession.getInstance().setUser(user);
-                    LoginSession.getInstance().setFirebUser(firebaseUser);
-//                    Intent i = new Intent(getActivity(), MainActivity.class);
-//                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    if (SigninFragment.this.getArguments().getInt("signinfromPostDe") == 1) {
-                        getActivity().setResult(Activity.RESULT_OK);
+        try {
+            userValueListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot item : dataSnapshot.getChildren()) {
+                        String key = item.getKey();
+                        user = item.getValue(User.class);
+                        user.setuID(key);
+                        if(!user.isStatus()&&user.getRole()==0){
+                            AppUtils.showSnackbarWithoutButton(getView(), getString(R.string.txt_notilockacc));
+                        }else{
+                            doSignin(user);
+                        }
                     }
-                    if (SigninFragment.this.getArguments().getInt("signinfromFoodDe") == 1) {
-                        getActivity().setResult(Activity.RESULT_OK);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(user==null){
+                        AppUtils.showSnackbarWithoutButton(getView(), getString(R.string.txt_signinfail));
                     }
-                    getActivity().finish();
-//                    getActivity().startActivity(i);
                 }
-                if (mAuthListener != null) {
-                    auth.removeAuthStateListener(mAuthListener);
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
                 }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+            });
+            dbRef.child(getString(R.string.users_CODE))
+                    .orderByChild("email")
+                    .equalTo(email)
+                    .addListenerForSingleValueEvent(userValueListener);
+        }catch (Exception e){
+            AppUtils.showSnackbarWithoutButton(getView(), getString(R.string.txt_signinfail));
+        }
     }
 
-    public void deleteUser(FirebaseUser firebaseUser) {
-        firebaseUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                AppUtils.showSnackbarWithoutButton(getView(), "Tài khoản đã bị xóa");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                AppUtils.showSnackbarWithoutButton(getView(), "Tài khoản đã bị xóa");
-            }
-        });
-    }
+//    private void getUserInfo(final FirebaseUser firebaseUser) {
+//
+//        userValueListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                try {
+//                    user = dataSnapshot.getValue(User.class);
+//                    String key = firebaseUser.getUid();
+//                    user.setuID(key);
+//                } catch (Exception e) {
+//                    user = null;
+//                }
+////                mAuth.removeAuthStateListener(mAuthListener);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//            }
+//        };
+//        dbRef.child(getString(R.string.users_CODE)
+//                + firebaseUser.getUid())
+//                .addListenerForSingleValueEvent(userValueListener);
+//        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if (null == user) {
+//                    deleteUser(firebaseUser);
+//                    auth.signOut();
+//                } else {
+//
+////                    getActivity().startActivity(i);
+//                }
+//                if (mAuthListener != null) {
+//                    auth.removeAuthStateListener(mAuthListener);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+//
+//    public void deleteUser(FirebaseUser firebaseUser) {
+//        firebaseUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+//            @Override
+//            public void onComplete(@NonNull Task<Void> task) {
+//                AppUtils.showSnackbarWithoutButton(getView(), "Tài khoản đã bị xóa");
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                AppUtils.showSnackbarWithoutButton(getView(), "Tài khoản đã bị xóa");
+//            }
+//        });
+//    }
 
 }

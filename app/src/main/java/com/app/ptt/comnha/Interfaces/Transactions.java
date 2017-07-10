@@ -16,7 +16,7 @@ public interface Transactions {
 
     void delete();
 
-    void deleteUser(User user);
+    void disableUser(User user,boolean status);
 
     void changeRole(User user);
     void changeUserPermission(User user);

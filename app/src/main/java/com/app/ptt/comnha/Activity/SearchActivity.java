@@ -458,7 +458,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     }
 
     @Override
-    public void deleteUser(User user) {
+    public void disableUser(User user, boolean status) {
 
     }
 

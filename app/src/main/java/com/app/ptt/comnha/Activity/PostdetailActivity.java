@@ -51,6 +51,7 @@ import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.Models.FireBase.UserNotification;
+import com.app.ptt.comnha.Modules.orderByTime;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
@@ -72,6 +73,7 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -100,7 +102,8 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
     RecyclerView.LayoutManager imgsLm, comtLm;
     ArrayList<Image> images;
     Photo_recycler_adapter imgsAdapter = null;
-    ArrayList<Comment> comments;
+    List<Comment> comments;
+    Map<String,Comment> commentMap;
     Comment_rcyler_adapter comtAdapter;
     DatabaseReference dbRef;
     StorageReference stRef;
@@ -117,6 +120,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
     Menu pubMenu = null;
     boolean isConnected = true;
     IntentFilter mIntentFilter;
+
     public static final String mBroadcastSendAddress = "mBroadcastSendAddress";
     private static final int REQUEST_SIGNIN = 101;
     FirebaseAuth mAuth;
@@ -150,16 +154,17 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                 .getReferenceFromUrl(Const.STORAGE_PATH);
         mAuth = FirebaseAuth.getInstance();
 
+        comments=new ArrayList<>();
+        commentMap=new HashMap<>();
+
         if (ChoosePost.getInstance().getPost() != null) {
-            post = ChoosePost.getInstance().getPost();
-            postID = post.getPostID();
+            getPost(ChoosePost.getInstance().getPost().getPostID());
         } else {
             onBackPressed();
         }
         init();
-        createPostView();
+
         getAllImgs();
-        getAllComts();
     }
 
     @Override
@@ -241,7 +246,6 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         comtLm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,
                 false);
         rv_comments.setLayoutManager(comtLm);
-        comments = new ArrayList<>();
         comtAdapter = new Comment_rcyler_adapter(this, comments, stRef);
         rv_comments.setAdapter(comtAdapter);
         if (LoginSession.getInstance().getUser() != null) {
@@ -371,7 +375,40 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             getFoodInfo();
         }
     }
+    private void getPost(final String id) {
+        try {
+            ValueEventListener postsEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                        String key = dataSnapshot.getKey();
+                        post = dataSnapshot.getValue(Post.class);
+                        post.setPostID(key);
+                    createPostView();
+                    postID = post.getPostID();
+                    comments.clear();
+                    for(Map.Entry<String,Comment> entry:post.getComments().entrySet()){
+                        comments.add(entry.getValue());
+                    }
+                    commentMap=post.getComments();
+                    sortComment();
+                }
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+                dbRef.child(getString(R.string.posts_CODE)+id)
+                        .addValueEventListener(postsEventListener);
+
+        }catch (Exception e){
+
+        }
+    }
+    public void sortComment(){
+        Collections.sort(comments,new orderByTime());
+        comtAdapter.notifyDataSetChanged();
+    }
     private void getUserInfo() {
         userValueListener = new ValueEventListener() {
             @Override
@@ -465,32 +502,6 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                 .addListenerForSingleValueEvent(foodsEventListener);
     }
 
-    private void getAllComts() {
-        commentEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot item : dataSnapshot.getChildren()) {
-                    Comment comment = item.getValue(Comment.class);
-                    String key = item.getKey();
-                    comment.setCommentID(key);
-                    comments.add(comment);
-                }
-                comtAdapter.notifyDataSetChanged();
-                Log.d("postde_commtsize: ", comments.size() + "");
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        dbRef.child(getString(R.string.posts_CODE) + postID + "/"
-                + getString(R.string.comments_CODE))
-                .orderByChild("isHidden")
-                .equalTo(false)
-                .addListenerForSingleValueEvent(commentEventListener);
-    }
-
     private void getAllImgs() {
         imagesEventListener = new ValueEventListener() {
             @Override
@@ -532,7 +543,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             uID = LoginSession.getInstance().getUser().getuID();
         }
         List<Pair<Integer, String>> contents = new ArrayList<>();
-        if (role == 1) {
+        if (role >0) {
             contents.add(new Pair<Integer, String>
                     (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
             if (post.isHidden()) {
@@ -551,9 +562,10 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                     contents.add(new Pair<Integer, String>
                             (R.string.text_hidepost, getString(R.string.text_hidepost)));
                 }
+            }else {
+                contents.add(new Pair<Integer, String>
+                        (R.string.txt_report, getString(R.string.txt_report))); 
             }
-            contents.add(new Pair<Integer, String>
-                    (R.string.txt_report, getString(R.string.txt_report)));
         }
         return contents;
     }
@@ -571,11 +583,13 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             case R.string.text_hidepost:
                 if (!post.isHidden()) {
                     hidePost();
+                    sendBroadcast();
                 }
                 return true;
             case R.string.txt_showpost:
                 if (post.isHidden()) {
                     showPost();
+                    sendBroadcast();
                 }
                 return true;
             case R.string.txt_changeinfo:
@@ -584,6 +598,11 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    private void sendBroadcast(){
+         Intent broadcastIntent=new Intent();
+        broadcastIntent.setAction(Const.INTENT_KEY_RELOAD_DATA);
+        sendBroadcast(broadcastIntent);
     }
 
     private void requesSignin() {
@@ -892,23 +911,20 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
     }
 
     private void saveCommentValue() {
-        String key = dbRef.child(getString(R.string.comments_CODE)).push().getKey();
+        String key = dbRef.child(getString(R.string.posts_CODE)+post.getPostID()+"/"+getString(R.string.comments_CODE)).push().getKey();
         User user = LoginSession.getInstance().getUser();
         comment = new Comment(comtContent, user.getUn(), user.getAvatar(), user.getuID(), postID);
         comment.setCommentID(key);
-        Map<String, Object> comtValue = comment.toMap();
+        commentMap.put(key,comment);
+        post.setComments(commentMap);
         Map<String, Object> childUpdate = new HashMap<>();
-        childUpdate.put(getString(R.string.posts_CODE) + postID + "/"
-                + getString(R.string.comments_CODE) + key, comtValue);
-        //update notification
-        //childUpdate=updateCommentNotification(childUpdate,user.getuID());
-
+        childUpdate=updateCommentNotification(childUpdate);
+        Map<String, Object> postValue = post.toMap();
+        childUpdate.put(getString(R.string.posts_CODE)+post.getPostID(), postValue);
         dbRef.updateChildren(childUpdate)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        comments.add(comment);
-                        comtAdapter.notifyDataSetChanged();
                         comment = null;
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -920,33 +936,37 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             }
         });
     }
-    public Map<String,Object> updateCommentNotification(Map<String,Object> childUpdate,String user){
+    public Map<String,Object> updateCommentNotification(Map<String,Object> childUpdate){
         boolean isExist=false;
         for(String mUSer:post.getUserComment()){
-            if(mUSer.toLowerCase().equals(user.toLowerCase())){
+            if(mUSer.toLowerCase().equals(LoginSession.getInstance().getUser().getuID().toLowerCase())){
                 isExist=true;
             }else{
                 UserNotification userNotification=new UserNotification();
-                userNotification.setUserEffectId(user);
+                userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
+                userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
                 userNotification.setType(3);
+                userNotification.setPostID(post.getPostID());
+                userNotification.setƠwnPost(false);
                 Map<String,Object> userNotificationMap=userNotification.toMap();
                 String key =dbRef.child(getString(R.string.user_notification_CODE)+mUSer).push().getKey();
                 childUpdate.put(getString(R.string.user_notification_CODE)+mUSer+"/"+key,userNotificationMap);
             }
         }
         //if user not exist in user commented list
-        if(!isExist){
-            if(!user.toLowerCase().equals(post.getUserID().toLowerCase())) {
-                post.addUsertoList(user);
-                Map<String, Object> updatePost = post.toMap();
-                childUpdate.put((getString(R.string.posts_CODE) + post.getPostID()), updatePost);
-//                UserNotification userNotification=new UserNotification();
-//                userNotification.setUserEffectId(user);
-//                userNotification.setType(3);
-//                Map<String,Object> userNotificationMap=userNotification.toMap();
-//                String key =dbRef.child(getString(R.string.user_notification_CODE)+post.getUserID()).push().getKey();
-//                childUpdate.put(getString(R.string.user_notification_CODE)+post.getUserID()+"/"+key,userNotificationMap);
-            }
+        if(!isExist &&!LoginSession.getInstance().getUser().getuID().toLowerCase().toLowerCase().equals(post.getUserID().toLowerCase()) ){
+            post.addUsertoList(LoginSession.getInstance().getUser().getuID());
+        }
+        if(!LoginSession.getInstance().getUser().getuID().toLowerCase().toLowerCase().equals(post.getUserID().toLowerCase())) {
+            UserNotification userNotification=new UserNotification();
+            userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
+            userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
+            userNotification.setType(3);
+            userNotification.setƠwnPost(true);
+            userNotification.setPostID(post.getPostID());
+            Map<String,Object> userNotificationMap=userNotification.toMap();
+            String key =dbRef.child(getString(R.string.user_notification_CODE)+post.getUserID()).push().getKey();
+            childUpdate.put(getString(R.string.user_notification_CODE)+post.getUserID()+"/"+key,userNotificationMap);
         }
 
         return childUpdate;
@@ -965,6 +985,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             case R.id.txtv_writecomt_postdetail:
                 if (LoginSession.getInstance().getUser() != null) {
                     edt_comment.getText().clear();
+                    edt_comment.requestFocus();
                     commentDialog.show();
                 } else {
 
@@ -1037,6 +1058,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                 .setPositiveButton(getString(R.string.txt_del), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+
                         dbRef.child(getString(R.string.posts_CODE) + postID + "/"
                                 + getString(R.string.comments_CODE) + comtID).removeValue()
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -1049,12 +1071,6 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                                                 comtAdapter.notifyDataSetChanged();
                                             }
                                         }
-//                                        for (Comment item : comments) {
-//                                            if (item.getCommentID().equals(comtID)) {
-//                                                comments.remove(comments.indexOf(item));
-//                                                comtAdapter.notifyDataSetChanged();
-//                                            }
-//                                        }
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {

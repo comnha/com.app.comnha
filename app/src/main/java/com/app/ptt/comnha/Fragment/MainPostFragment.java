@@ -51,6 +51,10 @@ public class MainPostFragment extends Fragment  {
     public MainPostFragment() {
         // Required empty public constructor
     }
+    public void setAttribute(String tinh,String huyen) {
+        // Required empty public constructor
+        dist_pro=huyen+"_"+tinh;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,7 +71,6 @@ public class MainPostFragment extends Fragment  {
             dist_pro = CoreManager.getInstance().getMyLocation().getDistrict()
                     + "_" + CoreManager.getInstance().getMyLocation().getProvince();
             Log.d(TAG, "dist_pro: " + dist_pro);
-
             getPostList(dist_pro);
         } else {
             if (getView() != null)
@@ -79,51 +82,55 @@ public class MainPostFragment extends Fragment  {
 
 
     private void getPostList(final String dist_pro) {
-        posts.clear();
-        int role = 0;
-        if (LoginSession.getInstance().getUser() != null) {
-            role = LoginSession.getInstance().getUser().getRole();
-        }
-        postsEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot item : dataSnapshot.getChildren()) {
-                    String key = item.getKey();
-                    Post post = item.getValue(Post.class);
-                    post.setPostID(key);
-                    int pos = -1;
-                    for (Post mPost : posts) {
-                        if (mPost.getPostID().equals(key)) {
-                            pos = posts.indexOf(mPost);
+        try {
+            posts.clear();
+            int role = 0;
+            if (LoginSession.getInstance().getUser() != null) {
+                role = LoginSession.getInstance().getUser().getRole();
+            }
+            postsEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot item : dataSnapshot.getChildren()) {
+                        String key = item.getKey();
+                        Post post = item.getValue(Post.class);
+                        post.setPostID(key);
+                        int pos = -1;
+                        for (Post mPost : posts) {
+                            if (mPost.getPostID().equals(key)) {
+                                pos = posts.indexOf(mPost);
+                            }
                         }
+                        if (pos != -1) {
+                            posts.set(pos, post);
+                        } else {
+                            posts.add(post);
+                        }
+
                     }
-                    if (pos != -1) {
-                        posts.set(pos, post);
-                    } else {
-                        posts.add(post);
-                    }
+                    postadapter.notifyDataSetChanged();
+                    swipeRefresh.setRefreshing(false);
 
                 }
-                postadapter.notifyDataSetChanged();
-                swipeRefresh.setRefreshing(false);
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            if (role != 0) {
+                dbRef.child(getString(R.string.posts_CODE))
+                        .orderByChild("dist_pro")
+                        .equalTo(dist_pro)
+                        .addValueEventListener(postsEventListener);
+            } else {
+                dbRef.child(getString(R.string.posts_CODE))
+                        .orderByChild("isHidden_dist_prov")
+                        .equalTo(false + "_" + dist_pro)
+                        .addValueEventListener(postsEventListener);
             }
+        }catch (Exception e){
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        if (role != 0) {
-            dbRef.child(getString(R.string.posts_CODE))
-                    .orderByChild("dist_pro")
-                    .equalTo(dist_pro)
-                    .addValueEventListener(postsEventListener);
-        } else {
-            dbRef.child(getString(R.string.posts_CODE))
-                    .orderByChild("isHidden_dist_prov")
-                    .equalTo(false + "_" + dist_pro)
-                    .addValueEventListener(postsEventListener);
         }
     }
 
@@ -172,14 +179,19 @@ public class MainPostFragment extends Fragment  {
     class LocationChange extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(Const.INTENT_KEY_RECEIVE_LOCATION)){
-                if(intent.getStringExtra(Const.KEY_TINH).toString()!=null){
-                    if(intent.getStringExtra(Const.KEY_HUYEN).toString()!=null){
-                        dist_pro = intent.getStringExtra(Const.KEY_HUYEN).toString()
-                                + "_" + intent.getStringExtra(Const.KEY_TINH).toString();
-                        getPostList(dist_pro);
+            switch (intent.getAction()){
+                case Const.INTENT_KEY_RECEIVE_LOCATION:
+                    if(intent.getStringExtra(Const.KEY_TINH).toString()!=null){
+                        if(intent.getStringExtra(Const.KEY_HUYEN).toString()!=null){
+                            dist_pro = intent.getStringExtra(Const.KEY_HUYEN).toString()
+                                    + "_" + intent.getStringExtra(Const.KEY_TINH).toString();
+                            getPostList(dist_pro);
+                        }
                     }
-                }
+                    break;
+                case Const.INTENT_KEY_RELOAD_DATA:
+                    getPostList(dist_pro);
+                    break;
             }
         }
     }
@@ -191,6 +203,7 @@ public class MainPostFragment extends Fragment  {
         mBroadcastReceiver = new LocationChange();
         broadcastIntent = new Intent();
         getActivity().registerReceiver(mBroadcastReceiver, mIntentFilter);
+        getPostList(dist_pro);
     }
 
     @Override

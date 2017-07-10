@@ -16,13 +16,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.app.ptt.comnha.Activity.StoreDeatailActivity;
 import com.app.ptt.comnha.Adapters.Store_recycler_adapter;
 import com.app.ptt.comnha.Const.Const;
-import com.app.ptt.comnha.Interfaces.Comunication;
-import com.app.ptt.comnha.Interfaces.SendLocationListener;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
@@ -39,7 +36,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -122,51 +118,55 @@ public class MainStoreFragment extends Fragment {
 
 
     private void getStoreList(final String dist_pro) {
-        stores.clear();
-        int role = 0;
-        if (LoginSession.getInstance().getUser() != null) {
-            role = LoginSession.getInstance().getUser().getRole();
-        }
-        storeEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot item : dataSnapshot.getChildren()) {
-                    Store store = item.getValue(Store.class);
-                    store.setStoreID(item.getKey());
-                    int pos = -1;
-                    for (Store mStore : stores) {
-                        if (mStore.getStoreID().equals(store.getStoreID())) {
-                            pos=stores.indexOf(mStore);
-                            stores.indexOf(mStore);
+        try {
+            stores.clear();
+            int role = 0;
+            if (LoginSession.getInstance().getUser() != null) {
+                role = LoginSession.getInstance().getUser().getRole();
+            }
+            storeEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot item : dataSnapshot.getChildren()) {
+                        Store store = item.getValue(Store.class);
+                        store.setStoreID(item.getKey());
+                        int pos = -1;
+                        for (Store mStore : stores) {
+                            if (mStore.getStoreID().equals(store.getStoreID())) {
+                                pos = stores.indexOf(mStore);
+                                stores.indexOf(mStore);
+                            }
                         }
+                        if (pos != -1) {
+                            stores.set(pos, store);
+                        } else {
+                            stores.add(store);
+                        }
+                        Log.d("added", "added");
                     }
-                    if (pos != -1) {
-                        stores.set(pos, store);
-                    } else {
-                        stores.add(store);
-                    }
-                    Log.d("added", "added");
+                    itemadapter.notifyDataSetChanged();
+                    new calculateDistance().execute();
+                    swipeRefresh.setRefreshing(false);
                 }
-                itemadapter.notifyDataSetChanged();
-                new calculateDistance().execute();
-                swipeRefresh.setRefreshing(false);
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
+                }
+            };
+            if (role != 0) {
+                dbRef.child(getString(R.string.store_CODE))
+                        .orderByChild("pro_dist")
+                        .equalTo(dist_pro)
+                        .addValueEventListener(storeEventListener);
+            } else {
+                dbRef.child(getString(R.string.store_CODE))
+                        .orderByChild("isHidden_dis_pro")
+                        .equalTo(String.valueOf(false) + "_" + dist_pro)
+                        .addValueEventListener(storeEventListener);
             }
-        };
-        if (role != 0) {
-            dbRef.child(getString(R.string.store_CODE))
-                    .orderByChild("pro_dist")
-                    .equalTo(dist_pro)
-                    .addValueEventListener(storeEventListener);
-        } else {
-            dbRef.child(getString(R.string.store_CODE))
-                    .orderByChild("isHidden_dis_pro")
-                    .equalTo(String.valueOf(false) + "_" + dist_pro)
-                    .addValueEventListener(storeEventListener);
+        }catch (Exception e){
+
         }
     }
 
@@ -179,17 +179,19 @@ public class MainStoreFragment extends Fragment {
         itemadapter.setOnItemClickLiestner(new Store_recycler_adapter.OnItemClickLiestner() {
             @Override
             public void onItemClick(Store store, View itemView) {
-                Intent intent_storedetail = new Intent(getContext(),
-                        StoreDeatailActivity.class);
-                intent_storedetail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                ChooseStore.getInstance().setStore(store);
-                ActivityOptionsCompat optionsCompat
-                        = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        getActivity(), itemView.findViewById(R.id.imgv_avatar_storeitem),
-                        "avatarStore");
+                if(store!=null) {
+                    Intent intent_storedetail = new Intent(getContext(),
+                            StoreDeatailActivity.class);
+                    intent_storedetail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    ChooseStore.getInstance().setStore(store);
+                    ActivityOptionsCompat optionsCompat
+                            = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            getActivity(), itemView.findViewById(R.id.imgv_avatar_storeitem),
+                            "avatarStore");
 //                Toast.makeText(getContext(),
 //                        selected_store.getName() + "", Toast.LENGTH_SHORT).show();
-                startActivity(intent_storedetail, optionsCompat.toBundle());
+                    startActivity(intent_storedetail, optionsCompat.toBundle());
+                }
             }
         });
         mRecyclerView.setAdapter(itemadapter);
@@ -219,6 +221,7 @@ public class MainStoreFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mIntentFilter = new IntentFilter(Const.INTENT_KEY_RECEIVE_LOCATION);
+        mIntentFilter.addAction(Const.INTENT_KEY_RECEIVE_LOCATION_TAB);
         mBroadcastReceiver = new LocationChange();
         broadcastIntent = new Intent();
         getActivity().registerReceiver(mBroadcastReceiver, mIntentFilter);
@@ -237,14 +240,28 @@ public class MainStoreFragment extends Fragment {
     class LocationChange extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(Const.INTENT_KEY_RECEIVE_LOCATION)){
-                if(intent.getStringExtra(Const.KEY_TINH).toString()!=null){
-                    if(intent.getStringExtra(Const.KEY_HUYEN).toString()!=null){
-                        dist_pro = intent.getStringExtra(Const.KEY_HUYEN).toString()
-                                + "_" +intent.getStringExtra(Const.KEY_TINH).toString();
-                        getStoreList(dist_pro);
+            switch (intent.getAction()){
+                case Const.INTENT_KEY_RECEIVE_LOCATION:
+                    if(intent.getStringExtra(Const.KEY_TINH).toString()!=null){
+                        if(intent.getStringExtra(Const.KEY_HUYEN).toString()!=null){
+                            dist_pro = intent.getStringExtra(Const.KEY_HUYEN).toString()
+                                    + "_" +intent.getStringExtra(Const.KEY_TINH).toString();
+                            getStoreList(dist_pro);
+                        }
                     }
-                }
+                    break;
+                case Const.INTENT_KEY_RECEIVE_LOCATION_TAB:
+                    if(intent.getStringExtra(Const.KEY_TINH).toString()!=null){
+                        if(intent.getStringExtra(Const.KEY_HUYEN).toString()!=null){
+                            dist_pro = intent.getStringExtra(Const.KEY_HUYEN).toString()
+                                    + "_" +intent.getStringExtra(Const.KEY_TINH).toString();
+                            getStoreList(dist_pro);
+                        }
+                    }
+                    break;
+                case Const.INTENT_KEY_RELOAD_DATA:
+                    getStoreList(dist_pro);
+                    break;
             }
         }
     }

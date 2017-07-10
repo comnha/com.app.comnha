@@ -95,7 +95,9 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<Store_recycler_
                         try {
                             Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_avatar.getDrawable())
                                     .getBitmap();
-                            stores.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
+                            if(stores.size()>position) {
+                                stores.get(position).setImgBitmap(imgBitmap);
+                            }
                         } catch (NullPointerException e) {
 
                         }
@@ -122,14 +124,14 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<Store_recycler_
                         Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_avatar.getDrawable())
                                 .getBitmap();
                         stores.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
-                        onItemClickLiestner.onItemClick(stores.get(holder.getAdapterPosition()),
+                        onItemClickLiestner.onItemClick(stores.get(position),
                                 holder.itemView);
                     } catch (NullPointerException e) {
-                        onItemClickLiestner.onItemClick(stores.get(holder.getAdapterPosition()),
+                        onItemClickLiestner.onItemClick(stores.get(position),
                                 holder.itemView);
                     }
                 } else {
-                    onItemClickLiestner.onItemClick(stores.get(holder.getAdapterPosition()),
+                    onItemClickLiestner.onItemClick(stores.get(position),
                             holder.itemView);
                 }
             }

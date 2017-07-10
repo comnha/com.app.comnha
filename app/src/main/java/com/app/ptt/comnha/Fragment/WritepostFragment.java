@@ -656,7 +656,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                             }
                         }
                     }).show();
-                } else if (foodRate == 0) {
+                } else if (selected_food!=null && foodRate == 0) {
                     Toast.makeText(getActivity(),
                             getString(R.string.txt_noratefood),
                             Toast.LENGTH_SHORT).show();
@@ -862,13 +862,27 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         Map<String, Object> notifyValue = newpostNotify.toMap();
 
         //Notification to user
-        for(String mUerId: selected_store.getUsersFollow()){
+            for(String mUerId: selected_store.getUsersFollow()){
+                if(!LoginSession.getInstance().getUser().getuID().toLowerCase().equals(mUerId.toLowerCase())){
+                    UserNotification userNotification=new UserNotification();
+                    userNotification.setPostID(postKey);
+                    userNotification.setType(2);
+                    userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
+                    userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
+                    Map<String,Object> userNotificationMap=userNotification.toMap();
+                    String key =dbRef.child(getString(R.string.user_notification_CODE)+mUerId).push().getKey();
+                    childUpdate.put(getString(R.string.user_notification_CODE)+mUerId+"/"+key,userNotificationMap);
+                }
+        }
+        if(!selected_store.getUserID().toLowerCase().equals(LoginSession.getInstance().getUser().getuID().toLowerCase())){
             UserNotification userNotification=new UserNotification();
             userNotification.setPostID(postKey);
             userNotification.setType(2);
+            userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
+            userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
             Map<String,Object> userNotificationMap=userNotification.toMap();
-            String key =dbRef.child(getString(R.string.user_notification_CODE)+mUerId).push().getKey();
-            childUpdate.put(getString(R.string.user_notification_CODE)+mUerId+"/"+key,userNotificationMap);
+            String key =dbRef.child(getString(R.string.user_notification_CODE)+selected_store.getUserID()).push().getKey();
+            childUpdate.put(getString(R.string.user_notification_CODE)+selected_store.getUserID()+"/"+key,userNotificationMap);
         }
 
         childUpdate.put(getString(R.string.notify_newpost_CODE) + notiKey, notifyValue);

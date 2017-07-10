@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/menu_edit"
         android:title="Cấp quyền admin"/>
-    <item android:id="@+id/menu_lock"
-        android:title="Khóa tài khoản"/>
+    <item android:id="@+id/menu_unlock"
+        android:title="Mở khóa tài khoản"/>
     <item android:id="@+id/menu_edit_permission"
         android:title="Sửa quyền"/>
 

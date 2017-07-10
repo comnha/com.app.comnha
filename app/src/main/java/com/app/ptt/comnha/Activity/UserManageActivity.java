@@ -354,18 +354,23 @@ public class UserManageActivity extends BaseActivity implements View.OnClickList
         }
     }
 
-    public void removeUser(final User user) {
+    public void removeUser(final User user, final boolean type) {
 
-        dbRef.child(getString(R.string.users_CODE)
-                + user.getuID())
-                .removeValue(new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Xóa thành công");
-                        list = new ArrayList<User>();
-                        getUserList();
-                    }
-                });
+        Map<String, Object> newUser;
+        user.setStatus(type);
+        newUser = user.toMap();
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put(getString(R.string.users_CODE) + user.getuID(), newUser);
+        dbRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(type) {
+                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Đã mở khóa tài khoản");
+                }else{
+                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Đã khóa tài khoản");
+                }
+            }
+        });
     }
 
     public void updateUser(final User user, final int type) {
@@ -435,8 +440,8 @@ public class UserManageActivity extends BaseActivity implements View.OnClickList
     }
 
     @Override
-    public void deleteUser(User user) {
-        removeUser(user);
+    public void disableUser(User user,boolean status) {
+        removeUser(user,status);
     }
 
     @Override

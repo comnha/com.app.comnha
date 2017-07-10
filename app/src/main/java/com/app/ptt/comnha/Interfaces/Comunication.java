@@ -7,4 +7,5 @@ package com.app.ptt.comnha.Interfaces;
 public  class Comunication {
     public static SendLocationListener sendLocationListener;
     public static Transactions transactions;
+    public static OnMItemListener onMItemListener;
 }

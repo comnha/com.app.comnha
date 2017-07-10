@@ -224,6 +224,13 @@ public class User {
         this.address = address;
     }
 
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 
     String uID;
     String ho;
@@ -241,7 +248,7 @@ public class User {
     String phonenumb = "";
     String work = "";
     String avatar = "";
-
+    boolean status;
 
     String address = "";
     boolean sexual = false,
@@ -287,6 +294,7 @@ public class User {
         result.put("work", work);
         result.put("sexual", sexual);
         result.put("dist_prov", dist_prov);
+        result.put("status",status);
         result.put("role", role);
         result.put("avatar", avatar);
         result.put("address", address);

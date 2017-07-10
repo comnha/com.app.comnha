@@ -71,6 +71,10 @@ public class AdapterActivity extends AppCompatActivity {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
                     SigninFragment signinFragment = new SigninFragment();
                     signinFragment.setArguments(getIntent().getExtras());
+                    if(intent.getExtras().getString("email")!=null &&intent.getExtras().getString("pass")!=null) {
+                        signinFragment.setEmail(intent.getExtras().getString("email"));
+                        signinFragment.setPass(intent.getExtras().getString("pass"));
+                    }
                     getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, signinFragment)
                             .commit();
                 }
@@ -80,8 +84,10 @@ public class AdapterActivity extends AppCompatActivity {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
                     SignupFragment signupFragment = new SignupFragment();
                     signupFragment.setArguments(getIntent().getExtras());
-                    signupFragment.setEmail(intent.getExtras().getString("email"));
-                    signupFragment.setPass(intent.getExtras().getString("pass"));
+                    if(intent.getExtras().getString("email")!=null &&intent.getExtras().getString("pass")!=null) {
+                        signupFragment.setEmail(intent.getExtras().getString("email"));
+                        signupFragment.setPass(intent.getExtras().getString("pass"));
+                    }
                     getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, signupFragment)
                             .commit();
                 }

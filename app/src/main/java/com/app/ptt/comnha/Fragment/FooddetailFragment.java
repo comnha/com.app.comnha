@@ -47,6 +47,7 @@ import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
+import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -75,6 +76,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class FooddetailFragment extends Fragment {
     private static final String LOG = FooddetailFragment.class.getSimpleName();
     DatabaseReference dbRef;
+    MenuInflater inflater;
     StorageReference stRef;
     ArrayList<Food> foodList;
     RecyclerView postRecyclerView;
@@ -87,25 +89,11 @@ public class FooddetailFragment extends Fragment {
     ValueEventListener postEventListener;
     ActionBar actionBar;
     Toolbar toolbar;
-    Food food = ChooseFood.getInstance().getFood();
+    Food food;
     String storeID = "", foodID = "";
     public static final String mBroadcastSendAddress = "mBroadcastSendAddress";
     boolean isConnected = false;
     IntentFilter mIntentFilter;
-    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(mBroadcastSendAddress)) {
-                Log.i(LOG + ".onReceive form Service", "isConnected= " + intent.getBooleanExtra("isConnected", false));
-                if (intent.getBooleanExtra("isConnected", false)) {
-                    if (!isConnected)
-                        getData();
-                    isConnected = true;
-                } else
-                    isConnected = false;
-            }
-        }
-    };
     ProgressDialog plzw8Dialog;
     Menu pubMenu = null;
 
@@ -116,19 +104,15 @@ public class FooddetailFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        isConnected = MyService.returnIsNetworkConnected();
+        isConnected = MyService.isNetworkAvailable(getActivity());
         if (!isConnected) {
             Toast.makeText(getContext(), "Offline mode", Toast.LENGTH_SHORT).show();
         }
-        mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(mBroadcastSendAddress);
-        getContext().registerReceiver(broadcastReceiver, mIntentFilter);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        getContext().unregisterReceiver(broadcastReceiver);
     }
 
     @Override
@@ -136,22 +120,45 @@ public class FooddetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fooddetail, container, false);
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(Const.DATABASE_PATH);
-        isConnected = MyService.returnIsNetworkConnected();
 //        locaID = ChooseFood.getInstance().getStore().getLocaID();
         stRef = FirebaseStorage.getInstance().getReferenceFromUrl(Const.STORAGE_PATH);
-        if (food != null) {
-            storeID = food.getStoreID();
-            foodID = food.getFoodID();
-
+        ref(view);
+        if (ChooseFood.getInstance().getFood() != null) {
+            foodID=ChooseFood.getInstance().getFood().getFoodID();
+            getFood(foodID);
         } else {
             getActivity().onBackPressed();
         }
-        ref(view);
-        getData();
         return view;
     }
+    private void getFood(String id) {
 
+        ValueEventListener foodValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                    food = dataSnapshot.getValue(Food.class);
+                    String key = dataSnapshot.getKey();
+                    food.setFoodID(key);
+                    storeID=food.getStoreID();
+                    getData();
+                List<Pair<Integer, String>> contents = returnContentMenuItems();
+                pubMenu = AppUtils.createMenu(pubMenu, contents);
+                loadMenu();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        dbRef.child(getString(R.string.food_CODE)+id)
+                   .addValueEventListener(foodValueListener);
+    }
+    public void loadMenu(){
+        super.onCreateOptionsMenu(pubMenu, inflater);
+    }
     public void getData() {
+
         txt_comment.setText(food.getComment());
         txt_name.setText(food.getName());
         txt_price.setText(food.getPrice() + "");
@@ -252,8 +259,6 @@ public class FooddetailFragment extends Fragment {
                         getActivity(), itemView.findViewById(R.id.imgv_banner_postitem),
                         "postBanner");
                 ChoosePost.getInstance().setPost(post);
-//                Toast.makeText(getContext(),
-//                        selected_store.getName() + "", Toast.LENGTH_SHORT).show();
                 startActivity(intent_postdetail, option_postbanner.toBundle());
             }
         });
@@ -264,9 +269,11 @@ public class FooddetailFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu = AppUtils.createMenu(menu, returnContentMenuItems());
+        //menu = AppUtils.createMenu(menu, returnContentMenuItems());
         pubMenu = menu;
+        inflater=inflater;
         super.onCreateOptionsMenu(menu, inflater);
+
     }
 
     private List<Pair<Integer, String>> returnContentMenuItems() {
@@ -465,6 +472,4 @@ public class FooddetailFragment extends Fragment {
         super.onDetach();
     }
 
-    private class Store {
-    }
 }

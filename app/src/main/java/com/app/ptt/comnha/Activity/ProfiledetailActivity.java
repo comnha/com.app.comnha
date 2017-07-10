@@ -396,8 +396,13 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
         }
         txtv_un.setText(user.getUn());
         txtv_email.setText(user.getEmail());
-        txtv_name.setText(user.getHo() + " " + user.getTenlot() + " " + user.getTen()
-                + "\n" + getString(R.string.text_hoten));
+        if(TextUtils.isEmpty(user.getHo())&&TextUtils.isEmpty(user.getTenlot())){
+            txtv_name.setText(user.getTen()
+                    + "\n" + getString(R.string.text_hoten));
+        }else {
+            txtv_name.setText(user.getHo() + " " + user.getTenlot() + " " + user.getTen()
+                    + "\n" + getString(R.string.text_hoten));
+        }
         txtv_birth.setText(user.getBirth() + "\n" + getString(R.string.text_birth));
         if(!TextUtils.isEmpty(user.getAddress())){
             txtv_address.setText(user.getAddress() +
@@ -427,7 +432,6 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
                 +"\n"+"Mật khẩu");
         getImages();
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -722,19 +726,24 @@ public class ProfiledetailActivity extends AppCompatActivity implements View.OnC
                         case 1:
                             String a= edt.getText().toString();
                             String[] name=a.split(" ");
-                            String tenLot="";
-                            user.setHo(name[0]);
-                            for(int i=1;i<name.length-1;i++){
-                                if(i==name.length-2){
-                                    tenLot+=name[i];
-                                }else{
-                                    tenLot+=name[i]+" ";
+                            if(name.length==1){
+                                user.setTen(name[0]);
+                                user.setHo("");
+                                user.setTenlot("");
+                            }else {
+                                String tenLot = "";
+                                user.setHo(name[0]);
+                                for (int i = 1; i < name.length - 1; i++) {
+                                    if (i == name.length - 2) {
+                                        tenLot += name[i];
+                                    } else {
+                                        tenLot += name[i] + " ";
+                                    }
+
                                 }
-
+                                user.setTenlot(tenLot);
+                                user.setTen(name[name.length - 1]);
                             }
-                            user.setTenlot(tenLot);
-                            user.setTen(name[name.length-1]);
-
                             break;
                         case 2:
                             user.setBirth(edt.getText().toString());

@@ -104,7 +104,7 @@ public class User_rcyler_adapter extends RecyclerView.Adapter<User_rcyler_adapte
     }
 
     @Override
-    public void onBindViewHolder(final CustomHolder holder, int position) {
+    public void onBindViewHolder(final CustomHolder holder, final int position) {
           user= mFilteredList.get(position);
         if(null!=user) {
             holder.txtMenu.setOnClickListener(new View.OnClickListener() {
@@ -112,11 +112,16 @@ public class User_rcyler_adapter extends RecyclerView.Adapter<User_rcyler_adapte
                 public void onClick(View v) {
 
                     PopupMenu popup = new PopupMenu(activity, holder.txtMenu);
-
+                    user= mFilteredList.get(position);
                     if (user.getRole() == 1) {
                         popup.inflate(R.menu.options_menu_user_admin);
                     } else {
-                        popup.inflate(R.menu.options_menu_user);
+                        if(!user.isStatus()){
+                            popup.inflate(R.menu.options_menu_user_unlock);
+                        }else{
+                            popup.inflate(R.menu.options_menu_user);
+                        }
+
                     }
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
@@ -148,13 +153,14 @@ public class User_rcyler_adapter extends RecyclerView.Adapter<User_rcyler_adapte
 
 
                                     break;
-                                case R.id.menu_del:
+                                case R.id.menu_lock:
+                                    user= mFilteredList.get(position);
                                     AlertDialog.Builder alBuilder = new AlertDialog.Builder(activity);
-                                    alBuilder.setTitle("Bạn có muốn xóa tài khoản này không?");
+                                    alBuilder.setTitle("Bạn có muốn khóa tài khoản này không?");
                                     alBuilder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            Comunication.transactions.deleteUser(user);
+                                            Comunication.transactions.disableUser(user,false);
                                             dialog.dismiss();
                                         }
                                     });
@@ -166,6 +172,26 @@ public class User_rcyler_adapter extends RecyclerView.Adapter<User_rcyler_adapte
                                     });
                                     alBuilder.create();
                                     alBuilder.show();
+                                    break;
+                                case R.id.menu_unlock:
+                                    user= mFilteredList.get(position);
+                                    AlertDialog.Builder unlockBuilder = new AlertDialog.Builder(activity);
+                                    unlockBuilder.setTitle("Bạn có muốn mở khóa tài khoản này không?");
+                                    unlockBuilder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Comunication.transactions.disableUser(user,true);
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    unlockBuilder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    unlockBuilder.create();
+                                    unlockBuilder.show();
                                     break;
                                 case R.id.menu_edit_permission:
                                     showDialog(user);

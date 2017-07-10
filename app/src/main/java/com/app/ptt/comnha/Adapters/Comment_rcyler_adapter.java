@@ -16,7 +16,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by PTT on 10/5/2016.
@@ -37,7 +40,7 @@ public class Comment_rcyler_adapter extends RecyclerView.Adapter<Comment_rcyler_
         }
     }
 
-    ArrayList<Comment> comments;
+    List<Comment> comments;
     StorageReference stRef;
     Activity activity;
     OnItemLongClickListener onItemLongClickListener;
@@ -60,7 +63,14 @@ public class Comment_rcyler_adapter extends RecyclerView.Adapter<Comment_rcyler_
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.txt_content.setText(comments.get(position).getContent());
-        holder.txt_time.setText(comments.get(position).getTime());
+        SimpleDateFormat dateFormat=new SimpleDateFormat("dd-MM-yyyy");
+        String currentDateandTime = dateFormat.format(new Date());
+        if(currentDateandTime.equals(comments.get(position).getDate())){
+            holder.txt_time.setText(comments.get(position).getTime());
+        }else{
+            holder.txt_time.setText(comments.get(position).getDate() +" lúc " +comments.get(position).getTime());
+        }
+
         holder.txt_un.setText(comments.get(position).getUn());
         if (!comments.get(holder.getAdapterPosition()).getAvatar().equals("")) {
             StorageReference imgRef = stRef.child(comments.get(holder.getAdapterPosition())
@@ -95,7 +105,7 @@ public class Comment_rcyler_adapter extends RecyclerView.Adapter<Comment_rcyler_
         return comments.size();
     }
 
-    public Comment_rcyler_adapter(Activity activity, ArrayList<Comment> comments,
+    public Comment_rcyler_adapter(Activity activity, List<Comment> comments,
                                   StorageReference stRef) {
         this.comments = comments;
         this.stRef = stRef;

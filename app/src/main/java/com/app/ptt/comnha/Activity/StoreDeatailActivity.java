@@ -82,8 +82,9 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     ArrayList<Post> posts;
     ArrayList<Image> images;
     ArrayList<Food> foods;
+    User ownUser;
     TextView txtv_storename, txtv_address, txtv_opentime, txtv_phonenumb,
-            txtv_pricerate, txtv_healthyrate, txtv_servicerate;
+            txtv_pricerate, txtv_healthyrate, txtv_servicerate,txt_user;
     Toolbar toolbar;
     ImageView imgv_writepost, imgv_addfood, imgv_viewlocation;
     CircularImageView imgv_avatar;
@@ -119,7 +120,6 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         if(ChooseStore.getInstance().getStore()!=null) {
             store = ChooseStore.getInstance().getStore();
             storeID = store.getStoreID();
-            ChooseStore.getInstance().setStore(null);
             ref();
             createStoreInfo();
         }else{
@@ -195,6 +195,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         txtv_healthyrate = (TextView) include_view.findViewById(R.id.txtv_healthy_storedetail);
         txtv_servicerate = (TextView) include_view.findViewById(R.id.txtv_service_storedetail);
         toolbar = (Toolbar) findViewById(R.id.toolbar_storedetail);
+        txt_user= (TextView) include_view.findViewById(R.id.txtv_user_storedetail);
         toolbar.setTitle(getString(R.string.txt_storedetail));
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
@@ -251,8 +252,6 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                         (R.string.text_hidestore, getString(R.string.text_hidestore)));
             }
         } else {
-            contents.add(new Pair<Integer, String>
-                    (R.string.txt_report, getString(R.string.txt_report)));
 
             if (store.getUserID().equals(uID)) {
                 if (store.isHidden()) {
@@ -270,6 +269,9 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     contents.add(new Pair<Integer, String>
                             (R.string.txt_followStore, getString(R.string.txt_followStore)));
                 }
+                contents.add(new Pair<Integer, String>
+                        (R.string.txt_report, getString(R.string.txt_report)));
+
             }
         }
         return contents;
@@ -464,6 +466,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         txtv_address.setText(store.getAddress());
         txtv_opentime.setText(store.getOpentime());
         txtv_phonenumb.setText(store.getPhonenumb());
+        getCustomUser(store.getUserID());
         if (store.getImgBitmap() == null) {
             if (!store.getStoreimg().equals("")) {
                 StorageReference imageRef = stRef.child(store.getStoreimg());
@@ -783,5 +786,23 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         dbRef.child(getString(R.string.users_CODE)
                 + firebaseUser.getUid())
                 .addListenerForSingleValueEvent(userValueListener);
+    }
+    private void getCustomUser( final String key){
+        userValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ownUser= dataSnapshot.getValue(User.class);
+                ownUser.setuID(key);
+                txt_user.setText(ownUser.getUn());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+        dbRef.child(getString(R.string.users_CODE)
+                + key)
+                .addListenerForSingleValueEvent(userValueListener);
+
     }
 }
