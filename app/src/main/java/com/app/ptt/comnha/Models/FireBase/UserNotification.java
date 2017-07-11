@@ -22,6 +22,16 @@ public class UserNotification {
     private String foodName;
     private boolean readed;
     private String Id;
+
+    public boolean isShown() {
+        return isShown;
+    }
+
+    public void setShown(boolean shown) {
+        isShown = shown;
+    }
+
+    private boolean isShown;
     //type =1 new store added
     //type=2 new post added
     //type=3 comment
@@ -144,6 +154,7 @@ public class UserNotification {
         String currentDateandTime = sdf.format(new Date());
         date = currentDateandTime;
         result.put("date", date);
+        result.put("isShown",isShown);
         return result;
     }
 

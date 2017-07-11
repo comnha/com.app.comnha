@@ -205,6 +205,7 @@ public class ReportDialog extends DialogFragment {
                     LoginSession.getInstance().getUser().getuID(),
                     LoginSession.getInstance().getUser().getUn(),
                     content, store.getPro_dist());
+            storeReport.setApprove(false);
             Map<String, Object> rpValue = storeReport.toMap();
             Map<String, Object> childupdate = new HashMap<>();
             childupdate.put(getString(R.string.reportStore_CODE)
@@ -232,6 +233,7 @@ public class ReportDialog extends DialogFragment {
                     LoginSession.getInstance().getUser().getuID(),
                     LoginSession.getInstance().getUser().getUn(),
                     content, post.getDist_pro());
+            postReport.setApprove(false);
             Map<String, Object> rpValue = postReport.toMap();
             Map<String, Object> childupdate = new HashMap<>();
             childupdate.put(getString(R.string.reportPost_CODE)

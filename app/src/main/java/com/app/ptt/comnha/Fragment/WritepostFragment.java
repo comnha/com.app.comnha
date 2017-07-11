@@ -866,7 +866,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                 if(!LoginSession.getInstance().getUser().getuID().toLowerCase().equals(mUerId.toLowerCase())){
                     UserNotification userNotification=new UserNotification();
                     userNotification.setPostID(postKey);
-                    userNotification.setType(2);
+                    userNotification.setType(2);userNotification.setShown(true);
                     userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
                     userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
                     Map<String,Object> userNotificationMap=userNotification.toMap();
@@ -877,7 +877,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         if(!selected_store.getUserID().toLowerCase().equals(LoginSession.getInstance().getUser().getuID().toLowerCase())){
             UserNotification userNotification=new UserNotification();
             userNotification.setPostID(postKey);
-            userNotification.setType(2);
+            userNotification.setType(2);userNotification.setShown(true);
             userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
             userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
             Map<String,Object> userNotificationMap=userNotification.toMap();

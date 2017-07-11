@@ -2,6 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/menu_edit"
         android:title="Xóa quyền admin"/>
-    <item android:id="@+id/menu_lock"
-        android:title="Khóa tài khoản"/>
+    <item android:id="@+id/menu_unlock"
+        android:title="Mở khóa tài khoản"/>
 </menu>

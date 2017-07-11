@@ -49,6 +49,7 @@ import com.app.ptt.comnha.Models.FireBase.Comment;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.Post;
+import com.app.ptt.comnha.Models.FireBase.ReportpostNotify;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.Models.FireBase.UserNotification;
 import com.app.ptt.comnha.Modules.orderByTime;
@@ -58,8 +59,10 @@ import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -78,7 +81,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_POST;
 
@@ -156,14 +158,12 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
 
         comments=new ArrayList<>();
         commentMap=new HashMap<>();
-
+        init();
         if (ChoosePost.getInstance().getPost() != null) {
             getPost(ChoosePost.getInstance().getPost().getPostID());
         } else {
             onBackPressed();
         }
-        init();
-
         getAllImgs();
     }
 
@@ -260,9 +260,11 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                         contents.add(new Pair<Integer, String>
                                 (R.string.text_delcomt,
                                         getString(R.string.text_delcomt)));
-                        contents.add(new Pair<Integer, String>
-                                (R.string.text_block_comment,
-                                        getString(R.string.text_block_comment)));
+                        if(!post.getUserID().equals(LoginSession.getInstance().getUser().getuID())) {
+                            contents.add(new Pair<Integer, String>
+                                    (R.string.text_block_comment,
+                                            getString(R.string.text_block_comment)));
+                        }
                         menu = AppUtils.createMenu(menu, contents);
                         popupMenu.show();
                         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -391,6 +393,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                     }
                     commentMap=post.getComments();
                     sortComment();
+                    loadMenu();
                 }
 
                 @Override
@@ -404,6 +407,13 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         }catch (Exception e){
 
         }
+    }
+    public boolean loadMenu(){
+        if(pubMenu!=null) {
+            pubMenu = AppUtils.createMenu(pubMenu, returnContentMenuItems());
+            return super.onCreateOptionsMenu(pubMenu);
+        }
+        return false;
     }
     public void sortComment(){
         Collections.sort(comments,new orderByTime());
@@ -543,18 +553,8 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             uID = LoginSession.getInstance().getUser().getuID();
         }
         List<Pair<Integer, String>> contents = new ArrayList<>();
-        if (role >0) {
-            contents.add(new Pair<Integer, String>
-                    (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
-            if (post.isHidden()) {
-                contents.add(new Pair<Integer, String>
-                        (R.string.txt_showpost, getString(R.string.txt_showpost)));
-            } else {
-                contents.add(new Pair<Integer, String>
-                        (R.string.text_hidepost, getString(R.string.text_hidepost)));
-            }
-        } else {
-            if (uID.equals(post.getUserID())) {
+        if(post!=null) {
+            if (role > 0) {
                 if (post.isHidden()) {
                     contents.add(new Pair<Integer, String>
                             (R.string.txt_showpost, getString(R.string.txt_showpost)));
@@ -562,12 +562,41 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                     contents.add(new Pair<Integer, String>
                             (R.string.text_hidepost, getString(R.string.text_hidepost)));
                 }
-            }else {
-                contents.add(new Pair<Integer, String>
-                        (R.string.txt_report, getString(R.string.txt_report))); 
+            } else {
+                if (uID.equals(post.getUserID())) {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
+//                if (post.isHidden()) {
+//                    contents.add(new Pair<Integer, String>
+//                            (R.string.txt_showpost, getString(R.string.txt_showpost)));
+//                } else {
+//                    contents.add(new Pair<Integer, String>
+//                            (R.string.text_hidepost, getString(R.string.text_hidepost)));
+//                }
+                } else {
+                    if (post.checkExist(uID)) {
+                        contents.add(new Pair<Integer, String>
+                                (R.string.txt_unfollowPost, getString(R.string.txt_unfollowStore)));
+
+                    } else {
+                        contents.add(new Pair<Integer, String>
+                                (R.string.txt_followPost, getString(R.string.txt_followStore)));
+                    }
+                    contents.add(new Pair<Integer, String>
+                            (R.string.txt_report, getString(R.string.txt_report)));
+
+                }
             }
         }
         return contents;
+    }
+    public boolean checkExistUser(String id){
+        for(Comment comment: comments){
+            if(comment.getUserID().toLowerCase().equals(id)){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -577,7 +606,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                 if (LoginSession.getInstance().getUser() != null) {
                     reportPost();
                 } else {
-                    requesSignin();
+                    requestSignin();
                 }
                 return true;
             case R.string.text_hidepost:
@@ -595,8 +624,62 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             case R.string.txt_changeinfo:
                 changeContent();
                 return true;
+            case R.string.txt_followPost:
+                if (LoginSession.getInstance().getUser() != null) {
+                    updatePost(false);
+                } else {
+                    requestSignin();
+                }
+                return true;
+            case R.string.txt_unfollowPost:
+                if (LoginSession.getInstance().getUser() != null) {
+                   updatePost(true);
+                } else {
+                    requestSignin();
+                }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+    private void updatePost(boolean type){
+        boolean status=false;
+        if(type) {
+            if (post.removeUser(LoginSession.getInstance().getUser().getuID())) {
+               status=true;
+            }else{
+                AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Bạn đã bỏ theo dõi bài viết này");
+
+            }
+        }else{
+            if(post.addUsertoList(LoginSession.getInstance().getUser().getuID())){
+                status=true;
+            }else{
+                AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Bạn đã theo dõi bài viết này");
+
+            }
+        }
+
+        if(status) {
+            plzw8Dialog.show();
+            Map<String, Object> childUpdate = new HashMap<>();
+            Map<String, Object> postValue = post.toMap();
+            childUpdate.put(getString(R.string.posts_CODE) + post.getPostID(), postValue);
+            dbRef.updateChildren(childUpdate)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            loadMenu();
+                            AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Đã theo dõi bài viết");
+                            plzw8Dialog.cancel();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    plzw8Dialog.cancel();
+                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Có lỗi. Xin thử lại");
+                }
+            });
         }
     }
     private void sendBroadcast(){
@@ -605,7 +688,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         sendBroadcast(broadcastIntent);
     }
 
-    private void requesSignin() {
+    private void requestSignin() {
         new AlertDialog.Builder(this)
                 .setMessage(getString(R.string.txt_nologin)
                         + "\n" + getString(R.string.txt_uneedlogin))
@@ -616,7 +699,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                                 AdapterActivity.class);
                         intent_signin.putExtra(getString(R.string.fragment_CODE),
                                 getString(R.string.frg_signin_CODE));
-                        intent_signin.putExtra("signinfromPostDe", 1);
+                        intent_signin.putExtra("signinfromStoreDe", 1);
                         startActivityForResult(intent_signin, REQUEST_SIGNIN);
                     }
                 })
@@ -792,7 +875,64 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         });
         reportDialog.show(getSupportFragmentManager(), "report_post");
     }
+    private void approveReport(final Map<String,Object> childUpdate, final boolean isApprove){
+            final ValueEventListener reportPost =new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.getValue()==null){
+                        dbRef.updateChildren(childUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                pubMenu.clear();
+                                PostdetailActivity.this.onCreateOptionsMenu(pubMenu);
+                                plzw8Dialog.cancel();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                plzw8Dialog.cancel();
+                                Toast.makeText(getApplicationContext(),
+                                        e.getMessage(), Toast.LENGTH_LONG)
+                                        .show();
+                            }
+                        });
+                    }else {
+                        for(DataSnapshot item: dataSnapshot.getChildren()) {
+                            ReportpostNotify reportpostNotify = item.getValue(ReportpostNotify.class);
+                            reportpostNotify.setId(item.getKey());
+                            reportpostNotify.setApprove(isApprove);
+                            Map<String, Object> updateReport = reportpostNotify.toMap();
+                            childUpdate.put(getString(R.string.reportPost_CODE) + item.getKey(), updateReport);
+                        }
+                        dbRef.updateChildren(childUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                pubMenu.clear();
+                                PostdetailActivity.this.onCreateOptionsMenu(pubMenu);
+                                plzw8Dialog.cancel();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                plzw8Dialog.cancel();
+                                Toast.makeText(getApplicationContext(),
+                                        e.getMessage(), Toast.LENGTH_LONG)
+                                        .show();
+                            }
+                        });
+                    }
+                }
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            dbRef.child(getString(R.string.reportPost_CODE))
+                    .orderByChild("postID")
+                    .equalTo(postID)
+                    .addListenerForSingleValueEvent(reportPost);
+    }
     private void showPost() {
         plzw8Dialog.show();
         post.setHidden(false);
@@ -816,26 +956,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         childUpdate.put(getString(R.string.posts_CODE)
                 + key + "/" + "isHidden_uID", false
                 + "_" + post.getUserID());
-        dbRef.updateChildren(childUpdate)
-                .addOnSuccessListener(
-                        new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-//                                item.setTitle(getString(R.string.text_hidestore));
-                                pubMenu.clear();
-                                PostdetailActivity.this.onCreateOptionsMenu(pubMenu);
-                                plzw8Dialog.cancel();
-                            }
-                        }).addOnFailureListener(
-                new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        plzw8Dialog.cancel();
-                        Toast.makeText(getApplicationContext(),
-                                e.getMessage(), Toast.LENGTH_LONG)
-                                .show();
-                    }
-                });
+        approveReport(childUpdate,false);
     }
 
     private void hidePost() {
@@ -851,13 +972,9 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                                 plzw8Dialog.show();
                                 post.setHidden(true);
                                 String key = post.getPostID();
-//                                Toast.makeText(StoreDeatailActivity.this,
-//                                        key, Toast.LENGTH_SHORT).show();
                                 Post childPost = post;
                                 Map<String, Object> postValue = childPost.toMap();
                                 Map<String, Object> childUpdate = new HashMap<>();
-//                                childUpdate.put(getString(R.string.posts_CODE)
-//                                        + key, postValue);
                                 childUpdate.put(getString(R.string.posts_CODE)
                                         + key + "/" + "isHidden", true);
                                 childUpdate.put(getString(R.string.posts_CODE)
@@ -872,25 +989,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                                 childUpdate.put(getString(R.string.posts_CODE)
                                         + key + "/" + "isHidden_uID", true
                                         + "_" + post.getUserID());
-                                dbRef.updateChildren(childUpdate)
-                                        .addOnSuccessListener(
-                                                new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        pubMenu.clear();
-                                                        PostdetailActivity.this.onCreateOptionsMenu(pubMenu);
-                                                        plzw8Dialog.cancel();
-                                                    }
-                                                }).addOnFailureListener(
-                                        new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                plzw8Dialog.cancel();
-                                                Toast.makeText(getApplicationContext(),
-                                                        e.getMessage(), Toast.LENGTH_LONG)
-                                                        .show();
-                                            }
-                                        });
+                                approveReport(childUpdate,true);
                             }
                         })
                 .setNegativeButton(getString(R.string.text_no),
@@ -945,7 +1044,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                 UserNotification userNotification=new UserNotification();
                 userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
                 userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
-                userNotification.setType(3);
+                userNotification.setType(3);userNotification.setShown(true);
                 userNotification.setPostID(post.getPostID());
                 userNotification.setƠwnPost(false);
                 Map<String,Object> userNotificationMap=userNotification.toMap();
@@ -961,7 +1060,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             UserNotification userNotification=new UserNotification();
             userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
             userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
-            userNotification.setType(3);
+            userNotification.setType(3);userNotification.setShown(true);
             userNotification.setƠwnPost(true);
             userNotification.setPostID(post.getPostID());
             Map<String,Object> userNotificationMap=userNotification.toMap();
@@ -1038,8 +1137,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                 LoginSession.getInstance().setUser(user);
                 LoginSession.getInstance().setFirebUser(firebaseUser);
                 mAuth.removeAuthStateListener(mAuthListener);
-                pubMenu.clear();
-                PostdetailActivity.this.onCreateOptionsMenu(pubMenu);
+                loadMenu();
                 plzw8Dialog.dismiss();
             }
 

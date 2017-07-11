@@ -25,6 +25,9 @@ import com.app.ptt.comnha.Interfaces.Comunication;
 import com.app.ptt.comnha.Interfaces.OnMItemListener;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Post;
+import com.app.ptt.comnha.Models.FireBase.ReportfoodNotify;
+import com.app.ptt.comnha.Models.FireBase.ReportpostNotify;
+import com.app.ptt.comnha.Models.FireBase.ReportstoreNotify;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.Models.FireBase.UserNotification;
 import com.app.ptt.comnha.Modules.orderByDate;
@@ -57,6 +60,7 @@ import java.util.Map;
  */
 public class MainNotifyFragment extends Fragment implements OnMItemListener {
     RecyclerView rvList;
+    List<String> idReports;
     List<UserNotification> list;
     boolean isNew=false;
     DatabaseReference dbRef;
@@ -81,6 +85,7 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
         LinearLayoutManager ll=new LinearLayoutManager(getActivity());
         rvList.setLayoutManager(ll);
         list=new ArrayList<>();
+        idReports=new ArrayList<>();
         stRef = FirebaseStorage.getInstance()
                 .getReferenceFromUrl(Const.STORAGE_PATH);
         dbRef = FirebaseDatabase.getInstance()
@@ -97,9 +102,95 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
                 getNotification();
             }
         });
-        getNotification();
+        getReport();
+
         Comunication.onMItemListener=this;
         return view;
+    }
+    private void getReport(){
+
+        ValueEventListener postReport=new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot item:dataSnapshot.getChildren()){
+                    ReportpostNotify reportpostNotify  = item.getValue(ReportpostNotify.class);
+                    idReports.add(reportpostNotify.getPostID());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        ValueEventListener storeReport=new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot item:dataSnapshot.getChildren()){
+                    ReportstoreNotify reportstoreNotify  = item.getValue(ReportstoreNotify.class);
+                    idReports.add(reportstoreNotify.getStoreID());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        ValueEventListener foodReport=new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot item:dataSnapshot.getChildren()){
+                    ReportfoodNotify reportfoodNotify  = item.getValue(ReportfoodNotify.class);
+                    idReports.add(reportfoodNotify.getFoodID());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        dbRef.child(getString(R.string.reportPost_CODE))
+                .orderByChild("isApprove")
+                .equalTo(true)
+                .addValueEventListener(postReport);
+        dbRef.child(getString(R.string.reportStore_CODE))
+                .orderByChild("isApprove")
+                .equalTo(true)
+                .addValueEventListener(storeReport);
+        dbRef.child(getString(R.string.reportFood_CODE))
+                .orderByChild("isApprove")
+                .equalTo(true)
+                .addValueEventListener(foodReport);
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                getNotification();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+    private boolean checkExistInReport(UserNotification id){
+
+        for(String mId:idReports){
+            if(id.getType()==1 &&id.getStoreID().toLowerCase().equals(mId.toLowerCase())){
+                return true;
+            }
+            if(id.getType()==4 &&id.getFoodId().toLowerCase().equals(mId.toLowerCase())){
+                return true;
+            }
+
+            if((id.getType()==3 ||id.getType()==2) &&id.getPostID().toLowerCase().equals(mId.toLowerCase())){
+                return true;
+            }
+        }
+        return false;
     }
     private void getNotification(){
         if(LoginSession.getInstance().getUser()!=null) {
@@ -111,13 +202,16 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
                         for (DataSnapshot item : dataSnapshot.getChildren()) {
                             UserNotification notification = item.getValue(UserNotification.class);
                             notification.setId(item.getKey());
-                            if (checkExist(item.getKey()) == -1) {
-                                list.add(notification);
-                            } else {
-                                list.set(checkExist(item.getKey()), notification);
+                            if(!checkExistInReport(notification)) {
+                                if (checkExist(item.getKey()) == -1) {
+                                    list.add(notification);
+                                } else {
+                                    list.set(checkExist(item.getKey()), notification);
+                                }
                             }
                         }
                         sort();
+                        swipeRefresh.setRefreshing(false);
 
                     }
 

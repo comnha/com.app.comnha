@@ -114,7 +114,11 @@ public class User_rcyler_adapter extends RecyclerView.Adapter<User_rcyler_adapte
                     PopupMenu popup = new PopupMenu(activity, holder.txtMenu);
                     user= mFilteredList.get(position);
                     if (user.getRole() == 1) {
-                        popup.inflate(R.menu.options_menu_user_admin);
+                        if(!user.isStatus()) {
+                            popup.inflate(R.menu.options_menu_user_admin_unlock);
+                        }else{
+                            popup.inflate(R.menu.options_menu_user_admin);
+                        }
                     } else {
                         if(!user.isStatus()){
                             popup.inflate(R.menu.options_menu_user_unlock);

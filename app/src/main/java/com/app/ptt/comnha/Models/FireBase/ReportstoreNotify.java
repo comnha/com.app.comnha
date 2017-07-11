@@ -14,6 +14,16 @@ public class ReportstoreNotify {
             userID, un,
             contents,
             district_province;
+
+    public boolean isApprove() {
+        return isApprove;
+    }
+
+    public void setApprove(boolean approve) {
+        isApprove = approve;
+    }
+
+    boolean isApprove;
     boolean readstate = false;
     //phép kết
     String readState_pro_dist;
@@ -44,6 +54,7 @@ public class ReportstoreNotify {
         result.put("time", time);
         result.put("userID", userID);
         result.put("un", un);
+        result.put("isApprove",isApprove);
         result.put("contents", contents);
         result.put("readstate", readstate);
         result.put("district_province", district_province);

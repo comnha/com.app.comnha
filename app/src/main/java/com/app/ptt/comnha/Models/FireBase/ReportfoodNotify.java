@@ -15,7 +15,15 @@ public class ReportfoodNotify {
     boolean readstate = false;
     //phép kết
     String readState_pro_dist;
+    public boolean isApprove() {
+        return isApprove;
+    }
 
+    public void setApprove(boolean approve) {
+        isApprove = approve;
+    }
+
+    boolean isApprove;
     public ReportfoodNotify() {
     }
 
@@ -40,6 +48,7 @@ public class ReportfoodNotify {
         result.put("time", time);
         result.put("userID", userID);
         result.put("un", un);
+        result.put("isApprove",isApprove);
         result.put("contents", contents);
         result.put("readstate", readstate);
         result.put("district_province", district_province);

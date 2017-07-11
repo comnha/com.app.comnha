@@ -18,7 +18,15 @@ public class ReportpostNotify {
 
     public ReportpostNotify() {
     }
+    public boolean isApprove() {
+        return isApprove;
+    }
 
+    public void setApprove(boolean approve) {
+        isApprove = approve;
+    }
+
+    boolean isApprove;
     public ReportpostNotify(String postID, String title, String userID,
                             String un, String contents, String district_province) {
         this.postID = postID;
@@ -39,6 +47,7 @@ public class ReportpostNotify {
         result.put("time", time);
         result.put("userID", userID);
         result.put("un", un);
+        result.put("isApprove",isApprove);
         result.put("contents", contents);
         result.put("readstate", readstate);
         result.put("district_province", district_province);

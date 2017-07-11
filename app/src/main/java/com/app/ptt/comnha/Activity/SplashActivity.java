@@ -2,6 +2,7 @@ package com.app.ptt.comnha.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ImageView;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
+import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,7 +35,21 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        getUser();
+        if (MyService.isNetworkAvailable(this)) {
+            getUser();
+        } else {
+            Log.d("onAuthStateChanged", "onAuthStateChanged:signed_out");
+            LoginSession.getInstance().setFirebUser(null);
+            LoginSession.getInstance().setUser(null);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startMainActi();
+                }
+            }, SPLASH_TIME_OUT);
+
+        }
+
     }
 
     @Override
@@ -44,7 +60,6 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // myLocation=new MyLocation();
         setContentView(R.layout.activity_splash);
         mAuth = FirebaseAuth.getInstance();
         dbRef = FirebaseDatabase.getInstance()
@@ -58,14 +73,7 @@ public class SplashActivity extends BaseActivity {
         imgLogo = (ImageView) findViewById(R.id.act_splash_imglogo);
         AnimationUtils.getInstance().animateTransTrip(dot1, dot2, dot3, dot4, dot5, dot6);
         AnimationUtils.animateTransAlpha(imgLogo);
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Intent i = new Intent(SplashActivity.this, MainActivity.class);
-//                startActivity(i);
-//                finish();
-//            }
-//        }, SPLASH_TIME_OUT);
+
     }
 
     private void getUser() {
@@ -75,7 +83,7 @@ public class SplashActivity extends BaseActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 try {
                     FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-                    if (firebaseUser != null ) {
+                    if (firebaseUser != null) {
                         // User is signed in
                         getUserInfo(firebaseUser);
                         Log.d("onAuthStateChanged", "onAuthStateChanged:signed_in:" + firebaseUser.getUid());
@@ -86,7 +94,7 @@ public class SplashActivity extends BaseActivity {
                         LoginSession.getInstance().setUser(null);
                         startMainActi();
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
             }
@@ -105,7 +113,7 @@ public class SplashActivity extends BaseActivity {
                     LoginSession.getInstance().setUser(user);
                     LoginSession.getInstance().setFirebUser(firebaseUser);
                     mAuth.removeAuthStateListener(mAuthListener);
-                }catch (Exception e){
+                } catch (Exception e) {
 
                     Log.d("onAuthStateChanged", "onAuthStateChanged:signed_out");
                     LoginSession.getInstance().setFirebUser(null);

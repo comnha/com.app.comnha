@@ -118,6 +118,7 @@
     <string name="txt_nofoodprice">Bạn chưa điền giá món ăn</string>
     <string name="txt_noChoseProvince">Warning: Chưa chọn Tỉnh/Thành phố</string>
     <string name="txt_noChoseDistrict">Warning: Chưa chọn Quận/Huyện</string>
+
     <string name="txt_noChoseFood">Warning: Chưa chọn món ăn</string>
     <string name="txt_noChoseFoodCate">Warning: Chưa chọn loại món ăn</string>
     <string name="txt_noFoodCateName">Warning: Chưa nhập tên loại món ăn</string>
@@ -156,6 +157,8 @@
     <string name="txt_report">Báo cáo</string>
     <string name="txt_followStore">Theo dõi quán ăn</string>
     <string name="txt_unfollowStore">Bỏ theo dõi quán ăn</string>
+    <string name="txt_followPost">Theo dõi bài viết</string>
+    <string name="txt_unfollowPost">Bỏ theo dõi bài viết</string>
     <string name="txt_xoataca">Xóa tất cả</string>
     <string name="txt_setdadoc">Đọc tất cả</string>
     <string name="txt_xemnoidungreport">Xem report</string>

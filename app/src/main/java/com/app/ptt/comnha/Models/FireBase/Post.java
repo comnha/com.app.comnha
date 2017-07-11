@@ -38,7 +38,17 @@ public class Post {
             serviceRate = 0;
     boolean isHidden = false;
     List<String> userComment = new ArrayList<>();
-
+    public boolean checkExist(String user){
+        if(this.userComment==null){
+            userComment=new ArrayList<>();
+        }
+        for(String mUser:userComment){
+            if(mUser.toLowerCase().equals(user.toLowerCase())){
+                return true;
+            }
+        }
+        return false;
+    }
 
     Map<String, Comment> comments=new HashMap<>();
     //phép kết
@@ -73,18 +83,29 @@ public class Post {
         this.userComment = userComment;
     }
 
-    public void addUsertoList(String user) {
-        userComment.add(user);
-    }
+    public boolean addUsertoList(String user) {
 
-    public void removeUser(String user) {
         try {
-            if (userComment.contains(user)) {
-                userComment.remove(user);
+            if (!userComment.contains(user)) {
+                userComment.add(user);
+                return true;
             }
         } catch (Exception e) {
 
         }
+        return false;
+    }
+
+    public boolean removeUser(String user) {
+        try {
+            if (userComment.contains(user)) {
+                userComment.remove(user);
+                return true;
+            }
+        } catch (Exception e) {
+
+        }
+        return false;
 
     }
 

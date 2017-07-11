@@ -60,6 +60,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     ValueEventListener foodValueListener, childEventListener;
     DatabaseReference dbRef;
     StorageReference stRef;
+    boolean networkStatus=false;
     String dist_pro;
     Button btnQuan, btnHuyen;
     FragmentManager fm;
@@ -68,6 +69,12 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     String tinh, huyen;
     int type = 0;
     ImageButton btnReset;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        networkStatus=MyService.isNetworkAvailable(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -285,48 +292,53 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void getStoreList() {
-        showProgressDialog("Loading...", "Vui lòng đợi");
-        childEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot item : dataSnapshot.getChildren()) {
-                    Store store = item.getValue(Store.class);
-                    store.setStoreID(item.getKey());
-                    Log.d("added", "added");
-                    stores.add(store);
-                    Search search = new Search();
-                    search.setStore(store);
-                    search.setType(1);
-                    if (-1 != getItemInList(store.getStoreID(), 1)) {
-                        list.set(getItemInList(store.getStoreID(), 1), search);
-                        getDataFiltered(type);
-                    } else {
-                        list.add(search);
+        networkStatus=MyService.isNetworkAvailable(this);
+        if(networkStatus) {
+            showProgressDialog("Loading...", "Vui lòng đợi");
+            childEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot item : dataSnapshot.getChildren()) {
+                        Store store = item.getValue(Store.class);
+                        store.setStoreID(item.getKey());
+                        Log.d("added", "added");
+                        stores.add(store);
+                        Search search = new Search();
+                        search.setStore(store);
+                        search.setType(1);
+                        if (-1 != getItemInList(store.getStoreID(), 1)) {
+                            list.set(getItemInList(store.getStoreID(), 1), search);
+                            getDataFiltered(type);
+                        } else {
+                            list.add(search);
+                        }
+
                     }
 
                 }
 
-            }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                }
+            };
+            dbRef.child(getString(R.string.store_CODE))
+                    .addValueEventListener(childEventListener);
+            dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    getFoodList();
 
-            }
-        };
-        dbRef.child(getString(R.string.store_CODE))
-                .addValueEventListener(childEventListener);
-        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                getFoodList();
+                }
 
-            }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+                }
+            });
+        }else{
+            Toast.makeText(this, getString(R.string.txt_nointernet), Toast.LENGTH_SHORT).show();
+        }
 
     }
 

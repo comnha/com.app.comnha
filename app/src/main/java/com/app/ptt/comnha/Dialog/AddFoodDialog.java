@@ -451,6 +451,7 @@ public class AddFoodDialog extends DialogFragment implements View.OnClickListene
                 userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
                 userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
                 userNotification.setFoodId(key);
+                userNotification.setShown(true);
                 userNotification.setStoreID(store.getStoreID());
                 userNotification.setFoodName(name);
                 userNotification.setƠwnPost(false);
@@ -464,6 +465,7 @@ public class AddFoodDialog extends DialogFragment implements View.OnClickListene
             userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
             userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
             userNotification.setFoodId(key);
+            userNotification.setShown(true);
             userNotification.setFoodName(name);
             userNotification.setStoreID(store.getStoreID());
             userNotification.setƠwnPost(true);
