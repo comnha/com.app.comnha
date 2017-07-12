@@ -121,10 +121,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onStart() {
         super.onStart();
-        isConnected = MyService.returnIsNetworkConnected();
-        if (!isConnected) {
-//            Toast.makeText(getContext(), "Offline mode", Toast.LENGTH_SHORT).show();
-        }
+        isConnected = MyService.isNetworkAvailable(getActivity());
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(mBroadcastSendAddress);
         getContext().registerReceiver(broadcastReceiver, mIntentFilter);
@@ -144,7 +141,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_addstore, container, false);
-        isConnected = MyService.returnIsNetworkConnected();
+        isConnected = MyService.isNetworkAvailable(getActivity());
         now = Calendar.getInstance();
         if (LoginSession.getInstance().getFirebUser() != null) {
             userID = LoginSession.getInstance().getFirebUser().getUid();
@@ -175,7 +172,12 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
             }
         });
     }
-
+    private void editStore(Store store){
+        edt_storeName.setText(store.getName());
+        edt_address.setText(store.getAddress());
+        edt_phoneNumb.setText(store.getPhonenumb());
+        
+    }
     void anhXa(View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().getWindow().setStatusBarColor(getResources()

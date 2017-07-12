@@ -89,7 +89,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     ImageView imgv_writepost, imgv_addfood, imgv_viewlocation;
     CircularImageView imgv_avatar;
     FloatingActionButton fab;
-
+    Dialog dialogEditStore;
     DatabaseReference dbRef;
     StorageReference stRef;
     ValueEventListener postValueListener, photoValueListener,
@@ -243,29 +243,32 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
 
 //            contents.add(new Pair<Integer, String>
 //                    (R.string.txt_delstore, getString(R.string.txt_delstore)));
-            if (store.isHidden()) {
-                contents.add(new Pair<Integer, String>
-                        (R.string.txt_showstore, getString(R.string.txt_showstore)));
-            } else {
-                contents.add(new Pair<Integer, String>
-                        (R.string.text_hidestore, getString(R.string.text_hidestore)));
+            if(store!=null) {
+                if (store.isHidden()) {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.txt_showstore, getString(R.string.txt_showstore)));
+                } else {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.text_hidestore, getString(R.string.text_hidestore)));
+                }
             }
         } else {
+            if(store!=null) {
+                if (store.getUserID().equals(uID)) {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
+                } else {
+                    if (store.checkExist(uID)) {
+                        contents.add(new Pair<Integer, String>
+                                (R.string.txt_unfollowStore, getString(R.string.txt_unfollowStore)));
+                    } else {
+                        contents.add(new Pair<Integer, String>
+                                (R.string.txt_followStore, getString(R.string.txt_followStore)));
+                    }
+                    contents.add(new Pair<Integer, String>
+                            (R.string.txt_report, getString(R.string.txt_report)));
 
-            if (store.getUserID().equals(uID)) {
-                contents.add(new Pair<Integer, String>
-                        (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
-            }else{
-                if(store.checkExist(uID)){
-                    contents.add(new Pair<Integer, String>
-                            (R.string.txt_unfollowStore, getString(R.string.txt_unfollowStore)));
-                }else {
-                    contents.add(new Pair<Integer, String>
-                            (R.string.txt_followStore, getString(R.string.txt_followStore)));
                 }
-                contents.add(new Pair<Integer, String>
-                        (R.string.txt_report, getString(R.string.txt_report)));
-
             }
         }
         return contents;
@@ -308,7 +311,6 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 }
                 return true;
             case R.string.txt_delstore:
-
                 return true;
             case R.string.txt_changeinfo:
 
@@ -317,7 +319,6 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 return super.onOptionsItemSelected(item);
         }
     }
-
     private void requestSignin() {
         new AlertDialog.Builder(this)
                 .setMessage(getString(R.string.txt_nologin)
@@ -381,8 +382,10 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         dbRef.updateChildren(childUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                List<Pair<Integer, String>> contents = returnContentMenuItems();
-                pubMenu = AppUtils.createMenu(pubMenu, contents);
+                if(pubMenu!=null) {
+                    List<Pair<Integer, String>> contents = returnContentMenuItems();
+                    pubMenu = AppUtils.createMenu(pubMenu, contents);
+                }
                 if(type==1) {
                     AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Đã thêm vào danh sách theo dõi");
                 }else{
@@ -395,7 +398,11 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(),"Có lỗi. Xin thử lại");
             }
         });
-        return super.onCreateOptionsMenu(pubMenu);
+        if(pubMenu!=null) {
+            return super.onCreateOptionsMenu(pubMenu);
+        }else{
+            return false;
+        }
     }
     private void hideStore() {
         new AlertDialog.Builder(this)

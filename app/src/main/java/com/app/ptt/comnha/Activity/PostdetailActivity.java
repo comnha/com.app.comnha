@@ -732,7 +732,6 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 title[0] = charSequence.toString();
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.length() > 0) {

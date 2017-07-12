@@ -43,6 +43,7 @@ import com.app.ptt.comnha.Dialog.AddFoodDialog;
 import com.app.ptt.comnha.Dialog.ReportDialog;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Post;
+import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;
@@ -82,7 +83,7 @@ public class FooddetailFragment extends Fragment {
     RecyclerView postRecyclerView;
     Post_recycler_adapter postAdapter;
     RecyclerView.LayoutManager postLayoutManager;
-    TextView txt_name, txt_price, txt_comment;
+    TextView txt_name, txt_price, txt_comment,txtUser;
     ImageView imgv_photo;
     RatingBar ratingBar;
     ArrayList<Post> postlist;
@@ -124,26 +125,29 @@ public class FooddetailFragment extends Fragment {
         stRef = FirebaseStorage.getInstance().getReferenceFromUrl(Const.STORAGE_PATH);
         ref(view);
         if (ChooseFood.getInstance().getFood() != null) {
-            foodID=ChooseFood.getInstance().getFood().getFoodID();
+            foodID = ChooseFood.getInstance().getFood().getFoodID();
             getFood(foodID);
         } else {
             getActivity().onBackPressed();
         }
         return view;
     }
+
     private void getFood(String id) {
 
         ValueEventListener foodValueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                    food = dataSnapshot.getValue(Food.class);
-                    String key = dataSnapshot.getKey();
-                    food.setFoodID(key);
-                    storeID=food.getStoreID();
-                    getData();
-                List<Pair<Integer, String>> contents = returnContentMenuItems();
-                pubMenu = AppUtils.createMenu(pubMenu, contents);
-                loadMenu();
+                food = dataSnapshot.getValue(Food.class);
+                String key = dataSnapshot.getKey();
+                food.setFoodID(key);
+                storeID = food.getStoreID();
+                getData();
+                if(pubMenu!=null) {
+                    List<Pair<Integer, String>> contents = returnContentMenuItems();
+                    pubMenu = AppUtils.createMenu(pubMenu, contents);
+                    loadMenu();
+                }
             }
 
             @Override
@@ -151,16 +155,36 @@ public class FooddetailFragment extends Fragment {
 
             }
         };
-        dbRef.child(getString(R.string.food_CODE)+id)
-                   .addValueEventListener(foodValueListener);
+        dbRef.child(getString(R.string.food_CODE) + id)
+                .addValueEventListener(foodValueListener);
     }
-    public void loadMenu(){
+
+    public void loadMenu() {
         super.onCreateOptionsMenu(pubMenu, inflater);
+    }
+    private void getCustomUser( final String key){
+        ValueEventListener userValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User ownUser= dataSnapshot.getValue(User.class);
+                ownUser.setuID(key);
+                txtUser.setText(ownUser.getUn());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+        dbRef.child(getString(R.string.users_CODE)
+                + key)
+                .addListenerForSingleValueEvent(userValueListener);
+
     }
     public void getData() {
 
         txt_comment.setText(food.getComment());
         txt_name.setText(food.getName());
+        getCustomUser(food.getUserID());
         txt_price.setText(food.getPrice() + "");
         ratingBar.setRating(food.getTotal() == 0 ? 0 : food.getRating() / food.getTotal());
         if (food.getImgBitmap() == null) {
@@ -225,6 +249,7 @@ public class FooddetailFragment extends Fragment {
         ratingBar.setIsIndicator(true);
         toolbar = (Toolbar) view.findViewById(R.id.toolbar_fooddetail);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        txtUser= (TextView) view.findViewById(R.id.txt_user);
         toolbar.setBackgroundColor(getResources()
                 .getColor(R.color.color_notify_reportfood));
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
@@ -269,9 +294,10 @@ public class FooddetailFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //menu = AppUtils.createMenu(menu, returnContentMenuItems());
+
+        menu = AppUtils.createMenu(menu, returnContentMenuItems());
         pubMenu = menu;
-        inflater=inflater;
+        this.inflater=inflater;
         super.onCreateOptionsMenu(menu, inflater);
 
     }
@@ -300,13 +326,15 @@ public class FooddetailFragment extends Fragment {
         } else {
             contents.add(new Pair<Integer, String>
                     (R.string.txt_report, getString(R.string.txt_report)));
-            if (uID.equals(food.getUserID())) {
-                if (food.isHidden()) {
-                    contents.add(new Pair<Integer, String>
-                            (R.string.text_hidefood, getString(R.string.text_showfood)));
-                } else {
-                    contents.add(new Pair<Integer, String>
-                            (R.string.text_hidefood, getString(R.string.text_hidefood)));
+            if(food!=null) {
+                if (uID.equals(food.getUserID())) {
+                    if (food.isHidden()) {
+                        contents.add(new Pair<Integer, String>
+                                (R.string.text_hidefood, getString(R.string.text_showfood)));
+                    } else {
+                        contents.add(new Pair<Integer, String>
+                                (R.string.text_hidefood, getString(R.string.text_hidefood)));
+                    }
                 }
             }
         }
