@@ -610,7 +610,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
 
             }
         };
-        if (role == 1) {
+        if (role >0) {
             dbRef.child(getString(R.string.food_CODE))
                     .orderByChild("storeID")
                     .equalTo(storeID)
