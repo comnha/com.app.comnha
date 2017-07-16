@@ -117,11 +117,11 @@ public class AdminNewStoreFragment extends Fragment {
             dbRef.child(getString(R.string.notify_newstore_CODE))
                     .orderByChild("district_province")
                     .equalTo(dist_pro)
-                    .addValueEventListener(notiEventListener);
+                    .addListenerForSingleValueEvent(notiEventListener);
         }else{
             dbRef.child(getString(R.string.notify_newstore_CODE))
 
-                    .addValueEventListener(notiEventListener);
+                    .addListenerForSingleValueEvent(notiEventListener);
         }
 
     }

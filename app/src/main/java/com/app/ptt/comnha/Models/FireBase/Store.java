@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 import com.app.ptt.comnha.Modules.Times;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Map;
  * Created by PTT on 9/26/2016.
  */
 
-public class Store {
+public class Store implements Serializable {
     //info
     String storeID;
     String name, address, phonenumb, opentime;
@@ -37,10 +38,17 @@ public class Store {
             isHidden_dis_pro,
             isHidden_uID;
 
+    //store type =0 chua dc duyet, isHidden=true;
+    //1 xac nhan sau khi bi report, isHidden=false
+    //2 duoc duyet ,isHidden=false
+    //-1 bi report isHidden=true
+    //-2 k dc duyet, isHidden=true
+    //-3 huy sau khi xac nhan report
+    int storeType;
     String distance = null;//khoảng cách hiển thị trên danh sách quán ăn
     Map<String, Comment> comments = null;//comment trong post
     Bitmap imgBitmap = null;
-    List<String> usersFollow=new ArrayList<>();
+    List<String> usersFollow = new ArrayList<>();
 
     public String getIsHidden_uID() {
         return isHidden_uID;
@@ -55,41 +63,51 @@ public class Store {
         return usersFollow;
     }
 
+    public int getStoreType() {
+        return storeType;
+    }
+
+    public void setStoreType(int storeType) {
+        this.storeType = storeType;
+    }
+
     public void setUsersFollow(List<String> usersFollow) {
-        if(this.usersFollow==null){
-            usersFollow=new ArrayList<>();
+        if (this.usersFollow == null) {
+            usersFollow = new ArrayList<>();
         }
         this.usersFollow = usersFollow;
     }
-    public void addUserToList(String user){
-        if(this.usersFollow==null){
-            usersFollow=new ArrayList<>();
+
+    public void addUserToList(String user) {
+        if (this.usersFollow == null) {
+            usersFollow = new ArrayList<>();
         }
         usersFollow.add(user);
     }
-    public void removeUser(String user){
-        if(this.usersFollow==null){
-            usersFollow=new ArrayList<>();
+
+    public void removeUser(String user) {
+        if (this.usersFollow == null) {
+            usersFollow = new ArrayList<>();
             return;
         }
-        for(String mUser:usersFollow){
-            if(mUser.toLowerCase().equals(user.toLowerCase())){
+        for (String mUser : usersFollow) {
+            if (mUser.toLowerCase().equals(user.toLowerCase())) {
                 usersFollow.remove(mUser);
             }
         }
     }
-    public boolean checkExist(String user){
-        if(this.usersFollow==null){
-            usersFollow=new ArrayList<>();
+
+    public boolean checkExist(String user) {
+        if (this.usersFollow == null) {
+            usersFollow = new ArrayList<>();
         }
-        for(String mUser:usersFollow){
-            if(mUser.toLowerCase().equals(user.toLowerCase())){
+        for (String mUser : usersFollow) {
+            if (mUser.toLowerCase().equals(user.toLowerCase())) {
                 return true;
             }
         }
         return false;
     }
-
 
 
     public Store() {
@@ -111,7 +129,7 @@ public class Store {
         result.put("priceSum", priceSum);
         result.put("healthySum", healthySum);
         result.put("serviceSum", serviceSum);
-        result.put("usersFollow",usersFollow);
+        result.put("usersFollow", usersFollow);
         result.put("size", size);
         result.put("storeimg", storeimg);
         result.put("isHidden", isHidden);
@@ -121,6 +139,7 @@ public class Store {
                 + "_" + userID);
         result.put("pro_dist", district + "_" + province);
         result.put("userID_pro_dist", userID + "_" + district + "_" + province);
+        result.put("storeType", storeType);
         return result;
     }
 

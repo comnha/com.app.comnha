@@ -17,7 +17,7 @@ public class UserNotification {
     private String postID;
     private String foodId;
     private String userEffectId;
-    private boolean ơwnPost;
+    private boolean ơwner;
     private String userEffectName;
     private String foodName;
     private boolean readed;
@@ -36,8 +36,35 @@ public class UserNotification {
     //type=2 new post added
     //type=3 comment
     //type=4 new food add
-    private int type;
 
+
+    //status
+    //0: notify to other people
+    //1: accept
+    //-1: reject
+    //3: was reported
+    //2: reject report
+    //-2: accept report
+    private int type,status;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(String reportId) {
+        this.reportId = reportId;
+    }
+
+
+    private String reportId;
     public String getFoodName() {
         return foodName;
     }
@@ -56,12 +83,12 @@ public class UserNotification {
 
     private String date;
 
-    public boolean isƠwnPost() {
-        return ơwnPost;
+    public boolean isƠwner() {
+        return ơwner;
     }
 
-    public void setƠwnPost(boolean ơwnPost) {
-        this.ơwnPost = ơwnPost;
+    public void setƠwner(boolean ơwner) {
+        this.ơwner = ơwner;
     }
 
     public String getUserEffectName() {
@@ -147,7 +174,7 @@ public class UserNotification {
         result.put("type", type);
         result.put("userEffectId", userEffectId);
         result.put("readed", readed);
-        result.put("ơwnPost", ơwnPost);
+        result.put("ơwner", ơwner);
         result.put("userEffectName", userEffectName);
         result.put("foodName",foodName);
         SimpleDateFormat sdf = new SimpleDateFormat(Const.DATE_TIME_FORMAT);
@@ -155,6 +182,8 @@ public class UserNotification {
         date = currentDateandTime;
         result.put("date", date);
         result.put("isShown",isShown);
+        result.put("reportId",reportId);
+        result.put("status",status);
         return result;
     }
 

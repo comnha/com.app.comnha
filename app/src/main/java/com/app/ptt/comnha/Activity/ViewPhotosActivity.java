@@ -326,7 +326,7 @@ public class ViewPhotosActivity extends AppCompatActivity {
         reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
             @Override
             public void onPositive(boolean isClicked, Map<String,
-                    Object> childUpdate, final Dialog dialog) {
+                    Object> childUpdate, final Dialog dialog,String key) {
                 if (isClicked) {
                     dialog.dismiss();
                     plzw8Dialog.show();

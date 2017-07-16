@@ -1,6 +1,7 @@
 package com.app.ptt.comnha.Modules;
 
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -119,7 +120,8 @@ public class PlaceAPI {
                     Log.i(LOG + ".addtoPlaceAttribute", "Locality: " + mPlaceAttributes.getLocality());
                     Log.i(LOG + ".addtoPlaceAttribute", "District: " + mPlaceAttributes.getDistrict());
                     Log.i(LOG + ".addtoPlaceAttribute", "State: " + mPlaceAttributes.getState());
-                    if (mPlaceAttributes != null && mPlaceAttributes.getPlaceLatLng() != null) {
+                    if (mPlaceAttributes != null && mPlaceAttributes.getPlaceLatLng() != null&&!TextUtils.isEmpty( mPlaceAttributes.getFullname())) {
+
                         location.onLocationFinderSuccess(mPlaceAttributes);
                     } else {
                         location.onLocationFinderSuccess(null);

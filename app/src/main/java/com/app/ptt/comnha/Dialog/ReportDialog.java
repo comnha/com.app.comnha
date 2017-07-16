@@ -61,13 +61,13 @@ public class ReportDialog extends DialogFragment {
     Const.REPORTS type;
     Object report = null;
     DatabaseReference dbRef;
-
+    String key;
     OnPosNegListener onPosNegListener;
     Button btn_neg, btn_pos;
     Map<String, Object> childUpdate = null;
 
     public interface OnPosNegListener {
-        void onPositive(boolean isClicked, Map<String, Object> childUpdate, Dialog dialog);
+        void onPositive(boolean isClicked, Map<String, Object> childUpdate, Dialog dialog,String key);
 
         void onNegative(boolean isClicked, Dialog dialog);
     }
@@ -85,7 +85,9 @@ public class ReportDialog extends DialogFragment {
     public ReportDialog() {
         // Required empty public constructor
     }
-
+    public void setChildUpdate(Map<String,Object> childUpdate){
+        this.childUpdate=childUpdate;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -170,21 +172,21 @@ public class ReportDialog extends DialogFragment {
                     } else {
                         switch (type) {
                             case REPORT_STORE:
-                                childUpdate = setStoreReport();
+                                childUpdate = setStoreReport(childUpdate);
                                 break;
                             case REPORT_IMG:
-                                childUpdate = setImgReport();
+                                childUpdate = setImgReport(childUpdate);
                                 break;
                             case REPORT_FOOD:
-                                childUpdate = setFoodReport();
+                                childUpdate = setFoodReport(childUpdate);
                                 break;
                             case REPORT_POST:
-                                childUpdate = setPostReport();
+                                childUpdate = setPostReport(childUpdate);
                                 break;
                         }
                         if (childUpdate != null) {
 
-                            onPosNegListener.onPositive(true, childUpdate, getDialog());
+                            onPosNegListener.onPositive(true, childUpdate, getDialog(),key);
                         }
                     }
                 }
@@ -192,9 +194,9 @@ public class ReportDialog extends DialogFragment {
         });
     }
 
-    Map<String, Object> setStoreReport() {
+    Map<String, Object> setStoreReport(Map<String,Object> childUpdate) {
         try {
-            String key = dbRef
+            key = dbRef
                     .child(getString(R.string.reportStore_CODE))
                     .push()
                     .getKey();
@@ -207,11 +209,13 @@ public class ReportDialog extends DialogFragment {
                     content, store.getPro_dist());
             storeReport.setApprove(false);
             Map<String, Object> rpValue = storeReport.toMap();
-            Map<String, Object> childupdate = new HashMap<>();
-            childupdate.put(getString(R.string.reportStore_CODE)
+            if(childUpdate==null) {
+                childUpdate = new HashMap<>();
+            }
+            childUpdate.put(getString(R.string.reportStore_CODE)
                     + key, rpValue);
             Log.d("reportDialog_key", store.getStoreID());
-            return childupdate;
+            return childUpdate;
         } catch (NullPointerException mess) {
             Toast.makeText(getContext(),
                     mess.getMessage(),
@@ -221,9 +225,9 @@ public class ReportDialog extends DialogFragment {
         return null;
     }
 
-    Map<String, Object> setPostReport() {
+    Map<String, Object> setPostReport(Map<String,Object> childUpdate) {
         try {
-            String key = dbRef
+            key = dbRef
                     .child(getString(R.string.reportPost_CODE))
                     .push()
                     .getKey();
@@ -235,11 +239,13 @@ public class ReportDialog extends DialogFragment {
                     content, post.getDist_pro());
             postReport.setApprove(false);
             Map<String, Object> rpValue = postReport.toMap();
-            Map<String, Object> childupdate = new HashMap<>();
-            childupdate.put(getString(R.string.reportPost_CODE)
+            if(childUpdate==null) {
+                childUpdate = new HashMap<>();
+            }
+            childUpdate.put(getString(R.string.reportPost_CODE)
                     + key, rpValue);
             Log.d("reportDialog_key", post.getPostID());
-            return childupdate;
+            return childUpdate;
         } catch (NullPointerException mess) {
             Toast.makeText(getContext(),
                     mess.getMessage(),
@@ -249,9 +255,9 @@ public class ReportDialog extends DialogFragment {
         return null;
     }
 
-    Map<String, Object> setFoodReport() {
+    Map<String, Object> setFoodReport(Map<String,Object> childUpdate) {
         try {
-            String key = dbRef
+            key = dbRef
                     .child(getString(R.string.reportFood_CODE))
                     .push()
                     .getKey();
@@ -262,11 +268,13 @@ public class ReportDialog extends DialogFragment {
                     LoginSession.getInstance().getUser().getUn(),
                     content, food.getDist_prov());
             Map<String, Object> rpValue = foodReport.toMap();
-            Map<String, Object> childupdate = new HashMap<>();
-            childupdate.put(getString(R.string.reportFood_CODE)
+            if(childUpdate==null) {
+                childUpdate = new HashMap<>();
+            }
+            childUpdate.put(getString(R.string.reportFood_CODE)
                     + key, rpValue);
             Log.d("reportDialog_key", food.getStoreID());
-            return childupdate;
+            return childUpdate;
         } catch (NullPointerException mess) {
             Toast.makeText(getContext(),
                     mess.getMessage(),
@@ -276,9 +284,9 @@ public class ReportDialog extends DialogFragment {
         return null;
     }
 
-    Map<String, Object> setImgReport() {
+    Map<String, Object> setImgReport(Map<String,Object> childUpdate) {
         try {
-            String key = dbRef
+            key = dbRef
                     .child(getString(R.string.reportImg_CODE))
                     .push()
                     .getKey();
@@ -289,11 +297,13 @@ public class ReportDialog extends DialogFragment {
                     LoginSession.getInstance().getUser().getUn(),
                     content);
             Map<String, Object> rpValue = storeReport.toMap();
-            Map<String, Object> childupdate = new HashMap<>();
-            childupdate.put(getString(R.string.reportImg_CODE)
+            if(childUpdate==null) {
+                childUpdate = new HashMap<>();
+            }
+            childUpdate.put(getString(R.string.reportImg_CODE)
                     + key, rpValue);
             Log.d("reportDialog_key", image.getImageID());
-            return childupdate;
+            return childUpdate;
         } catch (NullPointerException mess) {
             Toast.makeText(getContext(),
                     mess.getMessage(),

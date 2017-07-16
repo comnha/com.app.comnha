@@ -134,7 +134,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
     Food selected_food = null;
     Post post;
     NewpostNotify newpostNotify = null;
-    String dist_prov = "Quận 9_Hồ Chí Minh";
+    String dist_prov;
     ValueEventListener storeValueListener, foodValueListener,
             foodFromStoreValueListener;
     float foodRate = 0;
@@ -163,6 +163,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         if (null != ChooseStore.getInstance().getStore()) {
             linear_location.setVisibility(View.VISIBLE);
             selected_store = ChooseStore.getInstance().getStore();
+            dist_prov=selected_store.getPro_dist();
             ChooseStore.getInstance().setStore(null);
             txtv_locaadd.setText(selected_store.getAddress());
             txtv_locaname.setText(selected_store.getName());
@@ -799,14 +800,29 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         if (selected_food != null) {
             foodID = selected_food.getFoodID();
         }
+        final Map<String, Object> childUpdate = new HashMap<>();
         post = new Post(title, content, un, uID, storeID, storename,
                 foodID, (long) foodRate, banner, pricerate, healthrate, servicerate,
                 pro_dist);
-
         String postKey = dbRef.child(getString(R.string.store_CODE))
                 .push().getKey();
+        if(LoginSession.getInstance().getUser().getRole()>0){
+            post.setHidden(false);
+            post.setPostType(2);
+        }else{
+            post.setHidden(true);
+            post.setPostType(0);
+            newpostNotify = new NewpostNotify(postKey, title, uID, un,
+                    dist_prov);
+            String notiKey = dbRef.child(getString(R.string.notify_newpost_CODE))
+                    .push().getKey();
+            Map<String, Object> notifyValue = newpostNotify.toMap();
+            childUpdate.put(getString(R.string.notify_newpost_CODE) + notiKey, notifyValue);
+        }
+
+
         Map<String, Object> postValue = post.toMap();
-        final Map<String, Object> childUpdate = new HashMap<>();
+
         childUpdate.put(getString(R.string.posts_CODE) + postKey,
                 postValue);
         if (healthrate > 0 && servicerate > 0 && pricerate > 0) {
@@ -855,37 +871,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                         + imgKey, imgValue);
             }
         }
-        newpostNotify = new NewpostNotify(postKey, title, uID, un,
-                dist_prov);
-        String notiKey = dbRef.child(getString(R.string.notify_newpost_CODE))
-                .push().getKey();
-        Map<String, Object> notifyValue = newpostNotify.toMap();
 
-        //Notification to user
-            for(String mUerId: selected_store.getUsersFollow()){
-                if(!LoginSession.getInstance().getUser().getuID().toLowerCase().equals(mUerId.toLowerCase())){
-                    UserNotification userNotification=new UserNotification();
-                    userNotification.setPostID(postKey);
-                    userNotification.setType(2);userNotification.setShown(true);
-                    userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
-                    userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
-                    Map<String,Object> userNotificationMap=userNotification.toMap();
-                    String key =dbRef.child(getString(R.string.user_notification_CODE)+mUerId).push().getKey();
-                    childUpdate.put(getString(R.string.user_notification_CODE)+mUerId+"/"+key,userNotificationMap);
-                }
-        }
-        if(!selected_store.getUserID().toLowerCase().equals(LoginSession.getInstance().getUser().getuID().toLowerCase())){
-            UserNotification userNotification=new UserNotification();
-            userNotification.setPostID(postKey);
-            userNotification.setType(2);userNotification.setShown(true);
-            userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
-            userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
-            Map<String,Object> userNotificationMap=userNotification.toMap();
-            String key =dbRef.child(getString(R.string.user_notification_CODE)+selected_store.getUserID()).push().getKey();
-            childUpdate.put(getString(R.string.user_notification_CODE)+selected_store.getUserID()+"/"+key,userNotificationMap);
-        }
-
-        childUpdate.put(getString(R.string.notify_newpost_CODE) + notiKey, notifyValue);
         if (selectedImages.size() > 0) {
             uploadImgDialog.show();
             for (SelectedImage imgItem : selectedImages) {

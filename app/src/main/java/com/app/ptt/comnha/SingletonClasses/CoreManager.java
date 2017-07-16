@@ -18,7 +18,25 @@ import java.util.List;
 
 public class CoreManager {
     private static CoreManager ourInstance;
+    private String tinh;
 
+    public String getTinh() {
+        return tinh;
+    }
+
+    public void setTinh(String tinh) {
+        this.tinh = tinh;
+    }
+
+    public String getHuyen() {
+        return huyen;
+    }
+
+    public void setHuyen(String huyen) {
+        this.huyen = huyen;
+    }
+
+    private String huyen;
     private boolean isPostAdded;
 
 

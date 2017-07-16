@@ -45,6 +45,7 @@ import com.app.ptt.comnha.Modules.PlaceAttribute;
 import com.app.ptt.comnha.Modules.Times;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
+import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.app.ptt.comnha.Utils.MyTool;
@@ -56,6 +57,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -74,7 +76,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         DialogInterface.OnDismissListener, DialogInterface.OnCancelListener, LocationFinderListener
 {
     public static final String LOG = AddstoreFragment.class.getSimpleName();
-
+    boolean isEdit;
     EditText edt_storeName, edt_phoneNumb ;
     List<String> addressList;
     AutoCompleteTextView edt_address;
@@ -157,7 +159,10 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
                 .getReferenceFromUrl(Const.DATABASE_PATH);
         stRef = FirebaseStorage.getInstance()
                 .getReferenceFromUrl(Const.STORAGE_PATH);
-
+        if(ChooseStore.getInstance().getStore()!=null){
+            store=ChooseStore.getInstance().getStore();
+            editStore(store);
+        }
         return view;
     }
 
@@ -173,10 +178,36 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         });
     }
     private void editStore(Store store){
+        isEdit=true;
         edt_storeName.setText(store.getName());
         edt_address.setText(store.getAddress());
         edt_phoneNumb.setText(store.getPhonenumb());
-        
+        if (store.getImgBitmap() == null) {
+            if (!store.getStoreimg().equals("")) {
+                StorageReference imageRef = stRef.child(store.getStoreimg());
+                imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.with(getActivity())
+                                .load(uri)
+                                .into(imgv_avatar);
+                    }
+                });
+
+            } else {
+                imgv_avatar.setImageResource(R.drawable.ic_item_store);
+            }
+        } else {
+            imgv_avatar.setImageBitmap(store.getImgBitmap());
+        }
+        String[] list=store.getOpentime().split("-");
+        btn_opentime.setText(list[0].toString().trim());
+        btn_closetime.setText(list[1].toString().trim());
+        storeimg=store.getStoreimg();
+        phonenumb=store.getPhonenumb();
+        address=store.getAddress();
+        storename=store.getName();
+        opentime=store.getOpentime();
     }
     void anhXa(View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -313,7 +344,16 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
                 } else if (AppUtils.checkEmptyEdt(edt_phoneNumb)) {
                     edt_phoneNumb.setError(getText(R.string.txt_nophonenumb));
                 } else {
-                    new PlaceAPI(edt_address.getText().toString(),this);
+                    if(checkChangeAddress(store)) {
+                        new PlaceAPI(edt_address.getText().toString(), this);
+                    }else{
+                        address=store.getAddress();
+                        lat=store.getLat();
+                        lng=store.getLng();
+                        district=store.getDistrict();
+                        province=store.getProvince();
+                        savestore();
+                    }
                 }
                 break;
             case R.id.frg_addloction_btn_opentime:
@@ -353,23 +393,43 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
                 break;
         }
     }
-
+    private boolean checkChangeAddress(Store store){
+      if(!store.getAddress().trim().toLowerCase().equals(edt_address.getText().toString().trim().toLowerCase())){
+          return true;
+      }
+      return false;
+    }
     private void savestore() {
+        final Map<String, Object> childUpdate = new HashMap<>();
         final boolean[] isUploadImgSuccess = {false};
-        String key = dbRef.child(getString(R.string.store_CODE)).push().getKey(),
-                notifyKey = dbRef.child(getString(R.string.notify_newstore_CODE))
-                        .push().getKey();
-
+        String key,notifyKey;
+        if(!isEdit) {
+            key = dbRef.child(getString(R.string.store_CODE)).push().getKey();
+            notifyKey = dbRef.child(getString(R.string.notify_newstore_CODE))
+                    .push().getKey();
+            if (LoginSession.getInstance().getUser().getRole() > 0) {
+                store.setStoreType(2);
+                store.setHidden(false);
+            } else {
+                store.setStoreType(0);
+                store.setHidden(true);
+                notify = new NewstoreNotify(key, storename, address,
+                        userID, un, district, province);
+                Map<String, Object> notifyValues = notify.toMap();
+                childUpdate.put(getString(R.string.notify_newstore_CODE) + notifyKey,
+                        notifyValues);
+            }
+        }else{
+            key=store.getStoreID();
+        }
         store = new Store(storename, address, phonenumb, opentime,
                 province, district, lat, lng, userID, storeimg);
-        notify = new NewstoreNotify(key, storename, address,
-                userID, un, district, province);
-        Map<String, Object> storeValues = store.toMap(),
-                notifyValues = notify.toMap();
-        final Map<String, Object> childUpdate = new HashMap<>();
+
+
+        Map<String, Object> storeValues = store.toMap();
+
+
         childUpdate.put(getString(R.string.store_CODE) + key, storeValues);
-        childUpdate.put(getString(R.string.notify_newstore_CODE) + notifyKey,
-                notifyValues);
         if (selectedImage != null) {
             Log.d("path", selectedImage.getUri().toString());
             uploadImgDialog.show();
@@ -411,16 +471,33 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
                                     public void onSuccess(Void aVoid) {
                                         mProgressDialog.dismiss();
                                         //Comunication.sendLocationListener.notice();
-                                        Toast.makeText(getContext(), getString(R.string.text_addloca_succ)
-                                                , Toast.LENGTH_LONG).show();
+                                        if(!isEdit){
+                                            if(LoginSession.getInstance().getUser().getRole()>0) {
+                                                Toast.makeText(getContext(), getString(R.string.text_addloca_succ)
+                                                        , Toast.LENGTH_LONG).show();
+                                            }else{
+                                                Toast.makeText(getContext(), getString(R.string.  text_addloca_succ_user)
+                                                        , Toast.LENGTH_LONG).show();
+
+                                            }
+                                        }else{
+                                            Toast.makeText(getContext(), getString(R.string.text_okededitloca)
+                                                    , Toast.LENGTH_LONG).show();
+                                        }
+
                                         getActivity().finish();
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 mProgressDialog.dismiss();
-                                Toast.makeText(getContext(), getString(R.string.text_failedaddloca)
-                                        , Toast.LENGTH_LONG).show();
+                                if(!isEdit) {
+                                    Toast.makeText(getContext(), getString(R.string.text_failedaddloca)
+                                            , Toast.LENGTH_LONG).show();
+                                }else{
+                                    Toast.makeText(getContext(), getString(R.string.text_failedaddloca)
+                                            , Toast.LENGTH_LONG).show();
+                                }
 
                             }
                         });
@@ -534,7 +611,6 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
             AlertDialog dialog = builder.create();
             dialog.show();
         } else {
-
             Toast.makeText(getActivity(), "Lỗi! Kiểm tra dữ liệu nhập vàp ", Toast.LENGTH_LONG).show();
         }
         pos=-1;

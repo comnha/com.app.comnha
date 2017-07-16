@@ -12,6 +12,7 @@ import com.app.ptt.comnha.Fragment.MapFragment;
 import com.app.ptt.comnha.Fragment.SigninFragment;
 import com.app.ptt.comnha.Fragment.SignupFragment;
 import com.app.ptt.comnha.Fragment.WritepostFragment;
+import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 
 public class AdapterActivity extends AppCompatActivity {
@@ -96,6 +97,7 @@ public class AdapterActivity extends AppCompatActivity {
             if (findViewById(R.id.frame_adapter) != null) {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
                     FooddetailFragment fooddetailFragment = new FooddetailFragment();
+                    fooddetailFragment.setStore((Store)getIntent().getSerializableExtra("Store"));
                     fooddetailFragment.setArguments(getIntent().getExtras());
                     getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter,
                             fooddetailFragment).commit();
@@ -128,8 +130,8 @@ public class AdapterActivity extends AppCompatActivity {
             if (findViewById(R.id.frame_adapter) != null) {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
                     FooddetailFragment fooddetailFragment = new FooddetailFragment();
+                    fooddetailFragment.setStore((Store)getIntent().getSerializableExtra("Store"));
                     fooddetailFragment.setArguments(getIntent().getExtras());
-
                     getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, fooddetailFragment).commit();
                 }
             }

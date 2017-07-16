@@ -209,7 +209,9 @@ public class SigninFragment extends BaseFragment implements View.OnClickListener
                 }
                 if (mAuthListener != null) {
                     mAuth.removeAuthStateListener(mAuthListener);
+                    mAuth=null;
                 }
+
             }
         };
         mAuth.addAuthStateListener(mAuthListener);

@@ -39,6 +39,7 @@ import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.FireBase.User;
+import com.app.ptt.comnha.Models.FireBase.UserNotification;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseFood;
@@ -68,7 +69,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_STORE;
 
@@ -84,7 +84,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     ArrayList<Food> foods;
     User ownUser;
     TextView txtv_storename, txtv_address, txtv_opentime, txtv_phonenumb,
-            txtv_pricerate, txtv_healthyrate, txtv_servicerate,txt_user;
+            txtv_pricerate, txtv_healthyrate, txtv_servicerate, txt_user;
     Toolbar toolbar;
     ImageView imgv_writepost, imgv_addfood, imgv_viewlocation;
     CircularImageView imgv_avatar;
@@ -94,7 +94,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     StorageReference stRef;
     ValueEventListener postValueListener, photoValueListener,
             foodValueListener, userValueListener;
-
+    String keyReport;
     Store store;
     LinearLayout linear_progress;
     String storeID = null;
@@ -114,15 +114,14 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         stRef = FirebaseStorage.getInstance()
                 .getReferenceFromUrl(Const.STORAGE_PATH);
         mAuth = FirebaseAuth.getInstance();
-        if(LoginSession.getInstance().getUser()!=null){
-            user=LoginSession.getInstance().getUser();
+        if (LoginSession.getInstance().getUser() != null) {
+            user = LoginSession.getInstance().getUser();
         }
-        if(ChooseStore.getInstance().getStore()!=null) {
-            store = ChooseStore.getInstance().getStore();
-            storeID = store.getStoreID();
+        if (ChooseStore.getInstance().getStore() != null) {
+            storeID=ChooseStore.getInstance().getStore().getStoreID();
+            getStore( ChooseStore.getInstance().getStore().getStoreID());
             ref();
-            createStoreInfo();
-        }else{
+        } else {
             onBackPressed();
         }
     }
@@ -182,6 +181,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                         "foodphoto");
                 intent_openFood.putExtra(getString(R.string.fragment_CODE)
                         , getString(R.string.frag_foodetail_CODE));
+                intent_openFood.putExtra("Store",store);
                 ChooseFood.getInstance().setFood(food);
                 intent_openFood.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent_openFood, optionsCompat.toBundle());
@@ -195,7 +195,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         txtv_healthyrate = (TextView) include_view.findViewById(R.id.txtv_healthy_storedetail);
         txtv_servicerate = (TextView) include_view.findViewById(R.id.txtv_service_storedetail);
         toolbar = (Toolbar) findViewById(R.id.toolbar_storedetail);
-        txt_user= (TextView) include_view.findViewById(R.id.txtv_user_storedetail);
+        txt_user = (TextView) include_view.findViewById(R.id.txtv_user_storedetail);
         toolbar.setTitle(getString(R.string.txt_storedetail));
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
@@ -223,7 +223,6 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         List<Pair<Integer, String>> contents = returnContentMenuItems();
         menu = AppUtils.createMenu(menu, contents);
         pubMenu = menu;
@@ -239,28 +238,37 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
             uID = LoginSession.getInstance().getUser().getuID();
         }
         List<Pair<Integer, String>> contents = new ArrayList<>();
-        if (role >0) {
-
-//            contents.add(new Pair<Integer, String>
-//                    (R.string.txt_delstore, getString(R.string.txt_delstore)));
-            if(store!=null) {
+        if (store != null) {
+            if (role > 0) {
                 if (store.isHidden()) {
-                    contents.add(new Pair<Integer, String>
-                            (R.string.txt_showstore, getString(R.string.txt_showstore)));
+                    if (store.getStoreType() == 0) {
+                        contents.add(new Pair<Integer, String>
+                                (R.string.txt_acceptstore, getString(R.string.txt_acceptstore)));
+                        contents.add(new Pair<Integer, String>
+                                (R.string.txt_rejectstore, getString(R.string.txt_rejectstore)));
+                    }
+                    if (store.getStoreType() == -1) {
+                        contents.add(new Pair<Integer, String>
+                                (R.string.txt_acceptstorereport, getString(R.string.txt_acceptstorereport)));
+                        contents.add(new Pair<Integer, String>
+                                (R.string.txt_rejectstorereport, getString(R.string.txt_rejectstorereport)));
+                    }
+
                 } else {
                     contents.add(new Pair<Integer, String>
-                            (R.string.text_hidestore, getString(R.string.text_hidestore)));
+                            (R.string.txt_rejectstore, getString(R.string.txt_rejectstore)));
+//                    contents.add(new Pair<Integer, String>
+//                            (R.string.text_hidepost, getString(R.string.text_hidepost)));
                 }
-            }
-        } else {
-            if(store!=null) {
-                if (store.getUserID().equals(uID)) {
+            } else {
+                if (uID.equals(store.getUserID())) {
                     contents.add(new Pair<Integer, String>
                             (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
                 } else {
                     if (store.checkExist(uID)) {
                         contents.add(new Pair<Integer, String>
                                 (R.string.txt_unfollowStore, getString(R.string.txt_unfollowStore)));
+
                     } else {
                         contents.add(new Pair<Integer, String>
                                 (R.string.txt_followStore, getString(R.string.txt_followStore)));
@@ -300,25 +308,32 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     requestSignin();
                 }
                 return true;
-            case R.string.text_hidestore:
-                if (!store.isHidden()) {
-                    hideStore();
-                }
+            case R.string.txt_rejectstore:
+                    hideStore(-2);
                 return true;
-            case R.string.txt_showstore:
-                if (store.isHidden()) {
-                    showStore();
-                }
+            case R.string.txt_acceptstore:
+
+                    showStore(2);
                 return true;
+            case R.string.txt_acceptstorereport:
+                showStore(1);
+                //sendBroadcast();
+                return true;
+            case R.string.txt_rejectstorereport:
+                hideStore(-3);
+                // sendBroadcast();
+                return true;
+
             case R.string.txt_delstore:
                 return true;
             case R.string.txt_changeinfo:
-
+                editStore();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
     private void requestSignin() {
         new AlertDialog.Builder(this)
                 .setMessage(getString(R.string.txt_nologin)
@@ -342,15 +357,97 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 }).show();
     }
 
-    private void showStore() {
+    public Map<String, Object> notificationToUser(Map<String, Object> childUpdate, int status, int type) {
+
+        switch (status) {
+            case 1:
+                //accept
+                if (!store.getUserID().toLowerCase().equals(LoginSession.getInstance().getUser().getuID().toLowerCase())) {
+                    UserNotification userNotification = new UserNotification();
+                    userNotification.setStoreID(store.getStoreID());
+                    userNotification.setType(type);
+                    userNotification.setShown(true);
+                    userNotification.setStatus(status);
+                    Map<String, Object> userNotificationMap = userNotification.toMap();
+                    String key = dbRef.child(getString(R.string.user_notification_CODE) + store.getUserID()).push().getKey();
+                    childUpdate.put(getString(R.string.user_notification_CODE) + store.getUserID() + "/" + key, userNotificationMap);
+
+                }
+                break;
+            //reject
+            case -1:
+                UserNotification userNotification = new UserNotification();
+                userNotification.setStoreID(store.getStoreID());
+                userNotification.setType(type);
+                userNotification.setShown(true);
+                userNotification.setStatus(status);
+                userNotification.setƠwner(true);
+                Map<String, Object> userNotificationMap = userNotification.toMap();
+                String key = dbRef.child(getString(R.string.user_notification_CODE) + store.getUserID()).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE) + store.getUserID() + "/" + key, userNotificationMap);
+                break;
+            //was reported
+            case 3:
+                UserNotification userReport = new UserNotification();
+                userReport.setStoreID(store.getStoreID());
+                userReport.setType(type);
+                userReport.setShown(true);
+                userReport.setStatus(status);
+                userReport.setƠwner(true);
+                userReport.setUserEffectName(LoginSession.getInstance().getUser().getUn());
+                userReport.setReportId(keyReport);
+                Map<String, Object> userReportMap = userReport.toMap();
+                String keyReportNoti = dbRef.child(getString(R.string.user_notification_CODE) + store.getUserID()).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE) + store.getUserID() + "/" + keyReportNoti, userReportMap);
+                break;
+            //reject report
+            case 2:
+                UserNotification userRejectReport = new UserNotification();
+                userRejectReport.setStoreID(store.getStoreID());
+                userRejectReport.setType(type);
+                userRejectReport.setShown(true);
+                userRejectReport.setStatus(status);
+                userRejectReport.setƠwner(true);
+                Map<String, Object> userRejectReportMap = userRejectReport.toMap();
+                String keyuserRejectReportNoti = dbRef.child(getString(R.string.user_notification_CODE) + store.getUserID()).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE) + store.getUserID() + "/" + keyuserRejectReportNoti, userRejectReportMap);
+                break;
+            //accept report
+            case -2:
+                UserNotification userAcceptReport = new UserNotification();
+                userAcceptReport.setStoreID(store.getStoreID());
+                userAcceptReport.setType(type);
+                userAcceptReport.setShown(true);
+                userAcceptReport.setStatus(status);
+                userAcceptReport.setƠwner(true);
+                Map<String, Object> userAcceptReportMap = userAcceptReport.toMap();
+                String keyuserAcceptReportNoti = dbRef.child(getString(R.string.user_notification_CODE) + store.getUserID()).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE) + store.getUserID() + "/" + keyuserAcceptReportNoti, userAcceptReportMap);
+                break;
+        }
+
+        return childUpdate;
+    }
+
+
+    private void showStore(final int type) {
         plzw8Dialog.show();
+        Map<String, Object> childUpdate = new HashMap<>();
+        switch (store.getStoreType()) {
+            case 0:
+                childUpdate = notificationToUser(childUpdate, 1, 1);
+                break;
+            case 3:
+                childUpdate = notificationToUser(childUpdate, 2, 1);
+                break;
+        }
         store.setHidden(false);
         String key = store.getStoreID();
-//        Toast.makeText(StoreDeatailActivity.this,
-//                key, Toast.LENGTH_SHORT).show();
+        store.setHidden(false);
+        store.setStoreType(type);
         Store childStore = store;
         Map<String, Object> storeValue = childStore.toMap();
-        Map<String, Object> childUpdate = new HashMap<>();
+
         childUpdate.put(getString(R.string.store_CODE)
                 + key, storeValue);
         dbRef.updateChildren(childUpdate)
@@ -358,15 +455,14 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                         new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-//                                item.setTitle(getString(R.string.text_hidestore));
-                                pubMenu.clear();
-                                StoreDeatailActivity.this.onCreateOptionsMenu(pubMenu);
+                                loadMenu();
                                 plzw8Dialog.cancel();
                             }
                         }).addOnFailureListener(
                 new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        loadMenu();
                         plzw8Dialog.cancel();
                         Toast.makeText(getApplicationContext(),
                                 e.getMessage(), Toast.LENGTH_LONG)
@@ -374,37 +470,47 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     }
                 });
     }
-    private boolean updateStore(final int type){
-        Map<String,Object> updatedStore;
-        updatedStore=store.toMap();
-        Map<String,Object> childUpdate=new HashMap<>();
-        childUpdate.put(getString(R.string.store_CODE)+store.getStoreID(),updatedStore);
+
+    private boolean updateStore(final int type) {
+        Map<String, Object> updatedStore;
+        updatedStore = store.toMap();
+        Map<String, Object> childUpdate = new HashMap<>();
+        childUpdate.put(getString(R.string.store_CODE) + store.getStoreID(), updatedStore);
         dbRef.updateChildren(childUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(pubMenu!=null) {
+                if (pubMenu != null) {
                     List<Pair<Integer, String>> contents = returnContentMenuItems();
                     pubMenu = AppUtils.createMenu(pubMenu, contents);
                 }
-                if(type==1) {
+                if (type == 1) {
                     AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Đã thêm vào danh sách theo dõi");
-                }else{
+                } else {
                     AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Đã bỏ theo dõi");
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(),"Có lỗi. Xin thử lại");
+                AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Có lỗi. Xin thử lại");
             }
         });
-        if(pubMenu!=null) {
+        if (pubMenu != null) {
             return super.onCreateOptionsMenu(pubMenu);
-        }else{
+        } else {
             return false;
         }
     }
-    private void hideStore() {
+
+    public boolean loadMenu() {
+        if (pubMenu != null) {
+            pubMenu = AppUtils.createMenu(pubMenu, returnContentMenuItems());
+            return super.onCreateOptionsMenu(pubMenu);
+        }
+        return false;
+    }
+
+    private void hideStore(final int type) {
         new AlertDialog.Builder(this)
                 .setCancelable(true)
                 .setMessage(getString(R.string.txt_hideconfirm))
@@ -415,13 +521,21 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                                     final DialogInterface dialogInterface, int i) {
                                 dialogInterface.cancel();
                                 plzw8Dialog.show();
+                                Map<String, Object> childUpdate = new HashMap<>();
+                                switch (store.getStoreType()) {
+                                    case 0:
+                                        childUpdate = notificationToUser(childUpdate, -1, 1);
+                                        break;
+                                    case 3:
+                                        childUpdate = notificationToUser(childUpdate, -2, 1);
+                                        break;
+                                }
                                 store.setHidden(true);
+                                store.setStoreType(type);
                                 String key = store.getStoreID();
-//                                Toast.makeText(StoreDeatailActivity.this,
-//                                        key, Toast.LENGTH_SHORT).show();
                                 Store childStore = store;
                                 Map<String, Object> storeValue = childStore.toMap();
-                                Map<String, Object> childUpdate = new HashMap<>();
+
                                 childUpdate.put(getString(R.string.store_CODE)
                                         + key, storeValue);
                                 dbRef.updateChildren(childUpdate)
@@ -429,14 +543,14 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                                                 new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
-                                                        pubMenu.clear();
-                                                        StoreDeatailActivity.this.onCreateOptionsMenu(pubMenu);
+                                                        loadMenu();
                                                         plzw8Dialog.cancel();
                                                     }
                                                 }).addOnFailureListener(
                                         new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
+                                                loadMenu();
                                                 plzw8Dialog.cancel();
                                                 Toast.makeText(getApplicationContext(),
                                                         e.getMessage(), Toast.LENGTH_LONG)
@@ -610,7 +724,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
 
             }
         };
-        if (role >0) {
+        if (role > 0) {
             dbRef.child(getString(R.string.food_CODE))
                     .orderByChild("storeID")
                     .equalTo(storeID)
@@ -668,7 +782,14 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         }
 
     }
-
+    private void editStore() {
+        ChooseStore.getInstance().setStore(store);
+        Intent intent_editStore = new Intent(this, AdapterActivity.class);
+        intent_editStore.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent_editStore.putExtra(getString(R.string.fragment_CODE),
+                getString(R.string.frag_addstore_CODE));
+        startActivity(intent_editStore);
+    }
     private void writePost() {
         ChooseStore.getInstance().setStore(store);
         Intent intent_writepost = new Intent(this, AdapterActivity.class);
@@ -688,14 +809,22 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
 
     private void reportStore() {
         ReportDialog reportDialog = new ReportDialog();
+        store.setStoreType(-1);
+        store.setHidden(true);
+        Map<String, Object> updateStore = store.toMap();
+        Map<String, Object> childUpdate = new HashMap<>();
+        childUpdate.put(getString(R.string.store_CODE) + store.getStoreID(), updateStore);
+        reportDialog.setChildUpdate(childUpdate);
         reportDialog.setReport(REPORT_STORE, store);
         reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
         reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
             @Override
             public void onPositive(boolean isClicked, Map<String,
-                    Object> childUpdate, final Dialog dialog) {
+                    Object> childUpdate, final Dialog dialog, String key) {
                 if (isClicked) {
                     dialog.dismiss();
+                    keyReport = key;
+                    childUpdate = notificationToUser(childUpdate, 3, 1);
                     plzw8Dialog.show();
                     dbRef.updateChildren(childUpdate)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -775,8 +904,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 LoginSession.getInstance().setUser(user);
                 LoginSession.getInstance().setFirebUser(firebaseUser);
                 mAuth.removeAuthStateListener(mAuthListener);
-                pubMenu.clear();
-                StoreDeatailActivity.this.onCreateOptionsMenu(pubMenu);
+                loadMenu();
                 plzw8Dialog.dismiss();
             }
 
@@ -788,11 +916,12 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 + firebaseUser.getUid())
                 .addListenerForSingleValueEvent(userValueListener);
     }
-    private void getCustomUser( final String key){
+
+    private void getCustomUser(final String key) {
         userValueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ownUser= dataSnapshot.getValue(User.class);
+                ownUser = dataSnapshot.getValue(User.class);
                 ownUser.setuID(key);
                 txt_user.setText(ownUser.getUn());
             }
@@ -805,5 +934,28 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 + key)
                 .addListenerForSingleValueEvent(userValueListener);
 
+    }
+    private void getStore(final String key) {
+        try {
+
+            ValueEventListener storeEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                        store = dataSnapshot.getValue(Store.class);
+                        store.setStoreID(dataSnapshot.getKey());
+                    createStoreInfo();
+                    loadMenu();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+                dbRef.child(getString(R.string.store_CODE)+key).addValueEventListener(storeEventListener);
+
+        }catch (Exception e){
+
+        }
     }
 }

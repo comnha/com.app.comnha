@@ -37,7 +37,25 @@ public class Post {
             healthyRate = 0,
             serviceRate = 0;
     boolean isHidden = false;
+    //post type =0 chua dc duyet, isHidden=true;
+    //1: accept
+    //-1: reject
+    //3: was reported
+    //2: reject report
+    //-2: accept report
+    int postType;
     List<String> userComment = new ArrayList<>();
+
+
+    Map<String, Comment> comments=new HashMap<>();
+    //phép kết
+    String userID_dist_prov,
+            isHidden_dist_prov,//tìm post theo uid_tỉnh_huyện
+            dist_pro,//tìm post theo tỉnh_huyện
+            isHidden_storeID,
+            isHidden_foodID, isHidden_uID_postID;
+    Bitmap imgBitmap = null;
+
     public boolean checkExist(String user){
         if(this.userComment==null){
             userComment=new ArrayList<>();
@@ -50,17 +68,15 @@ public class Post {
         return false;
     }
 
-    Map<String, Comment> comments=new HashMap<>();
-    //phép kết
-    String userID_dist_prov,
-            isHidden_dist_prov,//tìm post theo uid_tỉnh_huyện
-            dist_pro,//tìm post theo tỉnh_huyện
-            isHidden_storeID,
-            isHidden_foodID, isHidden_uID_postID;
-    Bitmap imgBitmap = null;
-
     public String getIsHidden_uID_postID() {
         return isHidden_uID_postID;
+    }
+    public int getPostType() {
+        return postType;
+    }
+
+    public void setPostType(int postType) {
+        this.postType = postType;
     }
 
     public Map<String, Comment> getComments() {
@@ -165,6 +181,7 @@ public class Post {
                 + "_" + foodID);
         result.put("isHidden_uID", String.valueOf(isHidden)
                 + "_" + userID);
+        result.put("postType",postType);
         return result;
     }
 

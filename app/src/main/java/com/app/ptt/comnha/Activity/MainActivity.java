@@ -127,7 +127,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         ref();
         startMyService();
         initMenu();
-        getNotification();
     }
 
 
@@ -149,6 +148,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     itemSignOut.setVisible(true);
                     itemProfile.setVisible(true);
                     itemAdmin.setVisible(false);
+                    mAuth.removeAuthStateListener(mAuthListener);
                     Log.d("onAuthStateChanged", "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
                     // User is signed out
@@ -164,6 +164,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     imgv_avatar.setImageResource(R.drawable.ic_logo);
                     closeDialog();
                     AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), getString(R.string.text_signout_success));
+                    mAuth.removeAuthStateListener(mAuthListener);
 
                 }
             }
@@ -187,6 +188,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     LoginSession.getInstance().setUser(user);
                     LoginSession.getInstance().setFirebUser(firebaseUser);
                     mAuth.removeAuthStateListener(mAuthListener);
+                    closeDialog();
                 } catch (Exception e) {
                     mAuth.signOut();
                     getUser();
@@ -475,8 +477,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         itemProfile.setVisible(false);
                         itemAdmin.setVisible(false);
                         imgv_avatar.setImageResource(R.drawable.ic_logo);
-
                         getUser();
+                        getNotification();
                     }
                 };
                 countDownTimer.start();
@@ -571,6 +573,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onResume() {
         super.onResume();
+        getNotification();
         if (null != LoginSession.getInstance().getUser() && null != LoginSession.getInstance().getFirebUser()) {
             User user = LoginSession.getInstance().getUser();
             txt_email.setText(user.getEmail());
@@ -750,6 +753,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         huyen = district;
         txtHuyen.setText(huyen);
         llChangeLocation.setVisibility(View.GONE);
+        CoreManager.getInstance().setHuyen(huyen);
+        CoreManager.getInstance().setTinh(tinh);
         if (tabLayout.getSelectedTabPosition() == 2) {
             sendBroadcastOneTab(tinh, huyen);
             pagerAdapter.setInfoForPage(tinh, huyen);
@@ -859,7 +864,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
                     }
                 };
-                dbRef.child(getString(R.string.user_notification_CODE) + LoginSession.getInstance().getUser().getuID() + "/")
+                dbRef.child(getString(R.string.user_notification_CODE) + LoginSession.getInstance().getUser().getuID())
                         .addValueEventListener(valueEventListener);
 
             } catch (Exception e) {

@@ -53,10 +53,10 @@ public class User_rcyler_adapter extends RecyclerView.Adapter<User_rcyler_adapte
                 }else{
                     List<User> filteredList=new ArrayList<>();
                     for(User user: users){
-                        if(user.getUn().toLowerCase().contains(charString)
-                                ||user.getHo().contains(charString)
-                                ||user.getTenlot().contains(charString)
-                                ||user.getTen().contains(charString)){
+                        if(user.getUn().toLowerCase().contains(charString.toLowerCase())
+                                ||user.getHo().toLowerCase().contains(charString.toLowerCase())
+                                ||user.getTenlot().toLowerCase().contains(charString.toLowerCase())
+                                ||user.getTen().toLowerCase().contains(charString.toLowerCase())){
                             filteredList.add(user);
                         }
                     }

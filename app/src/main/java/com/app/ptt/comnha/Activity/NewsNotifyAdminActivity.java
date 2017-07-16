@@ -59,6 +59,9 @@ public class NewsNotifyAdminActivity extends AppCompatActivity implements View.O
         View tab_post = getLayoutInflater().inflate(R.layout.tab_notify, null);
         tab_post.findViewById(R.id.imgV_tab_notify).setBackgroundResource(R.drawable.ic_tab_post);
         tabLayout.getTabAt(1).setCustomView(tab_post);
+        View tab_food = getLayoutInflater().inflate(R.layout.tab_notify, null);
+        tab_food.findViewById(R.id.imgV_tab_notify).setBackgroundResource(R.drawable.ic_tab_food);
+        tabLayout.getTabAt(2).setCustomView(tab_food);
 //        tabLayout.getTabAt(0).setText("1");
 //        tabLayout.getTabAt(1).setText("2");
         final ObjectAnimator alpha_show_bg_post = ObjectAnimator.ofFloat(imgv_bg_post, "alpha", 0, 1),
@@ -120,6 +123,14 @@ public class NewsNotifyAdminActivity extends AppCompatActivity implements View.O
                             alpha_hide_icon_store.start();
                             isShowPost = true;
                             isShowStore = false;
+                        }
+                    }else{
+                        if(position==2 &&positionOffset==0){
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                                getWindow().setStatusBarColor(getResources().getColor(R.color.color_notify_reportfood));
+                            }
+
                         }
                     }
                 }

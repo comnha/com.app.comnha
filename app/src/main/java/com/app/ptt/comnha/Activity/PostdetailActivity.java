@@ -50,6 +50,7 @@ import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.ReportpostNotify;
+import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.Models.FireBase.UserNotification;
 import com.app.ptt.comnha.Modules.orderByTime;
@@ -98,6 +99,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
     CircularImageView imgv_avatar, imgv_food;
     RatingBar rb_foodrating;
     Toolbar toolbar;
+    private Store store;
     CollapsingToolbarLayout clayout;
     Food food;
     RecyclerView rv_imgs, rv_comments;
@@ -122,7 +124,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
     Menu pubMenu = null;
     boolean isConnected = true;
     IntentFilter mIntentFilter;
-
+    String keyReport,userIdReport;
     public static final String mBroadcastSendAddress = "mBroadcastSendAddress";
     private static final int REQUEST_SIGNIN = 101;
     FirebaseAuth mAuth;
@@ -161,6 +163,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         init();
         if (ChoosePost.getInstance().getPost() != null) {
             getPost(ChoosePost.getInstance().getPost().getPostID());
+
         } else {
             onBackPressed();
         }
@@ -394,6 +397,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                     commentMap=post.getComments();
                     sortComment();
                     loadMenu();
+                    getStoreDetail(post.getStoreID());
                 }
 
                 @Override
@@ -556,31 +560,35 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         if(post!=null) {
             if (role > 0) {
                 if (post.isHidden()) {
-                    contents.add(new Pair<Integer, String>
-                            (R.string.txt_showpost, getString(R.string.txt_showpost)));
+                    if(post.getPostType()==0) {
+                        contents.add(new Pair<Integer, String>
+                                (R.string.txt_acceptpost, getString(R.string.txt_acceptpost)));
+                        contents.add(new Pair<Integer, String>
+                                (R.string.txt_rejectpost, getString(R.string.txt_rejectpost)));
+                    }
+                    if(post.getPostType()==3){
+                        contents.add(new Pair<Integer, String>
+                                (R.string.txt_acceptpostreport, getString(R.string.txt_acceptpostreport)));
+                        contents.add(new Pair<Integer, String>
+                                (R.string.txt_rejectpostreport, getString(R.string.txt_rejectpostreport)));
+                    }
+
                 } else {
                     contents.add(new Pair<Integer, String>
-                            (R.string.text_hidepost, getString(R.string.text_hidepost)));
+                            (R.string.txt_rejectpost, getString(R.string.txt_rejectpost)));
                 }
             } else {
                 if (uID.equals(post.getUserID())) {
                     contents.add(new Pair<Integer, String>
                             (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
-//                if (post.isHidden()) {
-//                    contents.add(new Pair<Integer, String>
-//                            (R.string.txt_showpost, getString(R.string.txt_showpost)));
-//                } else {
-//                    contents.add(new Pair<Integer, String>
-//                            (R.string.text_hidepost, getString(R.string.text_hidepost)));
-//                }
                 } else {
                     if (post.checkExist(uID)) {
                         contents.add(new Pair<Integer, String>
-                                (R.string.txt_unfollowPost, getString(R.string.txt_unfollowStore)));
+                                (R.string.txt_unfollowPost, getString(R.string.txt_unfollowPost)));
 
                     } else {
                         contents.add(new Pair<Integer, String>
-                                (R.string.txt_followPost, getString(R.string.txt_followStore)));
+                                (R.string.txt_followPost, getString(R.string.txt_followPost)));
                     }
                     contents.add(new Pair<Integer, String>
                             (R.string.txt_report, getString(R.string.txt_report)));
@@ -609,18 +617,24 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                     requestSignin();
                 }
                 return true;
-            case R.string.text_hidepost:
-                if (!post.isHidden()) {
-                    hidePost();
+            case R.string.txt_rejectpost:
+                    hidePost(-1);
                     sendBroadcast();
-                }
                 return true;
-            case R.string.txt_showpost:
-                if (post.isHidden()) {
-                    showPost();
+            case R.string.txt_acceptpost:
+                    showPost(1);
+
                     sendBroadcast();
-                }
                 return true;
+            case R.string.txt_acceptpostreport:
+                showPost(2);
+                sendBroadcast();
+                return true;
+            case R.string.txt_rejectpostreport:
+                hidePost(-2);
+                sendBroadcast();
+                return true;
+
             case R.string.txt_changeinfo:
                 changeContent();
                 return true;
@@ -835,21 +849,29 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
     }
 
     private void reportPost() {
-
+        post.setPostType(3);
+        post.setHidden(true);
+        Map<String,Object> updatePost=post.toMap();
+        Map<String,Object> childUpdate=new HashMap<>();
+        childUpdate.put(getString(R.string.posts_CODE)+post.getPostID(),updatePost);
         ReportDialog reportDialog = new ReportDialog();
+        reportDialog.setChildUpdate(childUpdate);
         reportDialog.setReport(REPORT_POST, post);
         reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
         reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
             @Override
             public void onPositive(boolean isClicked, Map<String,
-                    Object> childUpdate, final Dialog dialog) {
+                    Object> childUpdate, final Dialog dialog,String key) {
                 if (isClicked) {
+                    keyReport=key;
                     dialog.dismiss();
                     plzw8Dialog.show();
+                    childUpdate= notificationToUser(childUpdate,3,2);
                     dbRef.updateChildren(childUpdate)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
+                                    loadMenu();
                                     plzw8Dialog.dismiss();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
@@ -878,48 +900,31 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             final ValueEventListener reportPost =new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.getValue()==null){
-                        dbRef.updateChildren(childUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                pubMenu.clear();
-                                PostdetailActivity.this.onCreateOptionsMenu(pubMenu);
-                                plzw8Dialog.cancel();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                plzw8Dialog.cancel();
-                                Toast.makeText(getApplicationContext(),
-                                        e.getMessage(), Toast.LENGTH_LONG)
-                                        .show();
-                            }
-                        });
-                    }else {
+                    if(dataSnapshot.getValue()!=null){
                         for(DataSnapshot item: dataSnapshot.getChildren()) {
                             ReportpostNotify reportpostNotify = item.getValue(ReportpostNotify.class);
                             reportpostNotify.setId(item.getKey());
-                            reportpostNotify.setApprove(isApprove);
+                            reportpostNotify.setApprove(!isApprove);
                             Map<String, Object> updateReport = reportpostNotify.toMap();
                             childUpdate.put(getString(R.string.reportPost_CODE) + item.getKey(), updateReport);
                         }
-                        dbRef.updateChildren(childUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                pubMenu.clear();
-                                PostdetailActivity.this.onCreateOptionsMenu(pubMenu);
-                                plzw8Dialog.cancel();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                plzw8Dialog.cancel();
-                                Toast.makeText(getApplicationContext(),
-                                        e.getMessage(), Toast.LENGTH_LONG)
-                                        .show();
-                            }
-                        });
                     }
+                    dbRef.updateChildren(childUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                           loadMenu();
+                            plzw8Dialog.cancel();
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            plzw8Dialog.cancel();
+                            Toast.makeText(getApplicationContext(),
+                                    e.getMessage(), Toast.LENGTH_LONG)
+                                    .show();
+                        }
+                    });
                 }
 
                 @Override
@@ -932,33 +937,43 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                     .equalTo(postID)
                     .addListenerForSingleValueEvent(reportPost);
     }
-    private void showPost() {
+    private void showPost(final int postType) {
         plzw8Dialog.show();
-        post.setHidden(false);
-        String key = post.getPostID();
-//        Toast.makeText(StoreDeatailActivity.this,
-//                key, Toast.LENGTH_SHORT).show();
-        Post childPost = post;
-        Map<String, Object> postValue = childPost.toMap();
         Map<String, Object> childUpdate = new HashMap<>();
-        childUpdate.put(getString(R.string.posts_CODE)
-                + key + "/" + "isHidden", false);
-        childUpdate.put(getString(R.string.posts_CODE)
-                + key + "/" + "isHidden_dist_prov", false
-                + "_" + post.getDist_pro());
-        childUpdate.put(getString(R.string.posts_CODE)
-                + key + "/" + "isHidden_foodID", false
-                + "_" + post.getFoodID());
-        childUpdate.put(getString(R.string.posts_CODE)
-                + key + "/" + "isHidden_storeID", false
-                + "_" + post.getStoreID());
-        childUpdate.put(getString(R.string.posts_CODE)
-                + key + "/" + "isHidden_uID", false
-                + "_" + post.getUserID());
+        switch (post.getPostType()){
+            case 0:
+                childUpdate =notificationToUser(childUpdate,1,2);
+                break;
+            case 3:
+                childUpdate= notificationToUser(childUpdate,2,2);
+                break;
+        }
+        post.setHidden(false);
+        post.setPostType(postType);
+
+        String key = post.getPostID();
+        Map<String, Object> postValue = post.toMap();
+
+        childUpdate.put(getString(R.string.posts_CODE)+key,postValue);
+//        childUpdate.put(getString(R.string.posts_CODE)
+//                + key + "/" + "isHidden", false);
+//        childUpdate.put(getString(R.string.posts_CODE)
+//                + key + "/" + "isHidden_dist_prov", false
+//                + "_" + post.getDist_pro());
+//        childUpdate.put(getString(R.string.posts_CODE)
+//                + key + "/" + "isHidden_foodID", false
+//                + "_" + post.getFoodID());
+//        childUpdate.put(getString(R.string.posts_CODE)
+//                + key + "/" + "isHidden_storeID", false
+//                + "_" + post.getStoreID());
+//        childUpdate.put(getString(R.string.posts_CODE)
+//                + key + "/" + "isHidden_uID", false
+//                + "_" + post.getUserID());
+
         approveReport(childUpdate,false);
     }
 
-    private void hidePost() {
+    private void hidePost(final int postType) {
         new AlertDialog.Builder(this)
                 .setCancelable(true)
                 .setMessage(getString(R.string.txt_hideconfirm))
@@ -969,25 +984,36 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                                     final DialogInterface dialogInterface, int i) {
                                 dialogInterface.cancel();
                                 plzw8Dialog.show();
+                                Map<String, Object> childUpdate = new HashMap<>();
+                                switch (post.getPostType()){
+                                case 0:
+                                    childUpdate=notificationToUser(childUpdate,-1,2);
+                                break;
+                                case 3:
+                                    childUpdate= notificationToUser(childUpdate,-2,2);
+                                break;
+                            }
+                                post.setPostType(postType);
                                 post.setHidden(true);
                                 String key = post.getPostID();
-                                Post childPost = post;
-                                Map<String, Object> postValue = childPost.toMap();
-                                Map<String, Object> childUpdate = new HashMap<>();
-                                childUpdate.put(getString(R.string.posts_CODE)
-                                        + key + "/" + "isHidden", true);
-                                childUpdate.put(getString(R.string.posts_CODE)
-                                        + key + "/" + "isHidden_dist_prov", true
-                                        + "_" + post.getDist_pro());
-                                childUpdate.put(getString(R.string.posts_CODE)
-                                        + key + "/" + "isHidden_foodID", true
-                                        + "_" + post.getFoodID());
-                                childUpdate.put(getString(R.string.posts_CODE)
-                                        + key + "/" + "isHidden_storeID", true
-                                        + "_" + post.getStoreID());
-                                childUpdate.put(getString(R.string.posts_CODE)
-                                        + key + "/" + "isHidden_uID", true
-                                        + "_" + post.getUserID());
+
+                                Map<String, Object> postValue = post.toMap();
+
+                                childUpdate.put(getString(R.string.posts_CODE)+key,postValue);
+//                                childUpdate.put(getString(R.string.posts_CODE)
+//                                        + key + "/" + "isHidden", true);
+//                                childUpdate.put(getString(R.string.posts_CODE)
+//                                        + key + "/" + "isHidden_dist_prov", true
+//                                        + "_" + post.getDist_pro());
+//                                childUpdate.put(getString(R.string.posts_CODE)
+//                                        + key + "/" + "isHidden_foodID", true
+//                                        + "_" + post.getFoodID());
+//                                childUpdate.put(getString(R.string.posts_CODE)
+//                                        + key + "/" + "isHidden_storeID", true
+//                                        + "_" + post.getStoreID());
+//                                childUpdate.put(getString(R.string.posts_CODE)
+//                                        + key + "/" + "isHidden_uID", true
+//                                        + "_" + post.getUserID());
                                 approveReport(childUpdate,true);
                             }
                         })
@@ -1001,7 +1027,135 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                         })
                 .show();
     }
+    private void getStoreDetail(String id) {
+        try {
+            ValueEventListener storeEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
+                        store = dataSnapshot.getValue(Store.class);
+                        store.setStoreID(dataSnapshot.getKey());
+
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+
+                dbRef.child(getString(R.string.store_CODE)+id)
+                        .addListenerForSingleValueEvent(storeEventListener);
+
+        }catch (Exception e){
+
+        }
+    }
+    public Map<String,Object> notificationToUser(Map<String,Object> childUpdate,int status,int type){
+
+        switch (status){
+            case 1:
+                //accept
+                //Notification to user who follow this post
+                for(String mUerId: store.getUsersFollow()) {
+                    try {
+                        if(mUerId!=null) {
+                            if (!post.getUserID().toLowerCase().equals(mUerId.toLowerCase())) {
+                                UserNotification userNotification = new UserNotification();
+                                userNotification.setPostID(post.getPostID());
+                                userNotification.setStatus(0);
+                                userNotification.setType(type);
+                                userNotification.setShown(true);
+                                userNotification.setUserEffectId(post.getUserID());
+                                userNotification.setUserEffectName(post.getUn());
+                                Map<String, Object> userNotificationMap = userNotification.toMap();
+                                String key = dbRef.child(getString(R.string.user_notification_CODE) + mUerId).push().getKey();
+                                childUpdate.put(getString(R.string.user_notification_CODE) + mUerId + "/" + key, userNotificationMap);
+                            }
+                        }
+                    }catch (Exception e){
+
+                    }
+                }
+                UserNotification userNotification=new UserNotification();
+                userNotification.setPostID(post.getPostID());
+                userNotification.setType(type);userNotification.setShown(true);
+                userNotification.setStatus(status);
+                userNotification.setƠwner(true);
+                Map<String,Object> userNotificationMap=userNotification.toMap();
+                String key =dbRef.child(getString(R.string.user_notification_CODE)+post.getUserID()).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE)+post.getUserID()+"/"+key,userNotificationMap);
+
+                if(!store.getUserID().toLowerCase().equals(post.getUserID().toLowerCase())){
+                    UserNotification userEffectNotification=new UserNotification();
+                    userEffectNotification.setPostID(post.getPostID());
+                    userEffectNotification.setType(type);
+                    userEffectNotification.setShown(true);
+                    userEffectNotification.setStatus(status);
+                    userEffectNotification.setƠwner(true);
+                    userEffectNotification.setUserEffectId(post.getUserID());
+                    userEffectNotification.setUserEffectName(post.getUn());
+                    Map<String,Object> userEffectNotificationMap=userEffectNotification.toMap();
+                    String userEffectKey =dbRef.child(getString(R.string.user_notification_CODE)+store.getUserID()).push().getKey();
+                    childUpdate.put(getString(R.string.user_notification_CODE)+store.getUserID()+"/"+userEffectKey,userEffectNotificationMap);
+                }
+                break;
+            //reject
+            case -1:
+                UserNotification userRejectNotification=new UserNotification();
+                userRejectNotification.setPostID(post.getPostID());
+                userRejectNotification.setType(type);userRejectNotification.setShown(true);
+                userRejectNotification.setStatus(status);
+                userRejectNotification.setƠwner(true);
+                Map<String,Object> userRejectNotificationMap=userRejectNotification.toMap();
+                String userRejectKey =dbRef.child(getString(R.string.user_notification_CODE)+post.getUserID()).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE)+post.getUserID()+"/"+userRejectKey,userRejectNotificationMap);
+                break;
+            //was reported
+            case 3:
+                UserNotification userReport=new UserNotification();
+                userReport.setPostID(post.getPostID());
+                userReport.setType(type);userReport.setShown(true);
+                userReport.setStatus(status);
+                userReport.setƠwner(true);
+                userReport.setUserEffectId(LoginSession.getInstance().getUser().getuID());
+                userReport.setUserEffectName(LoginSession.getInstance().getUser().getUn());
+                userReport.setReportId(keyReport);
+                Map<String,Object> userReportMap=userReport.toMap();
+                String keyReportNoti =dbRef.child(getString(R.string.user_notification_CODE)+post.getUserID()).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE)+post.getUserID()+"/"+keyReportNoti,userReportMap);
+                break;
+            //reject report
+            case 2:
+                UserNotification userRejectReport=new UserNotification();
+                userRejectReport.setPostID(post.getPostID());
+                userRejectReport.setType(type);userRejectReport.setShown(true);
+                userRejectReport.setStatus(status);
+
+                userRejectReport.setƠwner(true);
+                userRejectReport.setReportId(keyReport);
+                Map<String,Object> userRejectReportMap=userRejectReport.toMap();
+                String keyuserRejectReportNoti =dbRef.child(getString(R.string.user_notification_CODE)+post.getUserID()).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE)+post.getUserID()+"/"+keyuserRejectReportNoti,userRejectReportMap);
+                break;
+            //accept report
+            case -2:
+                UserNotification userAcceptReport=new UserNotification();
+                userAcceptReport.setPostID(post.getPostID());
+                userAcceptReport.setType(type);userAcceptReport.setShown(true);
+                userAcceptReport.setStatus(status);
+
+                userAcceptReport.setƠwner(true);
+                userAcceptReport.setReportId(keyReport);
+                Map<String,Object> userAcceptReportMap=userAcceptReport.toMap();
+                String keyuserAcceptReportNoti =dbRef.child(getString(R.string.user_notification_CODE)+post.getUserID()).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE)+post.getUserID()+"/"+keyuserAcceptReportNoti,userAcceptReportMap);
+                break;
+        }
+
+        return childUpdate;
+    }
     @Override
     public void onStop() {
         super.onStop();
@@ -1045,7 +1199,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                 userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
                 userNotification.setType(3);userNotification.setShown(true);
                 userNotification.setPostID(post.getPostID());
-                userNotification.setƠwnPost(false);
+                userNotification.setƠwner(false);
                 Map<String,Object> userNotificationMap=userNotification.toMap();
                 String key =dbRef.child(getString(R.string.user_notification_CODE)+mUSer).push().getKey();
                 childUpdate.put(getString(R.string.user_notification_CODE)+mUSer+"/"+key,userNotificationMap);
@@ -1060,7 +1214,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
             userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
             userNotification.setType(3);userNotification.setShown(true);
-            userNotification.setƠwnPost(true);
+            userNotification.setƠwner(true);
             userNotification.setPostID(post.getPostID());
             Map<String,Object> userNotificationMap=userNotification.toMap();
             String key =dbRef.child(getString(R.string.user_notification_CODE)+post.getUserID()).push().getKey();

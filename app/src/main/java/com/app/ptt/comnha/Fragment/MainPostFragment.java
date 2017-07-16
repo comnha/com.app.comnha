@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,15 +68,7 @@ public class MainPostFragment extends Fragment  {
                 .getReferenceFromUrl(Const.STORAGE_PATH);
         ref(view);
 
-        if (null != CoreManager.getInstance().getMyLocation()) {
-            dist_pro = CoreManager.getInstance().getMyLocation().getDistrict()
-                    + "_" + CoreManager.getInstance().getMyLocation().getProvince();
-            Log.d(TAG, "dist_pro: " + dist_pro);
-            getPostList(dist_pro);
-        } else {
-            if (getView() != null)
-                AppUtils.showSnackbarWithoutButton(getView(), "Không tìm thấy vị trí của bạn");
-        }
+
 
         return view;
     }
@@ -203,7 +196,19 @@ public class MainPostFragment extends Fragment  {
         mBroadcastReceiver = new LocationChange();
         broadcastIntent = new Intent();
         getActivity().registerReceiver(mBroadcastReceiver, mIntentFilter);
-        getPostList(dist_pro);
+        if (null != CoreManager.getInstance().getMyLocation()) {
+            if(TextUtils.isEmpty(CoreManager.getInstance().getHuyen())&&TextUtils.isEmpty(CoreManager.getInstance().getTinh())) {
+                dist_pro = CoreManager.getInstance().getMyLocation().getDistrict()
+                        + "_" + CoreManager.getInstance().getMyLocation().getProvince();
+            }else{
+                dist_pro = CoreManager.getInstance().getHuyen()
+                        + "_" + CoreManager.getInstance().getTinh();
+            }
+            getPostList(dist_pro);
+        } else {
+            if (getView() != null)
+                AppUtils.showSnackbarWithoutButton(getView(), "Không tìm thấy vị trí của bạn");
+        }
     }
 
     @Override

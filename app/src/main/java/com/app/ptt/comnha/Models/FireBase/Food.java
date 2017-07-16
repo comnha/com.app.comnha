@@ -26,6 +26,10 @@ public class Food {
     //creator
     String userID;
 
+
+
+    String userName;
+
     //food of store
     String storeID;
     //phép kết
@@ -35,8 +39,28 @@ public class Food {
     isHidden_uID;//món ăn theo location
 
 
-    private Bitmap imgBitmap = null;
 
+    //post type =0 chua dc duyet, isHidden=true;
+    //1: accept
+    //-1: reject
+    //3: was reported
+    //2: reject report
+    //-2: accept report
+    int foodType;
+    private Bitmap imgBitmap = null;
+    public int getFoodType() {
+        return foodType;
+    }
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+    public void setFoodType(int foodType) {
+        this.foodType = foodType;
+    }
     public Map<String, Object> toMap() {
         Map<String, Object> result = new HashMap<>();
         result.put("name", name);
@@ -48,6 +72,7 @@ public class Food {
         result.put("rating", rating);
         result.put("total", total);
         result.put("type", type);
+        result.put("userName",userName);
         result.put("isHidden", isHidden);
         result.put("userID", userID);
         result.put("storeID", storeID);
@@ -56,6 +81,7 @@ public class Food {
         result.put("dist_prov", dist_prov);
         result.put("isHidden_dist_prov", isHidden + "_"
                 + dist_prov);
+        result.put("foodType",foodType);
         return result;
     }
 

@@ -41,8 +41,11 @@ import com.app.ptt.comnha.Adapters.SingleImageImportRvAdapter;
 import com.app.ptt.comnha.Classes.SelectedImage;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Models.FireBase.Food;
+import com.app.ptt.comnha.Models.FireBase.NewfoodNotify;
+import com.app.ptt.comnha.Models.FireBase.NewpostNotify;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.FireBase.UserNotification;
+import com.app.ptt.comnha.Modules.Times;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
@@ -440,40 +443,34 @@ public class AddFoodDialog extends DialogFragment implements View.OnClickListene
                 0, LoginSession.getInstance().getFirebUser().getUid(),
                 store.getStoreID(), store.getDistrict(), store.getProvince(),
                 avatarname);
+        newFood.setUserName(LoginSession.getInstance().getUser().getUn());
         key = dbRef.child(getResources().getString(R.string.food_CODE)).push().getKey();
-        Map<String, Object> foodvalue = newFood.toMap();
         childUpdates = new HashMap<>();
+        if(LoginSession.getInstance().getUser().getRole()>0){
+            newFood.setHidden(false);
+            newFood.setFoodType(2);
+        }else {
+            newFood.setHidden(true);
+            newFood.setFoodType(0);
+            NewfoodNotify newfoodNotify = new NewfoodNotify();
+            newfoodNotify.setDate( new Times().getDate());
+            newfoodNotify.setName(newFood.getName());
+            newfoodNotify.setDistrict_province(store.getDistrict()+"_"+store.getProvince());
+            newfoodNotify.setFoodID(key);
+            newfoodNotify.setUn(LoginSession.getInstance().getUser().getUn());
+            newfoodNotify.setUserID(LoginSession.getInstance().getUser().getuID());
+            String notiKey = dbRef.child(getString(R.string.notify_newfood_CODE))
+                    .push().getKey();
+            Map<String, Object> notifyValue = newfoodNotify.toMap();
+            childUpdates.put(
+                    getResources().getString(R.string.notify_newfood_CODE)
+                            + notiKey, notifyValue);
+        }
+        Map<String, Object> foodvalue = newFood.toMap();
         childUpdates.put(
                 getResources().getString(R.string.food_CODE)
                         + key, foodvalue);
-            for(String mUerId: store.getUsersFollow()){
-                UserNotification userNotification=new UserNotification();
-                userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
-                userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
-                userNotification.setFoodId(key);
-                userNotification.setShown(true);
-                userNotification.setStoreID(store.getStoreID());
-                userNotification.setFoodName(name);
-                userNotification.setƠwnPost(false);
-                userNotification.setType(4);
-                Map<String,Object> userNotificationMap=userNotification.toMap();
-                String key =dbRef.child(getString(R.string.user_notification_CODE)+mUerId).push().getKey();
-                childUpdates.put(getString(R.string.user_notification_CODE)+mUerId+"/"+key,userNotificationMap);
-            }
-        if(!LoginSession.getInstance().getUser().getuID().toLowerCase().equals(store.getUserID().toLowerCase())){
-            UserNotification userNotification=new UserNotification();
-            userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
-            userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
-            userNotification.setFoodId(key);
-            userNotification.setShown(true);
-            userNotification.setFoodName(name);
-            userNotification.setStoreID(store.getStoreID());
-            userNotification.setƠwnPost(true);
-            userNotification.setType(4);
-            Map<String,Object> userNotificationMap=userNotification.toMap();
-            String key =dbRef.child(getString(R.string.user_notification_CODE)+store.getUserID()).push().getKey();
-            childUpdates.put(getString(R.string.user_notification_CODE)+store.getUserID()+"/"+key,userNotificationMap);
-        }
+
 
 
 
@@ -488,7 +485,11 @@ public class AddFoodDialog extends DialogFragment implements View.OnClickListene
                             @Override
                             public void onSuccess(Void aVoid) {
                                 mProgressDialog.dismiss();
-                                getDialog().dismiss();
+                                try {
+                                    getDialog().dismiss();
+                                }catch (Exception e){
+
+                                }
                                 Toast.makeText(getContext(),
                                         getString(R.string.text_addfood_succ),
                                         Toast.LENGTH_SHORT)
@@ -497,7 +498,7 @@ public class AddFoodDialog extends DialogFragment implements View.OnClickListene
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        mProgressDialog.cancel();
+                        mProgressDialog.dismiss();
                         Toast.makeText(getContext(),
                                 getString(R.string.text_addfood_failed),
                                 Toast.LENGTH_SHORT).show();
@@ -507,7 +508,7 @@ public class AddFoodDialog extends DialogFragment implements View.OnClickListene
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                mProgressDialog.cancel();
+                mProgressDialog.dismiss();
                 Toast.makeText(getContext(), getString(R.string.txt_failedUploadImg)
                         , Toast.LENGTH_SHORT).show();
             }

@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -68,16 +71,7 @@ public class MainStoreFragment extends Fragment {
         stRef = FirebaseStorage.getInstance().getReferenceFromUrl(
                 getString(R.string.firebaseStorage_path));
         ref(view);
-        if (null != CoreManager.getInstance().getMyLocation()) {
-            dist_pro = CoreManager.getInstance().getMyLocation().getDistrict()
-                    + "_" + CoreManager.getInstance().getMyLocation().getProvince();
-            getStoreList(dist_pro);
-        } else {
-            if (getView() != null) {
 
-                AppUtils.showSnackbarWithoutButton(getView(), "Không tìm thấy vị trí của bạn");
-            }
-        }
         myTool = new MyTool(getActivity());
 
         return view;
@@ -225,6 +219,21 @@ public class MainStoreFragment extends Fragment {
         mBroadcastReceiver = new LocationChange();
         broadcastIntent = new Intent();
         getActivity().registerReceiver(mBroadcastReceiver, mIntentFilter);
+        if (null != CoreManager.getInstance().getMyLocation()) {
+            if(TextUtils.isEmpty(CoreManager.getInstance().getHuyen())&&TextUtils.isEmpty(CoreManager.getInstance().getTinh())) {
+                dist_pro = CoreManager.getInstance().getMyLocation().getDistrict()
+                        + "_" + CoreManager.getInstance().getMyLocation().getProvince();
+            }else{
+                dist_pro = CoreManager.getInstance().getHuyen()
+                        + "_" + CoreManager.getInstance().getTinh();
+            }
+            getStoreList(dist_pro);
+        } else {
+            if (getView() != null) {
+
+                AppUtils.showSnackbarWithoutButton(getView(), "Không tìm thấy vị trí của bạn");
+            }
+        }
     }
 
     @Override

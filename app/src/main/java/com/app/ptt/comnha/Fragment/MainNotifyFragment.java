@@ -102,11 +102,18 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
                 getNotification();
             }
         });
-        getReport();
+
 
         Comunication.onMItemListener=this;
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getReport();
+    }
+
     private void getReport(){
 
         ValueEventListener postReport=new ValueEventListener() {
@@ -177,22 +184,28 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
 
     }
     private boolean checkExistInReport(UserNotification id){
-
+        boolean result=false;
         for(String mId:idReports){
             if(id.getType()==1 &&id.getStoreID().toLowerCase().equals(mId.toLowerCase())){
-                return true;
+                result= true;
             }
             if(id.getType()==4 &&id.getFoodId().toLowerCase().equals(mId.toLowerCase())){
-                return true;
+                result= true;
             }
 
             if((id.getType()==3 ||id.getType()==2) &&id.getPostID().toLowerCase().equals(mId.toLowerCase())){
-                return true;
+                result= true;
+            }
+            if(result) {
+                if (id.getStatus() != -2 || id.getStatus() != 2 || id.getStatus() != 3) {
+                    result = false;
+                }
             }
         }
-        return false;
+        return result;
     }
     private void getNotification(){
+        list.clear();
         if(LoginSession.getInstance().getUser()!=null) {
             try {
                 ValueEventListener valueEventListener=new ValueEventListener() {

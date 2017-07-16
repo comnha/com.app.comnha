@@ -241,7 +241,7 @@ public class AdminNewPostFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 post = dataSnapshot.getValue(Post.class);
                 String key = dataSnapshot.getKey();
-                post.setStoreID(key);
+                post.setPostID(key);
                 ChoosePost.getInstance().setPost(post);
                 Intent intent_openstore = new Intent(getActivity(),
                         PostdetailActivity.class);
@@ -257,7 +257,8 @@ public class AdminNewPostFragment extends Fragment {
         };
         dbRef.child(getString(R.string.posts_CODE) +
                 notify.getPostID())
-                .addListenerForSingleValueEvent(postEventListener);
+                .addListenerForSingleValueEvent(
+                        postEventListener);
     }
 
     private void getdata() {
@@ -293,10 +294,10 @@ public class AdminNewPostFragment extends Fragment {
             dbRef.child(getString(R.string.notify_newpost_CODE))
                     .orderByChild("district_province")
                     .equalTo(dist_pro)
-                    .addValueEventListener(notiEventListener);
+                    .addListenerForSingleValueEvent(notiEventListener);
         }else {
             dbRef.child(getString(R.string.notify_newpost_CODE))
-                    .addValueEventListener(notiEventListener);
+                    .addListenerForSingleValueEvent(notiEventListener);
         }
     }
     public void sortList(){

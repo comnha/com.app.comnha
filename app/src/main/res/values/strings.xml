@@ -75,6 +75,7 @@
     <string name="text_addfood_succ">Bạn vừa thêm món</string>
     <string name="text_addfood_failed">Lỗi thêm món ăn</string>
     <string name="text_addloca_succ">Thêm địa điểm thành công</string>
+    <string name="text_addloca_succ_user">Thêm địa điểm thành công, đang chờ admin duyệt</string>
     <string name="title_activity_nav_draw">NavDrawActivity</string>
     <string name="text_addloca">Thêm địa điểm mới</string>
     <string name="text_dangreview">Thêm review</string>
@@ -223,6 +224,7 @@
     <string name="food_CODE">Foods/</string>
     <string name="notify_newstore_CODE">NotifyNewStore/</string>
     <string name="notify_newpost_CODE">NotifyNewPost/</string>
+    <string name="notify_newfood_CODE">NotifyNewFood/</string>
     <string name="user_notification_CODE">UserNotification/</string>
     <string name="locathucdon_CODE">StoreFood/</string>
     <string name="store_CODE">Stores/</string>
@@ -604,6 +606,7 @@
     <string name="txt_banner">Ảnh bìa</string>
 
     <string name="text_block_writepost">Chặn \"Viết Review\"</string>
+    <string name="text_block_addfood">Chặn \"Thêm món ăn\"</string>
     <string name="text_block_addstore">Chặn \"Thêm quán ăn\"</string>
     <string name="nav_setting">Cài đặt</string>
     <string name="nav_aboutus">Thông tin ứng dụng</string>
@@ -618,6 +621,8 @@
     <string name="txt_tryagain">Xin thử lại</string>
     <string name="txt_failedUploadImg">Upload hình ảnh không thành công</string>
     <string name="text_failedaddloca">Thêm địa điểm mới không thành công</string>
+    <string name="text_failededitloca">Sửa địa điểm không thành công</string>
+    <string name="text_okededitloca">Sửa địa điểm  thành công</string>
     <string name="txt_notread">Chưa đọc</string>
     <string name="txt_read">Đã đọc</string>
     <string name="txt_storeaddby">Thêm bởi:&#160;</string>
@@ -651,7 +656,22 @@
     <string name="txt_good">Ngon</string>
     <string name="txt_toofuckinggood">Tuyệt vời</string>
     <string name="text_hidepost">Ẩn bài viết</string>
-    <string name="txt_showpost">Hiện bài viết</string>
+
+    <string name="txt_acceptpost">Hiện bài viết mới</string>
+    <string name="txt_rejectpost">Ẩn bài viết mới</string>
+    <string name="txt_acceptpostreport">Hiện bài viết bị báo cáo</string>
+    <string name="txt_rejectpostreport">Ẩn bài viết bị báo cáo</string>
+
+    <string name="txt_acceptstore">Hiện quán ăn mới</string>
+    <string name="txt_rejectstore">Ẩn quán ăn mới</string>
+    <string name="txt_acceptstorereport">Hiện quán ăn bị báo cáo</string>
+    <string name="txt_rejectstorereport">Ẩn quán ăn bị báo cáo</string>
+
+    <string name="txt_acceptfood">Hiện món ăn mới</string>
+    <string name="txt_rejectfood">Ẩn món ăn mới</string>
+    <string name="txt_acceptfoodreport">Hiện món ăn bị báo cáo</string>
+    <string name="txt_rejectfoodreport">Ẩn món ăn bị báo cáo</string>
+
     <string name="txt_yourphoto">Ảnh của bạn</string>
     <string name="txt_youracti">Hoạt động của bạn</string>
     <string name="txt_male">Nam</string>

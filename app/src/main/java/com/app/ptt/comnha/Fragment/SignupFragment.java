@@ -238,14 +238,13 @@ public class SignupFragment extends BaseFragment implements DialogInterface.OnCa
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
-
                     Intent intent = new Intent(getActivity().getApplicationContext(), AdapterActivity.class);
                     intent.putExtra(getActivity().getResources().getString(R.string.fragment_CODE),
                             getActivity().getResources().getString(R.string.frg_signin_CODE));
                     intent.putExtra("email", AppUtils.getText(editText_email));
                     intent.putExtra("pass", AppUtils.getText(editText_password));
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getActivity().startActivity(intent);
                 } else {
                     AppUtils.showSnackbarWithoutButton(getView(), getString(R.string.txt_tryagain));
                 }

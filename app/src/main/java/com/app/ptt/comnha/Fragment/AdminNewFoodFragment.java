@@ -19,10 +19,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.app.ptt.comnha.Activity.AdapterActivity;
+import com.app.ptt.comnha.Adapters.notify_newfood_adapter;
 import com.app.ptt.comnha.Adapters.notify_reportfood_adapter;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Dialog.BlockUserDialog;
 import com.app.ptt.comnha.Models.FireBase.Food;
+import com.app.ptt.comnha.Models.FireBase.NewfoodNotify;
+import com.app.ptt.comnha.Models.FireBase.NewpostNotify;
 import com.app.ptt.comnha.Models.FireBase.ReportfoodNotify;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.FireBase.User;
@@ -45,19 +48,19 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AdminReportFoodFragment extends Fragment {
+public class AdminNewFoodFragment extends Fragment {
 
     ListView listView;
-    notify_reportfood_adapter itemadapter;
-    ArrayList<ReportfoodNotify> items;
+    notify_newfood_adapter itemadapter;
+    ArrayList<NewfoodNotify> items;
     DatabaseReference dbRef;
-    ValueEventListener reportEventListener, foodEventListener, userEventListener;
+    ValueEventListener newEventListener, foodEventListener, userEventListener;
     String dist_pro;
     Food food = null;
     ProgressDialog plzwaitDialog;
     User user;
-    Store store;
-    public AdminReportFoodFragment() {
+Store store;
+    public AdminNewFoodFragment() {
         // Required empty public constructor
     }
 
@@ -75,28 +78,28 @@ public class AdminReportFoodFragment extends Fragment {
             if (getView() != null)
                 AppUtils.showSnackbarWithoutButton(getView(), "Không tìm thấy vị trí của bạn");
         }
-        getFoodReport();
+        getFoodList();
         return view;
     }
 
     private void init(View view) {
         listView = (ListView) view.findViewById(R.id.listview_reportfood_frag);
         items = new ArrayList<>();
-        itemadapter = new notify_reportfood_adapter(getActivity(), items);
+        itemadapter = new notify_newfood_adapter(getActivity(), items);
         listView.setAdapter(itemadapter);
-        itemadapter.setOnItemClickLiestner(new notify_reportfood_adapter.OnItemClickLiestner() {
+        itemadapter.setOnItemClickLiestner(new notify_newfood_adapter.OnItemClickLiestner() {
             @Override
-            public void onItemClick(final ReportfoodNotify notify, Activity activity) {
+            public void onItemClick(final NewfoodNotify notify, Activity activity) {
                 plzwaitDialog.show();
                 if (!notify.isReadstate()) {
                     String key = notify.getId();
-                    ReportfoodNotify childNotify = notify;
+                    NewfoodNotify childNotify = notify;
                     notify.setReadstate(true);
                     childNotify.setReadstate(true);
                     Log.d("district_province", childNotify.getDistrict_province());
                     Map<String, Object> notifyValue = childNotify.toMap();
                     Map<String, Object> updateChild = new HashMap<>();
-                    updateChild.put(getString(R.string.reportFood_CODE) + key,
+                    updateChild.put(getString(R.string.notify_newfood_CODE) + key,
                             notifyValue);
                     dbRef.updateChildren(updateChild).addOnSuccessListener(
                             new OnSuccessListener<Void>() {
@@ -113,9 +116,9 @@ public class AdminReportFoodFragment extends Fragment {
             }
         });
         itemadapter.setOnOptionItemClickListener(
-                new notify_reportfood_adapter.OnOptionItemClickListener() {
+                new notify_newfood_adapter.OnOptionItemClickListener() {
                     @Override
-                    public void onDelNotify(final ReportfoodNotify notify) {
+                    public void onDelNotify(final NewfoodNotify notify) {
                         new AlertDialog.Builder(getContext())
                                 .setCancelable(true)
                                 .setMessage(getString(R.string.txt_delconfirm))
@@ -159,56 +162,35 @@ public class AdminReportFoodFragment extends Fragment {
                     }
 
                     @Override
-                    public void onBlockUser(ReportfoodNotify notify) {
+                    public void onBlockUser(NewfoodNotify notify) {
                         getUserInfo(notify);
                     }
-                });
+                }
+        );
         plzwaitDialog = AppUtils.setupProgressDialog(getContext(),
                 getString(R.string.txt_plzwait), null, false, false,
                 ProgressDialog.STYLE_SPINNER, 0);
     }
 
-    private void getUserInfo(ReportfoodNotify notify) {
-            userEventListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    plzwaitDialog.cancel();
-                    user = dataSnapshot.getValue(User.class);
-                    String key = dataSnapshot.getKey();
-                    user.setuID(key);
-                    blockUser(user);
-                }
+    private void getUserInfo(NewfoodNotify notify) {
+        userEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                plzwaitDialog.cancel();
+                user = dataSnapshot.getValue(User.class);
+                String key = dataSnapshot.getKey();
+                user.setuID(key);
+                blockUser(user);
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                }
-            };
-            dbRef.child(getString(R.string.users_CODE)
-                    + notify.getUserID())
-                    .addListenerForSingleValueEvent(userEventListener);
-    }
-
-    private void getFoodInfo(ReportfoodNotify notify) {
-            foodEventListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    food = dataSnapshot.getValue(Food.class);
-                    String key = dataSnapshot.getKey();
-                    food.setFoodID(key);
-                    ChooseFood.getInstance().setFood(food);
-                    getStore(food.getStoreID());
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            };
-            dbRef.child(getString(R.string.food_CODE) +
-                    notify.getFoodID())
-                    .addListenerForSingleValueEvent(foodEventListener);
+            }
+        };
+        dbRef.child(getString(R.string.users_CODE)
+                + notify.getUserID())
+                .addListenerForSingleValueEvent(userEventListener);
     }
     private void getStore(final String key) {
         try {
@@ -239,9 +221,29 @@ public class AdminReportFoodFragment extends Fragment {
 
         }
     }
+    private void getFoodInfo(NewfoodNotify notify) {
+        foodEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                food = dataSnapshot.getValue(Food.class);
+                String key = dataSnapshot.getKey();
+                food.setFoodID(key);
+                ChooseFood.getInstance().setFood(food);
+                getStore(food.getStoreID());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        dbRef.child(getString(R.string.food_CODE) +
+                notify.getFoodID())
+                .addListenerForSingleValueEvent(foodEventListener);
+    }
 
     private void blockUser(User user) {
-        if (user.isReportfoodBlocked()) {
+        if (user.isAddfoodBlocked()) {
             Toast.makeText(getContext(), getString(R.string.txt_blockeduser)
                     , Toast.LENGTH_LONG)
                     .show();
@@ -288,12 +290,12 @@ public class AdminReportFoodFragment extends Fragment {
 
     }
 
-    private void getFoodReport() {
-        reportEventListener = new ValueEventListener() {
+    private void getFoodList() {
+        ValueEventListener reportEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
-                    ReportfoodNotify item = dataItem.getValue(ReportfoodNotify.class);
+                    NewfoodNotify item = dataItem.getValue(NewfoodNotify.class);
                     String key = dataItem.getKey();
                     item.setId(key);
                     items.add(item);
@@ -306,7 +308,7 @@ public class AdminReportFoodFragment extends Fragment {
 
             }
         };
-        dbRef.child(getString(R.string.reportFood_CODE))
+        dbRef.child(getString(R.string.notify_newfood_CODE))
                 .orderByChild("district_province")
                 .equalTo(dist_pro)
                 .addListenerForSingleValueEvent(reportEventListener);
