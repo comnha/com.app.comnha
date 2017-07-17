@@ -212,8 +212,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             whatProvince = pickLocationDialog.checkProvine(CoreManager.getInstance().getMyLocation().getProvince(), getApplicationContext());
         }
         fm = getSupportFragmentManager();
-        llChangeLocation = (LinearLayout) findViewById(R.id.ll_change_location);
-        llChangeLocation.setVisibility(View.GONE);
+        //llChangeLocation = (LinearLayout) findViewById(R.id.ll_change_location);
         txtTinh = (TextView) findViewById(R.id.frg_map_txtProvince);
         txtHuyen = (TextView) findViewById(R.id.frg_map_txtDistrict);
 
@@ -415,7 +414,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.i(TAG, "onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem changeLocation = menu.findItem(R.id.action_changelocation_main);
         return true;
     }
 
@@ -428,9 +426,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 startActivity(intent_openSearch);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 return true;
-            case R.id.action_changelocation_main:
-                llChangeLocation.setVisibility(View.VISIBLE);
-                break;
+//            case R.id.action_changelocation_main:
+//                llChangeLocation.setVisibility(View.VISIBLE);
+//                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -752,7 +750,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public void onPickDistrict(String district) {
         huyen = district;
         txtHuyen.setText(huyen);
-        llChangeLocation.setVisibility(View.GONE);
         CoreManager.getInstance().setHuyen(huyen);
         CoreManager.getInstance().setTinh(tinh);
         if (tabLayout.getSelectedTabPosition() == 2) {

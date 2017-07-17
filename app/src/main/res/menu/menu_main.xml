@@ -6,8 +6,8 @@
         android:icon="@drawable/ic_search_white_24dp"
         android:title="@string/txt_search"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_changelocation_main"
-        android:title="@string/action_changeloca"
-        app:showAsAction="never" />
+    <!--<item-->
+        <!--android:id="@+id/action_changelocation_main"-->
+        <!--android:title="@string/action_changeloca"-->
+        <!--app:showAsAction="never" />-->
 </menu>

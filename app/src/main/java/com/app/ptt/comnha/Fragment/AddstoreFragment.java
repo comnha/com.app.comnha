@@ -344,15 +344,19 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
                 } else if (AppUtils.checkEmptyEdt(edt_phoneNumb)) {
                     edt_phoneNumb.setError(getText(R.string.txt_nophonenumb));
                 } else {
-                    if(checkChangeAddress(store)) {
+                    if(isEdit) {
+                        if (checkChangeAddress(store)) {
+                            new PlaceAPI(edt_address.getText().toString(), this);
+                        } else {
+                            address = store.getAddress();
+                            lat = store.getLat();
+                            lng = store.getLng();
+                            district = store.getDistrict();
+                            province = store.getProvince();
+                            savestore();
+                        }
+                    }else {
                         new PlaceAPI(edt_address.getText().toString(), this);
-                    }else{
-                        address=store.getAddress();
-                        lat=store.getLat();
-                        lng=store.getLng();
-                        district=store.getDistrict();
-                        province=store.getProvince();
-                        savestore();
                     }
                 }
                 break;

@@ -29,33 +29,65 @@
             app:tabGravity="fill"
             app:tabIndicatorColor="@android:color/white"
             app:tabMode="fixed" />
-        <LinearLayout
-            android:id="@+id/ll_change_location"
-            android:layout_width="match_parent"
-            android:background="@color/transparent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/frg_map_txtProvince"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_pick_location"
-                android:gravity="center"
-                android:layout_marginEnd="20dp"
-                android:layout_marginStart="20dp"
-                android:text="Tỉnh"
-                android:textColor="@android:color/white" />
-                <TextView
-                    android:id="@+id/frg_map_txtDistrict"
-                    android:layout_width="wrap_content"
+                  <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_pick_location"
-                    android:gravity="center"
-                    android:text="Huyện"
-                    android:layout_marginEnd="20dp"
-                    android:textColor="@android:color/white" />
+                    android:background="@color/transparent"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="5dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/frg_map_txtProvince"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_pick_location_no_radius"
+                        android:gravity="center"
+                        android:drawableEnd="@drawable/ic_arrow_drop_down_50black_24dp"
+                        android:layout_marginEnd="8dp" android:textColor="@color/black"
+                        android:layout_marginStart="8dp"  android:drawablePadding="5dp"
+                        android:text="Tỉnh"
+                       />
+                    <TextView
+                        android:id="@+id/frg_map_txtDistrict"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_pick_location_no_radius"
+                        android:gravity="center"
+                        android:drawableEnd="@drawable/ic_arrow_drop_down_50black_24dp"
+                        android:textColor="@color/black"
+                        android:text="Huyện" android:drawablePadding="5dp"
+                        android:layout_marginEnd="20dp"
+                        />
+                    <View
+                        android:layout_marginEnd="1dp"
+                        android:layout_marginStart="1dp"
+                        android:layout_width="1dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/gray"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_pick_location_no_radius"
+                        android:drawableEnd="@drawable/ic_arrow_drop_down_50black_24dp"
+                        android:text="Lọc"
+                        android:paddingStart="5dp"
+                        android:layout_marginStart="8dp" android:textColor="@color/black"
+                        android:gravity="center"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:drawablePadding="5dp"
+                        android:textSize="15sp"
+                        />
+                </LinearLayout>
 
-        </LinearLayout>
+            </android.support.v7.widget.CardView>
+
     </android.support.design.widget.AppBarLayout>
 
 
