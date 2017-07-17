@@ -407,6 +407,8 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         final Map<String, Object> childUpdate = new HashMap<>();
         final boolean[] isUploadImgSuccess = {false};
         String key,notifyKey;
+        store = new Store(storename, address, phonenumb, opentime,
+                province, district, lat, lng, userID, storeimg);
         if(!isEdit) {
             key = dbRef.child(getString(R.string.store_CODE)).push().getKey();
             notifyKey = dbRef.child(getString(R.string.notify_newstore_CODE))
@@ -426,8 +428,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         }else{
             key=store.getStoreID();
         }
-        store = new Store(storename, address, phonenumb, opentime,
-                province, district, lat, lng, userID, storeimg);
+
 
 
         Map<String, Object> storeValues = store.toMap();

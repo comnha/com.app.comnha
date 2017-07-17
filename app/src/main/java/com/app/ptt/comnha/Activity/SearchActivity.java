@@ -35,6 +35,7 @@ import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.SingletonClasses.CoreManager;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -240,6 +241,11 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
             }
         };
+
+        dbRef.child(getString(R.string.food_CODE))
+                .orderByChild("isHidden")
+                .equalTo(false)
+                .addValueEventListener(foodValueListener);
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -252,8 +258,6 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
             }
         });
-        dbRef.child(getString(R.string.food_CODE))
-                .addValueEventListener(foodValueListener);
     }
 
     public void getDataFiltered(int type) {
@@ -301,7 +305,6 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                     for (DataSnapshot item : dataSnapshot.getChildren()) {
                         Store store = item.getValue(Store.class);
                         store.setStoreID(item.getKey());
-                        Log.d("added", "added");
                         stores.add(store);
                         Search search = new Search();
                         search.setStore(store);
@@ -322,8 +325,15 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
                 }
             };
-            dbRef.child(getString(R.string.store_CODE))
-                    .addValueEventListener(childEventListener);
+            if (LoginSession.getInstance().getUser().getRole() != 0) {
+                dbRef.child(getString(R.string.store_CODE))
+                        .addValueEventListener(childEventListener);
+            } else {
+                dbRef.child(getString(R.string.store_CODE))
+                        .orderByChild("isHidden")
+                        .equalTo(false)
+                        .addValueEventListener(childEventListener);
+            }
             dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
