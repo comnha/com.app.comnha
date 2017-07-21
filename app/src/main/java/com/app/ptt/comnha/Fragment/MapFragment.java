@@ -822,12 +822,12 @@ public class MapFragment extends Fragment implements View.OnClickListener,
             }
 
         };
-        if (LoginSession.getInstance().getUser().getRole() != 0) {
+        if (LoginSession.getInstance().getUser()!=null && LoginSession.getInstance().getUser().getRole() != 0) {
             dbRef.child(getString(R.string.store_CODE)).limitToLast(seeMore)
                     .addChildEventListener(childEventListener);
         } else {
             dbRef.child(getString(R.string.store_CODE))
-                    .orderByChild("isHidden").equalTo(false)
+                    .orderByChild("isHidden").equalTo(false).limitToLast(seeMore)
                     .addChildEventListener(childEventListener);
         }
 

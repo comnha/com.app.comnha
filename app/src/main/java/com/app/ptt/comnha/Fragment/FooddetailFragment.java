@@ -33,7 +33,9 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.ptt.comnha.Activity.AdapterActivity;
 import com.app.ptt.comnha.Activity.PostdetailActivity;
+import com.app.ptt.comnha.Activity.StoreDeatailActivity;
 import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Dialog.AddFoodDialog;
@@ -77,6 +79,7 @@ public class FooddetailFragment extends Fragment {
     DatabaseReference dbRef;
     MenuInflater inflater;
     StorageReference stRef;
+    private static final int REQUEST_SIGNIN = 101;
     ArrayList<Food> foodList;
     RecyclerView postRecyclerView;
     Post_recycler_adapter postAdapter;
@@ -357,69 +360,101 @@ public class FooddetailFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.string.txt_report:
-                ReportDialog reportDialog = new ReportDialog();
-                Map<String,Object> childUpdate=new HashMap<>();
-                food.setHidden(true);
-                food.setFoodType(3);
-                Map<String,Object> newFood=food.toMap();
-                childUpdate.put(getString(R.string.food_CODE)+food.getFoodID(),newFood);
-                reportDialog.setChildUpdate(childUpdate);
-                reportDialog.setReport(REPORT_FOOD, food);
-                reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
-                reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
-                    @Override
-                    public void onPositive(boolean isClicked, Map<String,
-                            Object> childUpdate, final Dialog dialog, String key) {
-                        if (isClicked) {
-                            keyReport=key;
-                            dialog.dismiss();
-                            plzw8Dialog.show();
-                            childUpdate = notificationToUser(childUpdate, 3, 4);
-                            dbRef.updateChildren(childUpdate)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            plzw8Dialog.dismiss();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    dialog.show();
-                                    plzw8Dialog.dismiss();
-                                    Toast.makeText(getActivity(), e.getMessage(),
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            });
+                if (LoginSession.getInstance().getUser() != null) {
+                    ReportDialog reportDialog = new ReportDialog();
+                    Map<String,Object> childUpdate=new HashMap<>();
+                    food.setHidden(true);
+                    food.setFoodType(3);
+                    Map<String,Object> newFood=food.toMap();
+                    childUpdate.put(getString(R.string.food_CODE)+food.getFoodID(),newFood);
+                    reportDialog.setChildUpdate(childUpdate);
+                    reportDialog.setReport(REPORT_FOOD, food);
+                    reportDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.AddfoodDialog);
+                    reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
+                        @Override
+                        public void onPositive(boolean isClicked, Map<String,
+                                Object> childUpdate, final Dialog dialog, String key) {
+                            if (isClicked) {
+                                keyReport=key;
+                                dialog.dismiss();
+                                plzw8Dialog.show();
+                                childUpdate = notificationToUser(childUpdate, 3, 4);
+                                dbRef.updateChildren(childUpdate)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                plzw8Dialog.dismiss();
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        dialog.show();
+                                        plzw8Dialog.dismiss();
+                                        Toast.makeText(getActivity(), e.getMessage(),
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                });
 
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onNegative(boolean isClicked, Dialog dialog) {
-                        if (isClicked) {
-                            dialog.dismiss();
+                        @Override
+                        public void onNegative(boolean isClicked, Dialog dialog) {
+                            if (isClicked) {
+                                dialog.dismiss();
+                            }
                         }
-                    }
-                });
-                reportDialog.show(getActivity().getSupportFragmentManager(), "report_food");
+                    });
+                    reportDialog.show(getActivity().getSupportFragmentManager(), "report_food");
+                } else {
+                    requestSignin();
+                }
+
                 return true;
             case R.string.txt_changeinfo:
-                AddFoodDialog addFoodDialog = new AddFoodDialog();
-                addFoodDialog.setEditFoood(true, food);
-                addFoodDialog.show(getActivity()
-                        .getSupportFragmentManager(), "updatefood_dialog");
+                if (LoginSession.getInstance().getUser() != null) {
+                    AddFoodDialog addFoodDialog = new AddFoodDialog();
+                    addFoodDialog.setEditFoood(true, food);
+                    addFoodDialog.show(getActivity()
+                            .getSupportFragmentManager(), "updatefood_dialog");
+                } else {
+                    requestSignin();
+                }
+
+
+
                 return true;
             case R.string.txt_rejectfood:
+                if (LoginSession.getInstance().getUser() != null) {
                     hideFood(-2);
+                } else {
+                    requestSignin();
+                }
+
                 return true;
             case R.string.txt_acceptfood:
+                if (LoginSession.getInstance().getUser() != null) {
                     showFood(2);
+                } else {
+                    requestSignin();
+                }
+
+
                 return true;
             case R.string.txt_acceptfoodreport:
-                showFood(1);
+                if (LoginSession.getInstance().getUser() != null) {
+                    showFood(1);
+                } else {
+                    requestSignin();
+                }
+
                 return true;
             case R.string.txt_rejectfoodreport:
-                hideFood(-3);
+                if (LoginSession.getInstance().getUser() != null) {
+                    hideFood(-3);
+                } else {
+                    requestSignin();
+                }
                 return true;
             case R.string.txt_delfood:
                 return true;
@@ -427,7 +462,28 @@ public class FooddetailFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-
+    private void requestSignin() {
+        new AlertDialog.Builder(getActivity())
+                .setMessage(getString(R.string.txt_nologin)
+                        + "\n" + getString(R.string.txt_uneedlogin))
+                .setPositiveButton(getString(R.string.text_signin), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent_signin = new Intent(getActivity(),
+                                AdapterActivity.class);
+                        intent_signin.putExtra(getString(R.string.fragment_CODE),
+                                getString(R.string.frg_signin_CODE));
+                        intent_signin.putExtra("signinfromFoodDe", 1);
+                        startActivityForResult(intent_signin, REQUEST_SIGNIN);
+                    }
+                })
+                .setNegativeButton(getString(R.string.text_no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).show();
+    }
     private void showFood(int type) {
         plzw8Dialog.show();
         food.setHidden(false);

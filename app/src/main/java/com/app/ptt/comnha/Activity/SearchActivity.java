@@ -325,7 +325,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
                 }
             };
-            if (LoginSession.getInstance().getUser().getRole() != 0) {
+            if (LoginSession.getInstance().getUser()!=null && LoginSession.getInstance().getUser().getRole() != 0) {
                 dbRef.child(getString(R.string.store_CODE))
                         .addValueEventListener(childEventListener);
             } else {
