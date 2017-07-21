@@ -192,7 +192,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     LoginSession.getInstance().setUser(user);
                     LoginSession.getInstance().setFirebUser(firebaseUser);
                     mAuth.removeAuthStateListener(mAuthListener);
-                    getNotification();
+
                     closeDialog();
                 } catch (Exception e) {
                     mAuth.signOut();

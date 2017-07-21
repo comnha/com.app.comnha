@@ -95,7 +95,10 @@ public class SplashActivity extends BaseActivity {
                         startMainActi();
                     }
                 } catch (Exception e) {
-
+                    Log.d("onAuthStateChanged", "onAuthStateChanged:signed_out");
+                    LoginSession.getInstance().setFirebUser(null);
+                    LoginSession.getInstance().setUser(null);
+                    startMainActi();
                 }
             }
         };
@@ -124,6 +127,10 @@ public class SplashActivity extends BaseActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                Log.d("onAuthStateChanged", "onAuthStateChanged:signed_out");
+                LoginSession.getInstance().setFirebUser(null);
+                LoginSession.getInstance().setUser(null);
+                startMainActi();
             }
         };
         dbRef.child(getString(R.string.users_CODE)
