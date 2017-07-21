@@ -37,7 +37,10 @@ import com.app.ptt.comnha.Adapters.PlacesAutoCompleteAdapter;
 import com.app.ptt.comnha.Adapters.SingleImageImportRvAdapter;
 import com.app.ptt.comnha.Classes.SelectedImage;
 import com.app.ptt.comnha.Const.Const;
+import com.app.ptt.comnha.Models.FireBase.Food;
+import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.NewstoreNotify;
+import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Modules.LocationFinderListener;
 import com.app.ptt.comnha.Modules.PlaceAPI;
@@ -51,8 +54,11 @@ import com.app.ptt.comnha.Utils.AppUtils;
 import com.app.ptt.comnha.Utils.MyTool;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -77,8 +83,12 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
 {
     public static final String LOG = AddstoreFragment.class.getSimpleName();
     boolean isEdit;
+    Map<String, Object> childUpdate;
     EditText edt_storeName, edt_phoneNumb ;
     List<String> addressList;
+    List<Post> posts;
+    boolean isChangeLocation;
+    List<Food> foods;
     AutoCompleteTextView edt_address;
     Button btn_opentime, btn_closetime;
     ProgressDialog mProgressDialog, uploadImgDialog;
@@ -101,7 +111,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
     private BottomSheetDialog imgsDialog;
     private MyTool myTool;
     String storename, address, phonenumb,opentime,
-            province, district , storeimg = "";
+            province, district , storeimg = "",storeId;
     double lat, lng;
     String userID;//người tạo
     Store store;
@@ -159,11 +169,13 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
                 .getReferenceFromUrl(Const.DATABASE_PATH);
         stRef = FirebaseStorage.getInstance()
                 .getReferenceFromUrl(Const.STORAGE_PATH);
-        if(ChooseStore.getInstance().getStore()!=null){
-            store=ChooseStore.getInstance().getStore();
+        if(store!=null){
             editStore(store);
         }
         return view;
+    }
+    public void setEditStore(Store store){
+            this.store=store;
     }
 
     private void setupAutoCompleteTextView(){
@@ -178,7 +190,12 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         });
     }
     private void editStore(Store store){
+        posts=new ArrayList<>();
+        foods=new ArrayList<>();
+        getFoodList(store);
+        getPostList(store);
         isEdit=true;
+        storeId=store.getStoreID();
         edt_storeName.setText(store.getName());
         edt_address.setText(store.getAddress());
         edt_phoneNumb.setText(store.getPhonenumb());
@@ -397,6 +414,51 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
                 break;
         }
     }
+    private void getPostList(Store store) {
+        ValueEventListener postValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
+                    Post post = dataItem.getValue(Post.class);
+                    String key = dataItem.getKey();
+                    post.setPostID(key);
+                    posts.add(post);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        dbRef.child(getString(R.string.posts_CODE))
+                .orderByChild("isHidden_storeID")
+                .equalTo(false + "_" + store.getStoreID())
+                .addListenerForSingleValueEvent(postValueListener);
+    }
+    private void getFoodList(Store store) {
+
+        ValueEventListener foodValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataItem : dataSnapshot.getChildren()) {
+                    Food food = dataItem.getValue(Food.class);
+                    String key = dataItem.getKey();
+                    food.setFoodID(key);
+                    foods.add(food);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+            dbRef.child(getString(R.string.food_CODE))
+                    .orderByChild("isHidden_storeID")
+                    .equalTo(false + "_" + store.getStoreID())
+                    .addListenerForSingleValueEvent(foodValueListener);
+    }
     private boolean checkChangeAddress(Store store){
       if(!store.getAddress().trim().toLowerCase().equals(edt_address.getText().toString().trim().toLowerCase())){
           return true;
@@ -404,7 +466,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
       return false;
     }
     private void savestore() {
-        final Map<String, Object> childUpdate = new HashMap<>();
+        childUpdate = new HashMap<>();
         final boolean[] isUploadImgSuccess = {false};
         String key,notifyKey;
         store = new Store(storename, address, phonenumb, opentime,
@@ -426,7 +488,11 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
                         notifyValues);
             }
         }else{
-            key=store.getStoreID();
+            key=storeId;
+            if(isChangeLocation){
+                childUpdate=changeFoodStatus(childUpdate,district+"_"+province);
+                childUpdate=changePostStatus(childUpdate,district+"_"+province);
+            }
         }
 
 
@@ -500,7 +566,7 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
                                     Toast.makeText(getContext(), getString(R.string.text_failedaddloca)
                                             , Toast.LENGTH_LONG).show();
                                 }else{
-                                    Toast.makeText(getContext(), getString(R.string.text_failedaddloca)
+                                    Toast.makeText(getContext(), getString(R.string.text_failededitloca)
                                             , Toast.LENGTH_LONG).show();
                                 }
 
@@ -532,7 +598,22 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
-
+    public  Map<String, Object>  changePostStatus(Map<String, Object> childUpdate, String huyen_tinh){
+        for (Post post:posts){
+                post.setDist_pro(huyen_tinh);
+                Map<String, Object> map = post.toMap();
+                childUpdate.put(getString(R.string.posts_CODE) + post.getPostID(), map);
+        }
+        return childUpdate;
+    }
+    public  Map<String, Object>  changeFoodStatus(Map<String, Object> childUpdate, String huyen_tinh){
+        for (Food food:foods){
+                food.setDist_prov(huyen_tinh);
+                Map<String, Object> map = food.toMap();
+            childUpdate.put(getString(R.string.food_CODE) + food.getFoodID(), map);
+        }
+        return childUpdate;
+    }
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
         switch (edtID) {
@@ -604,6 +685,9 @@ public class AddstoreFragment extends Fragment implements View.OnClickListener, 
                             lng=placeAttribute.getPlaceLatLng().longitude;
                             district=placeAttribute.getDistrict();
                             province=placeAttribute.getState();
+                            if(isEdit){
+                                isChangeLocation=true;
+                            }
                             savestore();
                         }
                     })

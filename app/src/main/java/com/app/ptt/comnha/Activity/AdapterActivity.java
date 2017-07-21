@@ -47,6 +47,9 @@ public class AdapterActivity extends AppCompatActivity {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
                     AddstoreFragment addstoreFragment = new AddstoreFragment();
                     addstoreFragment.setArguments(getIntent().getExtras());
+                    if(getIntent().getSerializableExtra("STORE")!=null){
+                       addstoreFragment.setEditStore((Store)getIntent().getSerializableExtra("STORE"));
+                    }
                     getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, addstoreFragment).commit();
                 }
             }

@@ -340,15 +340,14 @@ public class FooddetailFragment extends Fragment {
 //                    contents.add(new Pair<Integer, String>
 //                            (R.string.text_hidepost, getString(R.string.text_hidepost)));
                 }
+            }
+            if (uID.equals(food.getUserID())) {
+                contents.add(new Pair<Integer, String>
+                        (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
             } else {
-                if (uID.equals(food.getUserID())) {
-                    contents.add(new Pair<Integer, String>
-                            (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
-                } else {
-                    contents.add(new Pair<Integer, String>
-                            (R.string.txt_report, getString(R.string.txt_report)));
+                contents.add(new Pair<Integer, String>
+                        (R.string.txt_report, getString(R.string.txt_report)));
 
-                }
             }
         }
         return contents;

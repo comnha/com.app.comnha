@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_newest"
+        android:title="@string/txt_filter_newest"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_high_light"
+        android:title="@string/txt_filter_hl"
+        app:showAsAction="never" />
+    <item android:id="@+id/menu_price"
+        android:title="@string/txt_filter_price"
+        app:showAsAction="never"/>
+    <item android:id="@+id/menu_vs"
+        android:title="@string/txt_filter_vs"
+        app:showAsAction="never"/>
+    <item android:id="@+id/menu_pv"
+        android:title="@string/txt_filter_pv"
+        app:showAsAction="never"/>
+    <item android:id="@+id/menu_distance"
+        android:title="@string/txt_filter_distance"
+        app:showAsAction="never"/>
+
+</menu>

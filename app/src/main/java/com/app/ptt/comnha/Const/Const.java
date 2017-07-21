@@ -34,11 +34,17 @@ public class Const {
     public static final String PREF_FIRST_PROFILE_LAUNCH = "PREF_FIRST_PROFILE_LAUNCH";
     public static final String PREF_MY_LOCATION = "PREF_MY_LOCATION";
     public static final String INTENT_KEY_RECEIVE_LOCATION = "INTENT_KEY_RECEIVE_LOCATION";
+    public static final String INTENT_KEY_USER_CHANGE = "INTENT_KEY_USER_CHANGE";
+    public static final String INTENT_KEY_SORT_STORE = "INTENT_KEY_SORT_STORE";
+    public static final String INTENT_KEY_SORT_POST = "INTENT_KEY_SORT_POST";
+    public static final String INTENT_KEY_SORT_STORE_TYPE = "INTENT_KEY_SORT_STORE_TYPE";
+    public static final String INTENT_KEY_SORT_POST_TYPE= "INTENT_KEY_SORT_POST_TYPE";
     public static final String INTENT_KEY_RECEIVE_LOCATION_TAB = "INTENT_KEY_RECEIVE_LOCATION_TAB";
     public static final String INTENT_KEY_NOTI_NEW_NOTI = "INTENT_KEY_NOTI_NEW_NOTI";
     public static final String INTENT_KEY_RELOAD_DATA= "INTENT_KEY_RELOAD_DATA";
     public static final String KEY_HUYEN = "KEY_HUYEN";
     public static final String KEY_TINH = "KEY_TINH";
+    public static final String KEY_SORT = "KEY_SORT";
     //
     public static final int PERMISSION_LOCATION_FLAG = 2;
     public static final String DECIMAL_1F = "%.1f";

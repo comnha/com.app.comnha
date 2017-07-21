@@ -57,7 +57,7 @@ public class YourAddFoodActivity extends AppCompatActivity {
 
     private void Ref() {
         rv_food = (RecyclerView) findViewById(R.id.rv_img_youraddfood);
-        foodLm = new GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL,
+        foodLm = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL,
                 false);
         rv_food.setLayoutManager(foodLm);
         foods = new ArrayList<>();

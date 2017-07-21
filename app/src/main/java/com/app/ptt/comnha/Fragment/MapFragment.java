@@ -52,6 +52,7 @@ import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.SingletonClasses.CoreManager;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.MyTool;
 import com.app.ptt.comnha.Utils.PlaceAPI;
 import com.github.clans.fab.FloatingActionButton;
@@ -821,8 +822,15 @@ public class MapFragment extends Fragment implements View.OnClickListener,
             }
 
         };
-        dbRef.child(getString(R.string.store_CODE)).limitToLast(seeMore)
-                .addChildEventListener(childEventListener);
+        if (LoginSession.getInstance().getUser().getRole() != 0) {
+            dbRef.child(getString(R.string.store_CODE)).limitToLast(seeMore)
+                    .addChildEventListener(childEventListener);
+        } else {
+            dbRef.child(getString(R.string.store_CODE))
+                    .orderByChild("isHidden").equalTo(false)
+                    .addChildEventListener(childEventListener);
+        }
+
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

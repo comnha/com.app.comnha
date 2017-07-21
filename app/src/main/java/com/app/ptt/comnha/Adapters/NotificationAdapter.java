@@ -207,9 +207,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 String textComment="";
                 textComment+=noti.getUserEffectName();
                 if(noti.isƠwner()){
-                    textComment+=" đã thêm 1 bình luận vào bài đăng của bạn";
+                    textComment+=" đã bình luận vào bài đăng của bạn";
                 }else{
-                    textComment+=" đã thêm 1 bình luận vào bài đăng bạn theo dõi";
+                    textComment+=" đã bình luận vào bài đăng bạn theo dõi";
                 }
 
                 final Link userNameComment=new Link(noti.getUserEffectName());

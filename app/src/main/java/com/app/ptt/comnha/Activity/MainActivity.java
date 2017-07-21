@@ -23,13 +23,15 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,6 +78,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private PickLocationBottomSheetDialogFragment pickLocationDialog;
     private String tinh = "", huyen = "";
     private Toolbar mtoolbar;
+    private String titleStoreSort,titlePostSort;
     private DrawerLayout mdrawer;
     private ActionBarDrawerToggle mtoggle;
     private NavigationView mnavigationView;
@@ -90,12 +93,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private Snackbar snackbar;
     private MenuItem itemProfile, itemAdmin, itemSignIn, itemSignOut, itemMap, itemSetting;
     NestedScrollView nestedScrollView;
-    private LinearLayout llChangeLocation;
+    private CardView llChangeLocation;
     AlertDialog.Builder alertDialog;
     private MyTool myTool;
     View guideView;
+    int typeSort;
     private FragmentManager fm;
-    TextView txtTinh, txtHuyen;
+    TextView txtTinh, txtHuyen,txtLoc;
     private View posttabview,
             storetabview,
             notifytabview;
@@ -188,6 +192,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     LoginSession.getInstance().setUser(user);
                     LoginSession.getInstance().setFirebUser(firebaseUser);
                     mAuth.removeAuthStateListener(mAuthListener);
+                    getNotification();
                     closeDialog();
                 } catch (Exception e) {
                     mAuth.signOut();
@@ -212,10 +217,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             whatProvince = pickLocationDialog.checkProvine(CoreManager.getInstance().getMyLocation().getProvince(), getApplicationContext());
         }
         fm = getSupportFragmentManager();
-        //llChangeLocation = (LinearLayout) findViewById(R.id.ll_change_location);
+        llChangeLocation = (CardView) findViewById(R.id.cv_change_location);
         txtTinh = (TextView) findViewById(R.id.frg_map_txtProvince);
         txtHuyen = (TextView) findViewById(R.id.frg_map_txtDistrict);
-
+        txtLoc= (TextView) findViewById(R.id.txt_loc);
+        titleStoreSort=txtLoc.getText().toString();
+        titlePostSort=titleStoreSort;
+        txtLoc.setOnClickListener(this);
         txtTinh.setOnClickListener(this);
         txtHuyen.setOnClickListener(this);
         mtoolbar = (Toolbar) findViewById(R.id.toolbar_main);
@@ -307,6 +315,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 }
             }
         });
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -317,6 +326,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 long duration = 400;
                 switch (tab.getPosition()) {
                     case 0:
+                        llChangeLocation.setVisibility(View.VISIBLE);
                         cx = l;
 //                        AnimationUtils.getInstance().createOpenCR(viewPager, duration,
 //                                cx, cy);
@@ -328,8 +338,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                                 .getColor(R.color.admin_color_selection_news));
                         fab.setImageResource(R.drawable.ic_write_color_white_24dp);
                         sendBroadcast(tinh, huyen);
+                        txtLoc.setText(titlePostSort);
                         break;
                     case 1:
+                        llChangeLocation.setVisibility(View.VISIBLE);
+                        txtLoc.setText(titleStoreSort);
                         cx = (l + r) / 2;
 //                        AnimationUtils.getInstance().createOpenCR(viewPager, duration,
 //                                cx, cy);
@@ -356,6 +369,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     case 2:
                         cx = r;
+                        llChangeLocation.setVisibility(View.GONE);
 //                        AnimationUtils.getInstance().createOpenCR(viewPager, duration,
 //                                cx, cy);
                         collapsefabX.start();
@@ -464,7 +478,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     @Override
                     public void onTick(long millisUntilFinished) {
                     }
-
                     @Override
                     public void onFinish() {
                         mAuth.signOut();
@@ -476,7 +489,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         itemAdmin.setVisible(false);
                         imgv_avatar.setImageResource(R.drawable.ic_logo);
                         getUser();
-                        getNotification();
+                        AnimationUtils.getInstance()
+                                .animateHideNotify(notifytabview, 100);
+                        sendBroadcastUpdateNoti();
                     }
                 };
                 countDownTimer.start();
@@ -534,8 +549,55 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             case R.id.frg_map_txtProvince:
                 pickLocationDialog.show(fm, "pickProvinceDialog");
                 break;
+            case R.id.txt_loc:
+                final int page=tabLayout.getSelectedTabPosition();
+                PopupMenu popupMenu=new PopupMenu(this,txtLoc);
+                if(page==1) {
+                    popupMenu.inflate(R.menu.option_menu_filter_store);
+                }else{
+                    popupMenu.inflate(R.menu.option_menu_filter_post);
+                }
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()){
+                            case R.id.menu_newest:
+                                typeSort=1;
+                                break;
+                            case R.id.menu_high_light:
+                                typeSort=2;
+                                break;
+                            case R.id.menu_price:
+                                typeSort=3;
+                                break;
+                            case R.id.menu_vs:
+                                typeSort=4;
+                                break;
+                            case R.id.menu_pv:
+                                typeSort=5;
+                                break;
+                            case R.id.menu_distance:
+                                typeSort=6;
+                                break;
+                        }
+                        txtLoc.setText(item.getTitle().toString());
+                        if(page==0){
+                            titlePostSort=item.getTitle().toString();
+                            sendBroadcastSortPost(typeSort);
+                        }else{
+                            titleStoreSort=item.getTitle().toString();
+                            sendBroadcastSortStore(typeSort);
+                        }
+                        return false;
+
+                    }
+                });
+                popupMenu.show();
+                break;
         }
     }
+
 
     @Override
     public void onBackPressed() {
@@ -571,7 +633,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onResume() {
         super.onResume();
-        getNotification();
+        AnimationUtils.getInstance()
+                .animateHideNotify(notifytabview, 100);
         if (null != LoginSession.getInstance().getUser() && null != LoginSession.getInstance().getFirebUser()) {
             User user = LoginSession.getInstance().getUser();
             txt_email.setText(user.getEmail());
@@ -608,6 +671,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mIntentFilter.addAction(Const.SNACKBAR_GO_ONLINE);
         mIntentFilter.addAction(Const.SNACKBAR_TURN_ON_GPS);
         mIntentFilter.addAction(Const.INTENT_KEY_NOTI_NEW_NOTI);
+        mIntentFilter.addAction(Const.INTENT_KEY_SORT_POST_TYPE);
+        mIntentFilter.addAction(Const.INTENT_KEY_SORT_STORE_TYPE);
+
         broadcastIntent = new Intent();
         mBroadcastReceiver = new NetworkChangeReceiver();
         registerReceiver(mBroadcastReceiver, mIntentFilter);
@@ -615,11 +681,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         if (null != CoreManager.getInstance().getMyLocation()) {
             if (pickLocationDialog != null) {
                 whatProvince = pickLocationDialog.checkProvine(CoreManager.getInstance().getMyLocation().getProvince(), getApplicationContext());
+            }if(TextUtils.isEmpty(CoreManager.getInstance().getHuyen())&&TextUtils.isEmpty(CoreManager.getInstance().getTinh())) {
+                txtTinh.setText(CoreManager.getInstance().getMyLocation().getProvince());
+                txtHuyen.setText(CoreManager.getInstance().getMyLocation().getDistrict());
+                tinh = CoreManager.getInstance().getMyLocation().getProvince();
+                huyen = CoreManager.getInstance().getMyLocation().getDistrict();
+            }else{
+                txtTinh.setText(CoreManager.getInstance().getTinh());
+                txtHuyen.setText(CoreManager.getInstance().getHuyen());
+                tinh = CoreManager.getInstance().getTinh();
+                huyen = CoreManager.getInstance().getHuyen();
             }
-            txtTinh.setText(CoreManager.getInstance().getMyLocation().getProvince());
-            txtHuyen.setText(CoreManager.getInstance().getMyLocation().getDistrict());
-            tinh = CoreManager.getInstance().getMyLocation().getProvince();
-            huyen = CoreManager.getInstance().getMyLocation().getDistrict();
+
         }
         if (!MyService.isNetworkAvailable(this)) {
             showSnackbar(MainActivity.this, getWindow().getDecorView(), getString(R.string.text_not_internet), getString(R.string.text_connect), Const.SNACKBAR_GO_ONLINE, Snackbar.LENGTH_INDEFINITE);
@@ -761,7 +834,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 
     }
-
+    private void sendBroadcastUpdateNoti() {
+        broadcastIntent = new Intent();
+        broadcastIntent.setAction(Const.INTENT_KEY_USER_CHANGE);
+        sendBroadcast(broadcastIntent);
+    }
     private void sendBroadcast(String tinh, String huyen) {
         broadcastIntent = new Intent();
         broadcastIntent.setAction(Const.INTENT_KEY_RECEIVE_LOCATION);
@@ -769,7 +846,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         broadcastIntent.putExtra(Const.KEY_TINH, tinh);
         sendBroadcast(broadcastIntent);
     }
-
+    private void sendBroadcastSortStore(int type){
+        broadcastIntent = new Intent();
+        broadcastIntent.setAction(Const.INTENT_KEY_SORT_STORE);
+        broadcastIntent.putExtra(Const.KEY_SORT, type);
+        sendBroadcast(broadcastIntent);
+    }
+    private void sendBroadcastSortPost(int type){
+        broadcastIntent = new Intent();
+        broadcastIntent.setAction(Const.INTENT_KEY_SORT_POST);
+        broadcastIntent.putExtra(Const.KEY_SORT, type);
+        sendBroadcast(broadcastIntent);
+    }
     private void sendBroadcastOneTab(String tinh, String huyen) {
         broadcastIntent = new Intent();
         broadcastIntent.setAction(Const.INTENT_KEY_RECEIVE_LOCATION_TAB);
@@ -825,6 +913,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     } else {
                         AnimationUtils.getInstance()
                                 .animateHideNotify(notifytabview, 100);
+                    }
+                    break;
+                case Const.INTENT_KEY_SORT_POST_TYPE:
+                    if(tabLayout.getSelectedTabPosition()==0) {
+                        txtLoc.setText("Lọc");
+                        titlePostSort=txtLoc.getText().toString();
+                    }
+                    break;
+                case Const.INTENT_KEY_SORT_STORE_TYPE:
+                    if(tabLayout.getSelectedTabPosition()==1) {
+                        txtLoc.setText("Lọc");
+                        titleStoreSort=txtLoc.getText().toString();
                     }
                     break;
             }

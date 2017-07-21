@@ -51,12 +51,12 @@ public class YourPostActivity extends AppCompatActivity {
         stRef = FirebaseStorage.getInstance()
                 .getReferenceFromUrl(Const.STORAGE_PATH);
         Ref();
-        getAllImg();
+        getAllPost();
     }
 
     private void Ref() {
         rv_post = (RecyclerView) findViewById(R.id.rv_img_yourpost);
-        postLm = new GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL,
+        postLm = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL,
                 false);
         rv_post.setLayoutManager(postLm);
         posts = new ArrayList<>();
@@ -70,7 +70,7 @@ public class YourPostActivity extends AppCompatActivity {
         });
     }
 
-    private void getAllImg() {
+    private void getAllPost() {
         postEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

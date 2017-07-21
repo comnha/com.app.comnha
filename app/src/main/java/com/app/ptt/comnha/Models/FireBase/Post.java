@@ -148,7 +148,6 @@ public class Post {
         this.priceRate = priceRate;
         this.healthyRate = healthyRate;
         this.serviceRate = serviceRate;
-        this.userID_dist_prov = userID + "_" + dist_pro;
         this.dist_pro = dist_pro;
     }
 
@@ -170,7 +169,7 @@ public class Post {
         result.put("serviceRate", serviceRate);
         result.put("comments", comments);
         result.put("userComment", userComment);
-        result.put("userID_dist_prov", userID_dist_prov);
+        result.put("userID_dist_prov", userID+"_"+dist_pro);
         result.put("dist_pro", dist_pro);
         result.put("isHidden", isHidden);
         result.put("isHidden_dist_prov", String.valueOf(isHidden)

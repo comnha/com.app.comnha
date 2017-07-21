@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 import com.app.ptt.comnha.Activity.StoreDeatailActivity;
 import com.app.ptt.comnha.Adapters.Store_recycler_adapter;
 import com.app.ptt.comnha.Const.Const;
+import com.app.ptt.comnha.Interfaces.OnLoadMoreListener;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
@@ -39,6 +41,7 @@ import com.google.firebase.storage.StorageReference;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,13 +50,17 @@ public class MainStoreFragment extends Fragment {
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager layoutManager;
     Store_recycler_adapter itemadapter;
-    ArrayList<Store> stores;
+    List<Store> stores;
     DatabaseReference dbRef;
     ValueEventListener storeEventListener;
     String dist_pro;
+    boolean isRegister;
     StorageReference stRef;
     SwipeRefreshLayout swipeRefresh;
     MyTool myTool;
+    boolean isLoadMore;
+    int stt=8;
+    int itemCount = 0, typeSort = -1, count = 6;
     private final static String TAG = "MainStoreFragment";
 
     public MainStoreFragment() {
@@ -78,35 +85,36 @@ public class MainStoreFragment extends Fragment {
     }
 
 
-
-
-
-
     public class calculateDistance extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            for (Store store : stores) {
-                double distance = 0;
+            try {
+                for (Store store : stores) {
+                    double distance = 0;
+                    try {
+                        distance = myTool.distanceFrom_in_Km(store.getLat(), store.getLng(),
+                                CoreManager.getInstance().getMyLocation().getLat(), CoreManager.getInstance().getMyLocation().getLng());
+                        int c = (int) Math.round(distance);
+                        int d = c / 1000;
+                        int e = c % 1000;
+                        int f = e / 100;
+                        store.setDistance(d + "." + f);
+                    } catch (Exception e) {
 
-                try {
-                    distance = myTool.distanceFrom_in_Km(store.getLat(), store.getLng(),
-                            CoreManager.getInstance().getMyLocation().getLat(), CoreManager.getInstance().getMyLocation().getLng());
-                    int c = (int) Math.round(distance);
-                    int d = c / 1000;
-                    int e = c % 1000;
-                    int f = e / 100;
-                    store.setDistance(d + "," + f);
-                } catch (Exception e) {
+                    }
 
                 }
+            }catch (Exception e){
 
             }
+
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            itemadapter.notifyDataSetChanged();
+            isLoadMore=false;
+            addMore(0);
         }
     }
 
@@ -138,7 +146,6 @@ public class MainStoreFragment extends Fragment {
                         }
                         Log.d("added", "added");
                     }
-                    itemadapter.notifyDataSetChanged();
                     new calculateDistance().execute();
                     swipeRefresh.setRefreshing(false);
                 }
@@ -163,13 +170,79 @@ public class MainStoreFragment extends Fragment {
 
         }
     }
+    public void addMore(int pos) {
+        if (!isLoadMore) {
+            itemadapter.setIsLoading(false);
+            itemadapter.clearList();
+            if (stores.size() <= stt ||stt<=0) {
+                stt = stores.size();
+                itemadapter.setMoreDataAvailable(false);
+            } else {
+                itemadapter.setMoreDataAvailable(true);
+            }
+            for (int i = 0; i < stt; i++) {
+                final int finalI = i;
+                itemadapter.addToList(stores.get(finalI));
+            }
+            if (typeSort != -1) {
+                itemadapter.sortByType(typeSort);
+            }
+        } else {
+            final int tempCount = pos;
+            itemCount = pos + count;
+            if (stores.size() < itemCount) {
+                if (stores.size() > tempCount + 1) {
+                    itemCount = stores.size();
+                } else {
+                    itemCount = 0;
+                }
+
+            } else {
+
+            }
+
+            if (tempCount < itemCount) {
+                for (int i = tempCount; i < itemCount; i++) {
+                    final int finalI = i;
+                    itemadapter.addToList(stores.get(finalI));
+                }
+
+                if (typeSort != -1) {
+                    itemadapter.sortByType(typeSort);
+                }
+                stt=itemCount;
+                if (stores.size() == itemadapter.getSize()) {
+                    itemadapter.setMoreDataAvailable(false);
+                } else {
+                    itemadapter.setMoreDataAvailable(true);
+                }
+
+
+            } else {
+                itemadapter.setMoreDataAvailable(false);
+
+            }
+            isLoadMore = false;
+            itemadapter.setIsLoading(false);
+            mRecyclerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mRecyclerView.smoothScrollToPosition(itemadapter.getSize() - 1);
+                }
+            });
+
+        }
+
+
+    }
+
 
     private void ref(final View view) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerV_storefrag);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         stores = new ArrayList<>();
-        itemadapter = new Store_recycler_adapter(stores, getContext(), stRef);
+        itemadapter = new Store_recycler_adapter(getContext(), stRef);
         itemadapter.setOnItemClickLiestner(new Store_recycler_adapter.OnItemClickLiestner() {
             @Override
             public void onItemClick(Store store, View itemView) {
@@ -189,24 +262,52 @@ public class MainStoreFragment extends Fragment {
             }
         });
         mRecyclerView.setAdapter(itemadapter);
+        itemadapter.setLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void loadMore() {
+                int index = itemadapter.getSize();
+                onLoadMore(index);
+            }
+        });
         swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swipe_storefrag);
         swipeRefresh.setColorSchemeResources(R.color.admin_color_selection_news,
                 R.color.color_selection_report);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
+                typeSort = -1;
+                sendBroadcastSortStoreReset();
                 getStoreList(dist_pro);
             }
         });
     }
-
+    private void sendBroadcastSortStoreReset(){
+        broadcastIntent = new Intent();
+        broadcastIntent.setAction(Const.INTENT_KEY_SORT_STORE_TYPE);
+        getActivity().sendBroadcast(broadcastIntent);
+    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
     }
+    public void onLoadMore(final int pos) {
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                itemadapter.addToList(null);
+            }
+        });
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                itemadapter.removeLastItemFromList();
+                isLoadMore = true;
+                addMore(pos);
+            }
+        }, 3000);
+    }
     @Override
     public void onDetach() {
         super.onDetach();
@@ -216,9 +317,12 @@ public class MainStoreFragment extends Fragment {
         super.onResume();
         mIntentFilter = new IntentFilter(Const.INTENT_KEY_RECEIVE_LOCATION);
         mIntentFilter.addAction(Const.INTENT_KEY_RECEIVE_LOCATION_TAB);
+        mIntentFilter.addAction(Const.INTENT_KEY_SORT_STORE);
+        mIntentFilter.addAction(Const.INTENT_KEY_RELOAD_DATA);
         mBroadcastReceiver = new LocationChange();
         broadcastIntent = new Intent();
         getActivity().registerReceiver(mBroadcastReceiver, mIntentFilter);
+        isRegister=true;
         if (null != CoreManager.getInstance().getMyLocation()) {
             if(TextUtils.isEmpty(CoreManager.getInstance().getHuyen())&&TextUtils.isEmpty(CoreManager.getInstance().getTinh())) {
                 dist_pro = CoreManager.getInstance().getMyLocation().getDistrict()
@@ -230,19 +334,37 @@ public class MainStoreFragment extends Fragment {
             getStoreList(dist_pro);
         } else {
             if (getView() != null) {
-
                 AppUtils.showSnackbarWithoutButton(getView(), "Không tìm thấy vị trí của bạn");
             }
         }
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        if(mBroadcastReceiver!=null) {
-            getActivity().unregisterReceiver(mBroadcastReceiver);
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            if (mBroadcastReceiver != null &&isRegister) {
+                getActivity().unregisterReceiver(mBroadcastReceiver);
+                isRegister=false;
+            }
+        }catch (Exception e){
+
         }
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        try {
+            if (mBroadcastReceiver != null &&isRegister) {
+                getActivity().unregisterReceiver(mBroadcastReceiver);
+                isRegister=false;
+            }
+        }catch (Exception e){
+
+        }
+    }
+
     IntentFilter mIntentFilter;
     Intent broadcastIntent;
     LocationChange mBroadcastReceiver;
@@ -270,6 +392,12 @@ public class MainStoreFragment extends Fragment {
                     break;
                 case Const.INTENT_KEY_RELOAD_DATA:
                     getStoreList(dist_pro);
+                    break;
+                case Const.INTENT_KEY_SORT_STORE:
+                    if(intent.getIntExtra(Const.KEY_SORT,0)!=0){
+                        typeSort=intent.getIntExtra(Const.KEY_SORT,0);
+                        itemadapter.sortByType(typeSort);
+                    }
                     break;
             }
         }

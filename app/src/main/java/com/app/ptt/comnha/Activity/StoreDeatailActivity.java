@@ -240,6 +240,8 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         List<Pair<Integer, String>> contents = new ArrayList<>();
         if (store != null) {
             if (role > 0) {
+                contents.add(new Pair<Integer, String>
+                        (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
                 if (store.isHidden()) {
                     if (store.getStoreType() == 0) {
                         contents.add(new Pair<Integer, String>
@@ -257,27 +259,25 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 } else {
                     contents.add(new Pair<Integer, String>
                             (R.string.txt_rejectstore, getString(R.string.txt_rejectstore)));
-//                    contents.add(new Pair<Integer, String>
-//                            (R.string.text_hidepost, getString(R.string.text_hidepost)));
-                }
-            } else {
-                if (uID.equals(store.getUserID())) {
-                    contents.add(new Pair<Integer, String>
-                            (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
-                } else {
-                    if (store.checkExist(uID)) {
-                        contents.add(new Pair<Integer, String>
-                                (R.string.txt_unfollowStore, getString(R.string.txt_unfollowStore)));
-
-                    } else {
-                        contents.add(new Pair<Integer, String>
-                                (R.string.txt_followStore, getString(R.string.txt_followStore)));
-                    }
-                    contents.add(new Pair<Integer, String>
-                            (R.string.txt_report, getString(R.string.txt_report)));
-
                 }
             }
+
+            if (uID.equals(store.getUserID())) {
+                contents.add(new Pair<Integer, String>
+                        (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
+            } else {
+                if (store.checkExist(uID)) {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.txt_unfollowStore, getString(R.string.txt_unfollowStore)));
+
+                } else {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.txt_followStore, getString(R.string.txt_followStore)));
+                }
+                contents.add(new Pair<Integer, String>
+                        (R.string.txt_report, getString(R.string.txt_report)));
+            }
+
         }
         return contents;
     }
@@ -441,6 +441,10 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 childUpdate = notificationToUser(childUpdate, 2, 1);
                 break;
         }
+        //hide all post
+        childUpdate= changePostStatus(childUpdate,false);
+        //hide food
+        childUpdate=changeFoodStatus(childUpdate,false);
         store.setHidden(false);
         String key = store.getStoreID();
         store.setHidden(false);
@@ -535,7 +539,10 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                                 String key = store.getStoreID();
                                 Store childStore = store;
                                 Map<String, Object> storeValue = childStore.toMap();
-
+                                //hide all post
+                                childUpdate= changePostStatus(childUpdate,true);
+                                //hide food
+                                childUpdate=changeFoodStatus(childUpdate,true);
                                 childUpdate.put(getString(R.string.store_CODE)
                                         + key, storeValue);
                                 dbRef.updateChildren(childUpdate)
@@ -613,7 +620,26 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         getImageList();
         getFoodList();
     }
-
+    public  Map<String, Object>  changePostStatus(Map<String, Object> childUpdate, boolean status){
+        for (Post post:posts){
+            if(post.getPostType()==1 ||post.getPostType()==2) {
+                post.setHidden(status);
+                Map<String, Object> map = post.toMap();
+                childUpdate.put(getString(R.string.posts_CODE) + post.getPostID(), map);
+            }
+        }
+        return childUpdate;
+    }
+    public  Map<String, Object>  changeFoodStatus(Map<String, Object> childUpdate, boolean status){
+        for (Food food:foods){
+            if(food.getFoodType()==1 ||food.getFoodType()==2) {
+                food.setHidden(status);
+                Map<String, Object> map = food.toMap();
+                childUpdate.put(getString(R.string.food_CODE) + food.getFoodID(), map);
+            }
+        }
+        return childUpdate;
+    }
     private void getPostList() {
         postValueListener = new ValueEventListener() {
             @Override
@@ -783,11 +809,12 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
 
     }
     private void editStore() {
-        ChooseStore.getInstance().setStore(store);
+
         Intent intent_editStore = new Intent(this, AdapterActivity.class);
         intent_editStore.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent_editStore.putExtra(getString(R.string.fragment_CODE),
                 getString(R.string.frag_addstore_CODE));
+        intent_editStore.putExtra("STORE",store);
         startActivity(intent_editStore);
     }
     private void writePost() {

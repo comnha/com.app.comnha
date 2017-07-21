@@ -1,10 +1,12 @@
 package com.app.ptt.comnha.Fragment;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,9 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.app.ptt.comnha.Activity.AdapterActivity;
 import com.app.ptt.comnha.Activity.PostdetailActivity;
@@ -46,11 +45,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +58,8 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
     RecyclerView rvList;
     List<String> idReports;
     List<UserNotification> list;
+    Map<String,Object> listLoop;
+    boolean isRegister;
     boolean isNew=false;
     DatabaseReference dbRef;
     ValueEventListener userValueListener;
@@ -98,8 +96,10 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                notificationAdapter.clearAll();
-                getNotification();
+                if(LoginSession.getInstance().getUser()!=null) {
+                    notificationAdapter.clearAll();
+                    getNotification();
+                }
             }
         });
 
@@ -108,11 +108,6 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getReport();
-    }
 
     private void getReport(){
 
@@ -206,6 +201,7 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
     }
     private void getNotification(){
         list.clear();
+        listLoop=new HashMap<>();
         if(LoginSession.getInstance().getUser()!=null) {
             try {
                 ValueEventListener valueEventListener=new ValueEventListener() {
@@ -217,13 +213,18 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
                             notification.setId(item.getKey());
                             if(!checkExistInReport(notification)) {
                                 if (checkExist(item.getKey()) == -1) {
-                                    list.add(notification);
+                                    checkExistInList(notification);
                                 } else {
                                     list.set(checkExist(item.getKey()), notification);
                                 }
                             }
                         }
                         sort();
+                        if(listLoop!=null) {
+                            if(listLoop.size()>0) {
+                                updateLoopList(listLoop);
+                            }
+                        }
                         swipeRefresh.setRefreshing(false);
 
                     }
@@ -238,6 +239,39 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
 
             }catch (Exception e){
             }
+        }
+    }
+    private void checkExistInList(UserNotification notification){
+        if(list==null){
+            list=new ArrayList<>();
+        }
+        if(list.size()==0){
+            list.add(notification);
+
+        }else {
+            for (UserNotification noti : list) {
+                //check multi comment of one user
+                if (noti.getType() == notification.getType()
+                        && noti.getUserEffectName().equals(notification.getUserEffectName())
+                        && noti.getType() == 3 && noti.getPostID().equals(notification.getPostID())) {
+                    if (noti.isReaded()) {
+                        if (!notification.isReaded()) {
+                            list.set(list.indexOf(noti), notification);
+                        }
+                        return;
+                    }else{
+                        if(!notification.isReaded()) {
+                            notification.setReaded(true);
+                            if(listLoop==null){
+                                listLoop=new HashMap<>();
+                            }
+                            listLoop = updateListNoti(listLoop, notification);
+                        }
+                        return;
+                    }
+                }
+            }
+            list.add(notification);
         }
     }
     private int checkExist(String id){
@@ -312,7 +346,24 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
         }
     }
 
+    public Map<String,Object> updateListNoti(Map<String,Object> childUpdate,UserNotification noti){
+        Map<String,Object> updateUserNotification=noti.toMap();
+        childUpdate.put(getString(R.string.user_notification_CODE)+LoginSession.getInstance().getUser().getuID()+"/"+noti.getId(),updateUserNotification);
+        return childUpdate;
+    }
+    private void updateLoopList(Map<String,Object> childUpdate){
+        dbRef.updateChildren(childUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                listLoop=null;
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
 
+            }
+        });
+    }
     public void updateNoti(UserNotification userNotification){
         Map<String,Object> updateUserNotification=userNotification.toMap();
         Map<String,Object> childUpdate;
@@ -328,6 +379,61 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
 
             }
         });
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(LoginSession.getInstance().getUser()!=null) {
+            getReport();
+        }
+        mIntentFilter = new IntentFilter(Const.INTENT_KEY_USER_CHANGE);
+        mBroadcastReceiver = new UserChange();
+        broadcastIntent = new Intent();
+        getActivity().registerReceiver(mBroadcastReceiver, mIntentFilter);
+        isRegister = true;
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            if (mBroadcastReceiver != null &&isRegister) {
+                getActivity().unregisterReceiver(mBroadcastReceiver);
+                isRegister=false;
+            }
+        }catch (Exception e){
+
+        }
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        try {
+            if (mBroadcastReceiver != null &&isRegister) {
+                getActivity().unregisterReceiver(mBroadcastReceiver);
+                isRegister=false;
+            }
+        }catch (Exception e){
+
+        }
+    }
+    IntentFilter mIntentFilter;
+    Intent broadcastIntent;
+    UserChange mBroadcastReceiver;
+    class UserChange extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case Const.INTENT_KEY_USER_CHANGE:
+                    if(LoginSession.getInstance().getUser()!=null){
+                        getReport();
+                    }else{
+                        list=new ArrayList<>();
+                        notificationAdapter.clearAll();
+
+                    }
+                    break;
+            }
+        }
     }
 
 }

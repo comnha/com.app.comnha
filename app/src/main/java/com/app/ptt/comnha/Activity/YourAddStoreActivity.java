@@ -56,7 +56,7 @@ public class YourAddStoreActivity extends AppCompatActivity {
 
     private void Ref() {
         rv_store = (RecyclerView) findViewById(R.id.rv_img_youraddstore);
-        storeLm = new GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL,
+        storeLm = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL,
                 false);
         rv_store.setLayoutManager(storeLm);
         stores = new ArrayList<>();

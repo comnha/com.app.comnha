@@ -12,6 +12,7 @@ import java.util.Comparator;
  */
 
 public class orderByDate implements Comparator<UserNotification> {
+    //
     SimpleDateFormat dateFormat=new SimpleDateFormat(Const.DATE_TIME_FORMAT);
     @Override
     public int compare(UserNotification o1, UserNotification o2) {

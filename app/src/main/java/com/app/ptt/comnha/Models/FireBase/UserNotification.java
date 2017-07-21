@@ -11,7 +11,15 @@ import java.util.Map;
  * Created by cuong on 12/22/2016.
  */
 
+
 public class UserNotification {
+
+
+    public UserNotification(){
+        SimpleDateFormat sdf = new SimpleDateFormat(Const.DATE_TIME_FORMAT);
+        String currentDateandTime = sdf.format(new Date());
+        date = currentDateandTime;
+    }
     private String storeID;
     private String userOwnID;
     private String postID;
@@ -177,9 +185,7 @@ public class UserNotification {
         result.put("ơwner", ơwner);
         result.put("userEffectName", userEffectName);
         result.put("foodName",foodName);
-        SimpleDateFormat sdf = new SimpleDateFormat(Const.DATE_TIME_FORMAT);
-        String currentDateandTime = sdf.format(new Date());
-        date = currentDateandTime;
+
         result.put("date", date);
         result.put("isShown",isShown);
         result.put("reportId",reportId);

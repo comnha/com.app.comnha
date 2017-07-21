@@ -162,6 +162,13 @@
     <string name="txt_unfollowPost">Bỏ theo dõi bài viết</string>
     <string name="txt_xoataca">Xóa tất cả</string>
     <string name="txt_setdadoc">Đọc tất cả</string>
+    <string name="txt_filter_newest">Mới nhất</string>
+    <string name="txt_filter_vs">Vệ sinh</string>
+    <string name="txt_filter_pv">Phục vụ</string>
+    <string name="txt_filter_price">Giá cả</string>
+    <string name="txt_filter_hl">Nổi bật</string>
+    <string name="txt_filter_distance">Khoảng cách</string>
+
     <string name="txt_xemnoidungreport">Xem report</string>
     <string name="txt_denvitri">Xem bài đăng</string>
     <string name="txt_agree">Đồng ý</string>
@@ -621,6 +628,7 @@
     <string name="txt_tryagain">Xin thử lại</string>
     <string name="txt_failedUploadImg">Upload hình ảnh không thành công</string>
     <string name="text_failedaddloca">Thêm địa điểm mới không thành công</string>
+
     <string name="text_failededitloca">Sửa địa điểm không thành công</string>
     <string name="text_okededitloca">Sửa địa điểm  thành công</string>
     <string name="txt_notread">Chưa đọc</string>

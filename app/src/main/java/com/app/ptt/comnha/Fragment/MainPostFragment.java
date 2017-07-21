@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 import com.app.ptt.comnha.Activity.PostdetailActivity;
 import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
 import com.app.ptt.comnha.Const.Const;
+import com.app.ptt.comnha.Interfaces.OnLoadMoreListener;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
@@ -38,23 +40,28 @@ import java.util.ArrayList;
 import static com.facebook.login.widget.ProfilePictureView.TAG;
 
 
-public class MainPostFragment extends Fragment  {
+public class MainPostFragment extends Fragment {
     RecyclerView mRecyclerView;
-    RecyclerView.LayoutManager layoutManager;
+    LinearLayoutManager layoutManager;
     ArrayList<Post> posts;
     Post_recycler_adapter postadapter;
     DatabaseReference dbRef;
     ValueEventListener postsEventListener;
     String dist_pro;
+    boolean isRegister;
+    int stt = 6;
+    boolean isLoadMore;
     StorageReference stRef;
     SwipeRefreshLayout swipeRefresh;
+    int itemCount = 0, typeSort = -1, count = 6;
 
     public MainPostFragment() {
         // Required empty public constructor
     }
-    public void setAttribute(String tinh,String huyen) {
+
+    public void setAttribute(String tinh, String huyen) {
         // Required empty public constructor
-        dist_pro=huyen+"_"+tinh;
+        dist_pro = huyen + "_" + tinh;
     }
 
     @Override
@@ -69,10 +76,76 @@ public class MainPostFragment extends Fragment  {
         ref(view);
 
 
-
         return view;
     }
 
+    public void addMore(int pos) {
+        if (!isLoadMore) {
+            postadapter.setIsLoading(false);
+            postadapter.clearList();
+            if (posts.size() <= stt||stt<=0) {
+                stt = posts.size();
+                postadapter.setMoreDataAvailable(false);
+            } else {
+                postadapter.setMoreDataAvailable(true);
+            }
+            for (int i = 0; i < stt; i++) {
+                final int finalI = i;
+                postadapter.addToList(posts.get(finalI));
+
+            }
+            if (typeSort != -1) {
+                postadapter.sortByType(typeSort);
+            }
+
+        } else {
+            final int tempCount = pos;
+            itemCount = pos + count;
+            if (posts.size() <= itemCount) {
+                if (posts.size() > tempCount + 1) {
+                    itemCount = posts.size();
+                } else {
+                    itemCount = 0;
+                }
+
+            } else {
+
+            }
+            if (tempCount < itemCount) {
+                for (int i = tempCount; i < itemCount; i++) {
+                    final int finalI = i;
+                    postadapter.addToList(posts.get(finalI));
+                }
+
+                if (typeSort != -1) {
+                    postadapter.sortByType(typeSort);
+                }
+                //
+                stt=itemCount;
+                if (posts.size() == postadapter.getSize()) {
+                    postadapter.setMoreDataAvailable(false);
+                } else {
+                    postadapter.setMoreDataAvailable(true);
+                }
+
+
+            } else {
+                postadapter.setMoreDataAvailable(false);
+
+            }
+            isLoadMore = false;
+            postadapter.setIsLoading(false);
+            mRecyclerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mRecyclerView.scrollToPosition(postadapter.getSize() - 1);
+                }
+            });
+
+        }
+
+
+    }
 
     private void getPostList(final String dist_pro) {
         try {
@@ -101,7 +174,7 @@ public class MainPostFragment extends Fragment  {
                         }
 
                     }
-                    postadapter.notifyDataSetChanged();
+                    addMore(0);
                     swipeRefresh.setRefreshing(false);
 
                 }
@@ -122,7 +195,7 @@ public class MainPostFragment extends Fragment  {
                         .equalTo(false + "_" + dist_pro)
                         .addValueEventListener(postsEventListener);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
@@ -134,8 +207,15 @@ public class MainPostFragment extends Fragment  {
                 LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         posts = new ArrayList<>();
-        postadapter = new Post_recycler_adapter(posts, getContext(), stRef);
+        postadapter = new Post_recycler_adapter(getContext(), stRef);
         mRecyclerView.setAdapter(postadapter);
+        postadapter.setLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void loadMore() {
+                int index = postadapter.getSize();
+                onLoadMore(index);
+            }
+        });
         postadapter.setOnItemClickLiestner(new Post_recycler_adapter.OnItemClickLiestner() {
             @Override
             public void onItemClick(Post post, View itemView) {
@@ -157,25 +237,48 @@ public class MainPostFragment extends Fragment  {
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                posts.clear();
+                typeSort = -1;
+                sendBroadcastSortPostReset();
                 getPostList(dist_pro);
             }
         });
     }
-
+    private void sendBroadcastSortPostReset(){
+        broadcastIntent = new Intent();
+        broadcastIntent.setAction(Const.INTENT_KEY_SORT_POST_TYPE);
+        getActivity().sendBroadcast(broadcastIntent);
+    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
     }
 
+    public void onLoadMore(final int pos) {
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                postadapter.addToList(null);
+            }
+        });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                postadapter.removeLastItemFromList();
+                isLoadMore = true;
+                addMore(pos);
+            }
+        }, 3000);
+    }
+
     class LocationChange extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            switch (intent.getAction()){
+            switch (intent.getAction()) {
                 case Const.INTENT_KEY_RECEIVE_LOCATION:
-                    if(intent.getStringExtra(Const.KEY_TINH).toString()!=null){
-                        if(intent.getStringExtra(Const.KEY_HUYEN).toString()!=null){
+                    if (intent.getStringExtra(Const.KEY_TINH).toString() != null) {
+                        if (intent.getStringExtra(Const.KEY_HUYEN).toString() != null) {
                             dist_pro = intent.getStringExtra(Const.KEY_HUYEN).toString()
                                     + "_" + intent.getStringExtra(Const.KEY_TINH).toString();
                             getPostList(dist_pro);
@@ -185,22 +288,32 @@ public class MainPostFragment extends Fragment  {
                 case Const.INTENT_KEY_RELOAD_DATA:
                     getPostList(dist_pro);
                     break;
+                case Const.INTENT_KEY_SORT_POST:
+                    if(intent.getIntExtra(Const.KEY_SORT,0)!=0){
+                        typeSort=intent.getIntExtra(Const.KEY_SORT,0);
+                        postadapter.sortByType(typeSort);
+                    }
+                    break;
             }
         }
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
         mIntentFilter = new IntentFilter(Const.INTENT_KEY_RECEIVE_LOCATION);
+        mIntentFilter.addAction(Const.INTENT_KEY_SORT_POST);
+        mIntentFilter.addAction(Const.INTENT_KEY_RELOAD_DATA);
         mBroadcastReceiver = new LocationChange();
+        isRegister=true;
         broadcastIntent = new Intent();
         getActivity().registerReceiver(mBroadcastReceiver, mIntentFilter);
         if (null != CoreManager.getInstance().getMyLocation()) {
-            if(TextUtils.isEmpty(CoreManager.getInstance().getHuyen())&&TextUtils.isEmpty(CoreManager.getInstance().getTinh())) {
+            if (TextUtils.isEmpty(CoreManager.getInstance().getHuyen()) && TextUtils.isEmpty(CoreManager.getInstance().getTinh())) {
                 dist_pro = CoreManager.getInstance().getMyLocation().getDistrict()
                         + "_" + CoreManager.getInstance().getMyLocation().getProvince();
-            }else{
+            } else {
                 dist_pro = CoreManager.getInstance().getHuyen()
                         + "_" + CoreManager.getInstance().getTinh();
             }
@@ -212,12 +325,31 @@ public class MainPostFragment extends Fragment  {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        if(mBroadcastReceiver!=null) {
-            getActivity().unregisterReceiver(mBroadcastReceiver);
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            if (mBroadcastReceiver != null &&isRegister) {
+                getActivity().unregisterReceiver(mBroadcastReceiver);
+                isRegister=false;
+            }
+        }catch (Exception e){
+
         }
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        try {
+            if (mBroadcastReceiver != null&&isRegister) {
+                getActivity().unregisterReceiver(mBroadcastReceiver);
+                isRegister=false;
+            }
+        }catch (Exception e){
+
+        }
+    }
+
     IntentFilter mIntentFilter;
     Intent broadcastIntent;
     LocationChange mBroadcastReceiver;

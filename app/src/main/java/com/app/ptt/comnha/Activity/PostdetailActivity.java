@@ -53,7 +53,7 @@ import com.app.ptt.comnha.Models.FireBase.ReportpostNotify;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.Models.FireBase.UserNotification;
-import com.app.ptt.comnha.Modules.orderByTime;
+import com.app.ptt.comnha.Modules.orderObjectByTime;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
@@ -420,7 +420,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         return false;
     }
     public void sortComment(){
-        Collections.sort(comments,new orderByTime());
+        Collections.sort(comments,new orderObjectByTime());
         comtAdapter.notifyDataSetChanged();
     }
     private void getUserInfo() {
@@ -559,6 +559,8 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         List<Pair<Integer, String>> contents = new ArrayList<>();
         if(post!=null) {
             if (role > 0) {
+                contents.add(new Pair<Integer, String>
+                        (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
                 if (post.isHidden()) {
                     if(post.getPostType()==0) {
                         contents.add(new Pair<Integer, String>
@@ -577,23 +579,22 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                     contents.add(new Pair<Integer, String>
                             (R.string.txt_rejectpost, getString(R.string.txt_rejectpost)));
                 }
+            }
+            if (uID.equals(post.getUserID())) {
+                contents.add(new Pair<Integer, String>
+                        (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
             } else {
-                if (uID.equals(post.getUserID())) {
+                if (post.checkExist(uID)) {
                     contents.add(new Pair<Integer, String>
-                            (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
+                            (R.string.txt_unfollowPost, getString(R.string.txt_unfollowPost)));
+
                 } else {
-                    if (post.checkExist(uID)) {
-                        contents.add(new Pair<Integer, String>
-                                (R.string.txt_unfollowPost, getString(R.string.txt_unfollowPost)));
-
-                    } else {
-                        contents.add(new Pair<Integer, String>
-                                (R.string.txt_followPost, getString(R.string.txt_followPost)));
-                    }
                     contents.add(new Pair<Integer, String>
-                            (R.string.txt_report, getString(R.string.txt_report)));
-
+                            (R.string.txt_followPost, getString(R.string.txt_followPost)));
                 }
+                contents.add(new Pair<Integer, String>
+                        (R.string.txt_report, getString(R.string.txt_report)));
+
             }
         }
         return contents;
@@ -637,6 +638,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
 
             case R.string.txt_changeinfo:
                 changeContent();
+
                 return true;
             case R.string.txt_followPost:
                 if (LoginSession.getInstance().getUser() != null) {
@@ -1206,10 +1208,10 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             }
         }
         //if user not exist in user commented list
-        if(!isExist &&!LoginSession.getInstance().getUser().getuID().toLowerCase().toLowerCase().equals(post.getUserID().toLowerCase()) ){
+        if(!isExist &&!LoginSession.getInstance().getUser().getuID().toLowerCase().equals(post.getUserID().toLowerCase()) ){
             post.addUsertoList(LoginSession.getInstance().getUser().getuID());
         }
-        if(!LoginSession.getInstance().getUser().getuID().toLowerCase().toLowerCase().equals(post.getUserID().toLowerCase())) {
+        if(!LoginSession.getInstance().getUser().getuID().toLowerCase().equals(post.getUserID().toLowerCase())) {
             UserNotification userNotification=new UserNotification();
             userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
             userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
