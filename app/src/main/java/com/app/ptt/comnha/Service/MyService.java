@@ -285,22 +285,31 @@ public class MyService extends Service {
         return a >= 2;
     }
 
-    public static boolean isNetworkAvailable(Context context) {
-        boolean flag = false;
-        ConnectivityManager connectivity = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivity != null) {
-            NetworkInfo[] info = connectivity.getAllNetworkInfo();
-            if (info != null) {
-                for (int i = 0; i < info.length; i++) {
-                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
-                        flag = true;
-                        break;
-                    }
-                }
-            }
+//    public static boolean isNetworkAvailable(Context context) {
+//        boolean flag = false;
+//        ConnectivityManager connectivity = (ConnectivityManager)
+//                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+//        if (connectivity != null) {
+//            NetworkInfo[] info = connectivity.getActiveNetworkInfo();
+//            if (info != null) {
+//                for (int i = 0; i < info.length; i++) {
+//                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+//                        flag = true;
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//
+//        return flag;
+//    }
+    public static boolean isNetworkAvailable(Context context){
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
         }
-        return flag;
+        return false;
     }
 
 }
