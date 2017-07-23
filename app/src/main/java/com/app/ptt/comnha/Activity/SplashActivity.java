@@ -25,7 +25,7 @@ public class SplashActivity extends BaseActivity {
     TextView dot1, dot2, dot3, dot4, dot5, dot6;
     ImageView imgLogo;
     public static final int MULTIPLE_PERMISSIONS = 10; // cod
-    private static int SPLASH_TIME_OUT = 3000;
+    private static int SPLASH_TIME_OUT = 3000,SPLASH_TIME_OUT_GET_USER=10000;
     FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference dbRef;
@@ -37,6 +37,16 @@ public class SplashActivity extends BaseActivity {
         super.onStart();
         if (MyService.isNetworkAvailable(this)) {
             getUser();
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    if(mAuthListener!=null) {
+//                        mAuth.removeAuthStateListener(mAuthListener);
+//                    }
+//                    startMainActi();
+//                }
+//            },SPLASH_TIME_OUT_GET_USER);
+
         } else {
             Log.d("onAuthStateChanged", "onAuthStateChanged:signed_out");
             LoginSession.getInstance().setFirebUser(null);

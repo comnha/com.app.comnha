@@ -27,12 +27,14 @@ public class Const {
     public static final boolean CONNECTED = true;
     public static final boolean NOTCONNECTED = false;
     public static final String DATE_TIME_FORMAT="dd/MM/yyyy HH:mm:ss";
-    public static final int INTENT_KEY_SIGN_UP = 1000;
     public static final String INTENT_KEY_EMAIL = "EMAIL";
     public static final String INTENT_KEY_PASSWORD = "PASSWORD";
     public static final String PREF_FIRST_LAUNCH = "PREF_FIRST_LAUNCH";
     public static final String PREF_FIRST_PROFILE_LAUNCH = "PREF_FIRST_PROFILE_LAUNCH";
     public static final String PREF_MY_LOCATION = "PREF_MY_LOCATION";
+    public static final int INTENT_KEY_SIGN_UP = 29;
+    public static final String INTENT_KEY_SIGN_IN_STORE = "INTENT_KEY_SIGN_IN_STORE";
+    public static final String INTENT_KEY_SIGN_IN_POST = "INTENT_KEY_SIGN_IN_POST";
     public static final String INTENT_KEY_RECEIVE_LOCATION = "INTENT_KEY_RECEIVE_LOCATION";
     public static final String INTENT_KEY_USER_CHANGE = "INTENT_KEY_USER_CHANGE";
     public static final String INTENT_KEY_SORT_STORE = "INTENT_KEY_SORT_STORE";
@@ -45,6 +47,8 @@ public class Const {
     public static final String KEY_HUYEN = "KEY_HUYEN";
     public static final String KEY_TINH = "KEY_TINH";
     public static final String KEY_SORT = "KEY_SORT";
+    public static final String KEY_FOOD= "KEY_FOOD";
+    public static final String KEY_STORE= "KEY_STORE";
     //
     public static final int PERMISSION_LOCATION_FLAG = 2;
     public static final String DECIMAL_1F = "%.1f";

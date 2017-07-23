@@ -712,10 +712,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Intent intent_signin = new Intent(PostdetailActivity.this,
-                                AdapterActivity.class);
-                        intent_signin.putExtra(getString(R.string.fragment_CODE),
-                                getString(R.string.frg_signin_CODE));
-                        intent_signin.putExtra("signinfromStoreDe", 1);
+                                SignInActivity.class);
                         startActivityForResult(intent_signin, REQUEST_SIGNIN);
                     }
                 })

@@ -174,16 +174,12 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onItemClick(Food food, Activity activity, View itemView) {
                 Intent intent_openFood = new Intent(getApplicationContext(),
-                        AdapterActivity.class);
+                        FoodDetailActivity.class);
                 ActivityOptionsCompat optionsCompat
                         = ActivityOptionsCompat.makeSceneTransitionAnimation(
                         activity, itemView.findViewById(R.id.item_rcyler_food_imgV),
                         "foodphoto");
-                intent_openFood.putExtra(getString(R.string.fragment_CODE)
-                        , getString(R.string.frag_foodetail_CODE));
-                intent_openFood.putExtra("Store",store);
-                ChooseFood.getInstance().setFood(food);
-                intent_openFood.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent_openFood.putExtra(Const.KEY_FOOD,food.getFoodID());
                 startActivity(intent_openFood, optionsCompat.toBundle());
             }
         });
@@ -342,10 +338,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Intent intent_signin = new Intent(StoreDeatailActivity.this,
-                                AdapterActivity.class);
-                        intent_signin.putExtra(getString(R.string.fragment_CODE),
-                                getString(R.string.frg_signin_CODE));
-                        intent_signin.putExtra("signinfromStoreDe", 1);
+                                SignInActivity.class);
                         startActivityForResult(intent_signin, REQUEST_SIGNIN);
                     }
                 })
@@ -356,6 +349,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     }
                 }).show();
     }
+
 
     public Map<String, Object> notificationToUser(Map<String, Object> childUpdate, int status, int type) {
 
@@ -445,7 +439,6 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         childUpdate= changePostStatus(childUpdate,false);
         //hide food
         childUpdate=changeFoodStatus(childUpdate,false);
-        store.setHidden(false);
         String key = store.getStoreID();
         store.setHidden(false);
         store.setStoreType(type);

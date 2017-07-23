@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 import com.app.ptt.comnha.Modules.Times;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import java.util.Map;
  * Created by PTT on 10/29/2016.
  */
 
-public class Food {
+public class Food implements Serializable {
     //info
     String name,
             foodID,

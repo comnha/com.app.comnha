@@ -1,41 +1,32 @@
-package com.app.ptt.comnha.Fragment;
-
+package com.app.ptt.comnha.Activity;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.ptt.comnha.Activity.AdapterActivity;
-import com.app.ptt.comnha.Activity.PostdetailActivity;
-import com.app.ptt.comnha.Activity.StoreDeatailActivity;
 import com.app.ptt.comnha.Adapters.Post_recycler_adapter;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Dialog.AddFoodDialog;
@@ -47,7 +38,6 @@ import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.Models.FireBase.UserNotification;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
-import com.app.ptt.comnha.SingletonClasses.ChooseFood;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
@@ -68,14 +58,13 @@ import java.util.List;
 import java.util.Map;
 
 import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_FOOD;
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by ciqaz on 22/07/2017.
  */
-public class FooddetailFragment extends Fragment {
-    private static final String LOG = FooddetailFragment.class.getSimpleName();
+
+public class FoodDetailActivity extends BaseActivity {
+    private static final String LOG = FoodDetailActivity.class.getSimpleName();
     DatabaseReference dbRef;
     MenuInflater inflater;
     StorageReference stRef;
@@ -89,57 +78,66 @@ public class FooddetailFragment extends Fragment {
     RatingBar ratingBar;
     ArrayList<Post> postlist;
     ValueEventListener postEventListener;
-    ActionBar actionBar;
     Toolbar toolbar;
     Food food;
     String keyReport;
     Store store;
     String storeID = "", foodID = "";
-    public static final String mBroadcastSendAddress = "mBroadcastSendAddress";
     boolean isConnected = false;
-    IntentFilter mIntentFilter;
     ProgressDialog plzw8Dialog;
     Menu pubMenu = null;
 
-    public FooddetailFragment() {
-        // Required empty public constructor
-    }
-
-    public void setStore(Store store) {
-        this.store = store;
-    }
-
     @Override
-    public void onStart() {
-        super.onStart();
-        isConnected = MyService.isNetworkAvailable(getActivity());
+    protected void onResume() {
+        super.onResume();
+        isConnected = MyService.isNetworkAvailable(this);
         if (!isConnected) {
-            Toast.makeText(getContext(), "Offline mode", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Offline mode", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_fooddetail, container, false);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_fooddetail);
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(Const.DATABASE_PATH);
 //        locaID = ChooseFood.getInstance().getStore().getLocaID();
         stRef = FirebaseStorage.getInstance().getReferenceFromUrl(Const.STORAGE_PATH);
-        ref(view);
-        if (ChooseFood.getInstance().getFood() != null) {
-            foodID = ChooseFood.getInstance().getFood().getFoodID();
+        ref();
+        if (getIntent().getStringExtra(Const.KEY_FOOD)!=null) {
+            showProgressDialog("Đang xử lý", "Vui lòng đợi");
+            foodID = getIntent().getStringExtra(Const.KEY_FOOD);
             getFood(foodID);
         } else {
-            getActivity().onBackPressed();
+           finish();
         }
-        return view;
     }
+    private void getStore(final String key) {
+        try {
 
+            ValueEventListener storeEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    store = dataSnapshot.getValue(Store.class);
+                    store.setStoreID(dataSnapshot.getKey());
+                    getData();
+                    loadMenu();
+                    closeDialog();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    closeDialog();
+                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(),"Có lỗi xảy ra. Vui lòng thử lại");
+                }
+            };
+            dbRef.child(getString(R.string.store_CODE)+key).addValueEventListener(storeEventListener);
+
+        }catch (Exception e){
+            closeDialog();
+            AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(),"Có lỗi xảy ra. Vui lòng thử lại");
+        }
+    }
     private void getFood(String id) {
 
         ValueEventListener foodValueListener = new ValueEventListener() {
@@ -149,13 +147,13 @@ public class FooddetailFragment extends Fragment {
                 String key = dataSnapshot.getKey();
                 food.setFoodID(key);
                 storeID = food.getStoreID();
-                getData();
-                loadMenu();
+               getStore(storeID);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                closeDialog();
+                AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(),"Có lỗi xảy ra. Vui lòng thử lại");
             }
         };
         dbRef.child(getString(R.string.food_CODE) + id)
@@ -203,7 +201,7 @@ public class FooddetailFragment extends Fragment {
             imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
-                    Picasso.with(getContext())
+                    Picasso.with(FoodDetailActivity.this)
                             .load(uri)
                             .into(imgv_photo);
                     try {
@@ -247,69 +245,67 @@ public class FooddetailFragment extends Fragment {
 
     }
 
-    private void ref(View view) {
+    private void ref() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getActivity().getWindow().setStatusBarColor(getResources()
+            getWindow().setStatusBarColor(getResources()
                     .getColor(R.color.color_notify_reportfood));
         }
-        txt_name = (TextView) view.findViewById(R.id.txtv_name_fooddetail);
-        txt_price = (TextView) view.findViewById(R.id.txtv_price_fooddetail);
-        txt_comment = (TextView) view.findViewById(R.id.txtv_comment_fooddetail);
-        imgv_photo = (ImageView) view.findViewById(R.id.imgv_photo_fooddetail);
-        ratingBar = (RatingBar) view.findViewById(R.id.rb_rating_fooddetail);
+        txt_name = (TextView) findViewById(R.id.txtv_name_fooddetail);
+        txt_price = (TextView) findViewById(R.id.txtv_price_fooddetail);
+        txt_comment = (TextView) findViewById(R.id.txtv_comment_fooddetail);
+        imgv_photo = (ImageView) findViewById(R.id.imgv_photo_fooddetail);
+        ratingBar = (RatingBar) findViewById(R.id.rb_rating_fooddetail);
         ratingBar.setIsIndicator(true);
-        toolbar = (Toolbar) view.findViewById(R.id.toolbar_fooddetail);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_fooddetail);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        txtUser = (TextView) view.findViewById(R.id.txt_user);
+        txtUser = (TextView) findViewById(R.id.txt_user);
         toolbar.setBackgroundColor(getResources()
                 .getColor(R.color.color_notify_reportfood));
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         toolbar.setTitle(getString(R.string.txt_fooddetail));
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        setHasOptionsMenu(true);
+        setSupportActionBar(toolbar);
+       // view.setHasOptionsMenu(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().onBackPressed();
+                finish();
             }
         });
 
         postlist = new ArrayList<>();
-        postRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_post_fooddetail);
+        postRecyclerView = (RecyclerView) findViewById(R.id.recycler_post_fooddetail);
         postRecyclerView.setHasFixedSize(true);
         foodList = new ArrayList<>();
-        postLayoutManager = new LinearLayoutManager(getContext(),
+        postLayoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL,
                 false);
         postRecyclerView.setLayoutManager(postLayoutManager);
-        postAdapter = new Post_recycler_adapter(postlist, getActivity(), stRef);
+        postAdapter = new Post_recycler_adapter(postlist, this, stRef);
         postRecyclerView.setAdapter(postAdapter);
         postAdapter.setOnItemClickLiestner(new Post_recycler_adapter.OnItemClickLiestner() {
             @Override
             public void onItemClick(Post post, View itemView) {
-                Intent intent_postdetail = new Intent(getContext(),
+                Intent intent_postdetail = new Intent(FoodDetailActivity.this,
                         PostdetailActivity.class);
                 intent_postdetail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 ActivityOptionsCompat option_postbanner
                         = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        getActivity(), itemView.findViewById(R.id.imgv_banner_postitem),
+                        FoodDetailActivity.this, itemView.findViewById(R.id.imgv_banner_postitem),
                         "postBanner");
                 ChoosePost.getInstance().setPost(post);
                 startActivity(intent_postdetail, option_postbanner.toBundle());
             }
         });
-        plzw8Dialog = AppUtils.setupProgressDialog(getActivity(),
+        plzw8Dialog = AppUtils.setupProgressDialog(this,
                 getString(R.string.txt_plzwait), null, false, false,
                 ProgressDialog.STYLE_SPINNER, 0);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         menu = AppUtils.createMenu(menu, returnContentMenuItems());
         pubMenu = menu;
-        this.inflater = inflater;
-        super.onCreateOptionsMenu(menu, inflater);
-
+        return super.onCreateOptionsMenu(menu);
     }
 
     private List<Pair<Integer, String>> returnContentMenuItems() {
@@ -390,7 +386,7 @@ public class FooddetailFragment extends Fragment {
                                     public void onFailure(@NonNull Exception e) {
                                         dialog.show();
                                         plzw8Dialog.dismiss();
-                                        Toast.makeText(getActivity(), e.getMessage(),
+                                        Toast.makeText(FoodDetailActivity.this, e.getMessage(),
                                                 Toast.LENGTH_LONG).show();
                                     }
                                 });
@@ -405,7 +401,7 @@ public class FooddetailFragment extends Fragment {
                             }
                         }
                     });
-                    reportDialog.show(getActivity().getSupportFragmentManager(), "report_food");
+                    reportDialog.show(getSupportFragmentManager(), "report_food");
                 } else {
                     requestSignin();
                 }
@@ -415,8 +411,7 @@ public class FooddetailFragment extends Fragment {
                 if (LoginSession.getInstance().getUser() != null) {
                     AddFoodDialog addFoodDialog = new AddFoodDialog();
                     addFoodDialog.setEditFoood(true, food);
-                    addFoodDialog.show(getActivity()
-                            .getSupportFragmentManager(), "updatefood_dialog");
+                    addFoodDialog.show(getSupportFragmentManager(), "updatefood_dialog");
                 } else {
                     requestSignin();
                 }
@@ -463,17 +458,14 @@ public class FooddetailFragment extends Fragment {
         }
     }
     private void requestSignin() {
-        new AlertDialog.Builder(getActivity())
+        new AlertDialog.Builder(this)
                 .setMessage(getString(R.string.txt_nologin)
                         + "\n" + getString(R.string.txt_uneedlogin))
                 .setPositiveButton(getString(R.string.text_signin), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent_signin = new Intent(getActivity(),
-                                AdapterActivity.class);
-                        intent_signin.putExtra(getString(R.string.fragment_CODE),
-                                getString(R.string.frg_signin_CODE));
-                        intent_signin.putExtra("signinfromFoodDe", 1);
+                        Intent intent_signin = new Intent(FoodDetailActivity.this,
+                                SignInActivity.class);
                         startActivityForResult(intent_signin, REQUEST_SIGNIN);
                     }
                 })
@@ -484,6 +476,7 @@ public class FooddetailFragment extends Fragment {
                     }
                 }).show();
     }
+
     private void showFood(int type) {
         plzw8Dialog.show();
         food.setHidden(false);
@@ -526,14 +519,12 @@ public class FooddetailFragment extends Fragment {
     public boolean loadMenu() {
         if (pubMenu != null) {
             pubMenu = AppUtils.createMenu(pubMenu, returnContentMenuItems());
-            if(inflater!=null) {
-                super.onCreateOptionsMenu(pubMenu, inflater);
-            }
+            return super.onCreateOptionsMenu(pubMenu);
         }
         return false;
     }
     private void hideFood(final int type) {
-        new AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(this)
                 .setCancelable(true)
                 .setMessage(getString(R.string.txt_hideconfirm))
                 .setPositiveButton(getString(R.string.txt_hide),
@@ -565,7 +556,7 @@ public class FooddetailFragment extends Fragment {
                                                 new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
-                                                       loadMenu();
+                                                        loadMenu();
                                                         plzw8Dialog.cancel();
                                                     }
                                                 }).addOnFailureListener(
@@ -590,16 +581,6 @@ public class FooddetailFragment extends Fragment {
                         })
                 .show();
     }
-
-    @Override
-    public void onDetach() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getActivity().getWindow().setStatusBarColor(getResources()
-                    .getColor(R.color.color_notify_reportfood));
-        }
-        super.onDetach();
-    }
-
     public Map<String, Object> notificationToUser(Map<String, Object> childUpdate, int status, int type) {
         switch (status) {
             case 1:
@@ -651,72 +632,72 @@ public class FooddetailFragment extends Fragment {
                     String userStoreNotificationKey = dbRef.child(getString(R.string.user_notification_CODE) + store.getUserID()).push().getKey();
                     childUpdate.put(getString(R.string.user_notification_CODE) + store.getUserID() + "/" + userStoreNotificationKey, userStoreNotificationMap);
                 }
-                    break;
-                    //reject
-                    case -1:
-                        UserNotification userRejectNotification = new UserNotification();
-                        userRejectNotification.setFoodId(food.getFoodID());
-                        userRejectNotification.setShown(true);
-                        userRejectNotification.setStatus(status);
-                        userRejectNotification.setFoodName(food.getName());
-                        userRejectNotification.setStoreID(store.getStoreID());
-                        userRejectNotification.setƠwner(true);
-                        userRejectNotification.setType(type);
-                        Map<String, Object> userRejectNotificationMap = userRejectNotification.toMap();
-                        String userRejectKey = dbRef.child(getString(R.string.user_notification_CODE) + food.getUserID()).push().getKey();
-                        childUpdate.put(getString(R.string.user_notification_CODE) + food.getUserID() + "/" + userRejectKey, userRejectNotificationMap);
+                break;
+            //reject
+            case -1:
+                UserNotification userRejectNotification = new UserNotification();
+                userRejectNotification.setFoodId(food.getFoodID());
+                userRejectNotification.setShown(true);
+                userRejectNotification.setStatus(status);
+                userRejectNotification.setFoodName(food.getName());
+                userRejectNotification.setStoreID(store.getStoreID());
+                userRejectNotification.setƠwner(true);
+                userRejectNotification.setType(type);
+                Map<String, Object> userRejectNotificationMap = userRejectNotification.toMap();
+                String userRejectKey = dbRef.child(getString(R.string.user_notification_CODE) + food.getUserID()).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE) + food.getUserID() + "/" + userRejectKey, userRejectNotificationMap);
 
-                        break;
-                    //was reported
-                    case 3:
-                        UserNotification userWasReportedNotification = new UserNotification();
-                        userWasReportedNotification.setFoodId(food.getFoodID());
-                        userWasReportedNotification.setShown(true);
-                        userWasReportedNotification.setStatus(status);
-                        userWasReportedNotification.setFoodName(food.getName());
-                        userWasReportedNotification.setStoreID(store.getStoreID());
-                        userWasReportedNotification.setƠwner(true);
-                        userWasReportedNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
-                        userWasReportedNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
-                        userWasReportedNotification.setReportId(keyReport);
-                        userWasReportedNotification.setType(type);
-                        Map<String, Object> userWasReportedNnMap = userWasReportedNotification.toMap();
-                        String userWasReportedNKey = dbRef.child(getString(R.string.user_notification_CODE) + food.getUserID()).push().getKey();
-                        childUpdate.put(getString(R.string.user_notification_CODE) + food.getUserID() + "/" + userWasReportedNKey, userWasReportedNnMap);
+                break;
+            //was reported
+            case 3:
+                UserNotification userWasReportedNotification = new UserNotification();
+                userWasReportedNotification.setFoodId(food.getFoodID());
+                userWasReportedNotification.setShown(true);
+                userWasReportedNotification.setStatus(status);
+                userWasReportedNotification.setFoodName(food.getName());
+                userWasReportedNotification.setStoreID(store.getStoreID());
+                userWasReportedNotification.setƠwner(true);
+                userWasReportedNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
+                userWasReportedNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
+                userWasReportedNotification.setReportId(keyReport);
+                userWasReportedNotification.setType(type);
+                Map<String, Object> userWasReportedNnMap = userWasReportedNotification.toMap();
+                String userWasReportedNKey = dbRef.child(getString(R.string.user_notification_CODE) + food.getUserID()).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE) + food.getUserID() + "/" + userWasReportedNKey, userWasReportedNnMap);
 
-                        break;
-                    //reject report
-                    case 2:
-                        UserNotification userRejectReport = new UserNotification();
-                        userRejectReport.setFoodId(food.getFoodID());
-                        userRejectReport.setShown(true);
-                        userRejectReport.setStatus(status);
-                        userRejectReport.setFoodName(food.getName());
-                        userRejectReport.setStoreID(store.getStoreID());
-                        userRejectReport.setƠwner(true);
-                        userRejectReport.setType(type);
-                        Map<String, Object> userRejectReportMap = userRejectReport.toMap();
-                        String keyuserRejectReportNoti = dbRef.child(getString(R.string.user_notification_CODE) + food.getUserID()).push().getKey();
-                        childUpdate.put(getString(R.string.user_notification_CODE) + food.getUserID() + "/" + keyuserRejectReportNoti, userRejectReportMap);
+                break;
+            //reject report
+            case 2:
+                UserNotification userRejectReport = new UserNotification();
+                userRejectReport.setFoodId(food.getFoodID());
+                userRejectReport.setShown(true);
+                userRejectReport.setStatus(status);
+                userRejectReport.setFoodName(food.getName());
+                userRejectReport.setStoreID(store.getStoreID());
+                userRejectReport.setƠwner(true);
+                userRejectReport.setType(type);
+                Map<String, Object> userRejectReportMap = userRejectReport.toMap();
+                String keyuserRejectReportNoti = dbRef.child(getString(R.string.user_notification_CODE) + food.getUserID()).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE) + food.getUserID() + "/" + keyuserRejectReportNoti, userRejectReportMap);
 
-                        break;
-                    //accept report userAcceptReport  keyuserAcceptReportNoti
-                    case -2:
-                        UserNotification userAcceptReport = new UserNotification();
-                        userAcceptReport.setFoodId(food.getFoodID());
-                        userAcceptReport.setShown(true);
-                        userAcceptReport.setStatus(status);
-                        userAcceptReport.setFoodName(food.getName());
-                        userAcceptReport.setStoreID(store.getStoreID());
-                        userAcceptReport.setƠwner(true);
-                        userAcceptReport.setType(type);
-                        Map<String, Object> userAcceptReportMap = userAcceptReport.toMap();
-                        String keyuserAcceptReportNoti = dbRef.child(getString(R.string.user_notification_CODE) + food.getUserID()).push().getKey();
-                        childUpdate.put(getString(R.string.user_notification_CODE) + food.getUserID() + "/" + keyuserAcceptReportNoti, userAcceptReportMap);
-                        break;
-                }
-
-                return childUpdate;
+                break;
+            //accept report userAcceptReport  keyuserAcceptReportNoti
+            case -2:
+                UserNotification userAcceptReport = new UserNotification();
+                userAcceptReport.setFoodId(food.getFoodID());
+                userAcceptReport.setShown(true);
+                userAcceptReport.setStatus(status);
+                userAcceptReport.setFoodName(food.getName());
+                userAcceptReport.setStoreID(store.getStoreID());
+                userAcceptReport.setƠwner(true);
+                userAcceptReport.setType(type);
+                Map<String, Object> userAcceptReportMap = userAcceptReport.toMap();
+                String keyuserAcceptReportNoti = dbRef.child(getString(R.string.user_notification_CODE) + food.getUserID()).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE) + food.getUserID() + "/" + keyuserAcceptReportNoti, userAcceptReportMap);
+                break;
         }
+
+        return childUpdate;
+    }
 
 }

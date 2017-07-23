@@ -53,6 +53,7 @@ import com.app.ptt.comnha.Service.MyService;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.SingletonClasses.CoreManager;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
+import com.app.ptt.comnha.Utils.AppUtils;
 import com.app.ptt.comnha.Utils.MyTool;
 import com.app.ptt.comnha.Utils.PlaceAPI;
 import com.github.clans.fab.FloatingActionButton;
@@ -147,8 +148,8 @@ public class MapFragment extends Fragment implements View.OnClickListener,
         customLocation = location;
         if (customLocation != null) {
             custom = 1;
-        }else{
-            custom=0;
+        } else {
+            custom = 0;
         }
     }
 
@@ -231,9 +232,9 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                     btnSearch.setImageResource(R.drawable.ic_close_50black_24dp);
                 } else {
                     btnSearch.setImageResource(R.drawable.ic_search_50black_24dp);
-                    myLocationSearch=null;
+                    myLocationSearch = null;
                 }
-                txt_distance.setText( distance/1000+" km");
+                txt_distance.setText(distance / 1000 + " km");
                 card_distance.setEnabled(true);
             }
 
@@ -271,7 +272,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
         super.onStart();
         isConnected = MyService.isNetworkAvailable(getActivity());
         if (!isConnected) {
-            Toast.makeText(getContext(), "Offline mode", Toast.LENGTH_SHORT).show();
+            AppUtils.showSnackbarWithoutButton(getView(),"Không có kết nối mạng");
         }
         mIntentFilter = new IntentFilter();
 
@@ -497,16 +498,16 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                                                 && (marker.getPosition().longitude != myLocationSearch.getPlaceLatLng().longitude)))) {
                                             Store a = returnLocation(marker);
 
-                                                if (a != null && a.getDistrict() != null && a.getStoreID() != null && a.getProvince() != null) {
-                                                    Intent intent = new Intent(getActivity().getApplicationContext(), StoreDeatailActivity.class);
-                                                    Bitmap imgBitmap = ((BitmapDrawable) imgMarker.getDrawable())
-                                                            .getBitmap();
-                                                    a.setImgBitmap(imgBitmap);
-                                                    ChooseStore.getInstance().setStore(a);
+                                            if (a != null && a.getDistrict() != null && a.getStoreID() != null && a.getProvince() != null) {
+                                                Intent intent = new Intent(getActivity().getApplicationContext(), StoreDeatailActivity.class);
+                                                Bitmap imgBitmap = ((BitmapDrawable) imgMarker.getDrawable())
+                                                        .getBitmap();
+                                                a.setImgBitmap(imgBitmap);
+                                                ChooseStore.getInstance().setStore(a);
 
-                                                    //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                    startActivity(intent);
-                                                }
+                                                //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                startActivity(intent);
+                                            }
                                         }
                                     }
                                 }
@@ -525,7 +526,8 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                                         txt_Title.setText(" Vị trí của bạn");
                                         txt_Your_Location.setText(yourLocation.getAddress());
                                         return viewInfoWindowYourLocation;
-                                    } else if (myLocationSearch != null) {
+                                    } else
+                                         if (myLocationSearch != null) {
                                         if (marker.getPosition().latitude == myLocationSearch.getPlaceLatLng().latitude
                                                 && marker.getPosition().longitude == myLocationSearch.getPlaceLatLng().longitude) {
                                             txt_Title.setText(" Vị trí bạn chọn");
@@ -548,9 +550,9 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                                                     txt_DiemGia.setText(a.getPriceSum() + "");
                                                     txt_DiemPhucVu.setText(a.getServiceSum() + "");
                                                 }
-                                                if(null!=a.getImgBitmap()){
+                                                if (null != a.getImgBitmap()) {
                                                     imgMarker.setImageBitmap(a.getImgBitmap());
-                                                }else {
+                                                } else {
                                                     if (!a.getStoreimg().equals("")) {
                                                         StorageReference imgRef = stRef.child(a
                                                                 .getStoreimg());
@@ -598,10 +600,10 @@ public class MapFragment extends Fragment implements View.OnClickListener,
 
 
         Store a;
-        if(customLocation==null){
-            a= returnLocation(marker);
-        }else{
-            a=customLocation;
+        if (customLocation == null) {
+            a = returnLocation(marker);
+        } else {
+            a = customLocation;
             card_distance.setEnabled(false);
         }
         if (a != null) {
@@ -620,9 +622,9 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                 txt_DiemPhucVu.setText(a.getServiceSum() + "");
             }
             int width = getPixelFromDimen(getActivity(), R.dimen.image_size);
-            if( TextUtils.isEmpty(a.getStoreimg())){
+            if (TextUtils.isEmpty(a.getStoreimg())) {
                 Picasso.with(getActivity()).load(R.mipmap.ic_launcher).resize(width, width).into(imgMarker);
-            }else {
+            } else {
                 Picasso.with(getActivity()).load(a.getStoreimg()).error(R.mipmap.ic_launcher).resize(width, width).into(imgMarker);
             }
         } else
@@ -647,7 +649,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
         huyen = null;
         getDataInFireBase(1);
         sortType = -1;
-        txt_distance.setText(distance/1000 +" km");
+        txt_distance.setText(distance / 1000 + " km");
         card_distance.setEnabled(true);
     }
 
@@ -700,17 +702,17 @@ public class MapFragment extends Fragment implements View.OnClickListener,
     public void getDataInFireBase(int type) {
         sortType = type;
         myGoogleMap.clear();
-        double lat=0,lng=0;
+        double lat = 0, lng = 0;
         float kc = 0;
         if (myLocationSearch != null) {
             addMarkerCustomSearch();
-            lat=myLocationSearch.getPlaceLatLng().latitude;
-            lng=myLocationSearch.getPlaceLatLng().longitude;
+            lat = myLocationSearch.getPlaceLatLng().latitude;
+            lng = myLocationSearch.getPlaceLatLng().longitude;
         } else {
             if (yourLocation != null) {
                 addMarkerYourLocation();
-                lat=yourLocation.getLat();
-                lng=yourLocation.getLng();
+                lat = yourLocation.getLat();
+                lng = yourLocation.getLng();
             }
         }
         for (Store newLocation : list) {
@@ -720,8 +722,8 @@ public class MapFragment extends Fragment implements View.OnClickListener,
             int e = c % 1000;
             int f = e / 100;
             //sort = tinh + huyen
-            if (type == 6 ||(tinh!=null &&huyen!=null &&
-                    ( type==3 ||type==4||type==5||type==2||type==7))) {
+            if (type == 6 || (tinh != null && huyen != null &&
+                    (type == 3 || type == 4 || type == 5 || type == 2 || type == 7))) {
                 if (tinh.equals(newLocation.getProvince())
                         && huyen.equals(newLocation.getDistrict())) {
                     //gia
@@ -740,15 +742,15 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                                     addMarker(newLocation);
                             } else {
                                 //all
-                                    newLocation.setDistance(d + "," + f + " km");
-                                    addMarker(newLocation);
+                                newLocation.setDistance(d + "," + f + " km");
+                                addMarker(newLocation);
                             }
                         }
                     }
                     myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(newLocation.getLat(), newLocation.getLng()), 13));
                 }
             } else {
-                txt_distance.setText( distance/1000+" km");
+                txt_distance.setText(distance / 1000 + " km");
                 card_distance.setEnabled(true);
                 if (kc < distance) {
                     //Gia
@@ -781,7 +783,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
     }
 
     public void getData() {
-        sortType=1;
+        sortType = 1;
         Log.i(LOG + ".getData", "OK");
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
@@ -822,7 +824,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
             }
 
         };
-        if (LoginSession.getInstance().getUser()!=null && LoginSession.getInstance().getUser().getRole() != 0) {
+        if (LoginSession.getInstance().getUser() != null && LoginSession.getInstance().getUser().getRole() != 0) {
             dbRef.child(getString(R.string.store_CODE)).limitToLast(seeMore)
                     .addChildEventListener(childEventListener);
         } else {
@@ -834,20 +836,20 @@ public class MapFragment extends Fragment implements View.OnClickListener,
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-               if(custom==1){
+                if (custom == 1) {
                     addMarkerYourLocation();
-                   float kc = (float) myTool.distanceFrom_in_Km(yourLocation.getLat(), yourLocation.getLng(), customLocation.getLat(), customLocation.getLng());
-                   int c = Math.round(kc);
-                   int d = c / 1000;
-                   int e = c % 1000;
-                   int f = e / 100;
-                   customLocation.setDistance(d + "," + f + " km");
+                    float kc = (float) myTool.distanceFrom_in_Km(yourLocation.getLat(), yourLocation.getLng(), customLocation.getLat(), customLocation.getLng());
+                    int c = Math.round(kc);
+                    int d = c / 1000;
+                    int e = c % 1000;
+                    int f = e / 100;
+                    customLocation.setDistance(d + "," + f + " km");
                     addMarker(customLocation);
                     myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(customLocation.getLat(), customLocation.getLng()), 13));
 
-                }else {
-                   getDataInFireBase(1);
-               }
+                } else {
+                    getDataInFireBase(1);
+                }
             }
 
             @Override

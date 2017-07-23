@@ -131,6 +131,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         ref();
         startMyService();
         initMenu();
+        getNotification();
     }
 
 
@@ -195,8 +196,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
                     closeDialog();
                 } catch (Exception e) {
-                    mAuth.signOut();
-                    getUser();
+                    //mAuth.signOut();
+                    //getUser();
                 }
 
             }
@@ -463,43 +464,60 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         getString(R.string.frag_about_CODE));
                 break;
             case R.id.nav_admin:
+                if (MyService.isNetworkAvailable(this)) {
+
+                }else{
+                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(),"Không có kết nối mạng");
+                }
                 Intent intent_admin = new Intent(this, AdminActivity.class);
                 startActivity(intent_admin);
                 break;
             case R.id.nav_signin:
-                Intent intent1 = new Intent(MainActivity.this, AdapterActivity.class);
-                intent1.putExtra(getString(R.string.fragment_CODE),
-                        getString(R.string.frg_signin_CODE));
-                startActivity(intent1);
+                if (MyService.isNetworkAvailable(this)) {
+                    Intent intent1 = new Intent(MainActivity.this, SignInActivity.class);
+                    intent1.putExtra("Main","Main");
+                    startActivity(intent1);
+                }else{
+                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(),"Không có kết nối mạng");
+                }
                 break;
             case R.id.nav_signout:
-                showProgressDialog(getString(R.string.txt_plzwait), getString(R.string.txt_logginout));
-                CountDownTimer countDownTimer = new CountDownTimer(1000, 1000) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                    }
-                    @Override
-                    public void onFinish() {
-                        mAuth.signOut();
-                        txt_email.setText(null);
-                        txt_un.setText(null);
-                        itemSignIn.setVisible(true);
-                        itemSignOut.setVisible(false);
-                        itemProfile.setVisible(false);
-                        itemAdmin.setVisible(false);
-                        imgv_avatar.setImageResource(R.drawable.ic_logo);
-                        getUser();
-                        AnimationUtils.getInstance()
-                                .animateHideNotify(notifytabview, 100);
-                        sendBroadcastUpdateNoti();
-                    }
-                };
-                countDownTimer.start();
+                if (MyService.isNetworkAvailable(this)) {
+                    showProgressDialog(getString(R.string.txt_plzwait), getString(R.string.txt_logginout));
+                    CountDownTimer countDownTimer = new CountDownTimer(1000, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                        }
+                        @Override
+                        public void onFinish() {
+                            mAuth.signOut();
+                            closeDialog();
+                            txt_email.setText(null);
+                            txt_un.setText(null);
+                            itemSignIn.setVisible(true);
+                            itemSignOut.setVisible(false);
+                            itemProfile.setVisible(false);
+                            itemAdmin.setVisible(false);
+                            imgv_avatar.setImageResource(R.drawable.ic_logo);
+                            //getUser();
+                            LoginSession.getInstance().setFirebUser(null);
+                            LoginSession.getInstance().setUser(null);
+                            AnimationUtils.getInstance()
+                                    .animateHideNotify(notifytabview, 100);
+                            sendBroadcastUpdateNoti();
+                        }
+                    };
+                    countDownTimer.start();
+                }else{
+                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(),"Không có kết nối mạng");
+                }
+
 
 
                 break;
             case R.id.nav_map:
-                if (!MyService.canGetLocation(this)) {
+                if (MyService.isNetworkAvailable(this)) {
+                    if (!MyService.canGetLocation(this)) {
                     AppUtils.showSnackbar(this, getWindow().getDecorView(), "Bật GPS để sử dụng chức năng này", "Bật GPS", Const.SNACKBAR_TURN_ON_GPS, Snackbar.LENGTH_SHORT);
                 } else {
                     Intent intent2 = new Intent(MainActivity.this, MapActivity.class);
@@ -508,7 +526,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     intent2.putExtra("type", 0);
                     startActivity(intent2);
                 }
-
+                } else {
+                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Không có kết nối mạng");
+                }
                 break;
         }
         mdrawer = (DrawerLayout) findViewById(R.id.drawer_layout);

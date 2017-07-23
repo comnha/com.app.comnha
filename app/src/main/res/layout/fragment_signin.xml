@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
-    android:theme="@style/SignInUpEdt"
-    tools:context="com.app.ptt.comnha.Fragment.SigninFragment">
+    android:theme="@style/SignInUpEdt">
 
     <LinearLayout
         android:layout_width="match_parent"

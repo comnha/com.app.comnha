@@ -334,13 +334,9 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
             case 4://new food
                 Intent intent_openFood = new Intent(getActivity(),
                         AdapterActivity.class);
-
                 intent_openFood.putExtra(getString(R.string.fragment_CODE)
                         , getString(R.string.frag_foodetail_CODE));
-                Food food=new Food();
-                food.setFoodID(noti.getFoodId());
-                ChooseFood.getInstance().setFood(food);
-                intent_openFood.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent_openFood.putExtra(Const.KEY_FOOD,noti.getFoodId());
                 startActivity(intent_openFood);
                 break;
         }

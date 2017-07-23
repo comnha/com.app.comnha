@@ -31,7 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class BaseActivity extends AppCompatActivity {
     Dialog dialogLocationSetting;
     ProgressDialog progressDialog;
-     FirebaseAuth auth;
+
     public static final int MULTIPLE_PERMISSIONS = 10; // cod
     DatabaseReference dbRef;
     IntentFilter mIntentFilter;

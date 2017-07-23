@@ -7,10 +7,7 @@ import android.util.Log;
 
 import com.app.ptt.comnha.Dialog.AddFoodDialog;
 import com.app.ptt.comnha.Fragment.AddstoreFragment;
-import com.app.ptt.comnha.Fragment.FooddetailFragment;
 import com.app.ptt.comnha.Fragment.MapFragment;
-import com.app.ptt.comnha.Fragment.SigninFragment;
-import com.app.ptt.comnha.Fragment.SignupFragment;
 import com.app.ptt.comnha.Fragment.WritepostFragment;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.R;
@@ -37,11 +34,6 @@ public class AdapterActivity extends AppCompatActivity {
                             .commit();
                 }
             }
-        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frag_storelist_CODE))) {
-            if (findViewById(R.id.frame_adapter) != null) {
-                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
-                }
-            }
         } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frag_addstore_CODE))) {
             if (findViewById(R.id.frame_adapter) != null) {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
@@ -53,99 +45,13 @@ public class AdapterActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, addstoreFragment).commit();
                 }
             }
-        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frag_choosestore_CODE))) {
-            if (findViewById(R.id.frame_adapter) != null) {
-                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
-//                    ChooselocaFragment chooselocaFragment = new ChooselocaFragment();
-//                    chooselocaFragment.setArguments(getIntent().getExtras());
-//                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, chooselocaFragment).commit();
-                }
-            }
-        } else if (FRAGMENT_CODE.equals(getString(R.string.frg_postdetail_CODE))) {
-            if (findViewById(R.id.frame_adapter) != null) {
-                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
-//                    ViewpostFragment viewpostFragment = new ViewpostFragment();
-//                    viewpostFragment.setArguments(getIntent().getExtras());
-//                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, viewpostFragment)
-//                            .commit();
-                }
-            }
-        } else if (FRAGMENT_CODE.equals(getString(R.string.frg_signin_CODE))) {
-            if (findViewById(R.id.frame_adapter) != null) {
-                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
-                    SigninFragment signinFragment = new SigninFragment();
-                    signinFragment.setArguments(getIntent().getExtras());
-                    if(intent.getExtras().getString("email")!=null &&intent.getExtras().getString("pass")!=null) {
-                        signinFragment.setEmail(intent.getExtras().getString("email"));
-                        signinFragment.setPass(intent.getExtras().getString("pass"));
-                    }
-                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, signinFragment)
-                            .commit();
-                }
-            }
-        } else if (FRAGMENT_CODE.equals(getString(R.string.frg_signup_CODE))) {
-            if (findViewById(R.id.frame_adapter) != null) {
-                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
-                    SignupFragment signupFragment = new SignupFragment();
-                    signupFragment.setArguments(getIntent().getExtras());
-                    if(intent.getExtras().getString("email")!=null &&intent.getExtras().getString("pass")!=null) {
-                        signupFragment.setEmail(intent.getExtras().getString("email"));
-                        signupFragment.setPass(intent.getExtras().getString("pass"));
-                    }
-                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, signupFragment)
-                            .commit();
-                }
-            }
-        } else if (FRAGMENT_CODE.equals(getString(R.string.frag_foodetail_CODE))) {
-            if (findViewById(R.id.frame_adapter) != null) {
-                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
-                    FooddetailFragment fooddetailFragment = new FooddetailFragment();
-                    fooddetailFragment.setStore((Store)getIntent().getSerializableExtra("Store"));
-                    fooddetailFragment.setArguments(getIntent().getExtras());
-                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter,
-                            fooddetailFragment).commit();
-                }
-            }
-
-        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frg_themmon_CODE))) {
+        }  else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frg_themmon_CODE))) {
             if (findViewById(R.id.frame_adapter) != null) {
                 if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
                     AddFoodDialog addFoodDialog = new AddFoodDialog();
                     addFoodDialog.setArguments(getIntent().getExtras());
                     getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, addFoodDialog)
                             .commit();
-                }
-            }
-        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frg_viewalbum_CODE))) {
-            if (findViewById(R.id.frame_adapter) != null) {
-                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
-//                    ViewAlbumFragment viewAlbumFragment = new ViewAlbumFragment();
-//                    viewAlbumFragment.setFromFrag(fromFrag);
-//                    viewAlbumFragment.setArguments(getIntent().getExtras());
-//                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter2, viewAlbumFragment)
-//                            .commit();
-                }
-            }
-        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frg_notification_CODE))) {
-
-        } else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frg_viewfood_CODE))) {
-            Log.i("ZOOOOOOOOOOOO", "VIEW FOOD");
-            if (findViewById(R.id.frame_adapter) != null) {
-                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
-                    FooddetailFragment fooddetailFragment = new FooddetailFragment();
-                    fooddetailFragment.setStore((Store)getIntent().getSerializableExtra("Store"));
-                    fooddetailFragment.setArguments(getIntent().getExtras());
-                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, fooddetailFragment).commit();
-                }
-            }
-        }else if (FRAGMENT_CODE.equals(getResources().getString(R.string.frag_map_CODE))) {
-            if (findViewById(R.id.frame_adapter) != null) {
-                if (getSupportFragmentManager().findFragmentById(R.id.frame_adapter) == null) {
-                    MapFragment mapFragment = new MapFragment();
-                    Bundle bundle=new Bundle();
-                    bundle.putString(getResources().getString(R.string.frag_map_CODE),getResources().getString(R.string.frag_map_CODE));
-                    mapFragment.setArguments(bundle);
-                    getSupportFragmentManager().beginTransaction().add(R.id.frame_adapter, mapFragment).commit();
                 }
             }
         }

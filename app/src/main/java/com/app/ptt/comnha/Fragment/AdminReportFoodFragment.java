@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.app.ptt.comnha.Activity.AdapterActivity;
+import com.app.ptt.comnha.Activity.FoodDetailActivity;
 import com.app.ptt.comnha.Adapters.notify_reportfood_adapter;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Dialog.BlockUserDialog;
@@ -27,7 +27,6 @@ import com.app.ptt.comnha.Models.FireBase.ReportfoodNotify;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
-import com.app.ptt.comnha.SingletonClasses.ChooseFood;
 import com.app.ptt.comnha.SingletonClasses.CoreManager;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -57,6 +56,7 @@ public class AdminReportFoodFragment extends Fragment {
     ProgressDialog plzwaitDialog;
     User user;
     Store store;
+
     public AdminReportFoodFragment() {
         // Required empty public constructor
     }
@@ -102,12 +102,23 @@ public class AdminReportFoodFragment extends Fragment {
                             new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    getFoodInfo(notify);
+                                    Intent intent_openFood = new Intent(getActivity(),
+                                            FoodDetailActivity.class);
+                                    intent_openFood.putExtra(Const.KEY_FOOD, notify.getFoodID());
+                                    startActivity(intent_openFood);
                                 }
                             }
-                    );
+                    ).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            AppUtils.showSnackbarWithoutButton(getView(), "Có lỗi xảy ra. Vui lòng thử lại");
+                        }
+                    });
                 } else {
-                    getFoodInfo(notify);
+                    Intent intent_openFood = new Intent(getActivity(),
+                            FoodDetailActivity.class);
+                    intent_openFood.putExtra(Const.KEY_FOOD, notify.getFoodID());
+                    startActivity(intent_openFood);
                 }
 
             }
@@ -169,76 +180,74 @@ public class AdminReportFoodFragment extends Fragment {
     }
 
     private void getUserInfo(ReportfoodNotify notify) {
-            userEventListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    plzwaitDialog.cancel();
-                    user = dataSnapshot.getValue(User.class);
-                    String key = dataSnapshot.getKey();
-                    user.setuID(key);
-                    blockUser(user);
-                }
+        userEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                plzwaitDialog.cancel();
+                user = dataSnapshot.getValue(User.class);
+                String key = dataSnapshot.getKey();
+                user.setuID(key);
+                blockUser(user);
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                }
-            };
-            dbRef.child(getString(R.string.users_CODE)
-                    + notify.getUserID())
-                    .addListenerForSingleValueEvent(userEventListener);
+            }
+        };
+        dbRef.child(getString(R.string.users_CODE)
+                + notify.getUserID())
+                .addListenerForSingleValueEvent(userEventListener);
     }
 
-    private void getFoodInfo(ReportfoodNotify notify) {
-            foodEventListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    food = dataSnapshot.getValue(Food.class);
-                    String key = dataSnapshot.getKey();
-                    food.setFoodID(key);
-                    ChooseFood.getInstance().setFood(food);
-                    getStore(food.getStoreID());
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            };
-            dbRef.child(getString(R.string.food_CODE) +
-                    notify.getFoodID())
-                    .addListenerForSingleValueEvent(foodEventListener);
-    }
-    private void getStore(final String key) {
-        try {
-
-            ValueEventListener storeEventListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    store = dataSnapshot.getValue(Store.class);
-                    store.setStoreID(dataSnapshot.getKey());
-                    Intent intent_openFood = new Intent(getActivity(),
-                            AdapterActivity.class);
-                    intent_openFood.putExtra(getString(R.string.fragment_CODE)
-                            , getString(R.string.frag_foodetail_CODE));
-                    intent_openFood.putExtra("Store",store);
-                    intent_openFood.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    plzwaitDialog.dismiss();
-                    startActivity(intent_openFood);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    plzwaitDialog.dismiss();
-                }
-            };
-            dbRef.child(getString(R.string.store_CODE)+key).addValueEventListener(storeEventListener);
-
-        }catch (Exception e){
-
-        }
-    }
+//    private void getFoodInfo(ReportfoodNotify notify) {
+//            foodEventListener = new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    food = dataSnapshot.getValue(Food.class);
+//                    String key = dataSnapshot.getKey();
+//                    food.setFoodID(key);
+//                    ChooseFood.getInstance().setFood(food);
+//                    getStore(food.getStoreID());
+//
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//
+//                }
+//            };
+//            dbRef.child(getString(R.string.food_CODE) +
+//                    notify.getFoodID())
+//                    .addListenerForSingleValueEvent(foodEventListener);
+//    }
+//    private void getStore(final String key) {
+//        try {
+//
+//            ValueEventListener storeEventListener = new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    store = dataSnapshot.getValue(Store.class);
+//                    store.setStoreID(dataSnapshot.getKey());
+//                    Intent intent_openFood = new Intent(getActivity(),
+//                            FoodDetailActivity.class);
+//                    intent_openFood.putExtra(Const.KEY_STORE,store);
+//                    intent_openFood.putExtra(Const.KEY_FOOD,food.getFoodID());
+//                    plzwaitDialog.dismiss();
+//                    startActivity(intent_openFood);
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//                    plzwaitDialog.dismiss();
+//                }
+//            };
+//            dbRef.child(getString(R.string.store_CODE)+key).addValueEventListener(storeEventListener);
+//
+//        }catch (Exception e){
+//
+//        }
+//    }
 
     private void blockUser(User user) {
         if (user.isReportfoodBlocked()) {
