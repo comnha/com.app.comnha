@@ -253,8 +253,8 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     }
 
                 } else {
-                    contents.add(new Pair<Integer, String>
-                            (R.string.txt_rejectstore, getString(R.string.txt_rejectstore)));
+//                    contents.add(new Pair<Integer, String>
+//                            (R.string.txt_rejectstore, getString(R.string.txt_rejectstore)));
                 }
             }
 

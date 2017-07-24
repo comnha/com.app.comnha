@@ -576,8 +576,8 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                     }
 
                 } else {
-                    contents.add(new Pair<Integer, String>
-                            (R.string.txt_rejectpost, getString(R.string.txt_rejectpost)));
+//                    contents.add(new Pair<Integer, String>
+//                            (R.string.txt_rejectpost, getString(R.string.txt_rejectpost)));
                 }
             }
             if (uID.equals(post.getUserID())) {
@@ -1040,6 +1040,9 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                                 case 0:
                                     childUpdate=notificationToUser(childUpdate,-1,2);
                                 break;
+                                    case 2:
+                                        childUpdate=notificationToUser(childUpdate,-1,2);
+                                        break;
                                 case 3:
                                     childUpdate= notificationToUser(childUpdate,-2,2);
                                 break;
