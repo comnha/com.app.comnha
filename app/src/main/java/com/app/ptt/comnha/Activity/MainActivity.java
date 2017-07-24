@@ -782,10 +782,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public void onLocationChanged(Location location) {
 
         Log.i(TAG, "Location:" + location.getLatitude() + "-long:" + location.getLongitude());
-        MyLocation savedLocation = CoreManager.getInstance().getMyLocation();
+        MyLocation savedLocation=null;
+        if(CoreManager.getInstance().getMyLocation()!=null) {
+            savedLocation = CoreManager.getInstance().getMyLocation();
+        }
         if (savedLocation != null) {
             if (myTool.distanceFrom_in_Km(savedLocation.getLat(), savedLocation.getLng(), location.getLatitude(), location.getLongitude()) > 2000) {
-
                 MyLocation myLocation = myTool.returnMyLocation(location.getLatitude(), location.getLongitude());
                 List<MyLocation> listLocation = new ArrayList<>();
                 listLocation.add(myLocation);

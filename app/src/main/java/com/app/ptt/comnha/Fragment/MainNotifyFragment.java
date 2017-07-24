@@ -99,6 +99,8 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
                 if(LoginSession.getInstance().getUser()!=null) {
                     notificationAdapter.clearAll();
                     getNotification();
+                }else{
+                    swipeRefresh.setRefreshing(false);
                 }
             }
         });

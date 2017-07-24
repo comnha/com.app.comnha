@@ -335,7 +335,7 @@ public class MyTool implements
         if (addresses.size() > 0) {
             for (Address address : addresses) {
                 PlaceAttribute placeAttribute = new PlaceAttribute();
-                String a = address.getAddressLine(0);
+                String a = address.getSubThoroughfare()+" " +address.getThoroughfare();
                 String b = address.getSubLocality();
                 String c = address.getSubAdminArea();
                 String d = address.getAdminArea();

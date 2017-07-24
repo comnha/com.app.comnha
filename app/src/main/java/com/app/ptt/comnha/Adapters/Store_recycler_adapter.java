@@ -28,6 +28,8 @@ import com.app.ptt.comnha.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -195,7 +197,8 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<RecyclerView.Vi
                             Log.d("getUrl().addOnSuccess", uri.toString() + "");
 //                    holder.imgv_avatar.setImageURI(uri);
                             Picasso.with(context)
-                                    .load(uri)
+                                    .load(uri).memoryPolicy(MemoryPolicy.NO_CACHE )
+                                    .networkPolicy(NetworkPolicy.NO_CACHE)
                                     .into(holder.imgv_avatar);
                             try {
                                 Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_avatar.getDrawable())
@@ -224,21 +227,21 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<RecyclerView.Vi
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (stores.get(position).getImgBitmap() == null) {
-                        try {
-                            Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_avatar.getDrawable())
-                                    .getBitmap();
-                            stores.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
-                            onItemClickLiestner.onItemClick(stores.get(position),
-                                    holder.itemView);
-                        } catch (NullPointerException e) {
-                            onItemClickLiestner.onItemClick(stores.get(position),
-                                    holder.itemView);
-                        }
-                    } else {
+//                    if (stores.get(position).getImgBitmap() == null) {
+//                        try {
+//                            Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_avatar.getDrawable())
+//                                    .getBitmap();
+//                            stores.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
+//                            onItemClickLiestner.onItemClick(stores.get(position),
+//                                    holder.itemView);
+//                        } catch (NullPointerException e) {
+//                            onItemClickLiestner.onItemClick(stores.get(position),
+//                                    holder.itemView);
+//                        }
+//                    } else {
                         onItemClickLiestner.onItemClick(stores.get(position),
                                 holder.itemView);
-                    }
+                  //  }
                 }
             });
         }

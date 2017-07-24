@@ -527,7 +527,7 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                                         txt_Your_Location.setText(yourLocation.getAddress());
                                         return viewInfoWindowYourLocation;
                                     } else
-                                         if (myLocationSearch != null) {
+                                     if (myLocationSearch != null) {
                                         if (marker.getPosition().latitude == myLocationSearch.getPlaceLatLng().latitude
                                                 && marker.getPosition().longitude == myLocationSearch.getPlaceLatLng().longitude) {
                                             txt_Title.setText(" Vị trí bạn chọn");

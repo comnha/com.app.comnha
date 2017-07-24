@@ -949,7 +949,8 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         }
         post.setHidden(false);
         post.setPostType(postType);
-
+        childUpdate=changeFoodRate(childUpdate,true,post.getPostType());
+        childUpdate=changeStoreRate(childUpdate,true,post.getPostType());
         String key = post.getPostID();
         Map<String, Object> postValue = post.toMap();
 
@@ -970,6 +971,53 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
 //                + "_" + post.getUserID());
 
         approveReport(childUpdate,false);
+    }
+    public Map<String,Object> changeFoodRate(Map<String,Object> childUpdate,boolean status,int  type){
+        if(status) {
+            long total = food.getTotal() + 1;
+            long rat = food.getRating() + (long) post.getFoodRate();
+            food.setRating(rat);
+            food.setTotal(total);
+        }else{
+            if(type==-2) {
+                long total = food.getTotal() - 1;
+                long rat = food.getRating() - (long) post.getFoodRate();
+                food.setRating(rat);
+                food.setTotal(total);
+            }
+        }
+            Map<String, Object> foodValue = food.toMap();
+            childUpdate.put(getString(R.string.food_CODE)
+                    + food.getFoodID(), foodValue);
+        return childUpdate;
+    }
+    public Map<String,Object> changeStoreRate(Map<String,Object> childUpdate, boolean status,int type){
+        if(status) {
+            long priceSum = store.getPriceSum() + post.getPriceRate(),
+                    healthSum = store.getHealthySum() + post.getHealthyRate(),
+                    serviceSum = store.getServiceSum() + post.getServiceRate(),
+                    sum = store.getSize() + 1;
+            store.setPriceSum(priceSum);
+            store.setHealthySum(healthSum);
+            store.setServiceSum(serviceSum);
+            store.setSize(sum);
+        }else{
+            if(type==-2){
+                long priceSum = store.getPriceSum() - post.getPriceRate(),
+                        healthSum = store.getHealthySum() - post.getHealthyRate(),
+                        serviceSum = store.getServiceSum() - post.getServiceRate(),
+                        sum = store.getSize() - 1;
+                store.setPriceSum(priceSum);
+                store.setHealthySum(healthSum);
+                store.setServiceSum(serviceSum);
+                store.setSize(sum);
+            }
+        }
+
+            Map<String, Object> storeValue = store.toMap();
+            childUpdate.put(getString(R.string.store_CODE) + store.getStoreID(),
+                    storeValue);
+        return childUpdate;
     }
 
     private void hidePost(final int postType) {
@@ -994,6 +1042,8 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                             }
                                 post.setPostType(postType);
                                 post.setHidden(true);
+                                childUpdate=changeFoodRate(childUpdate,false,post.getPostType());
+                                childUpdate=changeStoreRate(childUpdate,false,post.getPostType());
                                 String key = post.getPostID();
 
                                 Map<String, Object> postValue = post.toMap();

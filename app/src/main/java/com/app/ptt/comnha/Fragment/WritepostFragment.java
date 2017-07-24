@@ -821,29 +821,31 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         }
 
 
-        Map<String, Object> postValue = post.toMap();
 
-        childUpdate.put(getString(R.string.posts_CODE) + postKey,
-                postValue);
         if (healthrate > 0 && servicerate > 0 && pricerate > 0) {
-            long priceSum = selected_store.getPriceSum() + pricerate,
-                    healthSum = selected_store.getHealthySum() + healthrate,
-                    serviceSum = selected_store.getServiceSum() + servicerate,
-                    sum = selected_store.getSize() + 1;
-            selected_store.setPriceSum(priceSum);
-            selected_store.setHealthySum(healthSum);
-            selected_store.setServiceSum(serviceSum);
-            selected_store.setSize(sum);
+            if(LoginSession.getInstance().getUser().getRole()>0) {
+                long priceSum = selected_store.getPriceSum() + pricerate,
+                        healthSum = selected_store.getHealthySum() + healthrate,
+                        serviceSum = selected_store.getServiceSum() + servicerate,
+                        sum = selected_store.getSize() + 1;
+                selected_store.setPriceSum(priceSum);
+                selected_store.setHealthySum(healthSum);
+                selected_store.setServiceSum(serviceSum);
+                selected_store.setSize(sum);
 
 
-
-            Map<String, Object> storeValue = selected_store.toMap();
-            childUpdate.put(getString(R.string.store_CODE) + storeID,
-                    storeValue);
+                Map<String, Object> storeValue = selected_store.toMap();
+                childUpdate.put(getString(R.string.store_CODE) + storeID,
+                        storeValue);
+            }
+            post.setPriceRate(pricerate);
+            post.setServiceRate(servicerate);
+            post.setHealthyRate(healthrate);
         }
         if (selected_food != null
                 && selected_food.getStoreID()
                 .equals(selected_store.getStoreID())) {
+            if(LoginSession.getInstance().getUser().getRole()>0) {
             long total = selected_food.getTotal() + 1;
             long rat = selected_food.getRating() + (long) foodRate;
             selected_food.setRating(rat);
@@ -851,6 +853,8 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
             Map<String, Object> foodValue = selected_food.toMap();
             childUpdate.put(getString(R.string.food_CODE)
                     + selected_food.getFoodID(), foodValue);
+            }
+                post.setFoodRate((long)foodRate);
         }
         if (selectedImages.size() > 0) {
             uploadImgDialog.setMax(selectedImages.size());
@@ -871,7 +875,9 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                         + imgKey, imgValue);
             }
         }
-
+        Map<String, Object> postValue = post.toMap();
+        childUpdate.put(getString(R.string.posts_CODE) + postKey,
+                postValue);
         if (selectedImages.size() > 0) {
             uploadImgDialog.show();
             for (SelectedImage imgItem : selectedImages) {

@@ -23,12 +23,13 @@ public class Post {
     String un,
             userID;
     //store
+
     String storeID;
     String storeName;
 
     //attachedfood
     String foodID = "";
-    long foodRate;
+    long foodRate=0;
 
     //attachedimage
     String banner = "";//
@@ -172,6 +173,12 @@ public class Post {
         result.put("userID_dist_prov", userID+"_"+dist_pro);
         result.put("dist_pro", dist_pro);
         result.put("isHidden", isHidden);
+
+        result.put("userComment", foodRate);
+        result.put("userID_dist_prov", userID+"_"+dist_pro);
+        result.put("dist_pro", dist_pro);
+        result.put("isHidden", isHidden);
+
         result.put("isHidden_dist_prov", String.valueOf(isHidden)
                 + "_" + dist_pro);
         result.put("isHidden_storeID", String.valueOf(isHidden)

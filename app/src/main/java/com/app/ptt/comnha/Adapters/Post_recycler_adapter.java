@@ -21,6 +21,8 @@ import com.app.ptt.comnha.Modules.orderObjectByTime;
 import com.app.ptt.comnha.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -142,9 +144,6 @@ public class Post_recycler_adapter extends RecyclerView.Adapter<RecyclerView.Vie
                     posts.get(position).getUn());
             holder.txtv_storename.setText(posts.get(position).getStoreName());
             holder.txtv_title.setText(posts.get(position).getTitle());
-//        if (posts.get(position).getComments() != null) {
-//            Log.d("commentsize: ", posts.get(position).getComments().size()+"");
-//        }
             if (posts.get(holder.getAdapterPosition()).getImgBitmap() == null) {
                 if (!posts.get(holder.getAdapterPosition()).getBanner().equals("")) {
                     StorageReference imgRef = stRef.child(posts.get(holder.getAdapterPosition())
@@ -153,12 +152,14 @@ public class Post_recycler_adapter extends RecyclerView.Adapter<RecyclerView.Vie
                         @Override
                         public void onSuccess(Uri uri) {
                             Picasso.with(context)
-                                    .load(uri)
+                                    .load(uri).memoryPolicy(MemoryPolicy.NO_CACHE )
+                                    .networkPolicy(NetworkPolicy.NO_CACHE)
                                     .into(holder.imgv_banner);
                             try {
                                 Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_banner.getDrawable())
                                         .getBitmap();
                                 posts.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
+
                             } catch (NullPointerException e) {
 
                             }
@@ -166,13 +167,13 @@ public class Post_recycler_adapter extends RecyclerView.Adapter<RecyclerView.Vie
                     });
                 } else {
                     holder.imgv_banner.setBackgroundResource(R.drawable.img_banner);
-                    try {
-                        Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_banner.getDrawable())
-                                .getBitmap();
-                        posts.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
-                    } catch (NullPointerException e) {
-
-                    }
+//                    try {
+//                        Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_banner.getDrawable())
+//                                .getBitmap();
+//                        posts.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
+//                    } catch (NullPointerException e) {
+//
+//                    }
                 }
             } else {
                 holder.imgv_banner.setImageBitmap(posts.get(position).getImgBitmap());
@@ -188,21 +189,21 @@ public class Post_recycler_adapter extends RecyclerView.Adapter<RecyclerView.Vie
                 holder.cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (posts.get(position).getImgBitmap() == null) {
-                            try {
-                                Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_banner.getDrawable())
-                                        .getBitmap();
-                                posts.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
-                                onItemClickLiestner.onItemClick(posts.get(holder.getAdapterPosition()),
-                                        holder.itemView);
-                            } catch (NullPointerException e) {
-                                onItemClickLiestner.onItemClick(posts.get(holder.getAdapterPosition()),
-                                        holder.itemView);
-                            }
-                        } else {
+//                        if (posts.get(position).getImgBitmap() == null) {
+//                            try {
+////                                Bitmap imgBitmap = ((BitmapDrawable) holder.imgv_banner.getDrawable())
+////                                        .getBitmap();
+////                                posts.get(holder.getAdapterPosition()).setImgBitmap(imgBitmap);
+//                                onItemClickLiestner.onItemClick(posts.get(holder.getAdapterPosition()),
+//                                        holder.itemView);
+//                            } catch (NullPointerException e) {
+//                                onItemClickLiestner.onItemClick(posts.get(holder.getAdapterPosition()),
+//                                        holder.itemView);
+//                            }
+//                        } else {
                             onItemClickLiestner.onItemClick(posts.get(holder.getAdapterPosition()),
                                     holder.itemView);
-                        }
+                       // }
                     }
                 });
             }

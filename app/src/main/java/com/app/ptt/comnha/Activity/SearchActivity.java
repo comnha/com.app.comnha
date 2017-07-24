@@ -89,7 +89,9 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         stores = new ArrayList<>();
         foods = new ArrayList<>();
         ref();
-        dist_pro = CoreManager.getInstance().getMyLocation().getDistrict() + "_" + CoreManager.getInstance().getMyLocation().getProvince();
+        if(CoreManager.getInstance().getMyLocation()!=null) {
+            dist_pro = CoreManager.getInstance().getMyLocation().getDistrict() + "_" + CoreManager.getInstance().getMyLocation().getProvince();
+        }
         pickLocationDialog = new PickLocationBottomSheetDialogFragment();
         pickLocationDialog.setOnPickListener(this);
         fm = getSupportFragmentManager();
