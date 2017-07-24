@@ -503,12 +503,14 @@ public class FoodDetailActivity extends BaseActivity {
                             public void onSuccess(Void aVoid) {
 //                                item.setTitle(getString(R.string.text_hidestore));
                                 loadMenu();
+                                plzw8Dialog.dismiss();
                                 plzw8Dialog.cancel();
                             }
                         }).addOnFailureListener(
                 new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        plzw8Dialog.dismiss();
                         plzw8Dialog.cancel();
                         Toast.makeText(getApplicationContext(),
                                 e.getMessage(), Toast.LENGTH_LONG)
@@ -557,12 +559,14 @@ public class FoodDetailActivity extends BaseActivity {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
                                                         loadMenu();
+                                                        plzw8Dialog.dismiss();
                                                         plzw8Dialog.cancel();
                                                     }
                                                 }).addOnFailureListener(
                                         new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
+                                                plzw8Dialog.dismiss();
                                                 plzw8Dialog.cancel();
                                                 Toast.makeText(getApplicationContext(),
                                                         e.getMessage(), Toast.LENGTH_LONG)
