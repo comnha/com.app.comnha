@@ -173,6 +173,7 @@ public class Post {
         result.put("userID_dist_prov", userID+"_"+dist_pro);
         result.put("dist_pro", dist_pro);
         result.put("isHidden", isHidden);
+
         result.put("userID_dist_prov", userID+"_"+dist_pro);
         result.put("dist_pro", dist_pro);
         result.put("isHidden", isHidden);
