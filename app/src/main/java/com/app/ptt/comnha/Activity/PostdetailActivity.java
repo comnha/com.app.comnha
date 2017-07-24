@@ -949,8 +949,12 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         }
         post.setHidden(false);
         post.setPostType(postType);
-        childUpdate=changeFoodRate(childUpdate,true,post.getPostType());
-        childUpdate=changeStoreRate(childUpdate,true,post.getPostType());
+        if(food!=null) {
+            childUpdate=changeFoodRate(childUpdate,true,post.getPostType());
+        }
+        if(store!=null) {
+            childUpdate = changeStoreRate(childUpdate, true, post.getPostType());
+        }
         String key = post.getPostID();
         Map<String, Object> postValue = post.toMap();
 
@@ -1042,8 +1046,12 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                             }
                                 post.setPostType(postType);
                                 post.setHidden(true);
-                                childUpdate=changeFoodRate(childUpdate,false,post.getPostType());
-                                childUpdate=changeStoreRate(childUpdate,false,post.getPostType());
+                                if(food!=null) {
+                                    childUpdate = changeFoodRate(childUpdate, false, post.getPostType());
+                                }
+                                if(store!=null) {
+                                    childUpdate = changeStoreRate(childUpdate, false, post.getPostType());
+                                }
                                 String key = post.getPostID();
 
                                 Map<String, Object> postValue = post.toMap();
