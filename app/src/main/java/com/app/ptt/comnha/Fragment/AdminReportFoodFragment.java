@@ -28,6 +28,7 @@ import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.CoreManager;
+import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.app.ptt.comnha.Utils.AppUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -69,7 +70,7 @@ public class AdminReportFoodFragment extends Fragment {
         dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl(getString(R.string.firebaseDB_path));
         init(view);
         if (null != CoreManager.getInstance().getMyLocation()) {
-            dist_pro = CoreManager.getInstance().getMyLocation().getDistrict() + "_" + CoreManager.getInstance().getMyLocation().getProvince();
+            dist_pro= LoginSession.getInstance().getUser().getDist_prov();
             Log.d("dist_pro", dist_pro);
         } else {
             if (getView() != null)
