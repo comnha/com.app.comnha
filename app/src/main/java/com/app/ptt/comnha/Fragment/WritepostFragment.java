@@ -48,14 +48,12 @@ import com.app.ptt.comnha.Adapters.Storeselection_rcyler_adapter;
 import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Classes.SelectedImage;
 import com.app.ptt.comnha.Const.Const;
-import com.app.ptt.comnha.Models.FireBase.Comment;
 import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Image;
 import com.app.ptt.comnha.Models.FireBase.NewpostNotify;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.FireBase.User;
-import com.app.ptt.comnha.Models.FireBase.UserNotification;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
@@ -86,10 +84,7 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
         SeekBar.OnSeekBarChangeListener,
         RatingBar.OnRatingBarChangeListener {
 
-    public WritepostFragment() {
-        // Required empty public constructor
-    }
-
+    public static int MEDIASTORE_LOADED_ID = 0;
     Toolbar toolbar;
     EditText edt_content, edt_title;
     LinearLayout linear_more, linear_rate, linear_rate_dial, linear_pickfood_dial,
@@ -107,7 +102,6 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
     TextView txtV_price_dial, txtV_health_dial, txtV_service_dial;
     SeekBar sb_price, sb_health, sb_service;
     int progress_price = 0, progress_health = 0, progress_service = 0;
-    public static int MEDIASTORE_LOADED_ID = 0;
     RecyclerView imagesrv, storesrv, foodsrv;
     RecyclerView.LayoutManager imageslm, storeslm, foodslm;
     ContentResolver cr;
@@ -139,6 +133,10 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
             foodFromStoreValueListener;
     float foodRate = 0;
     UploadTask uploadTask;
+
+    public WritepostFragment() {
+        // Required empty public constructor
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -898,12 +896,20 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                                         public void onSuccess(Void aVoid) {
                                             plzw8Dialog.dismiss();
                                             getActivity().finish();
+                                            if (LoginSession.getInstance().getUser().getRole() > 0) {
+                                                Toast.makeText(getContext(), getString(R.string.text_addpost_succ)
+                                                        , Toast.LENGTH_LONG).show();
+                                            } else {
+                                                Toast.makeText(getContext(), getString(R.string.text_addpost_succ_user)
+                                                        , Toast.LENGTH_LONG).show();
+
+                                            }
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getContext(),
-                                            e.getMessage(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getContext(), getString(R.string.text_failedaddpost)
+                                            , Toast.LENGTH_LONG).show();
                                     plzw8Dialog.dismiss();
                                 }
                             });
@@ -913,9 +919,8 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         uploadImgDialog.dismiss();
-                        Toast.makeText(getContext(), e.getMessage(),
-                                Toast.LENGTH_SHORT)
-                                .show();
+                        Toast.makeText(getContext(), getString(R.string.text_failedaddpost)
+                                , Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -926,13 +931,20 @@ public class WritepostFragment extends Fragment implements View.OnClickListener,
                         @Override
                         public void onSuccess(Void aVoid) {
                             plzw8Dialog.dismiss();
+                            if (LoginSession.getInstance().getUser().getRole() > 0) {
+                                Toast.makeText(getContext(), getString(R.string.text_addpost_succ)
+                                        , Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getContext(), getString(R.string.text_addpost_succ_user)
+                                        , Toast.LENGTH_LONG).show();
+
+                            }
                             getActivity().finish();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(getContext(),
-                            e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), getString(R.string.text_failedaddpost), Toast.LENGTH_SHORT).show();
                     plzw8Dialog.dismiss();
                 }
             });

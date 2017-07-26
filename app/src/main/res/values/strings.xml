@@ -75,7 +75,11 @@
     <string name="text_addfood_succ">Bạn vừa thêm món</string>
     <string name="text_addfood_failed">Lỗi thêm món ăn</string>
     <string name="text_addloca_succ">Thêm địa điểm thành công</string>
+    <string name="text_addpost_succ">Thêm bài đăng thành công</string>
+    <string name="text_failedaddpost">Thêm bài đăng mới không thành công</string>
     <string name="text_addloca_succ_user">Thêm địa điểm thành công, đang chờ admin duyệt</string>
+    <string name="text_addpost_succ_user">Thêm bài đăng thành công, đang chờ admin duyệt</string>
+    <string name="text_addfood_succ_user">Thêm món ăn thành công, đang chờ admin duyệt</string>
     <string name="title_activity_nav_draw">NavDrawActivity</string>
     <string name="text_addloca">Thêm địa điểm mới</string>
     <string name="text_dangreview">Thêm review</string>
