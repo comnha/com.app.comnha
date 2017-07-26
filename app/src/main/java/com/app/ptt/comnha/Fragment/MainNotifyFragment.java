@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.app.ptt.comnha.Activity.AdapterActivity;
 import com.app.ptt.comnha.Activity.PostdetailActivity;
+import com.app.ptt.comnha.Activity.StoreDeatailActivity;
 import com.app.ptt.comnha.Adapters.NotificationAdapter;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Interfaces.Comunication;
@@ -26,11 +27,13 @@ import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.ReportfoodNotify;
 import com.app.ptt.comnha.Models.FireBase.ReportpostNotify;
 import com.app.ptt.comnha.Models.FireBase.ReportstoreNotify;
+import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.Models.FireBase.UserNotification;
 import com.app.ptt.comnha.Modules.orderByDate;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
+import com.app.ptt.comnha.SingletonClasses.ChooseStore;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -321,7 +324,12 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
         }
         switch (noti.getType()){
             case 1://new store
-
+                Intent intent_storedetail = new Intent(getContext(),
+                        StoreDeatailActivity.class);
+                Store store = new Store();
+                store.setStoreID(noti.getStoreID());
+                ChooseStore.getInstance().setStore(store);
+                startActivity(intent_storedetail);
                 break;
             case 2://new post
                 Intent intent_postdetail = new Intent(getContext(),

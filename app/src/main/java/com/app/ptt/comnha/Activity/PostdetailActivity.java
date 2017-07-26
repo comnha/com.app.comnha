@@ -558,8 +558,6 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         List<Pair<Integer, String>> contents = new ArrayList<>();
         if(post!=null) {
             if (role > 0) {
-                contents.add(new Pair<Integer, String>
-                        (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
                 if (post.isHidden()) {
                     if(post.getPostType()==0) {
                         contents.add(new Pair<Integer, String>
@@ -595,8 +593,6 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                 if (LoginSession.getInstance().getUser().isReportpostBlocked()) {
                     AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), getString(R.string.text_block_user));
                 } else {
-
-
                     contents.add(new Pair<Integer, String>
                             (R.string.txt_report, getString(R.string.txt_report)));
                 }
@@ -1297,16 +1293,21 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                     commentDialog.dismiss();
                     saveCommentValue();
                 } else {
-
+                    requestSignin();
                 }
                 break;
             case R.id.txtv_writecomt_postdetail:
-                if (LoginSession.getInstance().getUser() != null) {
-                    edt_comment.getText().clear();
-                    edt_comment.requestFocus();
-                    commentDialog.show();
-                } else {
 
+                if (LoginSession.getInstance().getUser() != null) {
+                    if (LoginSession.getInstance().getUser().isCommentBlocked()) {
+                        AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), getString(R.string.text_block_user));
+                    } else {
+                        edt_comment.getText().clear();
+                        edt_comment.requestFocus();
+                        commentDialog.show();
+                    }
+                } else {
+                    requestSignin();
                 }
                 break;
         }

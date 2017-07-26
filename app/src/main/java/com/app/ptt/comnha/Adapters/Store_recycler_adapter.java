@@ -6,7 +6,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 import com.app.ptt.comnha.Classes.AnimationUtils;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Interfaces.OnLoadMoreListener;
-
 import com.app.ptt.comnha.Models.FireBase.Store;
 import com.app.ptt.comnha.Modules.orderByDistance;
 import com.app.ptt.comnha.Modules.orderByHealthy;
@@ -42,6 +40,7 @@ import java.util.Locale;
  */
 
 public class Store_recycler_adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    public static final int TYPE_LOADING = 0, TYPE_ITEM = 1;
     List<Store> stores;
     OnItemClickLiestner onItemClickLiestner;
     StorageReference stRef;
@@ -49,7 +48,26 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<RecyclerView.Vi
     boolean isMoreDataAvailable = true;
     OnLoadMoreListener onLoadMoreListener;
     boolean isLoading;
-    public static  final  int TYPE_LOADING=0,TYPE_ITEM=1;
+
+    public Store_recycler_adapter(Context context) {
+        this.stores = stores;
+        this.context = context;
+    }
+
+    public Store_recycler_adapter(ArrayList<Store> stores, Context context,
+                                  StorageReference stRef) {
+        this.stores = stores;
+        this.context = context;
+        this.stRef = stRef;
+    }
+
+
+    public Store_recycler_adapter(Context context,
+                                  StorageReference stRef) {
+        this.context = context;
+        this.stRef = stRef;
+    }
+
     public OnLoadMoreListener getOnLoadMoreListener() {
         return onLoadMoreListener;
     }
@@ -57,8 +75,6 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<RecyclerView.Vi
     public void setLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
         this.onLoadMoreListener = onLoadMoreListener;
     }
-
-
 
     public boolean isMoreDataAvailable() {
         return isMoreDataAvailable;
@@ -77,17 +93,8 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<RecyclerView.Vi
         this.stRef = stRef;
     }
 
-    public interface OnItemClickLiestner {
-        void onItemClick(Store store, View itemView);
-    }
-
     public void setOnItemClickLiestner(OnItemClickLiestner liestner) {
         onItemClickLiestner = liestner;
-    }
-
-    public Store_recycler_adapter(Context context) {
-        this.stores = stores;
-        this.context = context;
     }
 
     public void addToList(Store store) {
@@ -107,20 +114,9 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<RecyclerView.Vi
             notifyItemRemoved(stores.size() - 1);
         }
     }
+
     public void setIsLoading(boolean isLoading){
         this.isLoading=isLoading;
-    }
-    public Store_recycler_adapter(ArrayList<Store> stores, Context context,
-                                  StorageReference stRef) {
-        this.stores = stores;
-        this.context = context;
-        this.stRef = stRef;
-    }
-
-    public Store_recycler_adapter(Context context,
-                                  StorageReference stRef) {
-        this.context = context;
-        this.stRef = stRef;
     }
 
     public void addList(List<Store> stores) {
@@ -152,15 +148,6 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     }
 
-    public static class LoaddingViewHolder extends RecyclerView.ViewHolder {
-        ProgressBar pb;
-
-        public LoaddingViewHolder(View itemView) {
-            super(itemView);
-            pb = (ProgressBar) itemView.findViewById(R.id.progressBar1);
-        }
-    }
-
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder1, final int position) {
         if (position >= getItemCount() - 1 && stores.size() >= 3 && isMoreDataAvailable && !isLoading && onLoadMoreListener != null) {
@@ -188,13 +175,10 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<RecyclerView.Vi
                 if (!stores.get(holder.getAdapterPosition()).getStoreimg().equals("")) {
                     StorageReference imgRef = stRef.child(stores.get(holder.getAdapterPosition())
                             .getStoreimg());
-                    Log.d("imgName", stores.get(holder.getAdapterPosition())
-                            .getStoreimg());
-                    Log.d("Imgpath", imgRef.getDownloadUrl() + "");
                     imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            Log.d("getUrl().addOnSuccess", uri.toString() + "");
+
 //                    holder.imgv_avatar.setImageURI(uri);
                             Picasso.with(context)
                                     .load(uri).memoryPolicy(MemoryPolicy.NO_CACHE )
@@ -285,6 +269,23 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<RecyclerView.Vi
                 stores.size();
     }
 
+    public int getSize() {
+        return stores == null ? 0 : stores.size();
+    }
+
+    public interface OnItemClickLiestner {
+        void onItemClick(Store store, View itemView);
+    }
+
+    public static class LoaddingViewHolder extends RecyclerView.ViewHolder {
+        ProgressBar pb;
+
+        public LoaddingViewHolder(View itemView) {
+            super(itemView);
+            pb = (ProgressBar) itemView.findViewById(R.id.progressBar1);
+        }
+    }
+
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         TextView txtv_address, txtv_storename, txtv_distance, txtv_rate,
@@ -302,8 +303,5 @@ public class Store_recycler_adapter extends RecyclerView.Adapter<RecyclerView.Vi
             txtv_phonenumb = (TextView) itemView.findViewById(R.id.txtv_phonenumb_storeitem);
             imgv_avatar = (CircularImageView) itemView.findViewById(R.id.imgv_avatar_storeitem);
         }
-    }
-    public int getSize(){
-        return stores==null?0: stores.size();
     }
 }

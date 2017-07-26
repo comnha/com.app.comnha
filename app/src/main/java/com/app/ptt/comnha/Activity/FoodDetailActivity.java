@@ -319,8 +319,6 @@ public class FoodDetailActivity extends BaseActivity {
         List<Pair<Integer, String>> contents = new ArrayList<>();
         if (food != null) {
             if (role > 0) {
-                contents.add(new Pair<Integer, String>
-                        (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
                 if (food.isHidden()) {
                     if (food.getFoodType() == 0) {
                         contents.add(new Pair<Integer, String>
