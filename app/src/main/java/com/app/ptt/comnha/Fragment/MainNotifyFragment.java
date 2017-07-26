@@ -22,7 +22,6 @@ import com.app.ptt.comnha.Adapters.NotificationAdapter;
 import com.app.ptt.comnha.Const.Const;
 import com.app.ptt.comnha.Interfaces.Comunication;
 import com.app.ptt.comnha.Interfaces.OnMItemListener;
-import com.app.ptt.comnha.Models.FireBase.Food;
 import com.app.ptt.comnha.Models.FireBase.Post;
 import com.app.ptt.comnha.Models.FireBase.ReportfoodNotify;
 import com.app.ptt.comnha.Models.FireBase.ReportpostNotify;
@@ -31,7 +30,6 @@ import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.Models.FireBase.UserNotification;
 import com.app.ptt.comnha.Modules.orderByDate;
 import com.app.ptt.comnha.R;
-import com.app.ptt.comnha.SingletonClasses.ChooseFood;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.SingletonClasses.LoginSession;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -67,12 +65,16 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
     StorageReference stRef;
     SwipeRefreshLayout swipeRefresh;
     NotificationAdapter notificationAdapter;
+    IntentFilter mIntentFilter;
+    Intent broadcastIntent;
+    UserChange mBroadcastReceiver;
     public MainNotifyFragment() {
         // Required empty public constructor
 
 
 
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -104,12 +106,11 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
                 }
             }
         });
-
+        getNotification();
 
         Comunication.onMItemListener=this;
         return view;
     }
-
 
     private void getReport(){
 
@@ -180,6 +181,7 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
         });
 
     }
+
     private boolean checkExistInReport(UserNotification id){
         boolean result=false;
         for(String mId:idReports){
@@ -201,6 +203,7 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
         }
         return result;
     }
+
     private void getNotification(){
         list.clear();
         listLoop=new HashMap<>();
@@ -243,6 +246,7 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
             }
         }
     }
+
     private void checkExistInList(UserNotification notification){
         if(list==null){
             list=new ArrayList<>();
@@ -253,29 +257,32 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
         }else {
             for (UserNotification noti : list) {
                 //check multi comment of one user
-                if (noti.getType() == notification.getType()
-                        && noti.getUserEffectName().equals(notification.getUserEffectName())
-                        && noti.getType() == 3 && noti.getPostID().equals(notification.getPostID())) {
-                    if (noti.isReaded()) {
-                        if (!notification.isReaded()) {
-                            list.set(list.indexOf(noti), notification);
-                        }
-                        return;
-                    }else{
-                        if(!notification.isReaded()) {
-                            notification.setReaded(true);
-                            if(listLoop==null){
-                                listLoop=new HashMap<>();
+                if (noti.getUserEffectName() != null && noti.getPostID() != null && noti.getType() == 3) {
+                    if (noti.getType() == notification.getType()
+                            && noti.getUserEffectName().equals(notification.getUserEffectName())
+                            && noti.getType() == 3 && noti.getPostID().equals(notification.getPostID())) {
+                        if (noti.isReaded()) {
+                            if (!notification.isReaded()) {
+                                list.set(list.indexOf(noti), notification);
                             }
-                            listLoop = updateListNoti(listLoop, notification);
+                            return;
+                        } else {
+                            if (!notification.isReaded()) {
+                                notification.setReaded(true);
+                                if (listLoop == null) {
+                                    listLoop = new HashMap<>();
+                                }
+                                listLoop = updateListNoti(listLoop, notification);
+                            }
+                            return;
                         }
-                        return;
                     }
                 }
             }
             list.add(notification);
         }
     }
+
     private int checkExist(String id){
         for(UserNotification notification:list){
             if(notification.getId().toLowerCase().equals(id.toLowerCase())){
@@ -284,6 +291,7 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
         }
         return -1;
     }
+
     public void sort(){
         List<UserNotification> listReaded,listUnreaded;
         listReaded=new ArrayList<>();
@@ -349,6 +357,7 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
         childUpdate.put(getString(R.string.user_notification_CODE)+LoginSession.getInstance().getUser().getuID()+"/"+noti.getId(),updateUserNotification);
         return childUpdate;
     }
+
     private void updateLoopList(Map<String,Object> childUpdate){
         dbRef.updateChildren(childUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -362,6 +371,7 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
             }
         });
     }
+
     public void updateNoti(UserNotification userNotification){
         Map<String,Object> updateUserNotification=userNotification.toMap();
         Map<String,Object> childUpdate;
@@ -378,6 +388,7 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
             }
         });
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -390,6 +401,7 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
         getActivity().registerReceiver(mBroadcastReceiver, mIntentFilter);
         isRegister = true;
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -402,6 +414,7 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
 
         }
     }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -414,9 +427,7 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
 
         }
     }
-    IntentFilter mIntentFilter;
-    Intent broadcastIntent;
-    UserChange mBroadcastReceiver;
+
     class UserChange extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {

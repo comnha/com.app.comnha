@@ -74,6 +74,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private static final String TAG = MainActivity.class.getSimpleName();
     FirebaseAuth mAuth;
     boolean isNew;
+    NestedScrollView nestedScrollView;
+    AlertDialog.Builder alertDialog;
+    View guideView;
+    int typeSort;
+    TextView txtTinh, txtHuyen, txtLoc;
+    boolean isPostRefreshed = true,
+            isStoretRefreshed = true,
+            isNotitRefreshed = true;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private PickLocationBottomSheetDialogFragment pickLocationDialog;
     private String tinh = "", huyen = "";
@@ -92,20 +100,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private int connectionStatus = -1;
     private Snackbar snackbar;
     private MenuItem itemProfile, itemAdmin, itemSignIn, itemSignOut, itemMap, itemSetting;
-    NestedScrollView nestedScrollView;
     private CardView llChangeLocation;
-    AlertDialog.Builder alertDialog;
     private MyTool myTool;
-    View guideView;
-    int typeSort;
     private FragmentManager fm;
-    TextView txtTinh, txtHuyen,txtLoc;
     private View posttabview,
             storetabview,
             notifytabview;
-    boolean isPostRefreshed = true,
-            isStoretRefreshed = true,
-            isNotitRefreshed = true;
     private StorageReference stRef;
     private DatabaseReference dbRef;
     private ValueEventListener userValueListener;
@@ -131,7 +131,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         ref();
         startMyService();
         initMenu();
-        getNotification();
+
     }
 
 
@@ -653,10 +653,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onResume() {
         super.onResume();
-        AnimationUtils.getInstance()
-                .animateHideNotify(notifytabview, 100);
+//        AnimationUtils.getInstance()
+//                .animateHideNotify(notifytabview, 100);
         if (null != LoginSession.getInstance().getUser() && null != LoginSession.getInstance().getFirebUser()) {
             User user = LoginSession.getInstance().getUser();
+            getNotification();
             txt_email.setText(user.getEmail());
             txt_un.setText(LoginSession.getInstance().getFirebUser().getDisplayName());
             Picasso.with(getApplicationContext())
@@ -888,72 +889,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         sendBroadcast(broadcastIntent);
     }
 
-
-    public class NetworkChangeReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-            switch (intent.getAction()) {
-                case Const.BROADCAST_SEND_STATUS_INTERNET:
-                    if (intent.getBooleanExtra(Const.BROADCAST_SEND_STATUS_INTERNET, false)) {
-                        if (intent.getBooleanExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION, false)) {
-                        } else {
-                            if (null == CoreManager.getInstance().getMyLocation()) {
-                                ConnectionDetector.showSettingGPSAlert(alertDialog, context);
-                            }
-                        }
-                        if (null != snackbar && snackbar.isShown()) {
-                            snackbar.dismiss();
-                        }
-                    } else {
-                        showSnackbar(MainActivity.this, getWindow().getDecorView(), getString(R.string.text_not_internet), getString(R.string.text_connect), Const.SNACKBAR_GO_ONLINE, Snackbar.LENGTH_INDEFINITE);
-                    }
-                    break;
-                case Const.BROADCAST_SEND_STATUS_GET_LOCATION:
-                    if (intent.getBooleanExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION, false)) {
-
-                    } else {
-
-                    }
-                    break;
-                case Const.SNACKBAR_GO_ONLINE:
-                    if (null != intent.getStringExtra(Const.SNACKBAR_GO_ONLINE)) {
-                        Intent intentSetting = new Intent(Settings.ACTION_SETTINGS);
-                        startActivity(intentSetting);
-                    }
-
-                case Const.SNACKBAR_TURN_ON_GPS:
-                    if (null != intent.getStringExtra(Const.SNACKBAR_TURN_ON_GPS)) {
-                        Intent intentGpsSetting = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(intentGpsSetting);
-                    }
-
-                    break;
-                case Const.INTENT_KEY_NOTI_NEW_NOTI:
-                    if (intent.getBooleanExtra(Const.INTENT_KEY_NOTI_NEW_NOTI, false)) {
-                        AnimationUtils.getInstance()
-                                .animateShowNotify(notifytabview, 100);
-                    } else {
-                        AnimationUtils.getInstance()
-                                .animateHideNotify(notifytabview, 100);
-                    }
-                    break;
-                case Const.INTENT_KEY_SORT_POST_TYPE:
-                    if(tabLayout.getSelectedTabPosition()==0) {
-                        txtLoc.setText("Lọc");
-                        titlePostSort=txtLoc.getText().toString();
-                    }
-                    break;
-                case Const.INTENT_KEY_SORT_STORE_TYPE:
-                    if(tabLayout.getSelectedTabPosition()==1) {
-                        txtLoc.setText("Lọc");
-                        titleStoreSort=txtLoc.getText().toString();
-                    }
-                    break;
-            }
-
-        }
-    }
-
     private void getNotification() {
 
         if (LoginSession.getInstance().getUser() != null) {
@@ -1019,6 +954,71 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         locationController.connect();
         locationController.setLocationListener(this);
 
+    }
+
+    public class NetworkChangeReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            switch (intent.getAction()) {
+                case Const.BROADCAST_SEND_STATUS_INTERNET:
+                    if (intent.getBooleanExtra(Const.BROADCAST_SEND_STATUS_INTERNET, false)) {
+                        if (intent.getBooleanExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION, false)) {
+                        } else {
+                            if (null == CoreManager.getInstance().getMyLocation()) {
+                                ConnectionDetector.showSettingGPSAlert(alertDialog, context);
+                            }
+                        }
+                        if (null != snackbar && snackbar.isShown()) {
+                            snackbar.dismiss();
+                        }
+                    } else {
+                        showSnackbar(MainActivity.this, getWindow().getDecorView(), getString(R.string.text_not_internet), getString(R.string.text_connect), Const.SNACKBAR_GO_ONLINE, Snackbar.LENGTH_INDEFINITE);
+                    }
+                    break;
+                case Const.BROADCAST_SEND_STATUS_GET_LOCATION:
+                    if (intent.getBooleanExtra(Const.BROADCAST_SEND_STATUS_GET_LOCATION, false)) {
+
+                    } else {
+
+                    }
+                    break;
+                case Const.SNACKBAR_GO_ONLINE:
+                    if (null != intent.getStringExtra(Const.SNACKBAR_GO_ONLINE)) {
+                        Intent intentSetting = new Intent(Settings.ACTION_SETTINGS);
+                        startActivity(intentSetting);
+                    }
+
+                case Const.SNACKBAR_TURN_ON_GPS:
+                    if (null != intent.getStringExtra(Const.SNACKBAR_TURN_ON_GPS)) {
+                        Intent intentGpsSetting = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(intentGpsSetting);
+                    }
+
+                    break;
+                case Const.INTENT_KEY_NOTI_NEW_NOTI:
+                    if (intent.getBooleanExtra(Const.INTENT_KEY_NOTI_NEW_NOTI, false)) {
+                        AnimationUtils.getInstance()
+                                .animateShowNotify(notifytabview, 100);
+                    } else {
+                        AnimationUtils.getInstance()
+                                .animateHideNotify(notifytabview, 100);
+                    }
+                    break;
+                case Const.INTENT_KEY_SORT_POST_TYPE:
+                    if (tabLayout.getSelectedTabPosition() == 0) {
+                        txtLoc.setText("Lọc");
+                        titlePostSort = txtLoc.getText().toString();
+                    }
+                    break;
+                case Const.INTENT_KEY_SORT_STORE_TYPE:
+                    if (tabLayout.getSelectedTabPosition() == 1) {
+                        txtLoc.setText("Lọc");
+                        titleStoreSort = txtLoc.getText().toString();
+                    }
+                    break;
+            }
+
+        }
     }
 
 }

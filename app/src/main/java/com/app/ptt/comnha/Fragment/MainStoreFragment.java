@@ -38,8 +38,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +45,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class MainStoreFragment extends Fragment {
+    private final static String TAG = "MainStoreFragment";
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager layoutManager;
     Store_recycler_adapter itemadapter;
@@ -61,12 +60,14 @@ public class MainStoreFragment extends Fragment {
     boolean isLoadMore;
     int stt=8;
     int itemCount = 0, typeSort = -1, count = 6;
-    private final static String TAG = "MainStoreFragment";
+    IntentFilter mIntentFilter;
+    Intent broadcastIntent;
+    LocationChange mBroadcastReceiver;
+
 
     public MainStoreFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,41 +84,6 @@ public class MainStoreFragment extends Fragment {
 
         return view;
     }
-
-
-    public class calculateDistance extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                for (Store store : stores) {
-                    double distance = 0;
-                    try {
-                        distance = myTool.distanceFrom_in_Km(store.getLat(), store.getLng(),
-                                CoreManager.getInstance().getMyLocation().getLat(), CoreManager.getInstance().getMyLocation().getLng());
-                        int c = (int) Math.round(distance);
-                        int d = c / 1000;
-                        int e = c % 1000;
-                        int f = e / 100;
-                        store.setDistance(d + "." + f);
-                    } catch (Exception e) {
-
-                    }
-
-                }
-            }catch (Exception e){
-
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            isLoadMore=false;
-            addMore(0);
-        }
-    }
-
 
     private void getStoreList(final String dist_pro) {
         try {
@@ -136,7 +102,7 @@ public class MainStoreFragment extends Fragment {
                         for (Store mStore : stores) {
                             if (mStore.getStoreID().equals(store.getStoreID())) {
                                 pos = stores.indexOf(mStore);
-                                stores.indexOf(mStore);
+                                // stores.indexOf(mStore);
                             }
                         }
                         if (pos != -1) {
@@ -170,11 +136,12 @@ public class MainStoreFragment extends Fragment {
 
         }
     }
+
     public void addMore(int pos) {
         if (!isLoadMore) {
             itemadapter.setIsLoading(false);
             itemadapter.clearList();
-            if (stores.size() <= stt ||stt<=0) {
+            if (stores.size() <= stt || stt <= 0) {
                 stt = stores.size();
                 itemadapter.setMoreDataAvailable(false);
             } else {
@@ -191,7 +158,7 @@ public class MainStoreFragment extends Fragment {
             final int tempCount = pos;
             itemCount = pos + count;
             if (stores.size() < itemCount) {
-                if (stores.size() > tempCount + 1) {
+                if (stores.size() > tempCount) {
                     itemCount = stores.size();
                 } else {
                     itemCount = 0;
@@ -236,7 +203,6 @@ public class MainStoreFragment extends Fragment {
 
     }
 
-
     private void ref(final View view) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerV_storefrag);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -276,21 +242,25 @@ public class MainStoreFragment extends Fragment {
             @Override
             public void onRefresh() {
                 typeSort = -1;
+                stt = 8;
                 sendBroadcastSortStoreReset();
                 getStoreList(dist_pro);
             }
         });
     }
+
     private void sendBroadcastSortStoreReset(){
         broadcastIntent = new Intent();
         broadcastIntent.setAction(Const.INTENT_KEY_SORT_STORE_TYPE);
         getActivity().sendBroadcast(broadcastIntent);
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
     }
+
     public void onLoadMore(final int pos) {
         mRecyclerView.post(new Runnable() {
             @Override
@@ -308,10 +278,12 @@ public class MainStoreFragment extends Fragment {
             }
         }, 3000);
     }
+
     @Override
     public void onDetach() {
         super.onDetach();
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -365,9 +337,39 @@ public class MainStoreFragment extends Fragment {
         }
     }
 
-    IntentFilter mIntentFilter;
-    Intent broadcastIntent;
-    LocationChange mBroadcastReceiver;
+    public class calculateDistance extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                for (Store store : stores) {
+                    double distance = 0;
+                    try {
+                        distance = myTool.distanceFrom_in_Km(store.getLat(), store.getLng(),
+                                CoreManager.getInstance().getMyLocation().getLat(), CoreManager.getInstance().getMyLocation().getLng());
+                        int c = (int) Math.round(distance);
+                        int d = c / 1000;
+                        int e = c % 1000;
+                        int f = e / 100;
+                        store.setDistance(d + "." + f);
+                    } catch (Exception e) {
+
+                    }
+
+                }
+            } catch (Exception e) {
+
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            isLoadMore = false;
+            addMore(0);
+        }
+    }
+
     class LocationChange extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -377,6 +379,7 @@ public class MainStoreFragment extends Fragment {
                         if(intent.getStringExtra(Const.KEY_HUYEN).toString()!=null){
                             dist_pro = intent.getStringExtra(Const.KEY_HUYEN).toString()
                                     + "_" +intent.getStringExtra(Const.KEY_TINH).toString();
+                            stt = 8;
                             getStoreList(dist_pro);
                         }
                     }

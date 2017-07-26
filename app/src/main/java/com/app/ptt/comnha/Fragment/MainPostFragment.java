@@ -37,8 +37,6 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
-import static com.facebook.login.widget.ProfilePictureView.TAG;
-
 
 public class MainPostFragment extends Fragment {
     RecyclerView mRecyclerView;
@@ -54,6 +52,9 @@ public class MainPostFragment extends Fragment {
     StorageReference stRef;
     SwipeRefreshLayout swipeRefresh;
     int itemCount = 0, typeSort = -1, count = 6;
+    IntentFilter mIntentFilter;
+    Intent broadcastIntent;
+    LocationChange mBroadcastReceiver;
 
     public MainPostFragment() {
         // Required empty public constructor
@@ -101,8 +102,8 @@ public class MainPostFragment extends Fragment {
         } else {
             final int tempCount = pos;
             itemCount = pos + count;
-            if (posts.size() <= itemCount) {
-                if (posts.size() > tempCount + 1) {
+            if (posts.size() < itemCount) {
+                if (posts.size() > tempCount) {
                     itemCount = posts.size();
                 } else {
                     itemCount = 0;
@@ -200,7 +201,6 @@ public class MainPostFragment extends Fragment {
         }
     }
 
-
     private void ref(View view) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerV_postfrag);
         layoutManager = new LinearLayoutManager(getContext(),
@@ -238,16 +238,19 @@ public class MainPostFragment extends Fragment {
             @Override
             public void onRefresh() {
                 typeSort = -1;
+                stt = 6;
                 sendBroadcastSortPostReset();
                 getPostList(dist_pro);
             }
         });
     }
+
     private void sendBroadcastSortPostReset(){
         broadcastIntent = new Intent();
         broadcastIntent.setAction(Const.INTENT_KEY_SORT_POST_TYPE);
         getActivity().sendBroadcast(broadcastIntent);
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -270,33 +273,6 @@ public class MainPostFragment extends Fragment {
                 addMore(pos);
             }
         }, 3000);
-    }
-
-    class LocationChange extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            switch (intent.getAction()) {
-                case Const.INTENT_KEY_RECEIVE_LOCATION:
-                    if (intent.getStringExtra(Const.KEY_TINH).toString() != null) {
-                        if (intent.getStringExtra(Const.KEY_HUYEN).toString() != null) {
-                            dist_pro = intent.getStringExtra(Const.KEY_HUYEN).toString()
-                                    + "_" + intent.getStringExtra(Const.KEY_TINH).toString();
-                            getPostList(dist_pro);
-                        }
-                    }
-                    break;
-                case Const.INTENT_KEY_RELOAD_DATA:
-                    getPostList(dist_pro);
-                    break;
-                case Const.INTENT_KEY_SORT_POST:
-                    if(intent.getIntExtra(Const.KEY_SORT,0)!=0){
-                        typeSort=intent.getIntExtra(Const.KEY_SORT,0);
-                        postadapter.sortByType(typeSort);
-                    }
-                    break;
-            }
-        }
-
     }
 
     @Override
@@ -350,7 +326,31 @@ public class MainPostFragment extends Fragment {
         }
     }
 
-    IntentFilter mIntentFilter;
-    Intent broadcastIntent;
-    LocationChange mBroadcastReceiver;
+    class LocationChange extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case Const.INTENT_KEY_RECEIVE_LOCATION:
+                    if (intent.getStringExtra(Const.KEY_TINH).toString() != null) {
+                        if (intent.getStringExtra(Const.KEY_HUYEN).toString() != null) {
+                            dist_pro = intent.getStringExtra(Const.KEY_HUYEN).toString()
+                                    + "_" + intent.getStringExtra(Const.KEY_TINH).toString();
+                            stt = 6;
+                            getPostList(dist_pro);
+                        }
+                    }
+                    break;
+                case Const.INTENT_KEY_RELOAD_DATA:
+                    getPostList(dist_pro);
+                    break;
+                case Const.INTENT_KEY_SORT_POST:
+                    if (intent.getIntExtra(Const.KEY_SORT, 0) != 0) {
+                        typeSort = intent.getIntExtra(Const.KEY_SORT, 0);
+                        postadapter.sortByType(typeSort);
+                    }
+                    break;
+            }
+        }
+
+    }
 }

@@ -89,8 +89,9 @@ import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_POST;
  * A simple {@link Fragment} subclass.
  */
 public class PostdetailActivity extends BaseActivity implements View.OnClickListener {
-    private String postID;
+    public static final String mBroadcastSendAddress = "mBroadcastSendAddress";
     private static final String LOG = PostdetailActivity.class.getSimpleName();
+    private static final int REQUEST_SIGNIN = 101;
     ImageView imgv_banner, imgv_sendcomment;
     TextView txtv_un, txtv_date, txtv_content, txtv_title, txt_likenumb,
             txtv_comtNumb, txtv_pricerate, txtv_healthrate,
@@ -99,7 +100,6 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
     CircularImageView imgv_avatar, imgv_food;
     RatingBar rb_foodrating;
     Toolbar toolbar;
-    private Store store;
     CollapsingToolbarLayout clayout;
     Food food;
     RecyclerView rv_imgs, rv_comments;
@@ -125,12 +125,9 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
     boolean isConnected = true;
     IntentFilter mIntentFilter;
     String keyReport,userIdReport;
-    public static final String mBroadcastSendAddress = "mBroadcastSendAddress";
-    private static final int REQUEST_SIGNIN = 101;
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
     ProgressDialog plzwaitDialog;
-
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -140,6 +137,8 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             }
         }
     };
+    private String postID;
+    private Store store;
 
     public PostdetailActivity() {
         // Required empty public constructor
@@ -620,20 +619,20 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                 return true;
             case R.string.txt_rejectpost:
                     hidePost(-1);
-                    sendBroadcast();
+                //sendBroadcast();
                 return true;
             case R.string.txt_acceptpost:
                     showPost(1);
 
-                    sendBroadcast();
+                //sendBroadcast();
                 return true;
             case R.string.txt_acceptpostreport:
                 showPost(2);
-                sendBroadcast();
+                //sendBroadcast();
                 return true;
             case R.string.txt_rejectpostreport:
                 hidePost(-2);
-                sendBroadcast();
+                // sendBroadcast();
                 return true;
 
             case R.string.txt_changeinfo:
