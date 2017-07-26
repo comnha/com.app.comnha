@@ -592,8 +592,14 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                     contents.add(new Pair<Integer, String>
                             (R.string.txt_followPost, getString(R.string.txt_followPost)));
                 }
-                contents.add(new Pair<Integer, String>
-                        (R.string.txt_report, getString(R.string.txt_report)));
+                if (LoginSession.getInstance().getUser().isReportpostBlocked()) {
+                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), getString(R.string.text_block_user));
+                } else {
+
+
+                    contents.add(new Pair<Integer, String>
+                            (R.string.txt_report, getString(R.string.txt_report)));
+                }
 
             }
         }

@@ -87,6 +87,7 @@
     <string name="text_comment1">Nhận xét</string>
     <string name="text_like">Thích</string>
     <string name="text_hello">Xin chào</string>
+    <string name="text_block_user">Bạn đã bị admin khóa chức năng này</string>
     <string name="text_user">User</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>

@@ -269,8 +269,12 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     contents.add(new Pair<Integer, String>
                             (R.string.txt_followStore, getString(R.string.txt_followStore)));
                 }
-                contents.add(new Pair<Integer, String>
-                        (R.string.txt_report, getString(R.string.txt_report)));
+                if (LoginSession.getInstance().getUser().isReportstoreBlocked()) {
+                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), getString(R.string.text_block_user));
+                } else {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.txt_report, getString(R.string.txt_report)));
+                }
             }
 
         }
@@ -760,14 +764,22 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         switch (view.getId()) {
             case R.id.imgv_writepost_storedetail:
                 if (LoginSession.getInstance().getUser() != null) {
-                    writePost();
+                    if (LoginSession.getInstance().getUser().isWritepostBlocked()) {
+                        AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), getString(R.string.text_block_user));
+                    } else {
+                        writePost();
+                    }
                 } else {
                     requestSignin();
                 }
                 break;
             case R.id.imgv_addfood_storedetail:
                 if (LoginSession.getInstance().getUser() != null) {
-                    addFood();
+                    if (LoginSession.getInstance().getUser().isAddfoodBlocked()) {
+                        AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), getString(R.string.text_block_user));
+                    } else {
+                        addFood();
+                    }
                 } else {
                     requestSignin();
                 }

@@ -347,9 +347,12 @@ public class FoodDetailActivity extends BaseActivity {
                         (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
             }
             if (!uID.equals(food.getUserID())) {
-                contents.add(new Pair<Integer, String>
-                        (R.string.txt_report, getString(R.string.txt_report)));
-
+                if (LoginSession.getInstance().getUser().isReportfoodBlocked()) {
+                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), getString(R.string.text_block_user));
+                } else {
+                    contents.add(new Pair<Integer, String>
+                            (R.string.txt_report, getString(R.string.txt_report)));
+                }
             }
         }
         return contents;

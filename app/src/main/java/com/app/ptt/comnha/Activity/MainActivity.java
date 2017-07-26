@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -72,6 +73,7 @@ import java.util.List;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, LocationController.LocationControllerListener, PickLocationBottomSheetDialogFragment.onPickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final int REQUEST_SIGNIN = 101;
     FirebaseAuth mAuth;
     boolean isNew;
     NestedScrollView nestedScrollView;
@@ -536,22 +538,57 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         return true;
     }
 
+    private void requestSignin() {
+        new android.support.v7.app.AlertDialog.Builder(this)
+                .setMessage(getString(R.string.txt_nologin)
+                        + "\n" + getString(R.string.txt_uneedlogin))
+                .setPositiveButton(getString(R.string.text_signin), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent_signin = new Intent(MainActivity.this,
+                                SignInActivity.class);
+                        startActivity(intent_signin);
+                    }
+                })
+                .setNegativeButton(getString(R.string.text_no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).show();
+    }
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fab_main:
                 switch (tabLayout.getSelectedTabPosition()) {
                     case 0:
-                        Intent intent_openWritepost = new Intent(this, AdapterActivity.class);
-                        intent_openWritepost.putExtra(getString(R.string.fragment_CODE),
-                                getString(R.string.frag_writepost_CODE));
-                        startActivity(intent_openWritepost);
+                        if (LoginSession.getInstance().getUser() == null) {
+                            requestSignin();
+                        } else {
+                            if (!LoginSession.getInstance().getUser().isWritepostBlocked()) {
+                                Intent intent_openWritepost = new Intent(this, AdapterActivity.class);
+                                intent_openWritepost.putExtra(getString(R.string.fragment_CODE),
+                                        getString(R.string.frag_writepost_CODE));
+                                startActivity(intent_openWritepost);
+                            } else {
+                                AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), getString(R.string.text_block_user));
+                            }
+                        }
                         break;
                     case 1:
-                        Intent intent_openAddstore = new Intent(this, AdapterActivity.class);
-                        intent_openAddstore.putExtra(getString(R.string.fragment_CODE),
-                                getString(R.string.frag_addstore_CODE));
-                        startActivity(intent_openAddstore);
+                        if (LoginSession.getInstance().getUser() == null) {
+                            requestSignin();
+                        } else {
+                            if (LoginSession.getInstance().getUser().isAddstoreBlocked()) {
+                                AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), getString(R.string.text_block_user));
+                            } else {
+                                Intent intent_openAddstore = new Intent(this, AdapterActivity.class);
+                                intent_openAddstore.putExtra(getString(R.string.fragment_CODE),
+                                        getString(R.string.frag_addstore_CODE));
+                                startActivity(intent_openAddstore);
+                            }
+                        }
                         break;
                 }
 
