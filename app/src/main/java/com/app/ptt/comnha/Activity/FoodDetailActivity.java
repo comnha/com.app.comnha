@@ -65,10 +65,10 @@ import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_FOOD;
 
 public class FoodDetailActivity extends BaseActivity {
     private static final String LOG = FoodDetailActivity.class.getSimpleName();
+    private static final int REQUEST_SIGNIN = 101;
     DatabaseReference dbRef;
     MenuInflater inflater;
     StorageReference stRef;
-    private static final int REQUEST_SIGNIN = 101;
     ArrayList<Food> foodList;
     RecyclerView postRecyclerView;
     Post_recycler_adapter postAdapter;
@@ -319,6 +319,8 @@ public class FoodDetailActivity extends BaseActivity {
         List<Pair<Integer, String>> contents = new ArrayList<>();
         if (food != null) {
             if (role > 0) {
+                contents.add(new Pair<Integer, String>
+                        (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
                 if (food.isHidden()) {
                     if (food.getFoodType() == 0) {
                         contents.add(new Pair<Integer, String>
@@ -334,16 +336,17 @@ public class FoodDetailActivity extends BaseActivity {
                     }
 
                 } else {
-                    contents.add(new Pair<Integer, String>
-                            (R.string.txt_rejectfood, getString(R.string.txt_rejectfood)));
+//                    contents.add(new Pair<Integer, String>
+//                            (R.string.txt_rejectfood, getString(R.string.txt_rejectfood)));
 //                    contents.add(new Pair<Integer, String>
 //                            (R.string.text_hidepost, getString(R.string.text_hidepost)));
                 }
             }
-            if (uID.equals(food.getUserID())) {
+            if (uID.equals(food.getUserID()) || role > 0) {
                 contents.add(new Pair<Integer, String>
                         (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
-            } else {
+            }
+            if (!uID.equals(food.getUserID())) {
                 contents.add(new Pair<Integer, String>
                         (R.string.txt_report, getString(R.string.txt_report)));
 

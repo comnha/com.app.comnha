@@ -235,8 +235,6 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
         List<Pair<Integer, String>> contents = new ArrayList<>();
         if (store != null) {
             if (role > 0) {
-                contents.add(new Pair<Integer, String>
-                        (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
                 if (store.isHidden()) {
                     if (store.getStoreType() == 0) {
                         contents.add(new Pair<Integer, String>
@@ -257,10 +255,12 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 }
             }
 
-            if (uID.equals(store.getUserID()) && role == 0) {
+            if (uID.equals(store.getUserID()) || role > 0) {
+
                 contents.add(new Pair<Integer, String>
                         (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
-            } else {
+            }
+            if (!uID.equals(store.getUserID())) {
                 if (store.checkExist(uID)) {
                     contents.add(new Pair<Integer, String>
                             (R.string.txt_unfollowStore, getString(R.string.txt_unfollowStore)));

@@ -579,10 +579,11 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
 //                            (R.string.txt_rejectpost, getString(R.string.txt_rejectpost)));
                 }
             }
-            if (uID.equals(post.getUserID()) && role == 0) {
+            if (uID.equals(post.getUserID()) || role > 0) {
                 contents.add(new Pair<Integer, String>
                         (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
-            } else {
+            }
+            if (!uID.equals(post.getUserID())) {
                 if (post.checkExist(uID)) {
                     contents.add(new Pair<Integer, String>
                             (R.string.txt_unfollowPost, getString(R.string.txt_unfollowPost)));
