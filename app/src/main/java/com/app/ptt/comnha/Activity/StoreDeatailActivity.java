@@ -42,7 +42,6 @@ import com.app.ptt.comnha.Models.FireBase.User;
 import com.app.ptt.comnha.Models.FireBase.UserNotification;
 import com.app.ptt.comnha.R;
 import com.app.ptt.comnha.Service.MyService;
-import com.app.ptt.comnha.SingletonClasses.ChooseFood;
 import com.app.ptt.comnha.SingletonClasses.ChoosePhotoList;
 import com.app.ptt.comnha.SingletonClasses.ChoosePost;
 import com.app.ptt.comnha.SingletonClasses.ChooseStore;
@@ -73,6 +72,7 @@ import java.util.Map;
 import static com.app.ptt.comnha.Const.Const.REPORTS.REPORT_STORE;
 
 public class StoreDeatailActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final int REQUEST_SIGNIN = 101;
     RecyclerView postRecycler, photoRecycler, foodRecycler;
     RecyclerView.LayoutManager postLayoutManager, photoLayoutManager,
             foodLayoutManager;
@@ -101,7 +101,6 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
     ProgressDialog plzw8Dialog = null;
     Menu pubMenu = null;
     FirebaseAuth mAuth;
-    private static final int REQUEST_SIGNIN = 101;
     FirebaseAuth.AuthStateListener mAuthListener;
     User user;
 
@@ -258,7 +257,7 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                 }
             }
 
-            if (uID.equals(store.getUserID())) {
+            if (uID.equals(store.getUserID()) && role == 0) {
                 contents.add(new Pair<Integer, String>
                         (R.string.txt_changeinfo, getString(R.string.txt_changeinfo)));
             } else {
