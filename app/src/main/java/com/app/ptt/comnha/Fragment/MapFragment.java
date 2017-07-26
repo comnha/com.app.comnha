@@ -3,7 +3,6 @@ package com.app.ptt.comnha.Fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -85,18 +84,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MapFragment extends Fragment implements View.OnClickListener,
         PickLocationBottomSheetDialogFragment.onPickListener {
     public static final String TAG = MapFragment.class.getSimpleName();
-    private IntentFilter mIntentFilter;
-    View viewInfoWindow, viewInfoWindowYourLocation;
     private static final String LOG = MapFragment.class.getSimpleName();
-    private SupportMapFragment supportMapFragment;
-    private ArrayList<Store> list;
+    View viewInfoWindow, viewInfoWindowYourLocation;
     DatabaseReference dbRef;
     int distance = 5000, seeMore = 20;
     PlaceAPI placeAPI;
     PlaceAttribute myLocationSearch = null;
     TextView txt_TenQuan, txt_DiaChi, txt_GioMo, txt_DiemGia, txt_DiemPhucVu, txt_DiemVeSinh, txt_KhoangCach, txt_Your_Location, txt_Title;
-    private CircleImageView imgMarker;
-    private ImageView btnSearch;
     GoogleMap myGoogleMap;
     MyLocation yourLocation;
     Store customLocation;
@@ -104,7 +98,6 @@ public class MapFragment extends Fragment implements View.OnClickListener,
     int pos = -1, option = 1;
     MarkerOptions yourMarker = null;
     AutoCompleteTextView edtSearch;
-
     FloatingActionButton fab_filter, fab_location, fab_refresh;
     CardView card_pickProvince, card_pickDistrict, card_filterlabel, card_mylocation, card_distance;
     TextView txt_tinh, txt_huyen, txt_filterLabel, txt_distance;
@@ -117,6 +110,11 @@ public class MapFragment extends Fragment implements View.OnClickListener,
     String tinh, huyen;
     Boolean isConnected = false;
     int sortType = -1;
+    private IntentFilter mIntentFilter;
+    private SupportMapFragment supportMapFragment;
+    private ArrayList<Store> list;
+    private CircleImageView imgMarker;
+    private ImageView btnSearch;
 
     private BitmapDescriptor getMarkerIconFromDrawable(Drawable drawable) {
         Canvas canvas = new Canvas();
@@ -546,9 +544,9 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                                                     txt_DiemGia.setText("0");
                                                     txt_DiemPhucVu.setText("0");
                                                 } else {
-                                                    txt_DiemVeSinh.setText(a.getHealthySum() + "");
-                                                    txt_DiemGia.setText(a.getPriceSum() + "");
-                                                    txt_DiemPhucVu.setText(a.getServiceSum() + "");
+                                                    txt_DiemVeSinh.setText((a.getHealthySum() / a.getSize()) + "");
+                                                    txt_DiemGia.setText((a.getPriceSum() / a.getSize()) + "");
+                                                    txt_DiemPhucVu.setText((a.getServiceSum() / a.getSize()) + "");
                                                 }
                                                 if (null != a.getImgBitmap()) {
                                                     imgMarker.setImageBitmap(a.getImgBitmap());
@@ -617,9 +615,9 @@ public class MapFragment extends Fragment implements View.OnClickListener,
                 txt_DiemGia.setText("0");
                 txt_DiemPhucVu.setText("0");
             } else {
-                txt_DiemVeSinh.setText(a.getHealthySum() + "");
-                txt_DiemGia.setText(a.getPriceSum() + "");
-                txt_DiemPhucVu.setText(a.getServiceSum() + "");
+                txt_DiemVeSinh.setText((a.getHealthySum() / a.getSize()) + "");
+                txt_DiemGia.setText((a.getPriceSum() / a.getSize()) + "");
+                txt_DiemPhucVu.setText((a.getServiceSum() / a.getSize()) + "");
             }
             int width = getPixelFromDimen(getActivity(), R.dimen.image_size);
             if (TextUtils.isEmpty(a.getStoreimg())) {
