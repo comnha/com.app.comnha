@@ -645,7 +645,11 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     String key = dataItem.getKey();
                     post.setPostID(key);
                     if (checkExistPost(key) != -1) {
-                        posts.set(checkExistPost(key), post);
+                        if (post.isHidden()) {
+                            posts.remove(checkExistPost(key));
+                        } else {
+                            posts.set(checkExistPost(key), post);
+                        }
                     } else {
                         posts.add(post);
                     }
@@ -733,7 +737,11 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     String key = dataItem.getKey();
                     food.setFoodID(key);
                     if (checkExistFood(key) != -1) {
-                        foods.set(checkExistFood(key), food);
+                        if (food.isHidden()) {
+                            foods.remove(checkExistFood(key));
+                        } else {
+                            foods.set(checkExistFood(key), food);
+                        }
                     } else {
                         foods.add(food);
                     }

@@ -212,10 +212,15 @@ public class AdminReportPostFragment extends Fragment {
 
             }
         };
-        dbRef.child(getString(R.string.reportPost_CODE))
-                .orderByChild("district_province")
-                .equalTo(dist_pro)
-                .addListenerForSingleValueEvent(postEventListener);
+        if (LoginSession.getInstance().getUser().getRole() == 1) {
+            dbRef.child(getString(R.string.reportPost_CODE))
+                    .orderByChild("district_province")
+                    .equalTo(dist_pro)
+                    .addListenerForSingleValueEvent(postEventListener);
+        } else {
+            dbRef.child(getString(R.string.reportPost_CODE))
+                    .addListenerForSingleValueEvent(postEventListener);
+        }
     }
 
     private void getUserInfo(ReportpostNotify notify) {

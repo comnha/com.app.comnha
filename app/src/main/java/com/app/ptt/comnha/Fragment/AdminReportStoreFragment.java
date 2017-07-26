@@ -234,10 +234,16 @@ public class AdminReportStoreFragment extends Fragment {
 
             }
         };
-        dbRef.child(getString(R.string.reportStore_CODE))
-                .orderByChild("district_province")
-                .equalTo(dist_pro)
-                .addListenerForSingleValueEvent(reportEventListener);
+        if (LoginSession.getInstance().getUser().getRole() == 1) {
+            dbRef.child(getString(R.string.reportStore_CODE))
+                    .orderByChild("district_province")
+                    .equalTo(dist_pro)
+                    .addListenerForSingleValueEvent(reportEventListener);
+        } else {
+            dbRef.child(getString(R.string.reportStore_CODE))
+                    .addListenerForSingleValueEvent(reportEventListener);
+        }
+
     }
 
     private void blockUser(User user) {

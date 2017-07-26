@@ -101,12 +101,17 @@ public class MainStoreFragment extends Fragment {
                         int pos = -1;
                         for (Store mStore : stores) {
                             if (mStore.getStoreID().equals(store.getStoreID())) {
+
                                 pos = stores.indexOf(mStore);
                                 // stores.indexOf(mStore);
                             }
                         }
                         if (pos != -1) {
-                            stores.set(pos, store);
+                            if (store.isHidden()) {
+                                stores.remove(pos);
+                            } else {
+                                stores.set(pos, store);
+                            }
                         } else {
                             stores.add(store);
                         }

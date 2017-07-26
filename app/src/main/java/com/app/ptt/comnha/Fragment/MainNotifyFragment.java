@@ -446,7 +446,6 @@ public class MainNotifyFragment extends Fragment implements OnMItemListener {
                     }else{
                         list=new ArrayList<>();
                         notificationAdapter.clearAll();
-
                     }
                     break;
             }

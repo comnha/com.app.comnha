@@ -103,6 +103,7 @@ public class AdminReportFoodFragment extends Fragment {
                             new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
+                                    plzwaitDialog.dismiss();
                                     Intent intent_openFood = new Intent(getActivity(),
                                             FoodDetailActivity.class);
                                     intent_openFood.putExtra(Const.KEY_FOOD, notify.getFoodID());
@@ -112,10 +113,12 @@ public class AdminReportFoodFragment extends Fragment {
                     ).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            plzwaitDialog.dismiss();
                             AppUtils.showSnackbarWithoutButton(getView(), "Có lỗi xảy ra. Vui lòng thử lại");
                         }
                     });
                 } else {
+                    plzwaitDialog.dismiss();
                     Intent intent_openFood = new Intent(getActivity(),
                             FoodDetailActivity.class);
                     intent_openFood.putExtra(Const.KEY_FOOD, notify.getFoodID());
@@ -143,7 +146,9 @@ public class AdminReportFoodFragment extends Fragment {
                                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
                                                             public void onSuccess(Void aVoid) {
+                                                                plzwaitDialog.dismiss();
                                                                 plzwaitDialog.cancel();
+
                                                                 items.remove(notify);
                                                                 itemadapter.notifyDataSetChanged();
                                                             }
@@ -151,7 +156,9 @@ public class AdminReportFoodFragment extends Fragment {
                                                         .addOnFailureListener(new OnFailureListener() {
                                                             @Override
                                                             public void onFailure(@NonNull Exception e) {
+                                                                plzwaitDialog.dismiss();
                                                                 plzwaitDialog.cancel();
+
                                                                 Toast.makeText(getContext(),
                                                                         e.getMessage(),
                                                                         Toast.LENGTH_LONG)
@@ -184,6 +191,7 @@ public class AdminReportFoodFragment extends Fragment {
         userEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                plzwaitDialog.dismiss();
                 plzwaitDialog.cancel();
                 user = dataSnapshot.getValue(User.class);
                 String key = dataSnapshot.getKey();
@@ -316,9 +324,15 @@ public class AdminReportFoodFragment extends Fragment {
 
             }
         };
-        dbRef.child(getString(R.string.reportFood_CODE))
-                .orderByChild("district_province")
-                .equalTo(dist_pro)
-                .addListenerForSingleValueEvent(reportEventListener);
+        if (LoginSession.getInstance().getUser().getRole() == 1) {
+            dbRef.child(getString(R.string.reportFood_CODE))
+                    .orderByChild("district_province")
+                    .equalTo(dist_pro)
+                    .addListenerForSingleValueEvent(reportEventListener);
+        } else {
+            dbRef.child(getString(R.string.reportFood_CODE))
+                    .addListenerForSingleValueEvent(reportEventListener);
+        }
     }
+
 }
