@@ -32,6 +32,7 @@ public class LocationController implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final String TAG = "LocationController";
     private int count =0;
+    private boolean isCall=false;
     public interface LocationControllerListener {
         void onFail();
         void requestPermisson(List<String> strings);
@@ -81,8 +82,6 @@ public class LocationController implements GoogleApiClient.ConnectionCallbacks,
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-
     }
 
 
@@ -92,17 +91,19 @@ public class LocationController implements GoogleApiClient.ConnectionCallbacks,
             // TODO: Consider calling
             return;
         }
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-        if (mLastLocation != null) {
-            locationControllerListener.onLocationChanged(mLastLocation);
-            Log.e(TAG, String.format("%f - %f",mLastLocation.getLatitude(),mLastLocation.getLongitude()));
-        }
-        else{
             LocationServices.FusedLocationApi.requestLocationUpdates(
                     mGoogleApiClient, mLocationRequest, this);
-
-        }
+//        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+//                mGoogleApiClient);
+//        if (mLastLocation != null) {
+//            locationControllerListener.onLocationChanged(mLastLocation);
+//            Log.e(TAG, String.format("%f - %f",mLastLocation.getLatitude(),mLastLocation.getLongitude()));
+//        }
+//        else{
+//            LocationServices.FusedLocationApi.requestLocationUpdates(
+//                    mGoogleApiClient, mLocationRequest, this);
+//
+//        }
     }
     private void callPermissionUI() {
         String[] locationPermissions=new String[2];
@@ -135,7 +136,7 @@ public class LocationController implements GoogleApiClient.ConnectionCallbacks,
     public void onLocationChanged(Location location) {
         if(count<3) {
             count++;
-            if (mGoogleApiClient.isConnected()) {
+            if (location!=null) {
                 mLastLocation = location;
                 locationControllerListener.onLocationChanged(location);
             } else {

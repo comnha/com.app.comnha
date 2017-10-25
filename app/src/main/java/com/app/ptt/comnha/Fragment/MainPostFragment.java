@@ -331,8 +331,8 @@ public class MainPostFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case Const.INTENT_KEY_RECEIVE_LOCATION:
-                    if (intent.getStringExtra(Const.KEY_TINH).toString() != null) {
-                        if (intent.getStringExtra(Const.KEY_HUYEN).toString() != null) {
+                    if (intent.getStringExtra(Const.KEY_TINH)!= null) {
+                        if (intent.getStringExtra(Const.KEY_HUYEN)!= null) {
                             dist_pro = intent.getStringExtra(Const.KEY_HUYEN).toString()
                                     + "_" + intent.getStringExtra(Const.KEY_TINH).toString();
                             stt = 6;

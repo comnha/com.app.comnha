@@ -79,16 +79,26 @@ public class MyTool implements
         return distance;
     }
     public float distanceFrom_in_Km(double lat1, double lng1, double lat2, double lng2) {
-        double earthRadius = 6371000; //meters
-        double dLat = Math.toRadians(lat2-lat1);
-        double dLng = Math.toRadians(lng2-lng1);
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                        Math.sin(dLng/2) * Math.sin(dLng/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        float dist = (float) (earthRadius * c);
+//        double earthRadius = 6371000; //meters
+//        double dLat = Math.toRadians(lat2-lat1);
+//        double dLng = Math.toRadians(lng2-lng1);
+//        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+//                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+//                        Math.sin(dLng/2) * Math.sin(dLng/2);
+//        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+//        float dist = (float) (earthRadius * c);
+//
+//        return dist;
+        Location startPoint=new Location("locationA");
+        startPoint.setLatitude(lat1);
+        startPoint.setLongitude(lng1);
 
-        return dist;
+        Location endPoint=new Location("locationA");
+        endPoint.setLatitude(lat2);
+        endPoint.setLongitude(lng2);
+
+        double distance= (int) startPoint.distanceTo(endPoint);
+        return (float) distance;
     }
 
 
@@ -256,50 +266,62 @@ public class MyTool implements
             if (lat != null && lon != null) {
                 addresses = geocoder.getFromLocation(lat, lon, 1);
                 if (addresses.size() > 0) {
+                    String houseNum,ward,district,city;
                     Address address = addresses.get(0);
-                    String a = address.getAddressLine(0);
-                    String b = address.getSubLocality();
-                    String c = address.getSubAdminArea();
-                    String d = address.getAdminArea();
-                    String e = "";
-                    if (a != null) {
-                        e += a;
+                    if(address.getAddressLine(0)==null||
+                            address.getAddressLine(1)==null||
+                            address.getAddressLine(2)==null||
+                            address.getAddressLine(3)==null ){
+                         houseNum = address.getSubThoroughfare()+" "+address.getThoroughfare();
+                         ward = address.getSubLocality();
+                         district = address.getSubAdminArea();
+                         city = address.getAdminArea();
+                    }else{
+                         houseNum = address.getAddressLine(0);
+                         ward = address.getAddressLine(1);
+                         district = address.getAddressLine(2);
+                         city = address.getAddressLine(3);
                     }
-                    if (b != null) {
-                        if (a == null)
-                            e += b;
+
+
+                    String finalAddress = "";
+                    if (houseNum != null) {
+                        finalAddress += houseNum;
+                    }
+                    if (ward != null) {
+                        if (houseNum == null)
+                            finalAddress += ward;
                         else
-                            e += ", " + b;
+                            finalAddress += ", " + ward;
 
                     }
 
-                    if (c != null) {
-                        Scanner kb = new Scanner(c);
+                    if (district != null) {
+                        Scanner kb = new Scanner(district);
                         String name;
                         while (kb.hasNext()) {
                             name = kb.next();
                             if (name.equals("District") || name.equals("Quận")) {
-                                c = "Quận";
+                                district = "Quận";
                                 while (kb.hasNext()) {
-                                    c += " " + kb.next();
+                                    district += " " + kb.next();
                                 }
                             }
                         }
-                        if (a == null && b == null)
-                            e += c;
+                        if (houseNum == null && ward == null)
+                            finalAddress += district;
                         else
-                            e += ", " + c;
-
-                        store.setDistrict(c);
+                            finalAddress += ", " + district;
+                        store.setDistrict(district);
                     }
-                    if (d != null) {
-                        if (a == null && b == null && c == null)
-                            e += d;
+                    if (city != null) {
+                        if (houseNum == null && ward == null && district == null)
+                            finalAddress += city;
                         else
-                            e += ", " + d;
-                        store.setProvince(d);
+                            finalAddress += ", " + city;
+                        store.setProvince(city);
                     }
-                    store.setAddress(e);
+                    store.setAddress(finalAddress);
                     store.setLat(lat);
                     store.setLng(lon);
                     return store;
