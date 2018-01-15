@@ -217,20 +217,22 @@ public class ViewPhotosActivity extends AppCompatActivity {
             role = LoginSession.getInstance().getUser().getRole();
         }
         if (role == 0) {
-            if (LoginSession.getInstance().getUser().getuID().equals(
-                    images.get(vp_viewphoto.getCurrentItem()).getUserID())) {
-                contents.add(new Pair<Integer, String>
-                        (R.string.txt_report, getString(R.string.txt_report)));
-                if (images.get(indexselect).isHidden()) {
+            if (LoginSession.getInstance().getUser() != null) {
+                if (LoginSession.getInstance().getUser().getuID().equals(
+                        images.get(vp_viewphoto.getCurrentItem()).getUserID())) {
                     contents.add(new Pair<Integer, String>
-                            (R.string.txt_showphoto, getString(R.string.txt_showphoto)));
+                            (R.string.txt_report, getString(R.string.txt_report)));
+                    if (images.get(indexselect).isHidden()) {
+                        contents.add(new Pair<Integer, String>
+                                (R.string.txt_showphoto, getString(R.string.txt_showphoto)));
+                    } else {
+                        contents.add(new Pair<Integer, String>
+                                (R.string.txt_hideimg, getString(R.string.txt_hideimg)));
+                    }
                 } else {
                     contents.add(new Pair<Integer, String>
-                            (R.string.txt_hideimg, getString(R.string.txt_hideimg)));
+                            (R.string.txt_report, getString(R.string.txt_report)));
                 }
-            } else {
-                contents.add(new Pair<Integer, String>
-                        (R.string.txt_report, getString(R.string.txt_report)));
             }
         }
         if (role == 1) {
@@ -326,7 +328,7 @@ public class ViewPhotosActivity extends AppCompatActivity {
         reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
             @Override
             public void onPositive(boolean isClicked, Map<String,
-                    Object> childUpdate, final Dialog dialog,String key) {
+                    Object> childUpdate, final Dialog dialog, String key) {
                 if (isClicked) {
                     dialog.dismiss();
                     plzw8Dialog.show();

@@ -107,7 +107,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
     ArrayList<Image> images;
     Photo_recycler_adapter imgsAdapter = null;
     List<Comment> comments;
-    Map<String,Comment> commentMap;
+    Map<String, Comment> commentMap;
     Comment_rcyler_adapter comtAdapter;
     DatabaseReference dbRef;
     StorageReference stRef;
@@ -124,7 +124,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
     Menu pubMenu = null;
     boolean isConnected = true;
     IntentFilter mIntentFilter;
-    String keyReport,userIdReport;
+    String keyReport, userIdReport;
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
     ProgressDialog plzwaitDialog;
@@ -157,8 +157,8 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                 .getReferenceFromUrl(Const.STORAGE_PATH);
         mAuth = FirebaseAuth.getInstance();
 
-        comments=new ArrayList<>();
-        commentMap=new HashMap<>();
+        comments = new ArrayList<>();
+        commentMap = new HashMap<>();
         init();
         if (ChoosePost.getInstance().getPost() != null) {
             getPost(ChoosePost.getInstance().getPost().getPostID());
@@ -262,7 +262,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                         contents.add(new Pair<Integer, String>
                                 (R.string.text_delcomt,
                                         getString(R.string.text_delcomt)));
-                        if(!post.getUserID().equals(LoginSession.getInstance().getUser().getuID())) {
+                        if (!post.getUserID().equals(LoginSession.getInstance().getUser().getuID())) {
                             contents.add(new Pair<Integer, String>
                                     (R.string.text_block_comment,
                                             getString(R.string.text_block_comment)));
@@ -379,21 +379,22 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             getFoodInfo();
         }
     }
+
     private void getPost(final String id) {
         try {
             ValueEventListener postsEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                        String key = dataSnapshot.getKey();
-                        post = dataSnapshot.getValue(Post.class);
-                        post.setPostID(key);
+                    String key = dataSnapshot.getKey();
+                    post = dataSnapshot.getValue(Post.class);
+                    post.setPostID(key);
                     createPostView();
                     postID = post.getPostID();
                     comments.clear();
-                    for(Map.Entry<String,Comment> entry:post.getComments().entrySet()){
+                    for (Map.Entry<String, Comment> entry : post.getComments().entrySet()) {
                         comments.add(entry.getValue());
                     }
-                    commentMap=post.getComments();
+                    commentMap = post.getComments();
                     sortComment();
                     loadMenu();
                     getStoreDetail(post.getStoreID());
@@ -404,24 +405,27 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
 
                 }
             };
-                dbRef.child(getString(R.string.posts_CODE)+id)
-                        .addValueEventListener(postsEventListener);
+            dbRef.child(getString(R.string.posts_CODE) + id)
+                    .addValueEventListener(postsEventListener);
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
-    public boolean loadMenu(){
-        if(pubMenu!=null) {
+
+    public boolean loadMenu() {
+        if (pubMenu != null) {
             pubMenu = AppUtils.createMenu(pubMenu, returnContentMenuItems());
             return super.onCreateOptionsMenu(pubMenu);
         }
         return false;
     }
-    public void sortComment(){
-        Collections.sort(comments,new orderObjectByTime());
+
+    public void sortComment() {
+        Collections.sort(comments, new orderObjectByTime());
         comtAdapter.notifyDataSetChanged();
     }
+
     private void getUserInfo() {
         userValueListener = new ValueEventListener() {
             @Override
@@ -483,7 +487,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                 txtv_foodprice.setBackgroundColor(getResources().getColor(android.R.color.transparent));
                 txtv_rateComment.setBackgroundColor(getResources().getColor(android.R.color.transparent));
                 txtv_foodname.setText(food.getName());
-                txtv_foodprice.setText(food.getPrice()+ "đ");
+                txtv_foodprice.setText(food.getPrice() + "đ");
                 rb_foodrating.setRating(post.getFoodRate());
 //                int rat = (int) food.getRating() / (int) food.getTotal();
                 int rat = (int) post.getFoodRate();
@@ -556,16 +560,16 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             uID = LoginSession.getInstance().getUser().getuID();
         }
         List<Pair<Integer, String>> contents = new ArrayList<>();
-        if(post!=null) {
+        if (post != null) {
             if (role > 0) {
                 if (post.isHidden()) {
-                    if(post.getPostType()==0) {
+                    if (post.getPostType() == 0) {
                         contents.add(new Pair<Integer, String>
                                 (R.string.txt_acceptpost, getString(R.string.txt_acceptpost)));
                         contents.add(new Pair<Integer, String>
                                 (R.string.txt_rejectpost, getString(R.string.txt_rejectpost)));
                     }
-                    if(post.getPostType()==3){
+                    if (post.getPostType() == 3) {
                         contents.add(new Pair<Integer, String>
                                 (R.string.txt_acceptpostreport, getString(R.string.txt_acceptpostreport)));
                         contents.add(new Pair<Integer, String>
@@ -590,20 +594,23 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                     contents.add(new Pair<Integer, String>
                             (R.string.txt_followPost, getString(R.string.txt_followPost)));
                 }
-                if (LoginSession.getInstance().getUser().isReportpostBlocked()) {
-                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), getString(R.string.text_block_user));
-                } else {
-                    contents.add(new Pair<Integer, String>
-                            (R.string.txt_report, getString(R.string.txt_report)));
+                if (LoginSession.getInstance().getUser() != null) {
+                    if (LoginSession.getInstance().getUser().isReportpostBlocked()) {
+                        AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), getString(R.string.text_block_user));
+                    } else {
+                        contents.add(new Pair<Integer, String>
+                                (R.string.txt_report, getString(R.string.txt_report)));
+                    }
                 }
 
             }
         }
         return contents;
     }
-    public boolean checkExistUser(String id){
-        for(Comment comment: comments){
-            if(comment.getUserID().toLowerCase().equals(id)){
+
+    public boolean checkExistUser(String id) {
+        for (Comment comment : comments) {
+            if (comment.getUserID().toLowerCase().equals(id)) {
                 return true;
             }
         }
@@ -621,11 +628,11 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                 }
                 return true;
             case R.string.txt_rejectpost:
-                    hidePost(-1);
+                hidePost(-1);
                 //sendBroadcast();
                 return true;
             case R.string.txt_acceptpost:
-                    showPost(1);
+                showPost(1);
 
                 //sendBroadcast();
                 return true;
@@ -651,7 +658,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                 return true;
             case R.string.txt_unfollowPost:
                 if (LoginSession.getInstance().getUser() != null) {
-                   updatePost(true);
+                    updatePost(true);
                 } else {
                     requestSignin();
                 }
@@ -660,25 +667,26 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                 return super.onOptionsItemSelected(item);
         }
     }
-    private void updatePost(boolean type){
-        boolean status=false;
-        if(type) {
+
+    private void updatePost(boolean type) {
+        boolean status = false;
+        if (type) {
             if (post.removeUser(LoginSession.getInstance().getUser().getuID())) {
-               status=true;
-            }else{
+                status = true;
+            } else {
                 AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Bạn đã bỏ theo dõi bài viết này");
 
             }
-        }else{
-            if(post.addUsertoList(LoginSession.getInstance().getUser().getuID())){
-                status=true;
-            }else{
+        } else {
+            if (post.addUsertoList(LoginSession.getInstance().getUser().getuID())) {
+                status = true;
+            } else {
                 AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), "Bạn đã theo dõi bài viết này");
 
             }
         }
 
-        if(status) {
+        if (status) {
             plzw8Dialog.show();
             Map<String, Object> childUpdate = new HashMap<>();
             Map<String, Object> postValue = post.toMap();
@@ -700,8 +708,9 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             });
         }
     }
-    private void sendBroadcast(){
-         Intent broadcastIntent=new Intent();
+
+    private void sendBroadcast() {
+        Intent broadcastIntent = new Intent();
         broadcastIntent.setAction(Const.INTENT_KEY_RELOAD_DATA);
         sendBroadcast(broadcastIntent);
     }
@@ -747,6 +756,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 title[0] = charSequence.toString();
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.length() > 0) {
@@ -852,9 +862,9 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
     private void reportPost() {
         post.setPostType(3);
         post.setHidden(true);
-        Map<String,Object> updatePost=post.toMap();
-        Map<String,Object> childUpdate=new HashMap<>();
-        childUpdate.put(getString(R.string.posts_CODE)+post.getPostID(),updatePost);
+        Map<String, Object> updatePost = post.toMap();
+        Map<String, Object> childUpdate = new HashMap<>();
+        childUpdate.put(getString(R.string.posts_CODE) + post.getPostID(), updatePost);
         ReportDialog reportDialog = new ReportDialog();
         reportDialog.setChildUpdate(childUpdate);
         reportDialog.setReport(REPORT_POST, post);
@@ -862,12 +872,12 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         reportDialog.setOnPosNegListener(new ReportDialog.OnPosNegListener() {
             @Override
             public void onPositive(boolean isClicked, Map<String,
-                    Object> childUpdate, final Dialog dialog,String key) {
+                    Object> childUpdate, final Dialog dialog, String key) {
                 if (isClicked) {
-                    keyReport=key;
+                    keyReport = key;
                     dialog.dismiss();
                     plzw8Dialog.show();
-                    childUpdate= notificationToUser(childUpdate,3,2);
+                    childUpdate = notificationToUser(childUpdate, 3, 2);
                     dbRef.updateChildren(childUpdate)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -897,70 +907,72 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
         });
         reportDialog.show(getSupportFragmentManager(), "report_post");
     }
-    private void approveReport(final Map<String,Object> childUpdate, final boolean isApprove){
-            final ValueEventListener reportPost =new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.getValue()!=null){
-                        for(DataSnapshot item: dataSnapshot.getChildren()) {
-                            ReportpostNotify reportpostNotify = item.getValue(ReportpostNotify.class);
-                            reportpostNotify.setId(item.getKey());
-                            reportpostNotify.setApprove(!isApprove);
-                            Map<String, Object> updateReport = reportpostNotify.toMap();
-                            childUpdate.put(getString(R.string.reportPost_CODE) + item.getKey(), updateReport);
-                        }
+
+    private void approveReport(final Map<String, Object> childUpdate, final boolean isApprove) {
+        final ValueEventListener reportPost = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null) {
+                    for (DataSnapshot item : dataSnapshot.getChildren()) {
+                        ReportpostNotify reportpostNotify = item.getValue(ReportpostNotify.class);
+                        reportpostNotify.setId(item.getKey());
+                        reportpostNotify.setApprove(!isApprove);
+                        Map<String, Object> updateReport = reportpostNotify.toMap();
+                        childUpdate.put(getString(R.string.reportPost_CODE) + item.getKey(), updateReport);
                     }
-                    dbRef.updateChildren(childUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                           loadMenu();
-                            plzw8Dialog.cancel();
-
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            plzw8Dialog.cancel();
-                            Toast.makeText(getApplicationContext(),
-                                    e.getMessage(), Toast.LENGTH_LONG)
-                                    .show();
-                        }
-                    });
                 }
+                dbRef.updateChildren(childUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        loadMenu();
+                        plzw8Dialog.cancel();
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        plzw8Dialog.cancel();
+                        Toast.makeText(getApplicationContext(),
+                                e.getMessage(), Toast.LENGTH_LONG)
+                                .show();
+                    }
+                });
+            }
 
-                }
-            };
-            dbRef.child(getString(R.string.reportPost_CODE))
-                    .orderByChild("postID")
-                    .equalTo(postID)
-                    .addListenerForSingleValueEvent(reportPost);
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        dbRef.child(getString(R.string.reportPost_CODE))
+                .orderByChild("postID")
+                .equalTo(postID)
+                .addListenerForSingleValueEvent(reportPost);
     }
+
     private void showPost(final int postType) {
         plzw8Dialog.show();
         Map<String, Object> childUpdate = new HashMap<>();
-        switch (post.getPostType()){
+        switch (post.getPostType()) {
             case 0:
-                childUpdate =notificationToUser(childUpdate,1,2);
+                childUpdate = notificationToUser(childUpdate, 1, 2);
                 break;
             case 3:
-                childUpdate= notificationToUser(childUpdate,2,2);
+                childUpdate = notificationToUser(childUpdate, 2, 2);
                 break;
         }
         post.setHidden(false);
         post.setPostType(postType);
-        if(food!=null) {
-            childUpdate=changeFoodRate(childUpdate,true,post.getPostType());
+        if (food != null) {
+            childUpdate = changeFoodRate(childUpdate, true, post.getPostType());
         }
-        if(store!=null) {
+        if (store != null) {
             childUpdate = changeStoreRate(childUpdate, true, post.getPostType());
         }
         String key = post.getPostID();
         Map<String, Object> postValue = post.toMap();
 
-        childUpdate.put(getString(R.string.posts_CODE)+key,postValue);
+        childUpdate.put(getString(R.string.posts_CODE) + key, postValue);
 //        childUpdate.put(getString(R.string.posts_CODE)
 //                + key + "/" + "isHidden", false);
 //        childUpdate.put(getString(R.string.posts_CODE)
@@ -976,29 +988,31 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
 //                + key + "/" + "isHidden_uID", false
 //                + "_" + post.getUserID());
 
-        approveReport(childUpdate,false);
+        approveReport(childUpdate, false);
     }
-    public Map<String,Object> changeFoodRate(Map<String,Object> childUpdate,boolean status,int  type){
-        if(status) {
+
+    public Map<String, Object> changeFoodRate(Map<String, Object> childUpdate, boolean status, int type) {
+        if (status) {
             long total = food.getTotal() + 1;
             long rat = food.getRating() + (long) post.getFoodRate();
             food.setRating(rat);
             food.setTotal(total);
-        }else{
-            if(type==-2) {
+        } else {
+            if (type == -2) {
                 long total = food.getTotal() - 1;
                 long rat = food.getRating() - (long) post.getFoodRate();
                 food.setRating(rat);
                 food.setTotal(total);
             }
         }
-            Map<String, Object> foodValue = food.toMap();
-            childUpdate.put(getString(R.string.food_CODE)
-                    + food.getFoodID(), foodValue);
+        Map<String, Object> foodValue = food.toMap();
+        childUpdate.put(getString(R.string.food_CODE)
+                + food.getFoodID(), foodValue);
         return childUpdate;
     }
-    public Map<String,Object> changeStoreRate(Map<String,Object> childUpdate, boolean status,int type){
-        if(status) {
+
+    public Map<String, Object> changeStoreRate(Map<String, Object> childUpdate, boolean status, int type) {
+        if (status) {
             long priceSum = store.getPriceSum() + post.getPriceRate(),
                     healthSum = store.getHealthySum() + post.getHealthyRate(),
                     serviceSum = store.getServiceSum() + post.getServiceRate(),
@@ -1007,8 +1021,8 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             store.setHealthySum(healthSum);
             store.setServiceSum(serviceSum);
             store.setSize(sum);
-        }else{
-            if(type==-2){
+        } else {
+            if (type == -2) {
                 long priceSum = store.getPriceSum() - post.getPriceRate(),
                         healthSum = store.getHealthySum() - post.getHealthyRate(),
                         serviceSum = store.getServiceSum() - post.getServiceRate(),
@@ -1020,9 +1034,9 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             }
         }
 
-            Map<String, Object> storeValue = store.toMap();
-            childUpdate.put(getString(R.string.store_CODE) + store.getStoreID(),
-                    storeValue);
+        Map<String, Object> storeValue = store.toMap();
+        childUpdate.put(getString(R.string.store_CODE) + store.getStoreID(),
+                storeValue);
         return childUpdate;
     }
 
@@ -1038,30 +1052,30 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                                 dialogInterface.cancel();
                                 plzw8Dialog.show();
                                 Map<String, Object> childUpdate = new HashMap<>();
-                                switch (post.getPostType()){
-                                case 0:
-                                    childUpdate=notificationToUser(childUpdate,-1,2);
-                                break;
-                                    case 2:
-                                        childUpdate=notificationToUser(childUpdate,-1,2);
+                                switch (post.getPostType()) {
+                                    case 0:
+                                        childUpdate = notificationToUser(childUpdate, -1, 2);
                                         break;
-                                case 3:
-                                    childUpdate= notificationToUser(childUpdate,-2,2);
-                                break;
-                            }
+                                    case 2:
+                                        childUpdate = notificationToUser(childUpdate, -1, 2);
+                                        break;
+                                    case 3:
+                                        childUpdate = notificationToUser(childUpdate, -2, 2);
+                                        break;
+                                }
                                 post.setPostType(postType);
                                 post.setHidden(true);
-                                if(food!=null) {
+                                if (food != null) {
                                     childUpdate = changeFoodRate(childUpdate, false, post.getPostType());
                                 }
-                                if(store!=null) {
+                                if (store != null) {
                                     childUpdate = changeStoreRate(childUpdate, false, post.getPostType());
                                 }
                                 String key = post.getPostID();
 
                                 Map<String, Object> postValue = post.toMap();
 
-                                childUpdate.put(getString(R.string.posts_CODE)+key,postValue);
+                                childUpdate.put(getString(R.string.posts_CODE) + key, postValue);
 //                                childUpdate.put(getString(R.string.posts_CODE)
 //                                        + key + "/" + "isHidden", true);
 //                                childUpdate.put(getString(R.string.posts_CODE)
@@ -1076,7 +1090,7 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
 //                                childUpdate.put(getString(R.string.posts_CODE)
 //                                        + key + "/" + "isHidden_uID", true
 //                                        + "_" + post.getUserID());
-                                approveReport(childUpdate,true);
+                                approveReport(childUpdate, true);
                             }
                         })
                 .setNegativeButton(getString(R.string.text_no),
@@ -1089,14 +1103,15 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                         })
                 .show();
     }
+
     private void getStoreDetail(String id) {
         try {
             ValueEventListener storeEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        store = dataSnapshot.getValue(Store.class);
-                        store.setStoreID(dataSnapshot.getKey());
+                    store = dataSnapshot.getValue(Store.class);
+                    store.setStoreID(dataSnapshot.getKey());
 
 
                 }
@@ -1107,22 +1122,23 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                 }
             };
 
-                dbRef.child(getString(R.string.store_CODE)+id)
-                        .addListenerForSingleValueEvent(storeEventListener);
+            dbRef.child(getString(R.string.store_CODE) + id)
+                    .addListenerForSingleValueEvent(storeEventListener);
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
-    public Map<String,Object> notificationToUser(Map<String,Object> childUpdate,int status,int type){
 
-        switch (status){
+    public Map<String, Object> notificationToUser(Map<String, Object> childUpdate, int status, int type) {
+
+        switch (status) {
             case 1:
                 //accept
                 //Notification to user who follow this post
-                for(String mUerId: store.getUsersFollow()) {
+                for (String mUerId : store.getUsersFollow()) {
                     try {
-                        if(mUerId!=null) {
+                        if (mUerId != null) {
                             if (!post.getUserID().toLowerCase().equals(mUerId.toLowerCase())) {
                                 UserNotification userNotification = new UserNotification();
                                 userNotification.setPostID(post.getPostID());
@@ -1136,21 +1152,22 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                                 childUpdate.put(getString(R.string.user_notification_CODE) + mUerId + "/" + key, userNotificationMap);
                             }
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
                     }
                 }
-                UserNotification userNotification=new UserNotification();
+                UserNotification userNotification = new UserNotification();
                 userNotification.setPostID(post.getPostID());
-                userNotification.setType(type);userNotification.setShown(true);
+                userNotification.setType(type);
+                userNotification.setShown(true);
                 userNotification.setStatus(status);
                 userNotification.setƠwner(true);
-                Map<String,Object> userNotificationMap=userNotification.toMap();
-                String key =dbRef.child(getString(R.string.user_notification_CODE)+post.getUserID()).push().getKey();
-                childUpdate.put(getString(R.string.user_notification_CODE)+post.getUserID()+"/"+key,userNotificationMap);
+                Map<String, Object> userNotificationMap = userNotification.toMap();
+                String key = dbRef.child(getString(R.string.user_notification_CODE) + post.getUserID()).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE) + post.getUserID() + "/" + key, userNotificationMap);
 
-                if(!store.getUserID().toLowerCase().equals(post.getUserID().toLowerCase())){
-                    UserNotification userEffectNotification=new UserNotification();
+                if (!store.getUserID().toLowerCase().equals(post.getUserID().toLowerCase())) {
+                    UserNotification userEffectNotification = new UserNotification();
                     userEffectNotification.setPostID(post.getPostID());
                     userEffectNotification.setType(type);
                     userEffectNotification.setShown(true);
@@ -1158,66 +1175,71 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                     userEffectNotification.setƠwner(true);
                     userEffectNotification.setUserEffectId(post.getUserID());
                     userEffectNotification.setUserEffectName(post.getUn());
-                    Map<String,Object> userEffectNotificationMap=userEffectNotification.toMap();
-                    String userEffectKey =dbRef.child(getString(R.string.user_notification_CODE)+store.getUserID()).push().getKey();
-                    childUpdate.put(getString(R.string.user_notification_CODE)+store.getUserID()+"/"+userEffectKey,userEffectNotificationMap);
+                    Map<String, Object> userEffectNotificationMap = userEffectNotification.toMap();
+                    String userEffectKey = dbRef.child(getString(R.string.user_notification_CODE) + store.getUserID()).push().getKey();
+                    childUpdate.put(getString(R.string.user_notification_CODE) + store.getUserID() + "/" + userEffectKey, userEffectNotificationMap);
                 }
                 break;
             //reject
             case -1:
-                UserNotification userRejectNotification=new UserNotification();
+                UserNotification userRejectNotification = new UserNotification();
                 userRejectNotification.setPostID(post.getPostID());
-                userRejectNotification.setType(type);userRejectNotification.setShown(true);
+                userRejectNotification.setType(type);
+                userRejectNotification.setShown(true);
                 userRejectNotification.setStatus(status);
                 userRejectNotification.setƠwner(true);
-                Map<String,Object> userRejectNotificationMap=userRejectNotification.toMap();
-                String userRejectKey =dbRef.child(getString(R.string.user_notification_CODE)+post.getUserID()).push().getKey();
-                childUpdate.put(getString(R.string.user_notification_CODE)+post.getUserID()+"/"+userRejectKey,userRejectNotificationMap);
+                Map<String, Object> userRejectNotificationMap = userRejectNotification.toMap();
+                String userRejectKey = dbRef.child(getString(R.string.user_notification_CODE) + post.getUserID()).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE) + post.getUserID() + "/" + userRejectKey, userRejectNotificationMap);
                 break;
             //was reported
             case 3:
-                UserNotification userReport=new UserNotification();
+                UserNotification userReport = new UserNotification();
                 userReport.setPostID(post.getPostID());
-                userReport.setType(type);userReport.setShown(true);
+                userReport.setType(type);
+                userReport.setShown(true);
                 userReport.setStatus(status);
                 userReport.setƠwner(true);
                 userReport.setUserEffectId(LoginSession.getInstance().getUser().getuID());
                 userReport.setUserEffectName(LoginSession.getInstance().getUser().getUn());
                 userReport.setReportId(keyReport);
-                Map<String,Object> userReportMap=userReport.toMap();
-                String keyReportNoti =dbRef.child(getString(R.string.user_notification_CODE)+post.getUserID()).push().getKey();
-                childUpdate.put(getString(R.string.user_notification_CODE)+post.getUserID()+"/"+keyReportNoti,userReportMap);
+                Map<String, Object> userReportMap = userReport.toMap();
+                String keyReportNoti = dbRef.child(getString(R.string.user_notification_CODE) + post.getUserID()).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE) + post.getUserID() + "/" + keyReportNoti, userReportMap);
                 break;
             //reject report
             case 2:
-                UserNotification userRejectReport=new UserNotification();
+                UserNotification userRejectReport = new UserNotification();
                 userRejectReport.setPostID(post.getPostID());
-                userRejectReport.setType(type);userRejectReport.setShown(true);
+                userRejectReport.setType(type);
+                userRejectReport.setShown(true);
                 userRejectReport.setStatus(status);
 
                 userRejectReport.setƠwner(true);
                 userRejectReport.setReportId(keyReport);
-                Map<String,Object> userRejectReportMap=userRejectReport.toMap();
-                String keyuserRejectReportNoti =dbRef.child(getString(R.string.user_notification_CODE)+post.getUserID()).push().getKey();
-                childUpdate.put(getString(R.string.user_notification_CODE)+post.getUserID()+"/"+keyuserRejectReportNoti,userRejectReportMap);
+                Map<String, Object> userRejectReportMap = userRejectReport.toMap();
+                String keyuserRejectReportNoti = dbRef.child(getString(R.string.user_notification_CODE) + post.getUserID()).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE) + post.getUserID() + "/" + keyuserRejectReportNoti, userRejectReportMap);
                 break;
             //accept report
             case -2:
-                UserNotification userAcceptReport=new UserNotification();
+                UserNotification userAcceptReport = new UserNotification();
                 userAcceptReport.setPostID(post.getPostID());
-                userAcceptReport.setType(type);userAcceptReport.setShown(true);
+                userAcceptReport.setType(type);
+                userAcceptReport.setShown(true);
                 userAcceptReport.setStatus(status);
 
                 userAcceptReport.setƠwner(true);
                 userAcceptReport.setReportId(keyReport);
-                Map<String,Object> userAcceptReportMap=userAcceptReport.toMap();
-                String keyuserAcceptReportNoti =dbRef.child(getString(R.string.user_notification_CODE)+post.getUserID()).push().getKey();
-                childUpdate.put(getString(R.string.user_notification_CODE)+post.getUserID()+"/"+keyuserAcceptReportNoti,userAcceptReportMap);
+                Map<String, Object> userAcceptReportMap = userAcceptReport.toMap();
+                String keyuserAcceptReportNoti = dbRef.child(getString(R.string.user_notification_CODE) + post.getUserID()).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE) + post.getUserID() + "/" + keyuserAcceptReportNoti, userAcceptReportMap);
                 break;
         }
 
         return childUpdate;
     }
+
     @Override
     public void onStop() {
         super.onStop();
@@ -1225,16 +1247,16 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
     }
 
     private void saveCommentValue() {
-        String key = dbRef.child(getString(R.string.posts_CODE)+post.getPostID()+"/"+getString(R.string.comments_CODE)).push().getKey();
+        String key = dbRef.child(getString(R.string.posts_CODE) + post.getPostID() + "/" + getString(R.string.comments_CODE)).push().getKey();
         User user = LoginSession.getInstance().getUser();
         comment = new Comment(comtContent, user.getUn(), user.getAvatar(), user.getuID(), postID);
         comment.setCommentID(key);
-        commentMap.put(key,comment);
+        commentMap.put(key, comment);
         post.setComments(commentMap);
         Map<String, Object> childUpdate = new HashMap<>();
-        childUpdate=updateCommentNotification(childUpdate);
+        childUpdate = updateCommentNotification(childUpdate);
         Map<String, Object> postValue = post.toMap();
-        childUpdate.put(getString(R.string.posts_CODE)+post.getPostID(), postValue);
+        childUpdate.put(getString(R.string.posts_CODE) + post.getPostID(), postValue);
         dbRef.updateChildren(childUpdate)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -1250,41 +1272,45 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
             }
         });
     }
-    public Map<String,Object> updateCommentNotification(Map<String,Object> childUpdate){
-        boolean isExist=false;
-        for(String mUSer:post.getUserComment()){
-            if(mUSer.toLowerCase().equals(LoginSession.getInstance().getUser().getuID().toLowerCase())){
-                isExist=true;
-            }else{
-                UserNotification userNotification=new UserNotification();
+
+    public Map<String, Object> updateCommentNotification(Map<String, Object> childUpdate) {
+        boolean isExist = false;
+        for (String mUSer : post.getUserComment()) {
+            if (mUSer.toLowerCase().equals(LoginSession.getInstance().getUser().getuID().toLowerCase())) {
+                isExist = true;
+            } else {
+                UserNotification userNotification = new UserNotification();
                 userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
                 userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
-                userNotification.setType(3);userNotification.setShown(true);
+                userNotification.setType(3);
+                userNotification.setShown(true);
                 userNotification.setPostID(post.getPostID());
                 userNotification.setƠwner(false);
-                Map<String,Object> userNotificationMap=userNotification.toMap();
-                String key =dbRef.child(getString(R.string.user_notification_CODE)+mUSer).push().getKey();
-                childUpdate.put(getString(R.string.user_notification_CODE)+mUSer+"/"+key,userNotificationMap);
+                Map<String, Object> userNotificationMap = userNotification.toMap();
+                String key = dbRef.child(getString(R.string.user_notification_CODE) + mUSer).push().getKey();
+                childUpdate.put(getString(R.string.user_notification_CODE) + mUSer + "/" + key, userNotificationMap);
             }
         }
         //if user not exist in user commented list
-        if(!isExist &&!LoginSession.getInstance().getUser().getuID().toLowerCase().equals(post.getUserID().toLowerCase()) ){
+        if (!isExist && !LoginSession.getInstance().getUser().getuID().toLowerCase().equals(post.getUserID().toLowerCase())) {
             post.addUsertoList(LoginSession.getInstance().getUser().getuID());
         }
-        if(!LoginSession.getInstance().getUser().getuID().toLowerCase().equals(post.getUserID().toLowerCase())) {
-            UserNotification userNotification=new UserNotification();
+        if (!LoginSession.getInstance().getUser().getuID().toLowerCase().equals(post.getUserID().toLowerCase())) {
+            UserNotification userNotification = new UserNotification();
             userNotification.setUserEffectId(LoginSession.getInstance().getUser().getuID());
             userNotification.setUserEffectName(LoginSession.getInstance().getUser().getUn());
-            userNotification.setType(3);userNotification.setShown(true);
+            userNotification.setType(3);
+            userNotification.setShown(true);
             userNotification.setƠwner(true);
             userNotification.setPostID(post.getPostID());
-            Map<String,Object> userNotificationMap=userNotification.toMap();
-            String key =dbRef.child(getString(R.string.user_notification_CODE)+post.getUserID()).push().getKey();
-            childUpdate.put(getString(R.string.user_notification_CODE)+post.getUserID()+"/"+key,userNotificationMap);
+            Map<String, Object> userNotificationMap = userNotification.toMap();
+            String key = dbRef.child(getString(R.string.user_notification_CODE) + post.getUserID()).push().getKey();
+            childUpdate.put(getString(R.string.user_notification_CODE) + post.getUserID() + "/" + key, userNotificationMap);
         }
 
         return childUpdate;
     }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -1382,8 +1408,8 @@ public class PostdetailActivity extends BaseActivity implements View.OnClickList
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        for (Iterator<Comment> iterator=comments.iterator();iterator.hasNext();){
-                                            Comment comment=iterator.next();
+                                        for (Iterator<Comment> iterator = comments.iterator(); iterator.hasNext(); ) {
+                                            Comment comment = iterator.next();
                                             if (comment.getCommentID().equals(comtID)) {
                                                 iterator.remove();
                                                 comtAdapter.notifyDataSetChanged();

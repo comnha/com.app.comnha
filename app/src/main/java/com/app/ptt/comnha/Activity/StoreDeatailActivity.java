@@ -269,11 +269,13 @@ public class StoreDeatailActivity extends AppCompatActivity implements View.OnCl
                     contents.add(new Pair<Integer, String>
                             (R.string.txt_followStore, getString(R.string.txt_followStore)));
                 }
-                if (LoginSession.getInstance().getUser().isReportstoreBlocked()) {
-                    AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), getString(R.string.text_block_user));
-                } else {
-                    contents.add(new Pair<Integer, String>
-                            (R.string.txt_report, getString(R.string.txt_report)));
+                if (LoginSession.getInstance().getUser()!=null){
+                    if (LoginSession.getInstance().getUser().isReportstoreBlocked()) {
+                        AppUtils.showSnackbarWithoutButton(getWindow().getDecorView(), getString(R.string.text_block_user));
+                    } else {
+                        contents.add(new Pair<Integer, String>
+                                (R.string.txt_report, getString(R.string.txt_report)));
+                    }
                 }
             }
 
